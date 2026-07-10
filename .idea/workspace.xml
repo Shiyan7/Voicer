@@ -4,24 +4,57 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2cb5afd-a1c5-4186-8914-dc73aeeb0bc9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/client/.idea/voicer.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src-tauri/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+    <list default="true" id="a2cb5afd-a1c5-4186-8914-dc73aeeb0bc9" name="Changes" comment="init">
+      <change afterPath="$PROJECT_DIR$/client/public/sprites/common.d1d2affb.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/public/sprites/navigation.7823dfaa.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/public/sprites/social.88435a0a.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/entities/team-select/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/entities/team-select/ui/TeamSelect.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/pages/actions/ActionsPage.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/pages/meetings/MeetingsPage.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/shared/ui/icon/assets/common/arrow-left-end.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/shared/ui/icon/assets/common/arrow-right-end.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/shared/ui/icon/assets/navigation/bell-solid.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/shared/ui/icon/assets/navigation/bell.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/shared/ui/icon/assets/navigation/calendar-solid.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/shared/ui/icon/assets/navigation/calendar.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/shared/ui/icon/assets/navigation/check-solid.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/shared/ui/icon/assets/navigation/check.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/shared/ui/icon/assets/navigation/settings-solid.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/shared/ui/icon/assets/navigation/settings.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/shared/ui/page-fade/PageFade.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/shared/ui/page-fade/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/widgets/navigation/config/navItems.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/widgets/navigation/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/widgets/navigation/model/NavigationViewModel.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/widgets/navigation/ui/ActivityBar.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/widgets/navigation/ui/NavList.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/widgets/navigation/ui/Navigation.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/.idea/helix.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/client/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/client/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/locales.txt" beforeDir="false" afterPath="$PROJECT_DIR$/client/locales.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src-tauri/tauri.conf.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/tauri.conf.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/pages/home/HomePage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/home/HomePage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/public/sprites/common.330afafb.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/public/sprites/social.2121a6f0.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/features/auth/ui/AuthModal.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/auth/ui/AuthModal.styles.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/pages/home/HomePage.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/pages/settings/SettingsPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/settings/SettingsPage.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/shared/i18n/locales/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/i18n/locales/en.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/shared/i18n/locales/ru.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/i18n/locales/ru.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/lib/formatPrice.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/ui/icon/assets/game/user.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/router/paths.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/router/paths.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/router/routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/router/routes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/ui/button/Button.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ui/button/Button.styles.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/ui/icon/assets/social/apple.svg" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ui/icon/assets/social/apple.svg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/shared/ui/icon/sprite.gen.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ui/icon/sprite.gen.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/ui/icon/sprite.h.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/widgets/header/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/header/Header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/ui/input/Input.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ui/input/Input.styles.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/ui/modal/Modal.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ui/modal/Modal.styles.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/ui/tabs/Tabs.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ui/tabs/Tabs.styles.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/widgets/header/Header.styles.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/widgets/header/Header.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/widgets/header/index.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/widgets/main-layout/MainLayout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/main-layout/MainLayout.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,6 +126,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "npm.be-dev.executor": "Run",
     "npm.build.executor": "Run",
     "npm.dev.executor": "Run",
     "npm.i18n:watch.executor": "Run",
@@ -106,7 +140,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.build" />
+  <component name="RunManager" selected="npm.dev" />
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -123,11 +157,26 @@
       <updated>1783665789942</updated>
       <workItem from="1783665791116" duration="58000" />
       <workItem from="1783665864497" duration="506000" />
-      <workItem from="1783666376914" duration="318000" />
+      <workItem from="1783666376914" duration="491000" />
+      <workItem from="1783667055543" duration="1480000" />
+      <workItem from="1783670446643" duration="301000" />
     </task>
+    <task id="LOCAL-00001" summary="init">
+      <option name="closed" value="true" />
+      <created>1783666857206</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1783666857206</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="init" />
+    <option name="LAST_COMMIT_MESSAGE" value="init" />
   </component>
 </project>

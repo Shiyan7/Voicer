@@ -1,93 +1,46 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Space+Grotesk:wght@500..700&display=swap');
-
 @import "tailwindcss";
 
-@plugin "@tailwindcss/typography";
-
 @theme {
-  /* breakpoint */
   --breakpoint-xs: 321px;
   --breakpoint-sm: 577px;
   --breakpoint-md: 769px;
   --breakpoint-laptop: 1025px;
   --breakpoint-desktop: 1441px;
 
-  /* color */
-  --color-text: #110802;
-  --color-primary: #f5f5f5;
-  --color-gray: #999;
-  --color-critical: #f44;
-
-  --color-main: #bcff2f;
-  --color-main-hover: #CCFF62;
-
-  --color-secondary: #bcff2f;
-  --color-secondary-hover: #CCFF62;
-
-  --color-bg: #000;
-  --color-overlay: #0008;
-  --color-surface-bg: #0f0f0f;
-  --color-surface-border: #141414;
-  --color-on-surface: #1a1a1a;
-  --color-surface-dark: #141414;
-
-  /* base */
-  --font-family: "Geist", sans-serif;
-  --font-space: "Space Grotesk", sans-serif;
-
-  /* z-index */
   --z-modal: 1000;
   --z-toast: 50;
   --z-navigation: 800;
 }
 
-:root {
-  --color-street-fashion: #7b4a23;
-  --color-street-cars: #1ea7e1;
-  --color-street-sport: #e6157b;
-  --color-street-social: #f37920;
-  --color-street-games: #e11d2a;
-  --color-street-drinks: #f4ad1b;
-  --color-street-airlines: #1f9d4d;
-  --color-street-food: #0f8a43;
-  --color-street-hotels: #2563c9;
-  --color-street-tech: #1b2f9c;
-}
-
 @layer components {
-  .tooltip {
-    @apply relative;
+  .icon,
+  .icon-x,
+  .icon-y {
+    @apply select-none fill-current inline-block text-inherit box-content;
+    vertical-align: -0.125em;
   }
 
-  .tooltip::before {
-    content: attr(data-tip);
-    @apply absolute left-1/2
-    -translate-x-1/2 text-sm max-w-56 text-left
-    p-2.5 px-3 rounded-xl bg-surface-dark
-    text-gray border border-on-surface
-    opacity-0 scale-95 pointer-events-none
-    transition-all duration-150;
+  .icon,
+  .icon-x {
+    @apply w-[1em];
   }
 
-  .tooltip:hover::before,
-  .tooltip:focus-visible::before {
-    @apply opacity-100 scale-100;
+  .icon,
+  .icon-y {
+    @apply h-[1em];
   }
 
-  .tooltip-bottom:before {
-    @apply top-full mt-2
-  }
-
-  .tooltip-top:before {
-    @apply bottom-full -mb-4
+  .loader {
+    width: 50px;
+    height: 50px;
+    background-color: #e5e7eb;
   }
 }
 
 body {
   -webkit-font-smoothing: antialiased;
-  color: var(--color-primary);
-  background-color: #101014;
-  font-family: var(--font-family), sans-serif;
+  color: #111827;
+  background-color: #fafafa;
   height: 100%;
 }
 
@@ -99,3 +52,15 @@ button {
   overflow-x: hidden;
 }
 
+@keyframes page-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.page-fade {
+  animation: page-fade-in 0.5s ease-out;
+}

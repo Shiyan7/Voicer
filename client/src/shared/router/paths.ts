@@ -1,5 +1,6 @@
 export const paths = {
-  home: '/',
+  meetings: '/',
+  actions: '/actions',
   settings: '/settings',
   notFound: '*404',
 };

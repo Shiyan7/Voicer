@@ -6,6 +6,7 @@ import { AuthModal } from '@/features/auth';
 import { ApplicationViewModel } from '@/shared/ApplicationViewModel';
 import { i18n } from '@/shared/i18n';
 import { useViewModel } from '@/shared/view-model';
+import { Navigation } from '@/widgets/navigation';
 
 export function MainLayout(props: ParentProps) {
   const app = useViewModel(ApplicationViewModel);
@@ -20,8 +21,9 @@ export function MainLayout(props: ParentProps) {
   return (
     <Suspense>
       <Show when={i18n.ready}>
-        <div class="flex min-h-screen flex-col">
-          <main class="flex-1">
+        <div class="grid min-h-screen grid-cols-[auto_1fr]">
+          <Navigation />
+          <main class="bg-neutral-50">
             <Suspense>
               {props.children}
               <Toasts />

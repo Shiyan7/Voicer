@@ -4,8 +4,12 @@ import { paths } from '@/shared/router/paths';
 
 export const routes = [
   {
-    path: paths.home,
-    component: lazy(() => import('@/pages/home/HomePage')),
+    path: paths.meetings,
+    component: lazy(() => import('@/pages/meetings/MeetingsPage')),
+  },
+  {
+    path: paths.actions,
+    component: lazy(() => import('@/pages/actions/ActionsPage')),
   },
   {
     path: paths.settings,

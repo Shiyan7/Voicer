@@ -6,7 +6,7 @@ export const tabsStyles = tv({
     item: 'relative flex-1',
     btn: `
       py-3 flex items-center justify-center relative w-full
-      after:absolute after:w-full after:h-[1px] after:bg-main
+      after:absolute after:w-full after:h-[1px] after:bg-blue-500
       after:bottom-0 after:opacity-0 after:transition-opacity
       transition-colors
     `,
@@ -14,10 +14,10 @@ export const tabsStyles = tv({
   variants: {
     active: {
       true: {
-        btn: 'after:opacity-100 text-main',
+        btn: 'after:opacity-100 text-blue-500',
       },
       false: {
-        btn: 'text-gray',
+        btn: 'text-gray-500',
       },
     },
   },

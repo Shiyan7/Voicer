@@ -20,3 +20,7 @@ validation.required.email = Email is required.
 validation.required.password = Password is required.
 labels.copy = Copy
 labels.copied = Copied
+nav.activity = Activity
+nav.meetings = Meetings
+nav.actions = Actions
+nav.workspace = Personal workspace

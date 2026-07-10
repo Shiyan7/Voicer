@@ -4,19 +4,20 @@ export const inputStyles = tv({
   slots: {
     root: 'flex flex-col gap-1',
     input: `
-      w-full h-10 rounded-xl border bg-surface-dark px-3.5
-      text-white placeholder:text-gray outline-none text-sm
+      w-full h-10 rounded-md border bg-white px-3.5
+      text-gray-900 placeholder:text-gray-500 outline-none text-sm
+      focus:border-blue-500 focus:ring-1 focus:ring-blue-500
     `,
-    label: 'block text-sm',
-    error: 'text-critical text-xs',
+    label: 'block text-sm text-gray-700',
+    error: 'text-red-500 text-xs',
   },
   variants: {
     error: {
       true: {
-        input: 'border-critical',
+        input: 'border-red-500',
       },
       false: {
-        input: 'border-transparent',
+        input: 'border-gray-300',
       },
     },
   },

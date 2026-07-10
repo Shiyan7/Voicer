@@ -282,13 +282,30 @@ export const sprites = defineSpriteMap([
   defineSprite('common', [
     defineSpriteAsset(
       [
+        defineSpriteSymbol(['arrow-left-end'], [20]),
         defineSpriteSymbol(['arrow-left'], [13, 11]),
+        defineSpriteSymbol(['arrow-right-end'], [20]),
         defineSpriteSymbol(['check'], [24]),
         defineSpriteSymbol(['chevron-right'], [20]),
         defineSpriteSymbol(['copy'], [16]),
         defineSpriteSymbol(['cross'], [15]),
       ],
-      defineExternalAssetMeta('common.330afafb.svg'),
+      defineExternalAssetMeta('common.d1d2affb.svg'),
+    ),
+  ]),
+  defineSprite('navigation', [
+    defineSpriteAsset(
+      [
+        defineSpriteSymbol(['bell-solid'], [24]),
+        defineSpriteSymbol(['bell'], [24]),
+        defineSpriteSymbol(['calendar-solid'], [24]),
+        defineSpriteSymbol(['calendar'], [24]),
+        defineSpriteSymbol(['check-solid'], [24]),
+        defineSpriteSymbol(['check'], [24]),
+        defineSpriteSymbol(['settings-solid'], [24]),
+        defineSpriteSymbol(['settings'], [24]),
+      ],
+      defineExternalAssetMeta('navigation.7823dfaa.svg'),
     ),
   ]),
   defineSprite('social', [
@@ -297,7 +314,7 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['apple'], [24]),
         defineSpriteSymbol(['google'], [24]),
       ],
-      defineExternalAssetMeta('social.2121a6f0.svg'),
+      defineExternalAssetMeta('social.88435a0a.svg'),
     ),
     defineSpriteAsset(
       [defineSpriteSymbol(['telegram', 'social-telegram-65acfa5c'], [24])],
@@ -309,7 +326,23 @@ export const sprites = defineSpriteMap([
 ]);
 
 export type SpritesMeta = {
-  common: 'arrow-left' | 'check' | 'chevron-right' | 'copy' | 'cross';
+  common:
+    | 'arrow-left-end'
+    | 'arrow-left'
+    | 'arrow-right-end'
+    | 'check'
+    | 'chevron-right'
+    | 'copy'
+    | 'cross';
+  navigation:
+    | 'bell-solid'
+    | 'bell'
+    | 'calendar-solid'
+    | 'calendar'
+    | 'check-solid'
+    | 'check'
+    | 'settings-solid'
+    | 'settings';
   social: 'apple' | 'google' | 'telegram';
 };
 

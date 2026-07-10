@@ -40,5 +40,11 @@
       "email": "Email is required.",
       "password": "Password is required."
     }
+  },
+  "nav": {
+    "activity": "Activity",
+    "meetings": "Meetings",
+    "actions": "Actions",
+    "workspace": "Personal workspace"
   }
 }

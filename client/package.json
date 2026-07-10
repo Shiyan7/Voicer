@@ -18,7 +18,6 @@
   },
   "dependencies": {
     "@abraham/reflection": "^0.13.0",
-    "@lottiefiles/dotlottie-solid": "^0.6.15",
     "@modular-forms/solid": "^0.25.1",
     "@neodx/svg": "0.8.0",
     "@solid-primitives/cookies": "^0.0.3",
