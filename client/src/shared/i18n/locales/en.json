@@ -1,0 +1,51 @@
+{
+  "labels": {
+    "settings": "Settings",
+    "change_lang": "Change Lang",
+    "auth_button": "Log in / Sign up",
+    "log_in": "Log In",
+    "sign_up": "Sign Up",
+    "our": "our",
+    "terms_of_service": "Terms of Service",
+    "privacy_policy": "Privacy Policy",
+    "copy": "Copy",
+    "copied": "Copied"
+  },
+  "common": {
+    "brand_name": "Voicer",
+    "brand_url": "Voicer.io",
+    "or": "or"
+  },
+  "auth": {
+    "title": {
+      "login": "Sign in to your account",
+      "signup": "Create your account"
+    },
+    "footer": {
+      "disclaimer": "By logging in, you agree to"
+    },
+    "hint": {
+      "log_in": "Already have an account?",
+      "sign_up": "New to Voicer?"
+    }
+  },
+  "validation": {
+    "common": {
+      "minLength": "Must be at least {{ min }} characters long."
+    },
+    "email": {
+      "invalid": "Please enter a valid email address."
+    },
+    "required": {
+      "email": "Email is required.",
+      "password": "Password is required."
+    }
+  },
+  "monopoly": {
+    "actions": {
+      "players": "Players",
+      "giveUp": "Give Up",
+      "credit": "Credit"
+    }
+  }
+}
