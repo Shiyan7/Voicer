@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "voicer",
+  "productName": "Voicer",
   "version": "0.1.0",
   "identifier": "com.voicer",
   "build": {
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "voicer",
+        "title": "Voicer",
         "width": 1024,
         "height": 700,
         "resizable": true

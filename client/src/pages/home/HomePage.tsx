@@ -1,8 +1,6 @@
-import { A } from '@solidjs/router';
 import { Show } from 'solid-js';
 
 import { SessionViewModel } from '@/entities/session';
-import { paths } from '@/shared/router';
 import { useViewModel } from '@/shared/view-model';
 import { Header } from '@/widgets/header';
 
@@ -18,7 +16,6 @@ export default function HomePage() {
           <button onClick={session.logout}>Log out</button>
         </Show>
       </div>
-      <A href={paths.game}>TO game</A>
     </section>
   );
 }

@@ -40,12 +40,5 @@
       "email": "Email is required.",
       "password": "Password is required."
     }
-  },
-  "monopoly": {
-    "actions": {
-      "players": "Players",
-      "giveUp": "Give Up",
-      "credit": "Credit"
-    }
   }
 }

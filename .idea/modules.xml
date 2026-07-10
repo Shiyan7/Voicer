@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/client/.idea/helix.iml" filepath="$PROJECT_DIR$/client/.idea/helix.iml" />
+      <module fileurl="file://$PROJECT_DIR$/client/.idea/voicer.iml" filepath="$PROJECT_DIR$/client/.idea/voicer.iml" />
     </modules>
   </component>
 </project>

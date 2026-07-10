@@ -44,8 +44,8 @@ export function Header() {
               </Button>
             }
           >
-            <Button as={A} href={paths.game}>
-              To game
+            <Button as={A} href={paths.settings}>
+              {i18n.t('labels.settings')}
             </Button>
           </Show>
         </div>

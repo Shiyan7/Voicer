@@ -291,14 +291,6 @@ export const sprites = defineSpriteMap([
       defineExternalAssetMeta('common.330afafb.svg'),
     ),
   ]),
-  defineSprite('game', [
-    defineSpriteAsset(
-      [defineSpriteSymbol(['user', 'game-user-d0be03f4'], [12, 19])],
-      defineInjectedAssetMeta(
-        '<svg width="0" height="0"><defs><clipPath id="game-user-ref-a-d0be03f4"><path fill="#fff" d="M0 0h12v19H0z"/></clipPath></defs><symbol xmlns="http://www.w3.org/2000/svg" id="game-user-d0be03f4" fill="none" viewBox="0 0 12 19"><g fill="#737373" clip-path="url(#game-user-ref-a-d0be03f4)"><path d="M9.827 4.139q0 .172-.014.343a4.15 4.15 0 0 1-4.13 3.81 4.145 4.145 0 0 1-4.143-4.15A4.145 4.145 0 0 1 5.683 0a4.145 4.145 0 0 1 4.144 4.143zM5.683 10.06a5.69 5.69 0 0 1 5.688 5.688v1.293a1.29 1.29 0 0 1-1.288 1.288H1.288A1.29 1.29 0 0 1 0 17.04v-1.293a5.69 5.69 0 0 1 5.688-5.688z"/></g></symbol></svg>',
-      ),
-    ),
-  ]),
   defineSprite('social', [
     defineSpriteAsset(
       [
@@ -318,7 +310,6 @@ export const sprites = defineSpriteMap([
 
 export type SpritesMeta = {
   common: 'arrow-left' | 'check' | 'chevron-right' | 'copy' | 'cross';
-  game: 'user';
   social: 'apple' | 'google' | 'telegram';
 };
 
