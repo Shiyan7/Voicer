@@ -46,8 +46,10 @@ export const modalStyles = tv({
         root: 'pointer-events-none flex items-end justify-center overflow-hidden',
         overlay: 'hidden',
         inner: `
-          w-full pointer-events-auto flex mx-3 mb-8 rounded-2xl border border-gray-200 bg-white shadow-xl
-          opacity-0 translate-y-[140%] data-[opened=true]:opacity-100 data-[opened=true]:translate-y-0
+          w-full pointer-events-auto flex mx-3 mb-8
+          rounded-2xl border border-gray-200 bg-white shadow-xl
+          opacity-0 translate-y-[140%]
+          data-[opened=true]:opacity-100 data-[opened=true]:translate-y-0
         `,
       },
     },

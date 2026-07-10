@@ -6,6 +6,10 @@ import { MODALS, showModal } from '@/shared/lib/modal';
 import { Button } from '@/shared/ui/button';
 import { useViewModel } from '@/shared/view-model';
 
+import { teamSelectStyles } from './TeamSelect.styles';
+
+const styles = teamSelectStyles();
+
 interface TeamSelectProps {
   isExpanded: boolean;
 }
@@ -17,7 +21,11 @@ export function TeamSelect(props: TeamSelectProps) {
     <Show
       when={session.isAuthorized}
       fallback={
-        <Button class="w-full" onClick={() => showModal(MODALS.AUTH)} size="md">
+        <Button
+          class={styles.authBtn()}
+          onClick={() => showModal(MODALS.AUTH)}
+          size="md"
+        >
           {props.isExpanded
             ? i18n.t('labels.auth_button')
             : i18n.t('labels.log_in')}
@@ -27,16 +35,14 @@ export function TeamSelect(props: TeamSelectProps) {
       <Show
         when={props.isExpanded}
         fallback={
-          <button class="mx-auto flex h-5 w-5 items-center justify-center rounded-sm border border-gray-500 text-gray-500">
-            {session.user?.name}
+          <button class={styles.avatarBtn()}>
+            {session.user?.name[0].toUpperCase()}
           </button>
         }
       >
-        <div class="flex flex-col items-start">
-          <span class="text-2xl font-bold text-gray-900">
-            {session.user?.name}
-          </span>
-          <span class="text-sm text-gray-500">{session.user?.email}</span>
+        <div class={styles.info()}>
+          <span class={styles.name()}>{session.user?.name}</span>
+          <span class={styles.email()}>{session.user?.email}</span>
         </div>
       </Show>
     </Show>

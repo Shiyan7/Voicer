@@ -6,7 +6,10 @@ import { useViewModel } from '@/shared/view-model';
 
 import { NavigationViewModel } from '../model/NavigationViewModel';
 import { ActivityBar } from './ActivityBar';
+import { navigationStyles } from './Navigation.styles';
 import { NavList } from './NavList';
+
+const styles = navigationStyles();
 
 export function Navigation() {
   const navigation = useViewModel(NavigationViewModel);
@@ -14,29 +17,16 @@ export function Navigation() {
 
   return (
     <div
-      class="relative z-navigation"
+      class={styles.root()}
       onmouseleave={() => setIsToggleShowed(false)}
       onmouseenter={() => setIsToggleShowed(true)}
       data-collapsed={navigation.isCollapsed}
     >
-      <div
-        class={`
-          relative z-1 h-full p-3
-          w-60 bg-gray-100
-          border-r-[0.5px] border-r-gray-400 data-[collapsed=true]:w-16
-        `}
-      >
+      <div class={styles.sidebar()} data-collapsed={navigation.isCollapsed}>
         <Show when={isToggleShowed() && !navigation.isActivityOpened}>
-          <button
-            class={`
-              absolute left-full top-5 z-20 flex h-8 w-6.5
-              items-center justify-center rounded-[0_5px_5px_0]
-              border-[0.5px] border-l-0 border-gray-400 bg-gray-100 pr-px
-            `}
-            onClick={navigation.toggleSidebar}
-          >
+          <button class={styles.toggle()} onClick={navigation.toggleSidebar}>
             <Icon
-              class="h-6 w-6"
+              class={styles.toggleIcon()}
               name={
                 navigation.isCollapsed
                   ? 'common:arrow-right-end'

@@ -8,6 +8,10 @@ import { i18n } from '@/shared/i18n';
 import { useViewModel } from '@/shared/view-model';
 import { Navigation } from '@/widgets/navigation';
 
+import { mainLayoutStyles } from './MainLayout.styles';
+
+const styles = mainLayoutStyles();
+
 export function MainLayout(props: ParentProps) {
   const app = useViewModel(ApplicationViewModel);
 
@@ -21,9 +25,9 @@ export function MainLayout(props: ParentProps) {
   return (
     <Suspense>
       <Show when={i18n.ready}>
-        <div class="grid min-h-screen grid-cols-[auto_1fr]">
+        <div class={styles.root()}>
           <Navigation />
-          <main class="bg-neutral-50">
+          <main class={styles.main()}>
             <Suspense>
               {props.children}
               <Toasts />

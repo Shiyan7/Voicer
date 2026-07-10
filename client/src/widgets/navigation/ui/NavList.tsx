@@ -8,6 +8,9 @@ import { useViewModel } from '@/shared/view-model';
 
 import { navItems } from '../config/navItems';
 import { NavigationViewModel } from '../model/NavigationViewModel';
+import { navListStyles } from './NavList.styles';
+
+const styles = navListStyles();
 
 export function NavList() {
   const location = useLocation();
@@ -28,18 +31,12 @@ export function NavList() {
   });
 
   return (
-    <ul class="mb-5 mt-7 flex flex-col gap-1">
+    <ul class={styles.root()}>
       <For each={navItems}>
         {(item, index) => (
           <li>
             <Dynamic
-              class={`
-                  text-md flex w-full items-center p-1 px-2 font-medium
-                  rounded-lg text-gray-900 hover:bg-gray-200
-                  data-[current=true]:bg-gray-200 data-[current=false]:active:bg-gray-300
-                  cursor-pointer transition-colors
-                
-                `}
+              class={styles.item()}
               id={item.label}
               component={item.href ? A : 'button'}
               href={item.href}
@@ -47,7 +44,7 @@ export function NavList() {
               data-current={isItemActive(item.href)}
             >
               <Icon
-                class="mr-1 h-5 w-5"
+                class={styles.itemIcon()}
                 name={
                   (isItemActive(item.href)
                     ? `${item.icon}-solid`
@@ -58,7 +55,7 @@ export function NavList() {
             </Dynamic>
             <Show when={!navigation.isCollapsed}>
               {index() === 0 && (
-                <span class="mb-1 mt-3 block px-2 text-[12px] font-bold text-gray-500">
+                <span class={styles.separator()}>
                   {i18n.t('nav.workspace')}
                 </span>
               )}
