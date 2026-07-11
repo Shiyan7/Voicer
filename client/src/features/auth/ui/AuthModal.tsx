@@ -17,19 +17,15 @@ import { authModalStyles } from './AuthModal.styles';
 const styles = authModalStyles();
 
 export function AuthModal() {
-  const model = useViewModel(AuthViewModel);
+  const vm = useViewModel(AuthViewModel);
 
   return (
-    <Modal modalId={MODALS.AUTH} onClose={() => reset(model.authForm)}>
-      <h2 class={styles.title()}>{model.modalTitle}</h2>
+    <Modal modalId={MODALS.AUTH} onClose={() => reset(vm.authForm)}>
+      <h2 class={styles.title()}>{vm.modalTitle}</h2>
       <div>
-        <Show when={model.mode} keyed>
-          <Form
-            class={styles.form()}
-            of={model.authForm}
-            onSubmit={model.onSubmit}
-          >
-            <Field of={model.authForm} name="email">
+        <Show when={vm.mode} keyed>
+          <Form class={styles.form()} of={vm.authForm} onSubmit={vm.onSubmit}>
+            <Field of={vm.authForm} name="email">
               {(field, props) => (
                 <Input
                   {...props}
@@ -40,7 +36,7 @@ export function AuthModal() {
                 />
               )}
             </Field>
-            <Field of={model.authForm} name="password">
+            <Field of={vm.authForm} name="password">
               {(field, props) => (
                 <Input
                   {...props}
@@ -51,13 +47,13 @@ export function AuthModal() {
                 />
               )}
             </Field>
-            <Button type="submit">{model.buttonText}</Button>
+            <Button type="submit">{vm.buttonText}</Button>
           </Form>
         </Show>
         <div class={styles.row()}>
           <span class={styles.hint()}>
             <Show
-              when={model.mode === AuthMode.LogIn}
+              when={vm.mode === AuthMode.LogIn}
               fallback={i18n.t('auth.hint.log_in')}
             >
               {i18n.t('auth.hint.sign_up')}
@@ -66,10 +62,10 @@ export function AuthModal() {
           <button
             class={styles.switch()}
             type="button"
-            onClick={model.toggleAuthMode}
+            onClick={vm.toggleAuthMode}
           >
             <Show
-              when={model.mode === AuthMode.LogIn}
+              when={vm.mode === AuthMode.LogIn}
               fallback={i18n.t('labels.log_in')}
             >
               {i18n.t('labels.sign_up')}

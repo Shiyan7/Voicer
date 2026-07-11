@@ -4,18 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2cb5afd-a1c5-4186-8914-dc73aeeb0bc9" name="Changes" comment="fix styles">
-      <change afterPath="$PROJECT_DIR$/.kiro/skills/mvvm-architecture.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/widgets/navigation/types/NavItem.ts" afterDir="false" />
+    <list default="true" id="a2cb5afd-a1c5-4186-8914-dc73aeeb0bc9" name="Changes" comment="poxui">
+      <change afterPath="$PROJECT_DIR$/client/src/shared/router/LocationService.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/entities/team-select/ui/TeamSelect.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/team-select/ui/TeamSelect.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/router/paths.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/router/paths.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/config/navItems.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/navigation/config/getNavItems.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/ApplicationViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ApplicationViewModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/router/RouterService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/router/RouterService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/router/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/router/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/widgets/main-layout/MainLayout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/main-layout/MainLayout.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/model/NavigationViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/navigation/model/NavigationViewModel.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/ui/ActivityBar.styles.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/ui/ActivityBar.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/types/NavItem.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/navigation/types/NavItem.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/ui/NavList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/navigation/ui/NavList.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/ui/Navigation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/navigation/ui/Navigation.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,7 +136,7 @@
       <workItem from="1783666376914" duration="491000" />
       <workItem from="1783667055543" duration="1480000" />
       <workItem from="1783670446643" duration="4878000" />
-      <workItem from="1783746954437" duration="613000" />
+      <workItem from="1783746954437" duration="1891000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -164,7 +162,15 @@
       <option name="project" value="LOCAL" />
       <updated>1783672355914</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="poxui">
+      <option name="closed" value="true" />
+      <created>1783747706137</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1783747706137</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -174,6 +180,7 @@
     <MESSAGE value="init" />
     <MESSAGE value="return voicer app" />
     <MESSAGE value="fix styles" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix styles" />
+    <MESSAGE value="poxui" />
+    <option name="LAST_COMMIT_MESSAGE" value="poxui" />
   </component>
 </project>

@@ -5,4 +5,5 @@ export interface NavItem {
   href: string;
   icon: IconName;
   activeIcon: IconName;
+  isActive?: boolean;
 }

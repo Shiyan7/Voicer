@@ -1,5 +1,5 @@
-import { A, useLocation } from '@solidjs/router';
-import { createSelector, For, Show } from 'solid-js';
+import { A } from '@solidjs/router';
+import { For, Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
 import { Icon } from '@/shared/ui/icon';
@@ -15,33 +15,23 @@ interface NavListProps {
 }
 
 export function NavList(props: NavListProps) {
-  const location = useLocation();
-
-  const isItemActive = createSelector(() => location.pathname);
-
   return (
     <ul class={styles.root()}>
+      <li class={styles.separator()}>{i18n.t('nav.workspace')}</li>
       <For each={props.items}>
-        {(item, index) => (
+        {(item) => (
           <li>
             <A
               class={styles.item()}
               href={item.href}
-              data-current={isItemActive(item.href)}
+              data-current={item.isActive}
             >
               <Icon
                 class={styles.itemIcon()}
-                name={isItemActive(item.href) ? item.activeIcon : item.icon}
+                name={item.isActive ? item.activeIcon : item.icon}
               />
               <Show when={!props.isCollapsed}>{item.label}</Show>
             </A>
-            <Show when={!props.isCollapsed}>
-              {index() === 0 && (
-                <span class={styles.separator()}>
-                  {i18n.t('nav.workspace')}
-                </span>
-              )}
-            </Show>
           </li>
         )}
       </For>

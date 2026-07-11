@@ -1,9 +1,9 @@
 import { Navigator } from '@solidjs/router';
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 
-@injectable()
+@singleton()
 export class RouterService {
-  registerNavigator(navigator: Navigator) {
+  init(navigator: Navigator) {
     this.navigate = navigator;
   }
 

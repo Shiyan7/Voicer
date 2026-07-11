@@ -1,4 +1,4 @@
-import { useNavigate } from '@solidjs/router';
+import { useLocation, useNavigate } from '@solidjs/router';
 import { onMount, type ParentProps, Show, Suspense } from 'solid-js';
 
 import { Toasts } from '@/entities/toasts';
@@ -16,10 +16,11 @@ export function MainLayout(props: ParentProps) {
   const app = useViewModel(ApplicationViewModel);
 
   const navigator = useNavigate();
+  const location = useLocation();
 
   onMount(async () => {
     await i18n.init();
-    app.initApp(navigator);
+    app.initApp(navigator, location);
   });
 
   return (
