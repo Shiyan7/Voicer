@@ -5,9 +5,8 @@ export const navigationStyles = tv({
     root: 'relative z-navigation',
     sidebar: `
       relative z-1 h-full p-3
-      w-60 bg-gray-100
+      bg-gray-100
       border-r-[0.5px] border-r-gray-400
-      data-[collapsed=true]:w-16
     `,
     toggle: `
       absolute left-full top-5 z-20
@@ -16,5 +15,15 @@ export const navigationStyles = tv({
       border-gray-400 bg-gray-100 pr-px
     `,
     toggleIcon: 'h-6 w-6',
+  },
+  variants: {
+    collapsed: {
+      true: {
+        sidebar: 'w-16',
+      },
+      false: {
+        sidebar: 'w-60',
+      },
+    },
   },
 });

@@ -21,11 +21,7 @@ export function NavList(props: NavListProps) {
       <For each={props.items}>
         {(item) => (
           <li>
-            <A
-              class={styles.item()}
-              href={item.href}
-              data-current={item.isActive}
-            >
+            <A class={styles.item({ current: item.isActive })} href={item.href}>
               <Icon
                 class={styles.itemIcon()}
                 name={item.isActive ? item.activeIcon : item.icon}

@@ -18,9 +18,8 @@ export function Navigation() {
       class={styles.root()}
       onmouseleave={vm.onMouseLeave}
       onmouseenter={vm.onMouseEnter}
-      data-collapsed={vm.isCollapsed}
     >
-      <div class={styles.sidebar()} data-collapsed={vm.isCollapsed}>
+      <div class={styles.sidebar({ collapsed: vm.isCollapsed })}>
         <Show when={vm.isToggleVisible}>
           <button class={styles.toggle()} onClick={vm.toggleSidebar}>
             <Icon
