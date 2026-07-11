@@ -33,25 +33,19 @@ export function Modal(props: ModalProps) {
   return (
     <Show when={modal.mounted()}>
       <Portal mount={document.getElementById('modals')!}>
-        <div
-          class={styles.root({ variant: props.variant })}
-          data-opened={modal.opened()}
-          onClick={handleClose}
-        >
+        <div class={styles.root()} onClick={handleClose}>
           <div
             class={styles.overlay({
-              variant: props.variant,
+              opened: modal.opened(),
               class: props.overlayClass,
             })}
-            data-opened={modal.opened()}
           />
           <div
             class={styles.inner({
               class: props.class,
               size: props.size,
-              variant: props.variant,
+              opened: modal.opened(),
             })}
-            data-opened={modal.opened()}
             onClick={(e) => e.stopPropagation()}
           >
             <Show when={!props.hideClose}>

@@ -73,9 +73,9 @@ export function AuthModal() {
           </button>
         </div>
         <div class={styles.div()}>
-          <div class={styles.div_line()} />
-          <div class={styles.div_txt()}>{i18n.t('common.or')}</div>
-          <div class={styles.div_line()} />
+          <div class={styles.divLine()} />
+          <div class={styles.divTxt()}>{i18n.t('common.or')}</div>
+          <div class={styles.divLine()} />
         </div>
         <div class={styles.social()}>
           <For each={getOAuthButtons()}>
