@@ -11,7 +11,7 @@ export const modalStyles = tv({
       rounded-none rounded-t-2xl sm:rounded-2xl align-bottom sm:align-middle
       border border-gray-200 bg-white shadow-xl
       overflow-y-auto sm:max-h-none
-      transition-[opacity,translate] ease-out duration-250
+      transition-[opacity,translate,scale] ease-out duration-250
     `,
     close: `
       absolute z-2 right-2.5 top-2.5 flex size-6
