@@ -1,44 +1,41 @@
-import { createSignal, Show } from 'solid-js';
+import { Show } from 'solid-js';
 
 import { TeamSelect } from '@/entities/team-select';
 import { Icon } from '@/shared/ui/icon';
 import { useViewModel } from '@/shared/view-model';
 
 import { NavigationViewModel } from '../model/NavigationViewModel';
-import { ActivityBar } from './ActivityBar';
 import { navigationStyles } from './Navigation.styles';
 import { NavList } from './NavList';
 
 const styles = navigationStyles();
 
 export function Navigation() {
-  const navigation = useViewModel(NavigationViewModel);
-  const [isToggleShowed, setIsToggleShowed] = createSignal(false);
+  const vm = useViewModel(NavigationViewModel);
 
   return (
     <div
       class={styles.root()}
-      onmouseleave={() => setIsToggleShowed(false)}
-      onmouseenter={() => setIsToggleShowed(true)}
-      data-collapsed={navigation.isCollapsed}
+      onmouseleave={vm.onMouseLeave}
+      onmouseenter={vm.onMouseEnter}
+      data-collapsed={vm.isCollapsed}
     >
-      <div class={styles.sidebar()} data-collapsed={navigation.isCollapsed}>
-        <Show when={isToggleShowed() && !navigation.isActivityOpened}>
-          <button class={styles.toggle()} onClick={navigation.toggleSidebar}>
+      <div class={styles.sidebar()} data-collapsed={vm.isCollapsed}>
+        <Show when={vm.isToggleVisible}>
+          <button class={styles.toggle()} onClick={vm.toggleSidebar}>
             <Icon
               class={styles.toggleIcon()}
               name={
-                navigation.isCollapsed
+                vm.isCollapsed
                   ? 'common:arrow-right-end'
                   : 'common:arrow-left-end'
               }
             />
           </button>
         </Show>
-        <TeamSelect isExpanded={!navigation.isCollapsed} />
-        <NavList />
+        <TeamSelect isCollapsed={vm.isCollapsed} />
+        <NavList items={vm.navItems} isCollapsed={vm.isCollapsed} />
       </div>
-      <ActivityBar />
     </div>
   );
 }

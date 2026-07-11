@@ -11,7 +11,7 @@ import { teamSelectStyles } from './TeamSelect.styles';
 const styles = teamSelectStyles();
 
 interface TeamSelectProps {
-  isExpanded: boolean;
+  isCollapsed: boolean;
 }
 
 export function TeamSelect(props: TeamSelectProps) {
@@ -26,14 +26,14 @@ export function TeamSelect(props: TeamSelectProps) {
           onClick={() => showModal(MODALS.AUTH)}
           size="md"
         >
-          {props.isExpanded
+          {!props.isCollapsed
             ? i18n.t('labels.auth_button')
             : i18n.t('labels.log_in')}
         </Button>
       }
     >
       <Show
-        when={props.isExpanded}
+        when={!props.isCollapsed}
         fallback={
           <button class={styles.avatarBtn()}>
             {session.user?.name[0].toUpperCase()}

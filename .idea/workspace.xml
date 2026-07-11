@@ -5,21 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a2cb5afd-a1c5-4186-8914-dc73aeeb0bc9" name="Changes" comment="fix styles">
-      <change afterPath="$PROJECT_DIR$/.kiro/skills/styling-conventions.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/entities/team-select/ui/TeamSelect.styles.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/pages/settings/Settings.styles.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/shared/ui/page-fade/PageFade.styles.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/widgets/main-layout/MainLayout.styles.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/widgets/navigation/ui/ActivityBar.styles.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/widgets/navigation/ui/NavList.styles.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/widgets/navigation/ui/Navigation.styles.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.kiro/skills/mvvm-architecture.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/widgets/navigation/types/NavItem.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/entities/team-select/ui/TeamSelect.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/team-select/ui/TeamSelect.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/pages/settings/SettingsPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/settings/SettingsPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/ui/modal/Modal.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ui/modal/Modal.styles.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/ui/page-fade/PageFade.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ui/page-fade/PageFade.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/widgets/main-layout/MainLayout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/main-layout/MainLayout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/ui/ActivityBar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/navigation/ui/ActivityBar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/router/paths.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/router/paths.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/config/navItems.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/navigation/config/getNavItems.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/model/NavigationViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/navigation/model/NavigationViewModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/ui/ActivityBar.styles.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/ui/ActivityBar.tsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/ui/NavList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/navigation/ui/NavList.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/ui/Navigation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/navigation/ui/Navigation.tsx" afterDir="false" />
     </list>
@@ -27,6 +21,9 @@
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FormatOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -68,6 +65,9 @@
     &quot;accountId&quot;: &quot;38180400-63ab-4dca-af89-4060f359d83c&quot;
   }
 }</component>
+  <component name="OptimizeOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+  </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -75,36 +75,44 @@
   &quot;associatedIndex&quot;: 8
 }</component>
   <component name="ProjectId" id="3GIj4twfYiXlKGXypxMfOb8Nzrf" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="autoscrollToSource" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="openDirectoriesWithSingleClick" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "master",
-    "javascript.preferred.runtime.type.id": "node",
-    "last_opened_file_path": "/Users/shiyan/projects/voicer",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "npm.be-dev.executor": "Run",
-    "npm.build.executor": "Run",
-    "npm.dev.executor": "Run",
-    "npm.i18n:watch.executor": "Run",
-    "prettierjs.PrettierConfiguration.Package": "/Users/shiyan/projects/voicer/client/node_modules/prettier",
-    "ts.external.directory.path": "/Users/shiyan/projects/voicer/client/node_modules/typescript/lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;code.cleanup.on.save&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/shiyan/projects/voicer&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.be-dev.executor&quot;: &quot;Run&quot;,
+    &quot;npm.build.executor&quot;: &quot;Run&quot;,
+    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
+    &quot;npm.i18n:watch.executor&quot;: &quot;Run&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/Users/shiyan/projects/voicer/client/node_modules/prettier&quot;,
+    &quot;rearrange.code.on.save&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;actions.on.save&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/shiyan/projects/voicer/client/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -129,7 +137,8 @@
       <workItem from="1783665864497" duration="506000" />
       <workItem from="1783666376914" duration="491000" />
       <workItem from="1783667055543" duration="1480000" />
-      <workItem from="1783670446643" duration="1894000" />
+      <workItem from="1783670446643" duration="4878000" />
+      <workItem from="1783746954437" duration="613000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -147,7 +156,15 @@
       <option name="project" value="LOCAL" />
       <updated>1783670859194</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="fix styles">
+      <option name="closed" value="true" />
+      <created>1783672355914</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1783672355914</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

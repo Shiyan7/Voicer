@@ -1,21 +1,27 @@
-import { singleton } from 'tsyringe';
+import { injectable } from 'tsyringe';
 
-import { SingletonViewModel } from '@/shared/view-model';
+import { StatefulViewModel } from '@/shared/view-model';
 
-@singleton()
-export class NavigationViewModel extends SingletonViewModel {
-  isActivityOpened = false;
+import { getNavItems } from '../config/getNavItems';
+
+@injectable()
+export class NavigationViewModel extends StatefulViewModel {
   isCollapsed = false;
+  isToggleVisible = false;
+
+  get navItems() {
+    return getNavItems();
+  }
 
   toggleSidebar = () => {
     this.isCollapsed = !this.isCollapsed;
   };
 
-  toggleActivity = () => {
-    this.isActivityOpened = !this.isActivityOpened;
+  onMouseLeave = () => {
+    this.isToggleVisible = false;
   };
 
-  closeActivity = () => {
-    this.isActivityOpened = false;
+  onMouseEnter = () => {
+    this.isToggleVisible = true;
   };
 }

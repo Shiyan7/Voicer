@@ -1,59 +1,41 @@
 import { A, useLocation } from '@solidjs/router';
-import { createEffect, For, onCleanup, Show } from 'solid-js';
-import { Dynamic } from 'solid-js/web';
+import { createSelector, For, Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
-import { Icon, type IconName } from '@/shared/ui/icon';
-import { useViewModel } from '@/shared/view-model';
+import { Icon } from '@/shared/ui/icon';
 
-import { navItems } from '../config/navItems';
-import { NavigationViewModel } from '../model/NavigationViewModel';
+import { NavItem } from '../types/NavItem';
 import { navListStyles } from './NavList.styles';
 
 const styles = navListStyles();
 
-export function NavList() {
+interface NavListProps {
+  items: NavItem[];
+  isCollapsed: boolean;
+}
+
+export function NavList(props: NavListProps) {
   const location = useLocation();
-  const navigation = useViewModel(NavigationViewModel);
 
-  const isItemActive = (href?: string) =>
-    href ? href === location.pathname : navigation.isActivityOpened;
-
-  createEffect(() => {
-    const onClick = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (target.closest('[id="activity"]')) return;
-      if (navigation.isActivityOpened) navigation.closeActivity();
-    };
-
-    document.body.addEventListener('click', onClick);
-    onCleanup(() => document.body.removeEventListener('click', onClick));
-  });
+  const isItemActive = createSelector(() => location.pathname);
 
   return (
     <ul class={styles.root()}>
-      <For each={navItems}>
+      <For each={props.items}>
         {(item, index) => (
           <li>
-            <Dynamic
+            <A
               class={styles.item()}
-              id={item.label}
-              component={item.href ? A : 'button'}
               href={item.href}
-              onClick={item.href ? undefined : navigation.toggleActivity}
               data-current={isItemActive(item.href)}
             >
               <Icon
                 class={styles.itemIcon()}
-                name={
-                  (isItemActive(item.href)
-                    ? `${item.icon}-solid`
-                    : item.icon) as IconName
-                }
+                name={isItemActive(item.href) ? item.activeIcon : item.icon}
               />
-              <Show when={!navigation.isCollapsed}>{i18n.t(item.label)}</Show>
-            </Dynamic>
-            <Show when={!navigation.isCollapsed}>
+              <Show when={!props.isCollapsed}>{item.label}</Show>
+            </A>
+            <Show when={!props.isCollapsed}>
               {index() === 0 && (
                 <span class={styles.separator()}>
                   {i18n.t('nav.workspace')}
