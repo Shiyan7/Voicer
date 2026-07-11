@@ -2,15 +2,16 @@ import { tv } from 'tailwind-variants';
 
 export const modalStyles = tv({
   slots: {
-    root: 'z-(--z-modal) fixed inset-0 overflow-x-hidden text-center before:inline-block before:h-full before:align-middle',
-    overlay: 'bg-black/40 fixed inset-0 pointer-events-none transition-opacity duration-250',
+    root: 'z-(--z-modal) fixed inset-0 sm:overflow-x-hidden text-center before:inline-block before:h-full before:align-middle',
+    overlay:
+      'bg-black/40 fixed inset-0 pointer-events-none transition-opacity duration-250',
     inner: `
-      relative z-10 flex-col text-left overflow-hidden
-      w-full inline-flex mx-auto sm:my-7
+      relative z-10 flex-col text-left sm:overflow-hidden
+      w-full inline-flex mx-auto max-h-[90vh] sm:my-7
       rounded-none rounded-t-2xl sm:rounded-2xl align-bottom sm:align-middle
       border border-gray-200 bg-white shadow-xl
       overflow-y-auto sm:max-h-none
-      transition-all ease-out duration-250
+      transition-[opacity,translate] ease-out duration-250
     `,
     close: `
       absolute z-2 right-2.5 top-2.5 flex size-6

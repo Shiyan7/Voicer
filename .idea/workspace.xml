@@ -5,16 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a2cb5afd-a1c5-4186-8914-dc73aeeb0bc9" name="Changes" comment="poxui">
-      <change afterPath="$PROJECT_DIR$/.vscode/settings.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/shared/view-model/SingletonViewModel.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.kiro/skills/styling-conventions.md" beforeDir="false" afterPath="$PROJECT_DIR$/.kiro/skills/styling-conventions.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/view-model/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/view-model/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/view-model/viewModels.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/view-model/StatefulViewModel.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/ui/NavList.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/navigation/ui/NavList.styles.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/ui/NavList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/navigation/ui/NavList.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/ui/Navigation.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/navigation/ui/Navigation.styles.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/ui/Navigation.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/navigation/ui/Navigation.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/ui/modal/Modal.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ui/modal/Modal.styles.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
