@@ -6,16 +6,12 @@ import { injectable } from '@/shared/di';
 export class ActionItemsService {
   constructor(private readonly api: ApiService) {}
 
-  list() {
+  get() {
     return this.api.get<ActionItem[]>('/action-items');
   }
 
   toggle(id: string, isDone: boolean) {
     return this.api.patch<ActionItem>(`/action-items/${id}`, { isDone });
-  }
-
-  updateText(id: string, text: string) {
-    return this.api.patch<ActionItem>(`/action-items/${id}`, { text });
   }
 
   remove(id: string) {

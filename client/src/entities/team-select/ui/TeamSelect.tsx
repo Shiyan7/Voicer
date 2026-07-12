@@ -1,31 +1,26 @@
 import { Show } from 'solid-js';
 
-import { SessionViewModel } from '@/entities/session';
 import { i18n } from '@/shared/i18n';
-import { MODALS, showModal } from '@/shared/lib/modal';
 import { Button } from '@/shared/ui/button';
 import { useViewModel } from '@/shared/view-model';
 
+import { TeamSelectViewModel } from '../model/TeamSelectViewModel';
 import { teamSelectStyles } from './TeamSelect.styles';
-
-const styles = teamSelectStyles();
 
 interface TeamSelectProps {
   isCollapsed: boolean;
 }
 
+const styles = teamSelectStyles();
+
 export function TeamSelect(props: TeamSelectProps) {
-  const session = useViewModel(SessionViewModel);
+  const vm = useViewModel(TeamSelectViewModel);
 
   return (
     <Show
-      when={session.isAuthorized}
+      when={vm.session.isAuthorized}
       fallback={
-        <Button
-          class={styles.authBtn()}
-          onClick={() => showModal(MODALS.AUTH)}
-          size="md"
-        >
+        <Button class={styles.authBtn()} onClick={vm.onAuthBtnClick} size="md">
           {!props.isCollapsed
             ? i18n.t('labels.auth_button')
             : i18n.t('labels.log_in')}
@@ -35,14 +30,12 @@ export function TeamSelect(props: TeamSelectProps) {
       <Show
         when={!props.isCollapsed}
         fallback={
-          <button class={styles.avatarBtn()}>
-            {session.user?.name[0].toUpperCase()}
-          </button>
+          <button class={styles.avatarBtn()}>{vm.firstLetterName}</button>
         }
       >
         <div class={styles.info()}>
-          <span class={styles.name()}>{session.user?.name}</span>
-          <span class={styles.email()}>{session.user?.email}</span>
+          <span class={styles.name()}>{vm.session.user?.name}</span>
+          <span class={styles.email()}>{vm.session.user?.email}</span>
         </div>
       </Show>
     </Show>

@@ -1,5 +1,4 @@
 import { ActionItemsViewModel } from '@/entities/action-item';
-import { ActionItem } from '@/entities/meeting';
 import { ToastsViewModel } from '@/entities/toasts';
 import { injectable } from '@/shared/di';
 import { i18n } from '@/shared/i18n';
@@ -7,14 +6,8 @@ import { getMeetingPath } from '@/shared/router';
 import { Tab } from '@/shared/ui/tabs';
 import { StatefulViewModel } from '@/shared/view-model';
 
-type ActionsFilter = 'open' | 'all';
-
-export type ActionItemGroup = {
-  meetingId: string;
-  title: string;
-  meetingHref: string;
-  items: ActionItem[];
-};
+import { ActionItemGroup } from '../types/ActionItemGroup';
+import { ActionsFilter } from '../types/ActionsFilter';
 
 @injectable()
 export class ActionsPageViewModel extends StatefulViewModel {
@@ -27,15 +20,11 @@ export class ActionsPageViewModel extends StatefulViewModel {
     super();
   }
 
-  protected onMount() {
-    void this.actionItems.load();
-  }
-
   get isLoading() {
     return this.actionItems.isLoading && this.actionItems.items.length === 0;
   }
 
-  get tabs(): Tab[] {
+  get tabs(): Tab<ActionsFilter>[] {
     return [
       { value: 'open', label: i18n.t('actions.filter.open') },
       { value: 'all', label: i18n.t('actions.filter.all') },
@@ -75,8 +64,8 @@ export class ActionsPageViewModel extends StatefulViewModel {
     return [...groups.values()];
   }
 
-  setFilter = (value: string) => {
-    this.filter = value as ActionsFilter;
+  setFilter = (value: ActionsFilter) => {
+    this.filter = value;
   };
 
   toggle = async (id: string) => {
@@ -86,4 +75,8 @@ export class ActionsPageViewModel extends StatefulViewModel {
       this.toasts.show('error', i18n.t('actions.update_failed'));
     }
   };
+
+  protected onMount() {
+    void this.actionItems.load();
+  }
 }

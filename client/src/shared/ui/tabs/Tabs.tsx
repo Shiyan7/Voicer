@@ -3,16 +3,16 @@ import { For } from 'solid-js';
 import { tabsStyles } from './Tabs.styles';
 import { Tab } from './types';
 
-interface TabsProps {
+interface TabsProps<T> {
   class?: string;
-  tabs: Tab[];
-  activeTab: string;
-  onSelect: (value: string) => void;
+  tabs: Tab<T>[];
+  activeTab: T;
+  onSelect: (value: T) => void;
 }
 
 const styles = tabsStyles();
 
-export function Tabs(props: TabsProps) {
+export function Tabs<T>(props: TabsProps<T>) {
   return (
     <ul class={styles.root({ class: props.class })}>
       <For each={props.tabs}>

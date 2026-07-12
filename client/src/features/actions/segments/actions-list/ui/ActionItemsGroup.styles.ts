@@ -1,12 +1,7 @@
 import { tv } from 'tailwind-variants';
 
-export const actionsPageStyles = tv({
+export const actionItemsGroupStyles = tv({
   slots: {
-    root: 'mx-auto flex w-full max-w-3xl flex-col gap-6 py-6',
-    header: 'flex items-center justify-between gap-4',
-    title: 'text-2xl font-semibold tracking-title text-gray-900',
-    tabs: 'w-56 shrink-0',
-    groups: 'flex flex-col gap-5',
     group: 'flex flex-col gap-2',
     groupHeader: 'flex items-baseline justify-between gap-3 px-1',
     groupTitle: 'truncate text-sm font-semibold text-gray-900',
@@ -27,12 +22,6 @@ export const actionsPageStyles = tv({
       focus-visible:ring-2 focus-visible:ring-gray-500/60 focus-visible:ring-offset-1
     `,
     rowText: 'text-sm leading-6 text-gray-800 transition-colors duration-150',
-    empty: `
-      flex flex-col items-center gap-1 rounded-2xl border border-dashed
-      border-gray-300 px-6 py-16 text-center
-    `,
-    emptyTitle: 'text-sm font-medium text-gray-600',
-    skeleton: 'h-32 animate-pulse rounded-2xl bg-gray-100',
   },
   variants: {
     done: {
