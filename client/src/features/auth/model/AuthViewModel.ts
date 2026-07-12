@@ -1,5 +1,5 @@
 import { createFormStore, reset, valiForm } from '@modular-forms/solid';
-import { injectable } from 'tsyringe';
+import { injectable } from '@/shared/di';
 
 import { SessionViewModel } from '@/entities/session';
 import { MinimalUserOutput } from '@/shared/api/types';

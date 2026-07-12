@@ -1,4 +1,4 @@
-import { singleton } from 'tsyringe';
+import { singleton } from '@/shared/di';
 
 import { SingletonViewModel } from '@/shared/view-model';
 

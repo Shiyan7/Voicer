@@ -3,8 +3,10 @@ import { onMount, type ParentProps, Show, Suspense } from 'solid-js';
 
 import { Toasts } from '@/entities/toasts';
 import { AuthModal } from '@/features/auth';
+import { CallRecorderHost } from '@/features/call-recorder';
 import { ApplicationViewModel } from '@/shared/ApplicationViewModel';
 import { i18n } from '@/shared/i18n';
+import { isTauri } from '@/shared/isTauri';
 import { useViewModel } from '@/shared/view-model';
 import { Navigation } from '@/widgets/navigation';
 
@@ -36,6 +38,9 @@ export function MainLayout(props: ParentProps) {
           </main>
         </div>
         <AuthModal />
+        <Show when={isTauri()}>
+          <CallRecorderHost />
+        </Show>
       </Show>
     </Suspense>
   );

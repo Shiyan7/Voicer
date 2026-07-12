@@ -1,7 +1,9 @@
-import { injectable } from 'tsyringe';
+import { injectable } from '@/shared/di';
 
 import { ApiService } from '@/shared/api';
+import { AuthTokens, tokenStore } from '@/shared/api/tokenStore';
 import { MinimalUserOutput } from '@/shared/api/types';
+import { isTauri } from '@/shared/isTauri';
 
 @injectable()
 export class SessionService {
@@ -12,11 +14,18 @@ export class SessionService {
   }
 
   logout() {
+    tokenStore.clear();
     return this.api.post<{ ok: boolean }>('/auth/logout');
   }
 
   async restore() {
-    await this.refreshToken();
+    try {
+      await this.refreshToken();
+    } catch {
+      // No stored session (missing/expired refresh token) — stay logged out.
+      tokenStore.clear();
+      return undefined;
+    }
 
     try {
       return await this.getMe();
@@ -26,6 +35,13 @@ export class SessionService {
   }
 
   private refreshToken = async () => {
-    await this.api.post('/auth/refresh');
+    // The Tauri webview drops the httpOnly cookies, so the desktop build
+    // keeps its own tokens and refreshes via the request body.
+    const body = isTauri()
+      ? { refreshToken: tokenStore.refreshToken ?? '' }
+      : undefined;
+
+    const tokens = await this.api.post<AuthTokens>('/auth/refresh', body);
+    if (isTauri()) tokenStore.save(tokens);
   };
 }

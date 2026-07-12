@@ -1,4 +1,4 @@
-import { singleton } from 'tsyringe';
+import { singleton } from '@/shared/di';
 
 import { MinimalUserOutput } from '@/shared/api/types';
 import { SingletonViewModel } from '@/shared/view-model';

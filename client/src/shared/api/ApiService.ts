@@ -1,4 +1,9 @@
-import { injectable } from 'tsyringe';
+import { injectable } from '@/shared/di';
+
+import { isTauri } from '@/shared/isTauri';
+
+import { tokenStore } from './tokenStore';
+import { UnauthorizedError } from './UnauthorizedError';
 
 @injectable()
 export class ApiService {
@@ -14,17 +19,14 @@ export class ApiService {
       method,
       headers: {
         ...headers,
+        ...this.authHeaders(),
         'Content-Type': 'application/json',
       },
       body: body ? JSON.stringify(body) : undefined,
       credentials: 'include',
     });
 
-    if (!res.ok) {
-      throw new Error(res.statusText);
-    }
-
-    return res.json();
+    return this.handleResponse<T>(res);
   }
 
   get<T>(path: string) {
@@ -33,5 +35,57 @@ export class ApiService {
 
   post<T>(path: string, body?: unknown) {
     return this.request<T>('POST', path, body);
+  }
+
+  patch<T>(path: string, body?: unknown) {
+    return this.request<T>('PATCH', path, body);
+  }
+
+  delete<T>(path: string) {
+    return this.request<T>('DELETE', path);
+  }
+
+  async postFormData<T>(path: string, formData: FormData): Promise<T> {
+    const res = await fetch(`${this.baseUrl}${path}`, {
+      method: 'POST',
+      headers: this.authHeaders(),
+      body: formData,
+      credentials: 'include',
+    });
+
+    return this.handleResponse<T>(res);
+  }
+
+  getAudioUrl(meetingId: string) {
+    const url = `${this.baseUrl}/meetings/${meetingId}/audio`;
+
+    // The webview can't attach cookies or headers to <audio> requests,
+    // so the Tauri build authenticates them with a query token.
+    const token = isTauri() ? tokenStore.accessToken : null;
+    return token ? `${url}?token=${encodeURIComponent(token)}` : url;
+  }
+
+  /** Bearer auth for the Tauri build; the web relies on httpOnly cookies. */
+  private authHeaders(): Record<string, string> {
+    const token = isTauri() ? tokenStore.accessToken : null;
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  }
+
+  private async handleResponse<T>(res: Response): Promise<T> {
+    if (res.status === 401) {
+      throw new UnauthorizedError();
+    }
+
+    if (!res.ok) {
+      throw new Error(res.statusText);
+    }
+
+    if (res.status === 204) {
+      return undefined as T;
+    }
+
+    const text = await res.text();
+
+    return (text ? JSON.parse(text) : undefined) as T;
   }
 }

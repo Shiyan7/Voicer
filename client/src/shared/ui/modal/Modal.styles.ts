@@ -4,28 +4,28 @@ export const modalStyles = tv({
   slots: {
     root: 'z-(--z-modal) fixed inset-0 sm:overflow-x-hidden text-center before:inline-block before:h-full before:align-middle',
     overlay:
-      'bg-black/40 fixed inset-0 pointer-events-none transition-opacity duration-250',
+      'bg-gray-900/30 backdrop-blur-sm fixed inset-0 pointer-events-none transition-opacity duration-250',
     inner: `
       relative z-10 flex-col text-left sm:overflow-hidden
       w-full inline-flex mx-auto max-h-[90vh] sm:my-7
       rounded-none rounded-t-2xl sm:rounded-2xl align-bottom sm:align-middle
-      border border-gray-200 bg-white shadow-xl
+      border border-black/5 bg-white shadow-xl
       overflow-y-auto sm:max-h-none
       transition-[opacity,translate,scale] ease-out duration-250
     `,
     close: `
-      absolute z-2 right-2.5 top-2.5 flex size-6
-      items-center justify-center rounded-md text-gray-500
-      transition-colors hover:bg-gray-100 hover:text-gray-900
+      absolute z-2 right-3.5 top-3.5 flex size-7
+      items-center justify-center rounded-full bg-gray-100 text-gray-500
+      transition-colors hover:bg-gray-200 hover:text-gray-900
     `,
   },
   variants: {
     size: {
       sm: {
-        inner: 'sm:max-w-sm px-5 py-6 pb-7',
+        inner: 'sm:max-w-sm px-6 py-7 pb-8',
       },
       regular: {
-        inner: 'sm:max-w-md p-7',
+        inner: 'sm:max-w-md p-8',
       },
     },
     opened: {

@@ -1,7 +1,7 @@
 import { Location, Navigator } from '@solidjs/router';
-import { singleton } from 'tsyringe';
 
 import { SessionViewModel } from '@/entities/session';
+import { singleton } from '@/shared/di';
 import { RouterService } from '@/shared/router';
 
 import { LocationService } from './router';

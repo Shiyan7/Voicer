@@ -1,4 +1,4 @@
-import { injectable } from 'tsyringe';
+import { injectable } from '@/shared/di';
 
 import { LocationService } from '@/shared/router';
 import { StatefulViewModel } from '@/shared/view-model';

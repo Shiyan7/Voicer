@@ -28,6 +28,6 @@ import { UserEntity } from '../users/user.entity';
   ],
   providers: [AuthService, JwtStrategy, JwtAuthGuard, PasswordService],
   controllers: [AuthController],
-  exports: [JwtAuthGuard, AuthService],
+  exports: [JwtAuthGuard, AuthService, JwtModule],
 })
 export class AuthModule {}
