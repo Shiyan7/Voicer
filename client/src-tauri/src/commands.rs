@@ -1,21 +1,3 @@
-//! Tauri commands exposed to the webview.
-//!
-//! Contract (all payloads camelCase JSON):
-//! - `start_recording() -> { localId, startedAt, path, warnings }`
-//! - `stop_recording() -> { path, durationSec, localId, startedAt }`
-//! - `get_recorder_state() -> { state: "idle" } | { state: "recording", localId, startedAt, path }`
-//! - `delete_recording(path)` — only paths inside the recordings dir
-//! - `check_permissions() -> { mic, screenRecording }`
-//! - `request_permissions() -> { mic, screenRecording }` (fires prompts, returns current snapshot)
-//! - `upload_recording(path, url, token?)` — multipart POST, field "file";
-//!   events `upload-progress` { path, sent, total }, `upload-finished` { path, status },
-//!   `upload-failed` { path, error }
-//!
-//! Events emitted elsewhere: `call-detected` { source, bundleId?, at },
-//! `call-ended` { at }, `recording-started` (same payload as start_recording
-//! result), `recording-stopped` (same payload as stop_recording result —
-//! also fired when the recording is stopped from the tray).
-
 use std::path::PathBuf;
 
 use serde::Serialize;
@@ -24,7 +6,6 @@ use tauri::{AppHandle, Manager};
 #[cfg(target_os = "macos")]
 use tauri::Emitter;
 
-/// Managed state holding the recorder (macOS) — empty struct elsewhere.
 #[derive(Default)]
 pub struct RecorderHandle {
     #[cfg(target_os = "macos")]
@@ -35,11 +16,8 @@ pub struct RecorderHandle {
 #[serde(rename_all = "camelCase")]
 pub struct StartRecordingResult {
     pub local_id: String,
-    /// Unix millis.
     pub started_at: i64,
-    /// Path the finished recording will have.
     pub path: String,
-    /// Non-fatal issues (e.g. "system audio unavailable: …").
     pub warnings: Vec<String>,
 }
 
@@ -49,13 +27,12 @@ pub struct StopRecordingResult {
     pub path: String,
     pub duration_sec: u32,
     pub local_id: String,
-    /// Unix millis.
     pub started_at: i64,
 }
 
 #[derive(Serialize, Clone)]
 #[serde(tag = "state", rename_all = "camelCase", rename_all_fields = "camelCase")]
-#[cfg_attr(not(target_os = "macos"), allow(dead_code))] // Recording is only built on macOS
+#[cfg_attr(not(target_os = "macos"), allow(dead_code))]
 pub enum RecorderStateDto {
     Idle,
     Recording {
@@ -72,7 +49,6 @@ pub struct PermissionsDto {
     pub screen_recording: bool,
 }
 
-/// Directory where recordings are stored: `app_data_dir()/recordings`.
 pub fn recordings_dir(app: &AppHandle) -> Result<PathBuf, String> {
     let dir = app
         .path()
@@ -125,7 +101,6 @@ pub fn stop_recording(app: AppHandle) -> Result<StopRecordingResult, String> {
     }
 }
 
-/// Shared stop logic used by the command and the tray menu.
 #[cfg(target_os = "macos")]
 pub fn do_stop_recording(app: &AppHandle) -> Result<StopRecordingResult, String> {
     let state = app.state::<RecorderHandle>();
@@ -184,7 +159,6 @@ pub fn delete_recording(app: AppHandle, path: String) -> Result<(), String> {
     std::fs::remove_file(&file).map_err(|e| format!("failed to delete recording: {e}"))
 }
 
-/// Validate that `path` points to an existing file inside the recordings dir.
 pub fn resolve_recording_path(app: &AppHandle, path: &str) -> Result<PathBuf, String> {
     let dir = recordings_dir(app)?;
     let dir = dir
@@ -230,8 +204,6 @@ pub fn request_permissions() -> Result<PermissionsDto, String> {
         if !crate::permissions::screen_recording_authorized() {
             crate::permissions::request_screen_recording_access();
         }
-        // Prompts are async system UI; return the current snapshot and let
-        // the frontend poll check_permissions().
         check_permissions()
     }
     #[cfg(not(target_os = "macos"))]

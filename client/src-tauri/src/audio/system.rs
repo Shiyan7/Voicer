@@ -1,13 +1,3 @@
-//! System audio capture (the other call party) via ScreenCaptureKit.
-//!
-//! Uses an audio-only `SCStream` (`capturesAudio = true`, own process audio
-//! excluded). ScreenCaptureKit is asked for 16 kHz mono directly, so the
-//! handler only converts f32 PCM to i16 and pushes into the shared queue.
-//!
-//! Requires the Screen Recording permission (TCC). If the permission is
-//! missing, `SCShareableContent::get()` fails and `SystemSource::start`
-//! returns an error — the recorder then fills the right channel with silence.
-
 use std::sync::Arc;
 
 use screencapturekit::cm::CMSampleBufferExt;
@@ -24,7 +14,6 @@ pub struct SystemSource {
 }
 
 impl SystemSource {
-    /// Start capturing system audio into `queue` (16 kHz mono i16).
     pub fn start(queue: Arc<SampleQueue>) -> Result<Self, String> {
         let content = SCShareableContent::get().map_err(|e| {
             format!("ScreenCaptureKit unavailable (screen recording permission?): {e}")
@@ -44,7 +33,6 @@ impl SystemSource {
             .with_excludes_current_process_audio(true)
             .with_sample_rate(TARGET_SAMPLE_RATE as i32)
             .with_channel_count(1)
-            // We only need audio; keep the (unused) video leg as cheap as possible.
             .with_width(2)
             .with_height(2);
 
@@ -78,10 +66,6 @@ impl SystemSource {
     }
 }
 
-/// Convert an f32 PCM AudioBufferList to mono i16 and push it into the queue.
-///
-/// With `channel_count = 1` ScreenCaptureKit delivers a single mono buffer;
-/// defensively average the channels if a non-interleaved stereo list shows up.
 fn push_buffer_list(queue: &SampleQueue, list: &screencapturekit::cm::AudioBufferList) {
     let n = list.num_buffers();
     if n == 0 {

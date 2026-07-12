@@ -1,6 +1,5 @@
-import { singleton } from '@/shared/di';
-
 import { MinimalUserOutput } from '@/shared/api/types';
+import { singleton } from '@/shared/di';
 import { SingletonViewModel } from '@/shared/view-model';
 
 import { SessionService } from './SessionService';

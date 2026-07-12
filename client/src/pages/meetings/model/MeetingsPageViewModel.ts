@@ -34,12 +34,10 @@ export class MeetingsPageViewModel extends StatefulViewModel {
     return !this.isLoading && this.meetings.meetings.length === 0;
   }
 
-  /** Web-only manual upload (desktop records calls natively). */
   get canUpload() {
     return !isTauri();
   }
 
-  /** Desktop-only manual recording, hidden while a recording is in flight. */
   get canRecord() {
     return isTauri() && !this.recorder.isRecordingInFlight;
   }

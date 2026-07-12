@@ -1,6 +1,5 @@
-import { injectable } from '@/shared/di';
-
 import { ApiService } from '@/shared/api';
+import { injectable } from '@/shared/di';
 
 import {
   CreateMeetingInput,

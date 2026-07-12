@@ -1,5 +1,4 @@
 import { singleton } from '@/shared/di';
-
 import { SingletonViewModel } from '@/shared/view-model';
 
 export type ToastType = 'success' | 'info' | 'warning' | 'error';

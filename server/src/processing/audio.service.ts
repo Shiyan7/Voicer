@@ -9,21 +9,16 @@ const execFileAsync = promisify(execFile);
 
 const EXEC_OPTIONS = { maxBuffer: 16 * 1024 * 1024 };
 
-/** Chunk length keeping mono 16kHz FLAC well under Groq's 25MB file limit. */
 const CHUNK_SECONDS = 600;
-/** Chunks below this average level are silence for speech-recognition purposes. */
 const AUDIBLE_MEAN_VOLUME_DB = -70;
 
 export interface SplitChannelsResult {
-  /** Left channel (the user, speaker 'me'), mono 16kHz FLAC. */
   leftPath: string;
-  /** Right channel (the other party), mono 16kHz FLAC. */
   rightPath: string;
 }
 
 export interface AudioChunk {
   path: string;
-  /** Absolute offset of this chunk from the start of the recording. */
   offsetMs: number;
 }
 
@@ -63,10 +58,6 @@ export class AudioService implements OnModuleInit {
     return mkdtemp(join(tmpdir(), 'voicer-'));
   }
 
-  /**
-   * Splits a stereo recording into two mono 16kHz FLAC files:
-   * left = 'me', right = 'other'.
-   */
   async splitChannels(
     inputPath: string,
     workDir: string,
@@ -105,10 +96,6 @@ export class AudioService implements OnModuleInit {
     return { leftPath, rightPath };
   }
 
-  /**
-   * Cuts a mono file into ≤10-minute FLAC segments and returns them in order
-   * with their absolute time offsets (accumulated from probed durations).
-   */
   async chunk(
     inputPath: string,
     workDir: string,
@@ -191,10 +178,6 @@ export class AudioService implements OnModuleInit {
     }
   }
 
-  /**
-   * Do not send digital silence to Whisper: it can hallucinate short phrases
-   * even when no speaker is present.
-   */
   private async hasAudibleAudio(path: string): Promise<boolean> {
     const { stderr } = await execFileAsync(
       'ffmpeg',
@@ -203,8 +186,6 @@ export class AudioService implements OnModuleInit {
     );
     const meanVolumeDb = parseMeanVolumeDb(stderr);
 
-    // If ffmpeg does not provide a measurement, preserve the chunk rather
-    // than accidentally dropping a real part of a conversation.
     return meanVolumeDb === null || isAudibleMeanVolume(meanVolumeDb);
   }
 

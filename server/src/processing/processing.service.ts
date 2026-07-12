@@ -39,7 +39,6 @@ export class ProcessingService implements OnModuleInit {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  /** Re-enqueue meetings stuck mid-pipeline after a server restart. */
   async onModuleInit(): Promise<void> {
     try {
       const stuck = await this.meetingsRepository.find({
@@ -69,7 +68,6 @@ export class ProcessingService implements OnModuleInit {
     this.enqueue(event.meetingId);
   }
 
-  /** Adds a meeting to the FIFO queue; duplicates are ignored. */
   enqueue(meetingId: string): void {
     if (this.queue.includes(meetingId)) {
       return;
@@ -91,7 +89,6 @@ export class ProcessingService implements OnModuleInit {
         try {
           await this.process(meetingId);
         } catch (e) {
-          // process() handles its own failures; this guards the loop itself.
           this.logger.error(`Unhandled pipeline error for ${meetingId}: ${e}`);
         }
       }
@@ -155,9 +152,6 @@ export class ProcessingService implements OnModuleInit {
             throw e;
           }
 
-          // Do not discard a successfully produced transcript merely because
-          // Gemini has exhausted the project's quota. The meeting remains
-          // readable and can be summarized again after quota is restored.
           this.logger.warn(
             `Meeting ${meetingId}: Gemini quota exhausted; saving transcript without summary`,
           );

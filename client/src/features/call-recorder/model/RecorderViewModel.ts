@@ -1,7 +1,6 @@
-import { singleton } from '@/shared/di';
-
 import { MeetingsService, MeetingsViewModel } from '@/entities/meeting';
 import { ToastsViewModel } from '@/entities/toasts';
+import { singleton } from '@/shared/di';
 import { i18n } from '@/shared/i18n';
 import { isTauri } from '@/shared/isTauri';
 import { formatSeconds } from '@/shared/lib/time';
@@ -22,7 +21,6 @@ export enum RecorderStatus {
 }
 
 const AUTO_RECORD_KEY = 'voicer.recorder.autoRecord';
-/** Maps the in-flight local recording to its server meeting across reloads. */
 const PENDING_KEY = 'voicer.recorder.pending';
 
 type PendingRecording = {
@@ -37,7 +35,6 @@ export class RecorderViewModel extends SingletonViewModel {
 
   source: CallSource = 'other';
 
-  /** Calls are recorded automatically unless the user explicitly disables it. */
   autoRecord = localStorage.getItem(AUTO_RECORD_KEY) !== 'false';
 
   elapsedSec = 0;
@@ -58,10 +55,8 @@ export class RecorderViewModel extends SingletonViewModel {
 
   private isStarting = false;
 
-  /** Keep the recording controls for user-initiated recordings only. */
   private displayRecordingBar = false;
 
-  /** Automatic calls complete silently; manual recordings retain feedback. */
   private notifyOnCompletion = false;
 
   private timerId: ReturnType<typeof setInterval> | null = null;
@@ -118,7 +113,6 @@ export class RecorderViewModel extends SingletonViewModel {
     );
   }
 
-  /** Idempotent; call once from the layout under isTauri(). */
   setup = () => {
     if (this.isSetup || !isTauri()) return;
     this.isSetup = true;
@@ -131,14 +125,11 @@ export class RecorderViewModel extends SingletonViewModel {
     void this.restoreState();
   };
 
-  /** Manual recording (e.g. an in-person meeting), no call detection involved. */
   startManualRecording = () => this.startRecording('other', 'manual');
 
   stop = () => {
     if (this.status !== RecorderStatus.Recording) return;
 
-    // The rest of the pipeline runs in handleRecordingStopped — the same
-    // path as a tray-initiated stop.
     void this.recorder.stopRecording().catch(() => {
       this.toasts.show('error', i18n.t('recorder.stop_failed') ?? '');
     });
@@ -149,7 +140,6 @@ export class RecorderViewModel extends SingletonViewModel {
     localStorage.setItem(AUTO_RECORD_KEY, String(value));
   };
 
-  /** Re-adopt a recording that survived a webview reload. */
   private restoreState = async () => {
     try {
       const state = await this.recorder.getState();
@@ -166,9 +156,7 @@ export class RecorderViewModel extends SingletonViewModel {
       this.source =
         pending?.localId === state.localId ? pending.source : 'other';
       this.startTimer();
-    } catch {
-      // Recorder state is unavailable — stay idle.
-    }
+    } catch {}
   };
 
   private handleCallDetected = (event: CallDetectedEvent) => {
@@ -204,8 +192,6 @@ export class RecorderViewModel extends SingletonViewModel {
       this.startTimer();
       this.writePending();
 
-      // The meeting shows up in the list as "recording" right away. If this
-      // call fails we keep recording and create the meeting on stop instead.
       try {
         const meeting = await this.meetings.create({
           source: meetingSource,
@@ -214,9 +200,7 @@ export class RecorderViewModel extends SingletonViewModel {
         });
         this.meetingId = meeting.id;
         this.writePending();
-      } catch {
-        // Deferred to finishAndUpload().
-      }
+      } catch {}
     } catch {
       this.status = RecorderStatus.Idle;
       this.displayRecordingBar = false;
@@ -263,7 +247,6 @@ export class RecorderViewModel extends SingletonViewModel {
       const { accessToken } = await this.recorder.fetchUploadToken();
       await this.recorder.uploadRecording(result.path, meetingId, accessToken);
 
-      // Uploaded to the server — the local copy is no longer needed.
       await this.recorder.deleteRecording(result.path).catch(() => {});
 
       if (this.notifyOnCompletion) {

@@ -127,8 +127,7 @@ export class MeetingsController {
 
     const fileSize = stats.size;
     const contentType =
-      EXT_TO_CONTENT_TYPE[extname(audioPath)] ??
-      'application/octet-stream';
+      EXT_TO_CONTENT_TYPE[extname(audioPath)] ?? 'application/octet-stream';
 
     res.setHeader('Accept-Ranges', 'bytes');
     res.setHeader('Content-Type', contentType);

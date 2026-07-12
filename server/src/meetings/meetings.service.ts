@@ -166,7 +166,6 @@ export class MeetingsService {
       status: saved.status,
     } satisfies MeetingUpdatedEvent);
 
-    // Запуск пайплайна обработки (ProcessingService слушает это событие).
     this.eventEmitter.emit(MEETING_AUDIO_UPLOADED_EVENT, {
       meetingId: saved.id,
     } satisfies MeetingAudioUploadedEvent);

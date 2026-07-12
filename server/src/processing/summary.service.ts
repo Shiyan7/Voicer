@@ -9,7 +9,6 @@ import { TranscriptSegmentDraft } from './transcription.service';
 
 const GEMINI_API_BASE =
   'https://generativelanguage.googleapis.com/v1beta/models';
-/** Gemini 2.0 Flash was shut down on 2026-06-01. */
 const DEFAULT_GEMINI_MODEL = 'gemini-3.5-flash';
 
 interface SummaryResult {
@@ -67,10 +66,6 @@ export class SummaryService {
     private readonly dataSource: DataSource,
   ) {}
 
-  /**
-   * Generates title/summary/action items via Gemini and saves them.
-   * Old action items of the meeting are replaced (idempotent reprocessing).
-   */
   async summarizeAndSave(
     meeting: MeetingEntity,
     segments: TranscriptSegmentDraft[],
@@ -111,7 +106,6 @@ export class SummaryService {
     );
   }
 
-  /** Empty transcript: no summary to build — clear summary and action items. */
   async clearSummary(meeting: MeetingEntity): Promise<void> {
     await this.dataSource.transaction(async (manager) => {
       await manager.update(
@@ -137,7 +131,6 @@ export class SummaryService {
     transcript: string,
     apiKey: string,
   ): Promise<SummaryResult> {
-    // One retry on invalid JSON / unexpected shape.
     let lastError: Error;
 
     for (let attempt = 0; attempt < 2; attempt++) {
@@ -182,8 +175,6 @@ export class SummaryService {
         }),
       },
       {
-        // A quota-exhausted request cannot succeed a second later. Retrying it
-        // only makes a small upload appear stuck for several additional seconds.
         retryOnRateLimit: false,
       },
     );
@@ -230,7 +221,6 @@ export class SummaryService {
     return parsed as SummaryResult;
   }
 
-  /** Tolerate a markdown code fence from older model versions. */
   private unwrapJson(text: string): string {
     const trimmed = text.trim();
     const fenced = trimmed.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
@@ -239,7 +229,6 @@ export class SummaryService {
   }
 }
 
-/** The transcript is useful even when the optional LLM summary has no quota. */
 export function isGeminiQuotaError(error: unknown): boolean {
   return (
     error instanceof Error &&

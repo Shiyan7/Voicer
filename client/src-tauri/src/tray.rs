@@ -1,6 +1,3 @@
-//! Tray icon (desktop): shows recording state via tooltip/title,
-//! menu with "Stop recording", "Open Voicer", "Quit".
-
 use tauri::menu::{Menu, MenuItem};
 use tauri::tray::TrayIconBuilder;
 use tauri::{AppHandle, Manager};
@@ -42,7 +39,6 @@ pub fn create_tray(app: &AppHandle) -> tauri::Result<()> {
     Ok(())
 }
 
-/// Reflect recording state in the tray (tooltip + title text for MVP).
 pub fn update_tray(app: &AppHandle, recording: bool) {
     if let Some(tray) = app.tray_by_id(TRAY_ID) {
         let _ = tray.set_tooltip(Some(if recording {

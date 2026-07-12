@@ -31,9 +31,6 @@ export class AuthController {
     const tokens = await this.auth.signUp(dto);
     this.setAccessCookie(res, tokens.accessToken);
     this.setRefreshCookie(res, tokens.refreshToken);
-    // Tokens are also returned in the body for clients where third-party
-    // cookies don't survive (the packaged Tauri webview); the web client
-    // relies on the httpOnly cookies and ignores them.
     return { ok: true, ...tokens };
   }
 
@@ -56,7 +53,6 @@ export class AuthController {
     @Body() body: { refreshToken?: string } | undefined,
     @Res({ passthrough: true }) res: Response,
   ) {
-    // Cookie for the web client, request body for the Tauri client.
     const token =
       (req.cookies?.refreshToken as string | undefined) ?? body?.refreshToken;
     if (!token) {
@@ -70,11 +66,6 @@ export class AuthController {
     return { ok: true, ...tokens };
   }
 
-  /**
-   * Short-lived access token for clients that cannot use the httpOnly
-   * cookies — e.g. the desktop (Rust) audio uploader, which sends it as
-   * an `Authorization: Bearer` header.
-   */
   @Get('/token')
   @UseGuards(JwtAuthGuard)
   getToken(@UserEntity() user: UserEntityModel) {

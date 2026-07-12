@@ -1,9 +1,8 @@
-import { injectable } from '@/shared/di';
-
 import { SessionService } from '@/entities/session';
 import { ApiService } from '@/shared/api';
 import { AuthTokens, tokenStore } from '@/shared/api/tokenStore';
 import { LoginDTO, SignUpDTO } from '@/shared/api/types';
+import { injectable } from '@/shared/di';
 import { isTauri } from '@/shared/isTauri';
 
 @injectable()

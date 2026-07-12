@@ -1,10 +1,3 @@
-/**
- * Pure channel-merge logic for transcription: applying chunk time offsets,
- * filtering out empty / hallucinated segments and merging the two speaker
- * channels into a single timeline. Kept free of I/O so it is unit-testable.
- */
-
-/** A segment as returned by Whisper verbose_json (seconds-based). */
 export interface RawWhisperSegment {
   start: number;
   end: number;
@@ -12,7 +5,6 @@ export interface RawWhisperSegment {
   no_speech_prob?: number;
 }
 
-/** Segments of a single transcribed chunk plus the chunk's absolute offset. */
 export interface TranscribedChunk {
   offsetMs: number;
   segments: RawWhisperSegment[];
@@ -32,7 +24,6 @@ function isUsableSegment(segment: RawWhisperSegment): boolean {
     return false;
   }
 
-  // Whisper hallucination artifact: "speech" detected where there is none.
   if (
     typeof segment.no_speech_prob === 'number' &&
     segment.no_speech_prob > NO_SPEECH_PROB_THRESHOLD
@@ -43,10 +34,6 @@ function isUsableSegment(segment: RawWhisperSegment): boolean {
   return true;
 }
 
-/**
- * Flattens the chunks of one channel into absolute-time segments:
- * each chunk's second-based timestamps are shifted by the chunk's offset.
- */
 export function collectChannelSegments<S>(
   chunks: TranscribedChunk[],
   speaker: S,
@@ -71,7 +58,6 @@ export function collectChannelSegments<S>(
   return result;
 }
 
-/** Merges any number of channels into one list sorted by startMs (stable). */
 export function mergeChannels<S>(
   ...channels: ChannelSegment<S>[][]
 ): ChannelSegment<S>[] {

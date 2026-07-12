@@ -1,6 +1,5 @@
-import { singleton } from '@/shared/di';
-
 import { ActionItem } from '@/entities/meeting';
+import { singleton } from '@/shared/di';
 import { SingletonViewModel } from '@/shared/view-model';
 
 import { ActionItemsService } from './ActionItemsService';

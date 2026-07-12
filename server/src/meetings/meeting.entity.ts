@@ -52,7 +52,6 @@ export class MeetingEntity {
   @Column({ type: 'enum', enum: MeetingSource, default: MeetingSource.OTHER })
   source: MeetingSource;
 
-  /** BCP-47 language selected in the client when the meeting was created. */
   @Column({ type: 'varchar', length: 16, nullable: true })
   language: string | null;
 

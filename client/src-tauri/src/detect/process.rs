@@ -1,14 +1,3 @@
-//! Best-effort detection of which process holds the microphone, via
-//! CoreAudio process objects (macOS 14.4+).
-//!
-//! Enumerates `kAudioHardwarePropertyProcessObjectList` on the system audio
-//! object and checks `kAudioProcessPropertyIsRunningInput` on each process
-//! object. The selector constants are defined manually (four-char codes from
-//! `AudioHardware.h`) so this compiles regardless of the local SDK bindings.
-//!
-//! On older macOS the property queries fail and callers fall back to the
-//! device-level "is running somewhere" signal (source = "other").
-
 use std::os::raw::c_void;
 use std::ptr;
 
@@ -19,19 +8,12 @@ use coreaudio_sys::{
     AudioObjectPropertyAddress,
 };
 
-/// `kAudioObjectSystemObject`
 pub const SYSTEM_OBJECT: AudioObjectID = 1;
-/// `kAudioObjectPropertyScopeGlobal` ('glob')
 pub const SCOPE_GLOBAL: u32 = u32::from_be_bytes(*b"glob");
-/// `kAudioObjectPropertyElementMain` (0)
 pub const ELEMENT_MAIN: u32 = 0;
-/// `kAudioHardwarePropertyProcessObjectList` ('prs#'), macOS 14.4+
 const PROP_PROCESS_OBJECT_LIST: u32 = u32::from_be_bytes(*b"prs#");
-/// `kAudioProcessPropertyIsRunningInput` ('piri'), macOS 14.4+
 const PROP_PROCESS_IS_RUNNING_INPUT: u32 = u32::from_be_bytes(*b"piri");
-/// `kAudioProcessPropertyBundleID` ('pbid'), macOS 14.4+
 const PROP_PROCESS_BUNDLE_ID: u32 = u32::from_be_bytes(*b"pbid");
-/// `kAudioProcessPropertyPID` ('ppid'), macOS 14.4+
 const PROP_PROCESS_PID: u32 = u32::from_be_bytes(*b"ppid");
 
 pub fn global_address(selector: u32) -> AudioObjectPropertyAddress {
@@ -44,12 +26,9 @@ pub fn global_address(selector: u32) -> AudioObjectPropertyAddress {
 
 #[derive(Debug, Clone)]
 pub struct AudioProcess {
-    #[allow(dead_code)] // useful for debugging / future filtering
-    pub pid: i32,
     pub bundle_id: String,
 }
 
-/// List processes (other than ourselves) that currently capture audio input.
 pub fn processes_running_input() -> Result<Vec<AudioProcess>, String> {
     let own_pid = std::process::id() as i32;
     let addr = global_address(PROP_PROCESS_OBJECT_LIST);
@@ -89,13 +68,12 @@ pub fn processes_running_input() -> Result<Vec<AudioProcess>, String> {
                 continue;
             }
             let bundle_id = get_string_property(id, PROP_PROCESS_BUNDLE_ID).unwrap_or_default();
-            result.push(AudioProcess { pid, bundle_id });
+            result.push(AudioProcess { bundle_id });
         }
         Ok(result)
     }
 }
 
-/// Map a bundle id to a meeting source string for the `call-detected` payload.
 pub fn map_bundle_to_source(bundle_id: &str) -> &'static str {
     let b = bundle_id.to_ascii_lowercase();
     if b.starts_with("us.zoom") {
@@ -126,7 +104,6 @@ pub fn map_bundle_to_source(bundle_id: &str) -> &'static str {
     "other"
 }
 
-/// Pick the most specific source from a list of capturing processes.
 pub fn best_source(processes: &[AudioProcess]) -> (&'static str, Option<String>) {
     let mut best: (&'static str, Option<String>) = ("other", None);
     for p in processes {
@@ -175,8 +152,6 @@ unsafe fn get_string_property(id: AudioObjectID, selector: u32) -> Option<String
     if status != 0 || value.is_null() {
         return None;
     }
-    // The property returns a +1 reference; wrap under the create rule so it
-    // is released when dropped.
     let s = CFString::wrap_under_create_rule(value);
     Some(s.to_string())
 }

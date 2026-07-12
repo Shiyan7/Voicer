@@ -7,11 +7,6 @@ import { StorageService } from './storage.service';
 
 const execFileAsync = promisify(execFile);
 
-/**
- * Produces a browser-safe playback copy without changing the archival source.
- * Tauri on macOS uses WebKit, which is not reliable for `audio/flac`; MP3 is
- * supported everywhere we target. Generated files are cached next to FLAC.
- */
 @Injectable()
 export class PlaybackService {
   private readonly logger = new Logger(PlaybackService.name);
@@ -28,9 +23,7 @@ export class PlaybackService {
     try {
       await stat(this.storage.getAbsolutePath(playbackPath));
       return playbackPath;
-    } catch {
-      // Create the cache below.
-    }
+    } catch {}
 
     let conversion = this.conversions.get(audioPath);
     if (!conversion) {

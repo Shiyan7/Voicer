@@ -13,10 +13,6 @@ function isRetryableStatus(status: number): boolean {
   return status === 429 || status >= 500;
 }
 
-/**
- * fetch() with exponential backoff (3 attempts) on 429/5xx and network errors.
- * Non-retryable HTTP errors (4xx except 429) are thrown immediately.
- */
 export async function fetchWithRetry(
   url: string,
   init: RequestInit,
@@ -37,7 +33,6 @@ export async function fetchWithRetry(
     try {
       response = await fetch(url, init);
     } catch (e) {
-      // Network-level failure — retryable.
       lastError = e instanceof Error ? e : new Error(String(e));
       continue;
     }

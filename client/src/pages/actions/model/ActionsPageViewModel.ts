@@ -1,8 +1,7 @@
-import { injectable } from '@/shared/di';
-
 import { ActionItemsViewModel } from '@/entities/action-item';
 import { ActionItem } from '@/entities/meeting';
 import { ToastsViewModel } from '@/entities/toasts';
+import { injectable } from '@/shared/di';
 import { i18n } from '@/shared/i18n';
 import { getMeetingPath } from '@/shared/router';
 import { Tab } from '@/shared/ui/tabs';

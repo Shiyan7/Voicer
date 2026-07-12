@@ -6,11 +6,6 @@ import { useViewModel } from '@/shared/view-model';
 import { RecorderViewModel } from '../model/RecorderViewModel';
 import { RecordingBar } from './RecordingBar';
 
-/**
- * Mount point for controls of user-initiated recordings.
- * Automatically recorded calls run without in-app overlays.
- * Render only inside Tauri.
- */
 export function CallRecorderHost() {
   const vm = useViewModel(RecorderViewModel);
 

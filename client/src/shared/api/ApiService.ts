@@ -1,5 +1,4 @@
 import { injectable } from '@/shared/di';
-
 import { isTauri } from '@/shared/isTauri';
 
 import { tokenStore } from './tokenStore';
@@ -59,13 +58,10 @@ export class ApiService {
   getAudioUrl(meetingId: string) {
     const url = `${this.baseUrl}/meetings/${meetingId}/audio`;
 
-    // The webview can't attach cookies or headers to <audio> requests,
-    // so the Tauri build authenticates them with a query token.
     const token = isTauri() ? tokenStore.accessToken : null;
     return token ? `${url}?token=${encodeURIComponent(token)}` : url;
   }
 
-  /** Bearer auth for the Tauri build; the web relies on httpOnly cookies. */
   private authHeaders(): Record<string, string> {
     const token = isTauri() ? tokenStore.accessToken : null;
     return token ? { Authorization: `Bearer ${token}` } : {};

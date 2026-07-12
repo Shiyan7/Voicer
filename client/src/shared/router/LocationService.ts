@@ -1,4 +1,5 @@
 import { Location } from '@solidjs/router';
+
 import { singleton } from '@/shared/di';
 
 @singleton()

@@ -18,8 +18,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: RequestWithCookies) => req?.cookies?.accessToken,
         ExtractJwt.fromAuthHeaderAsBearerToken(),
-        // `?token=` — for media element src URLs (the Tauri webview can't
-        // attach cookies or headers to <audio> requests).
         ExtractJwt.fromUrlQueryParameter('token'),
       ]),
       secretOrKey: configService.get('JWT_ACCESS_SECRET'),

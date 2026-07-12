@@ -1,5 +1,4 @@
 import { singleton } from '@/shared/di';
-
 import { SingletonViewModel } from '@/shared/view-model';
 
 import { CreateMeetingInput, MeetingListItem } from '../types';

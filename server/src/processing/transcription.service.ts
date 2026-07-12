@@ -32,10 +32,6 @@ export class TranscriptionService {
     private readonly dataSource: DataSource,
   ) {}
 
-  /**
-   * Transcribes both channels chunk by chunk, merges them into a single
-   * timeline and (idempotently) replaces the meeting's transcript segments.
-   */
   async transcribeAndSave(
     meetingId: string,
     leftChunks: AudioChunk[],
@@ -46,9 +42,6 @@ export class TranscriptionService {
     if (!apiKey) {
       throw new Error('GROQ_API_KEY not set');
     }
-    // Meetings created before the client began sending a locale are treated
-    // as Russian by default. Deployments that need a different legacy default
-    // can set DEFAULT_TRANSCRIPTION_LANGUAGE.
     const transcriptionLanguage =
       language ??
       this.configService.get<string>('DEFAULT_TRANSCRIPTION_LANGUAGE') ??

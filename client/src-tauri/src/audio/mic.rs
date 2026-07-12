@@ -1,11 +1,3 @@
-//! Microphone capture via cpal.
-//!
-//! Opens the default input device with its default config, downmixes to mono,
-//! resamples to 16 kHz and pushes i16 samples into the shared [`SampleQueue`].
-//!
-//! `cpal::Stream` is not `Send`, so the stream lives on a dedicated thread and
-//! is controlled through a channel.
-
 use std::sync::mpsc::{self, Receiver, Sender};
 use std::sync::Arc;
 use std::thread::JoinHandle;
@@ -21,7 +13,6 @@ pub struct MicSource {
 }
 
 impl MicSource {
-    /// Start capturing the default input device into `queue`.
     pub fn start(queue: Arc<SampleQueue>) -> Result<Self, String> {
         let (ready_tx, ready_rx) = mpsc::channel::<Result<(), String>>();
         let (stop_tx, stop_rx) = mpsc::channel::<()>();
@@ -83,7 +74,6 @@ fn run_capture_thread(
         return;
     }
     let _ = ready_tx.send(Ok(()));
-    // Keep the stream alive until stop is requested (or the sender is dropped).
     let _ = stop_rx.recv();
     drop(stream);
 }
@@ -158,7 +148,6 @@ fn build_stream(queue: Arc<SampleQueue>) -> Result<cpal::Stream, String> {
     Ok(stream)
 }
 
-/// Downmix interleaved multi-channel f32 samples to mono (average of channels).
 fn downmix(input: &[f32], channels: usize, mono: &mut Vec<f32>) {
     mono.clear();
     if channels <= 1 {

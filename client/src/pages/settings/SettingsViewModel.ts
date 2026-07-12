@@ -1,16 +1,14 @@
-import { injectable } from '@/shared/di';
-
 import {
   PermissionsStatus,
   RecorderService,
   RecorderViewModel,
   SystemSettingsPane,
 } from '@/features/call-recorder';
+import { injectable } from '@/shared/di';
 import { i18n, Locale } from '@/shared/i18n';
 import { isTauri } from '@/shared/isTauri';
 import { StatefulViewModel } from '@/shared/view-model';
 
-/** Re-check permissions while the page is open (system prompts are async). */
 const PERMISSIONS_POLL_MS = 2000;
 
 export type PermissionRow = {
@@ -90,7 +88,6 @@ export class SettingsViewModel extends StatefulViewModel {
     try {
       this.permissions = await this.recorderService.requestPermissions();
     } catch {
-      // Snapshot stays as-is; the poller will retry.
     }
   };
 
@@ -102,7 +99,6 @@ export class SettingsViewModel extends StatefulViewModel {
     try {
       this.permissions = await this.recorderService.checkPermissions();
     } catch {
-      // Ignore — keep the last known snapshot.
     }
   };
 }

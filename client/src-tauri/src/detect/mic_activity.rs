@@ -1,20 +1,3 @@
-//! Call detection.
-//!
-//! A background thread watches whether some *other* process is capturing the
-//! microphone. Primary signal: CoreAudio process objects (macOS 14.4+, see
-//! [`super::process`]), which lets us both ignore our own recording streams
-//! and identify the calling app. Fallback signal:
-//! `kAudioDevicePropertyDeviceIsRunningSomewhere` on the current default
-//! input device (in that mode, while we record, detection is frozen because
-//! our own stream also flips the property).
-//!
-//! Debounce: `call-detected` is emitted only after ~2 s of continuous
-//! activity, `call-ended` after ~2 s of continuous inactivity.
-//!
-//! A CoreAudio property listener on the default input device (re-registered
-//! when the default device changes) wakes the thread early; otherwise it
-//! polls once per second.
-
 use std::os::raw::c_void;
 use std::ptr;
 use std::sync::mpsc::{self, Receiver, RecvTimeoutError, Sender};
@@ -30,9 +13,7 @@ use tauri::{AppHandle, Emitter};
 use super::process::{self, global_address, SYSTEM_OBJECT};
 use crate::audio::RECORDING_ACTIVE;
 
-/// `kAudioHardwarePropertyDefaultInputDevice` ('dIn ')
 const PROP_DEFAULT_INPUT_DEVICE: u32 = u32::from_be_bytes(*b"dIn ");
-/// `kAudioDevicePropertyDeviceIsRunningSomewhere` ('gone')
 const PROP_IS_RUNNING_SOMEWHERE: u32 = u32::from_be_bytes(*b"gone");
 
 const START_DEBOUNCE: Duration = Duration::from_secs(2);
@@ -42,10 +23,8 @@ const POLL_INTERVAL: Duration = Duration::from_secs(1);
 #[derive(Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct CallDetectedPayload {
-    /// "zoom" | "teams" | "meet" | "other"
     pub source: String,
     pub bundle_id: Option<String>,
-    /// Unix millis.
     pub at: i64,
 }
 
@@ -55,7 +34,6 @@ pub struct CallEndedPayload {
     pub at: i64,
 }
 
-/// Spawn the detector thread. Call once from `setup`.
 pub fn spawn(app: AppHandle) {
     if let Err(e) = std::thread::Builder::new()
         .name("voicer-call-detector".into())
@@ -74,12 +52,9 @@ enum Phase {
 
 fn run(app: &AppHandle) {
     let (wake_tx, wake_rx): (Sender<()>, Receiver<()>) = mpsc::channel();
-    // The sender is shared with C callbacks for the lifetime of the app;
-    // leak it intentionally.
     let wake_ptr = Box::into_raw(Box::new(wake_tx)) as *mut c_void;
 
     unsafe {
-        // Wake up when the default input device changes.
         let addr = global_address(PROP_DEFAULT_INPUT_DEVICE);
         AudioObjectAddPropertyListener(SYSTEM_OBJECT, &addr, Some(wake_listener), wake_ptr);
     }
@@ -97,8 +72,6 @@ fn run(app: &AppHandle) {
             break;
         }
 
-        // Keep the "is running somewhere" listener attached to the *current*
-        // default input device.
         let device = default_input_device();
         if device != listened_device {
             let run_addr = global_address(PROP_IS_RUNNING_SOMEWHERE);
@@ -113,9 +86,6 @@ fn run(app: &AppHandle) {
             listened_device = device;
         }
 
-        // Observe current activity; `None` means "cannot tell right now"
-        // (fallback path while we ourselves are recording) — freeze the
-        // state machine for this tick.
         let Some(observation) = observe_activity(device) else {
             continue;
         };
@@ -149,21 +119,17 @@ fn run(app: &AppHandle) {
 
 struct Observation {
     active: bool,
-    /// Present when the process-object API gave us the capturing app.
     details: Option<(&'static str, Option<String>)>,
 }
 
 fn observe_activity(default_device: Option<AudioObjectID>) -> Option<Observation> {
     match process::processes_running_input() {
         Ok(procs) => {
-            // Our own pid is already excluded, so recording does not trip this.
             let active = !procs.is_empty();
             let details = active.then(|| process::best_source(&procs));
             Some(Observation { active, details })
         }
         Err(_) => {
-            // Fallback: device-level flag. While we record, our own stream
-            // keeps the flag high, so we cannot tell anything — freeze.
             if RECORDING_ACTIVE.load(std::sync::atomic::Ordering::Relaxed) {
                 return None;
             }

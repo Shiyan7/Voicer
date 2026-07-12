@@ -1,14 +1,3 @@
-//! Dual-source recorder.
-//!
-//! Interleaves microphone (left channel, "me") and system audio (right
-//! channel, "other") into a 16 kHz stereo file. During recording we stream
-//! into a WAV file (crash-safe, constant memory); on stop the WAV is
-//! transcoded to FLAC with the pure-Rust `flacenc` encoder and removed.
-//! If FLAC encoding fails for any reason the WAV file is kept and returned.
-//!
-//! If one source fails to start (e.g. missing screen-recording permission)
-//! or dies mid-recording, its channel is filled with silence.
-
 use std::path::{Path, PathBuf};
 use std::sync::mpsc::{self, Receiver, RecvTimeoutError, Sender};
 use std::thread::JoinHandle;
@@ -18,18 +7,13 @@ use super::mic::MicSource;
 use super::system::SystemSource;
 use super::{SampleQueue, RECORDING_ACTIVE, TARGET_SAMPLE_RATE};
 
-/// A source that stopped pushing samples for this long is treated as stalled
-/// and padded with silence so the healthy source keeps flowing to disk.
 const STALL_MS: u64 = 2_000;
-/// How often the writer thread flushes queued samples to disk.
 const FLUSH_INTERVAL: Duration = Duration::from_millis(250);
 
 pub struct StartInfo {
     pub local_id: String,
     pub started_at_ms: i64,
-    /// Path the finished recording will have (FLAC).
     pub path: PathBuf,
-    /// Human-readable warnings (e.g. one source unavailable).
     pub warnings: Vec<String>,
 }
 
@@ -77,7 +61,6 @@ impl Recorder {
         }
     }
 
-    /// Start recording into `recordings_dir/{uuid}.flac`.
     pub fn start(&mut self, recordings_dir: &Path) -> Result<StartInfo, String> {
         if self.active.is_some() {
             return Err("already recording".into());
@@ -93,7 +76,6 @@ impl Recorder {
         let sys_queue = SampleQueue::new();
         let mut warnings = Vec::new();
 
-        // Suppress our own capture streams in the call detector.
         RECORDING_ACTIVE.store(true, std::sync::atomic::Ordering::Relaxed);
 
         let mic = match MicSource::start(mic_queue.clone()) {
@@ -105,10 +87,6 @@ impl Recorder {
                 None
             }
         };
-        // ScreenCaptureKit itself opens the macOS consent dialog when access
-        // is unavailable. Never invoke it until the preflight check confirms
-        // access, otherwise every auto-recording attempt can re-open that
-        // system dialog.
         let system = if crate::permissions::screen_recording_authorized() {
             match SystemSource::start(sys_queue.clone()) {
                 Ok(s) => Some(s),
@@ -166,11 +144,9 @@ impl Recorder {
         })
     }
 
-    /// Stop recording, finalize the WAV and transcode it to FLAC.
     pub fn stop(&mut self) -> Result<StopInfo, String> {
         let mut active = self.active.take().ok_or("not recording")?;
 
-        // Stop sources first so their queues stop growing, then flush.
         if let Some(mic) = active.mic.take() {
             mic.stop();
         }
@@ -216,8 +192,6 @@ pub fn now_ms() -> i64 {
         .unwrap_or(0)
 }
 
-/// Writer thread: periodically drains both queues and writes interleaved
-/// stereo frames (L = mic, R = system). Returns the number of frames written.
 fn writer_loop(
     wav_path: &Path,
     mic_q: &SampleQueue,
@@ -249,8 +223,6 @@ fn writer_loop(
         let mic_healthy = !mic_q.is_failed() && mic_q.millis_since_last_push() < STALL_MS;
         let sys_healthy = !sys_q.is_failed() && sys_q.millis_since_last_push() < STALL_MS;
 
-        // How many stereo frames to write this tick. A dead/stalled source is
-        // padded with silence so the healthy one is not held back.
         let n = if stop {
             pending_mic.len().max(pending_sys.len())
         } else {
@@ -285,11 +257,6 @@ fn writer_loop(
     Ok(frames)
 }
 
-/// Transcode the interleaved stereo WAV to FLAC using the pure-Rust `flacenc`.
-///
-/// Note: `flacenc`'s `MemSource` holds all samples in memory during encoding
-/// (~460 MB per hour of 16 kHz stereo as i32). Acceptable for call-length
-/// recordings on desktop; on failure we simply keep the WAV.
 fn transcode_wav_to_flac(wav_path: &Path, flac_path: &Path) -> Result<(), String> {
     use flacenc::component::BitRepr;
     use flacenc::error::Verify;
@@ -350,7 +317,6 @@ mod tests {
         transcode_wav_to_flac(&wav, &flac).unwrap();
         let bytes = std::fs::read(&flac).unwrap();
         assert_eq!(&bytes[..4], b"fLaC");
-        // FLAC of a sine should be much smaller than the raw WAV.
         assert!(bytes.len() < std::fs::metadata(&wav).unwrap().len() as usize);
         let _ = std::fs::remove_dir_all(&dir);
     }

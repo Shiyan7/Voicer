@@ -1,11 +1,3 @@
-/**
- * Token storage for the Tauri build.
- *
- * The packaged webview (tauri://localhost) is cross-site to the API server,
- * and WKWebView drops third-party cookies — so the desktop app authenticates
- * with Bearer tokens instead. On the web the httpOnly cookies remain the
- * source of truth and this store stays empty.
- */
 const ACCESS_KEY = 'auth.accessToken';
 const REFRESH_KEY = 'auth.refreshToken';
 

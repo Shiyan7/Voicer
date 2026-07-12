@@ -6,24 +6,62 @@
   <component name="ChangeListManager">
     <list default="true" id="a2cb5afd-a1c5-4186-8914-dc73aeeb0bc9" name="Changes" comment="voicer mvp">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src-tauri/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src-tauri/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src-tauri/capabilities/default.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/capabilities/default.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/eslint.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/client/eslint.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src-tauri/src/audio/mic.rs" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/src/audio/mic.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src-tauri/src/audio/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/src/audio/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src-tauri/src/audio/recorder.rs" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/src/audio/recorder.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src-tauri/src/audio/system.rs" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/src/audio/system.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src-tauri/src/commands.rs" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/src/commands.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src-tauri/src/detect/mic_activity.rs" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/src/detect/mic_activity.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src-tauri/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/entities/meeting/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/meeting/types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src-tauri/src/detect/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/src/detect/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src-tauri/src/detect/process.rs" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/src/detect/process.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src-tauri/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/src/main.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src-tauri/src/permissions.rs" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/src/permissions.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src-tauri/src/tray.rs" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/src/tray.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src-tauri/src/upload.rs" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/src/upload.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/entities/action-item/model/ActionItemsService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/action-item/model/ActionItemsService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/entities/action-item/model/ActionItemsViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/action-item/model/ActionItemsViewModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/entities/meeting/model/MeetingsService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/meeting/model/MeetingsService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/entities/meeting/model/MeetingsViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/meeting/model/MeetingsViewModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/entities/session/model/SessionService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/session/model/SessionService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/entities/session/model/SessionViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/session/model/SessionViewModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/entities/toasts/model/ToastsViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/toasts/model/ToastsViewModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/features/auth/model/AuthService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/auth/model/AuthService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/features/auth/model/AuthViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/auth/model/AuthViewModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/features/call-recorder/model/RecorderService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/call-recorder/model/RecorderService.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/features/call-recorder/model/RecorderViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/call-recorder/model/RecorderViewModel.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/features/call-recorder/ui/CallRecorderHost.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/call-recorder/ui/CallRecorderHost.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/pages/actions/model/ActionsPageViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/actions/model/ActionsPageViewModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/pages/meeting-details/model/MeetingDetailsViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/meeting-details/model/MeetingDetailsViewModel.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/pages/meetings/model/MeetingsPageViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/meetings/model/MeetingsPageViewModel.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/server/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/meetings/dto/create-meeting.input.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/meetings/dto/create-meeting.input.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/pages/settings/SettingsViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/settings/SettingsViewModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/api/ApiService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/api/ApiService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/api/tokenStore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/api/tokenStore.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/router/LocationService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/router/LocationService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/socket/SocketService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/socket/SocketService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/ui/controlled-input/ControlledInput.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ui/controlled-input/ControlledInput.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/ui/icon/sprite.gen.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ui/icon/sprite.gen.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/view-model/DIContext.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/view-model/DIContext.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/view-model/ViewModelScope.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/view-model/ViewModelScope.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/vite-env.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/vite-env.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/model/NavigationViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/navigation/model/NavigationViewModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/.eslintrc.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/server/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/auth/auth.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/auth/auth.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/auth/dto/jwt.dto.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/auth/dto/jwt.dto.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/auth/jwt.strategy.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/auth/jwt.strategy.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/events/events.gateway.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/events/events.gateway.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/events/meeting.events.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/events/meeting.events.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/meetings/meeting.entity.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/meetings/meeting.entity.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/meetings/meetings.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/meetings/meetings.controller.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/meetings/meetings.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/meetings/meetings.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/processing/audio.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/processing/audio.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/processing/fetch-retry.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/processing/fetch-retry.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/processing/processing.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/processing/processing.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/processing/summary.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/processing/summary.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/processing/transcript-merge.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/processing/transcript-merge.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/processing/transcription.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/processing/transcription.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/storage/playback.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/storage/playback.service.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -163,7 +201,7 @@
       <workItem from="1783667055543" duration="1480000" />
       <workItem from="1783670446643" duration="4878000" />
       <workItem from="1783746954437" duration="3087000" />
-      <workItem from="1783832460949" duration="4345000" />
+      <workItem from="1783832460949" duration="6495000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -229,7 +267,15 @@
       <option name="project" value="LOCAL" />
       <updated>1783832698776</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="voicer mvp">
+      <option name="closed" value="true" />
+      <created>1783837814474</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1783837814474</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

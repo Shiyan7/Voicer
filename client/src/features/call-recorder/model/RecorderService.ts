@@ -1,9 +1,9 @@
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
 import { openUrl } from '@tauri-apps/plugin-opener';
-import { injectable } from '@/shared/di';
 
 import { ApiService } from '@/shared/api';
+import { injectable } from '@/shared/di';
 import { isTauri } from '@/shared/isTauri';
 
 export type CallSource =
@@ -12,21 +12,17 @@ export type CallSource =
 export type CallDetectedEvent = {
   source: CallSource;
   bundleId: string | null;
-  /** Unix millis. */
   at: number;
 };
 
 export type CallEndedEvent = {
-  /** Unix millis. */
   at: number;
 };
 
 export type StartRecordingResult = {
   localId: string;
-  /** Unix millis. */
   startedAt: number;
   path: string;
-  /** Non-fatal issues (e.g. system audio unavailable). */
   warnings: string[];
 };
 
@@ -34,7 +30,6 @@ export type StopRecordingResult = {
   path: string;
   durationSec: number;
   localId: string;
-  /** Unix millis. */
   startedAt: number;
 };
 
@@ -63,13 +58,6 @@ const SYSTEM_SETTINGS_PANES: Record<SystemSettingsPane, string> = {
     'x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture',
 };
 
-/**
- * Thin wrapper around the Tauri recorder commands and events
- * (contract: client/src-tauri/src/commands.rs).
- *
- * Commands must only be called inside Tauri ({@link isTauri});
- * event subscriptions become no-ops on the web.
- */
 @injectable()
 export class RecorderService {
   constructor(private readonly api: ApiService) {}
@@ -104,10 +92,6 @@ export class RecorderService {
     return invoke<PermissionsStatus>('request_permissions');
   }
 
-  /**
-   * Streams the file from disk to `POST /meetings/:id/audio` (Rust side,
-   * multipart). Progress arrives via {@link onUploadProgress}.
-   */
   uploadRecording(path: string, meetingId: string, token: string) {
     this.ensureTauri();
     return invoke<void>('upload_recording', {
@@ -117,10 +101,6 @@ export class RecorderService {
     });
   }
 
-  /**
-   * Auth cookies are httpOnly, so the Rust uploader cannot reuse them —
-   * ask the server for a short-lived Bearer token instead.
-   */
   fetchUploadToken() {
     return this.api.get<{ accessToken: string }>('/auth/token');
   }
@@ -138,7 +118,6 @@ export class RecorderService {
     return this.subscribe('call-ended', handler);
   }
 
-  /** Fired for both webview- and tray-initiated stops. */
   onRecordingStopped(
     handler: (event: StopRecordingResult) => void,
   ): Unsubscribe {

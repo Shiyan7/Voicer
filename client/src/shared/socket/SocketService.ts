@@ -1,8 +1,8 @@
 import { io, Socket } from 'socket.io-client';
-import { singleton } from '@/shared/di';
 
 import { MeetingStatus } from '@/entities/meeting';
 import { tokenStore } from '@/shared/api/tokenStore';
+import { singleton } from '@/shared/di';
 import { isTauri } from '@/shared/isTauri';
 
 export type MeetingUpdatedEvent = {

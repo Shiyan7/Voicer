@@ -1,8 +1,7 @@
-import { injectable } from '@/shared/di';
-
 import { ActionItemsService } from '@/entities/action-item';
 import { MeetingDetails, MeetingsService, MeetingsViewModel } from '@/entities/meeting';
 import { ToastsViewModel } from '@/entities/toasts';
+import { injectable } from '@/shared/di';
 import { i18n } from '@/shared/i18n';
 import { parseMarkdownBlocks } from '@/shared/lib/markdown';
 import { closeModal, MODALS, showModal } from '@/shared/lib/modal';
@@ -12,7 +11,6 @@ import { SocketService } from '@/shared/socket';
 import { AudioPlayerApi } from '@/shared/ui/audio-player';
 import { StatefulViewModel } from '@/shared/view-model';
 
-/** Statuses during which the server-side pipeline is still running. */
 const PROCESSING_STATUSES = new Set([
   'recording',
   'uploading',
@@ -21,7 +19,6 @@ const PROCESSING_STATUSES = new Set([
   'summarizing',
 ]);
 
-/** Statuses for which the audio file already exists on the server. */
 const PLAYABLE_STATUSES = new Set([
   'uploaded',
   'transcribing',
@@ -144,8 +141,6 @@ export class MeetingDetailsViewModel extends StatefulViewModel {
     this.currentTimeMs = seconds * 1000;
   };
 
-  // --- player wiring ---
-
   seekToSegment = (startMs: number) => {
     this.playerApi?.seek(startMs / 1000, { play: true });
   };
@@ -160,8 +155,6 @@ export class MeetingDetailsViewModel extends StatefulViewModel {
   onTitleInput = (event: Event) => {
     this.titleDraft = (event.target as HTMLInputElement).value;
   };
-
-  // --- title editing ---
 
   onTitleKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Enter') {
@@ -211,11 +204,7 @@ export class MeetingDetailsViewModel extends StatefulViewModel {
 
   requestDelete = () => showModal(MODALS.DELETE_MEETING);
 
-  // --- action items ---
-
   cancelDelete = () => closeModal(MODALS.DELETE_MEETING);
-
-  // --- deletion ---
 
   confirmDelete = async () => {
     this.isDeleting = true;
@@ -243,7 +232,6 @@ export class MeetingDetailsViewModel extends StatefulViewModel {
       this.meetings.applyUpdate(id, { status });
 
       if (status === 'ready' || status === 'failed') {
-        // The pipeline finished: refetch to get segments/summary/action items.
         void this.load();
       } else {
         this.meeting.status = status;
@@ -259,7 +247,6 @@ export class MeetingDetailsViewModel extends StatefulViewModel {
     try {
       this.meeting = await this.meetingsService.get(this.meetingId);
     } catch {
-      // 404/400 (missing or foreign meeting) → "not found" state.
       this.loadFailed = true;
     } finally {
       this.isLoading = false;

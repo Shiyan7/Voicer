@@ -1,8 +1,8 @@
 import { createFormStore, reset, valiForm } from '@modular-forms/solid';
-import { injectable } from '@/shared/di';
 
 import { SessionViewModel } from '@/entities/session';
 import { MinimalUserOutput } from '@/shared/api/types';
+import { injectable } from '@/shared/di';
 import { i18n } from '@/shared/i18n';
 import { closeModal, MODALS } from '@/shared/lib/modal';
 import { StatefulViewModel } from '@/shared/view-model';

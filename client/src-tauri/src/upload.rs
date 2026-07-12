@@ -1,10 +1,3 @@
-//! Upload a finished recording to the server (desktop only).
-//!
-//! Streams the file as `multipart/form-data` (field name `file`) via reqwest,
-//! emitting `upload-progress` { path, sent, total } while sending and
-//! `upload-finished` { path, status } / `upload-failed` { path, error } at
-//! the end.
-
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
 
@@ -12,7 +5,6 @@ use futures_util::TryStreamExt;
 use serde::Serialize;
 use tauri::{AppHandle, Emitter};
 
-/// Emit progress at most every this many bytes (plus a final event).
 const PROGRESS_GRANULARITY: u64 = 128 * 1024;
 
 #[derive(Serialize, Clone)]

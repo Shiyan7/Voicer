@@ -18,8 +18,6 @@ const LOCAL_ORIGINS = [
   'https://tauri.localhost',
 ];
 
-// Decorators are evaluated before ConfigModule loads .env, so the origin
-// check is a callback that reads process.env at connection time.
 @WebSocketGateway({
   cors: {
     origin: (
