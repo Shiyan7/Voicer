@@ -1,15 +1,20 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
   Req,
   Res,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { HttpCode } from '@nestjs/common/decorators';
 import { HttpStatus } from '@nestjs/common/enums';
 import type { Request, Response } from 'express';
+import { UserEntity } from 'src/common/decorators/user.decorator';
+import { UserEntity as UserEntityModel } from 'src/users/user.entity';
 import { AuthService } from './auth.service';
+import { JwtAuthGuard } from './auth.guard';
 import { SignUpInput } from './dto/sign-up.input';
 import { SignInInput } from './dto/sign-in.input';
 
@@ -26,7 +31,7 @@ export class AuthController {
     const tokens = await this.auth.signUp(dto);
     this.setAccessCookie(res, tokens.accessToken);
     this.setRefreshCookie(res, tokens.refreshToken);
-    return { ok: true };
+    return { ok: true, ...tokens };
   }
 
   @Post('/sign-in')
@@ -38,16 +43,18 @@ export class AuthController {
     const tokens = await this.auth.signIn(email, password);
     this.setAccessCookie(res, tokens.accessToken);
     this.setRefreshCookie(res, tokens.refreshToken);
-    return { ok: true };
+    return { ok: true, ...tokens };
   }
 
   @Post('/refresh')
   @HttpCode(HttpStatus.OK)
   async refreshTokens(
     @Req() req: Request,
+    @Body() body: { refreshToken?: string } | undefined,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const token = req.cookies?.refreshToken as string | undefined;
+    const token =
+      (req.cookies?.refreshToken as string | undefined) ?? body?.refreshToken;
     if (!token) {
       this.clearRefreshCookie(res);
       throw new UnauthorizedException();
@@ -56,7 +63,14 @@ export class AuthController {
     const tokens = this.auth.refreshToken(token);
     this.setAccessCookie(res, tokens.accessToken);
     this.setRefreshCookie(res, tokens.refreshToken);
-    return { ok: true };
+    return { ok: true, ...tokens };
+  }
+
+  @Get('/token')
+  @UseGuards(JwtAuthGuard)
+  getToken(@UserEntity() user: UserEntityModel) {
+    const { accessToken } = this.auth.generateTokens({ userId: user.id });
+    return { accessToken };
   }
 
   @Post('/logout')

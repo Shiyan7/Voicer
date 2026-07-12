@@ -1,4 +1,4 @@
-export type Tab = {
+export type Tab<T> = {
   label?: string;
-  value: string;
+  value: T;
 };

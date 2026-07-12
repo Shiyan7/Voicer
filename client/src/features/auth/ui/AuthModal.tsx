@@ -20,7 +20,11 @@ export function AuthModal() {
   const vm = useViewModel(AuthViewModel);
 
   return (
-    <Modal modalId={MODALS.AUTH} onClose={() => reset(vm.authForm)}>
+    <Modal
+      class="px-7 pb-8 pt-10 sm:max-w-[26rem]"
+      modalId={MODALS.AUTH}
+      onClose={() => reset(vm.authForm)}
+    >
       <h2 class={styles.title()}>{vm.modalTitle}</h2>
       <div>
         <Show when={vm.mode} keyed>
@@ -47,7 +51,9 @@ export function AuthModal() {
                 />
               )}
             </Field>
-            <Button type="submit">{vm.buttonText}</Button>
+            <Button class="mt-1" size="lg" type="submit">
+              {vm.buttonText}
+            </Button>
           </Form>
         </Show>
         <div class={styles.row()}>

@@ -1,7 +1,6 @@
 import { A } from '@solidjs/router';
 import { For, Show } from 'solid-js';
 
-import { i18n } from '@/shared/i18n';
 import { Icon } from '@/shared/ui/icon';
 
 import { NavItem } from '../types/NavItem';
@@ -17,7 +16,6 @@ interface NavListProps {
 export function NavList(props: NavListProps) {
   return (
     <ul class={styles.root()}>
-      <li class={styles.separator()}>{i18n.t('nav.workspace')}</li>
       <For each={props.items}>
         {(item) => (
           <li>

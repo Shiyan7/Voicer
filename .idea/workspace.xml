@@ -4,8 +4,30 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2cb5afd-a1c5-4186-8914-dc73aeeb0bc9" name="Changes" comment="poxui">
-      <change beforePath="$PROJECT_DIR$/client/src/shared/ui/modal/Modal.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ui/modal/Modal.styles.ts" afterDir="false" />
+    <list default="true" id="a2cb5afd-a1c5-4186-8914-dc73aeeb0bc9" name="Changes" comment="мертвый код">
+      <change afterPath="$PROJECT_DIR$/client/src/entities/team-select/model/TeamSelectViewModel.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/actions/Actions.orchestrator.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/actions/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/actions/segments/actions-list/ui/ActionItemsGroup.styles.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/actions/segments/actions-list/ui/ActionItemsGroup.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/actions/segments/actions-list/ui/ActionsList.styles.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/actions/segments/actions-list/ui/ActionsList.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/actions/types/ActionItemGroup.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/actions/types/ActionsFilter.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src-tauri/src/audio/system.rs" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/src/audio/system.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src-tauri/src/detect/process.rs" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/src/detect/process.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/entities/action-item/model/ActionItemsService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/action-item/model/ActionItemsService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/entities/action-item/model/ActionItemsViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/action-item/model/ActionItemsViewModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/entities/team-select/ui/TeamSelect.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/team-select/ui/TeamSelect.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/entities/toasts/model/ToastsViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/toasts/model/ToastsViewModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/pages/actions/ActionsPage.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/actions/Actions.styles.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/pages/actions/ActionsPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/actions/ActionsPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/pages/actions/model/ActionsPageViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/actions/model/ActionsPageViewModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/ui/tabs/Tabs.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ui/tabs/Tabs.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/ui/tabs/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ui/tabs/types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/ui/NavList.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/navigation/ui/NavList.styles.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/ui/NavList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/navigation/ui/NavList.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,6 +38,11 @@
     <option name="myRunOnSave" value="true" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -33,12 +60,12 @@
               <option name="branches">
                 <list>
                   <RecentBranch>
-                    <option name="branchName" value="master" />
-                    <option name="lastUsedInstant" value="1783666241" />
+                    <option name="branchName" value="voicer-mvp" />
+                    <option name="lastUsedInstant" value="1783832562" />
                   </RecentBranch>
                   <RecentBranch>
-                    <option name="branchName" value="main" />
-                    <option name="lastUsedInstant" value="1783666240" />
+                    <option name="branchName" value="master" />
+                    <option name="lastUsedInstant" value="1783666241" />
                   </RecentBranch>
                 </list>
               </option>
@@ -74,41 +101,53 @@
     <option name="openDirectoriesWithSingleClick" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;code.cleanup.on.save&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/shiyan/projects/voicer&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;npm.be-dev.executor&quot;: &quot;Run&quot;,
-    &quot;npm.build.executor&quot;: &quot;Run&quot;,
-    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
-    &quot;npm.i18n:watch.executor&quot;: &quot;Run&quot;,
-    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/Users/shiyan/projects/voicer/client/node_modules/prettier&quot;,
-    &quot;rearrange.code.on.save&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;actions.on.save&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Users/shiyan/projects/voicer/client/node_modules/typescript/lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "JavaScript Debug.index.html.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "code.cleanup.on.save": "true",
+    "git-widget-placeholder": "voicer-mvp",
+    "javascript.preferred.runtime.type.id": "node",
+    "last_opened_file_path": "/Users/shiyan/projects/voicer",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.standard": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.standard": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "npm.be-dev.executor": "Run",
+    "npm.build.executor": "Run",
+    "npm.dev.executor": "Run",
+    "npm.i18n:watch.executor": "Run",
+    "prettierjs.PrettierConfiguration.Package": "/Users/shiyan/projects/voicer/client/node_modules/prettier",
+    "rearrange.code.on.save": "true",
+    "settings.editor.selected.configurable": "actions.on.save",
+    "ts.external.directory.path": "/Users/shiyan/projects/voicer/client/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/client/src/features/actions" />
+      <recent name="$PROJECT_DIR$/client/src/shared/lib" />
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.dev" />
+  <component name="RunManager" selected="npm.be-dev">
+    <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/voicer/client/dist/index.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JavaScript Debug.index.html" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -129,6 +168,7 @@
       <workItem from="1783667055543" duration="1480000" />
       <workItem from="1783670446643" duration="4878000" />
       <workItem from="1783746954437" duration="3087000" />
+      <workItem from="1783832460949" duration="9686000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -178,7 +218,39 @@
       <option name="project" value="LOCAL" />
       <updated>1783750861559</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="poxui">
+      <option name="closed" value="true" />
+      <created>1783750893334</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1783750893334</updated>
+    </task>
+    <task id="LOCAL-00008" summary="voicer mvp">
+      <option name="closed" value="true" />
+      <created>1783832698775</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1783832698776</updated>
+    </task>
+    <task id="LOCAL-00009" summary="voicer mvp">
+      <option name="closed" value="true" />
+      <created>1783837814474</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1783837814474</updated>
+    </task>
+    <task id="LOCAL-00010" summary="мертвый код">
+      <option name="closed" value="true" />
+      <created>1783867166502</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1783867166502</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -189,6 +261,8 @@
     <MESSAGE value="return voicer app" />
     <MESSAGE value="fix styles" />
     <MESSAGE value="poxui" />
-    <option name="LAST_COMMIT_MESSAGE" value="poxui" />
+    <MESSAGE value="voicer mvp" />
+    <MESSAGE value="мертвый код" />
+    <option name="LAST_COMMIT_MESSAGE" value="мертвый код" />
   </component>
 </project>

@@ -1,5 +1,6 @@
 import { onCleanup, ParentProps } from 'solid-js';
-import { container } from 'tsyringe';
+
+import { container } from '@/shared/di';
 
 import { DIContext } from './DIContext';
 

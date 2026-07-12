@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "client-preview",
+      "cwd": "client",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["serve", "--port", "4173", "--strictPort"],
+      "port": 4173
+    }
+  ]
+}

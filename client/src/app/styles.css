@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   --breakpoint-xs: 321px;
@@ -10,6 +10,33 @@
   --z-modal: 1000;
   --z-toast: 50;
   --z-navigation: 800;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+  'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  --color-gray-50: #fbfbfd;
+  --color-gray-100: #f5f5f7;
+  --color-gray-200: #e8e8ed;
+  --color-gray-300: #d2d2d7;
+  --color-gray-400: #a1a1a6;
+  --color-gray-500: #86868b;
+  --color-gray-600: #6e6e73;
+  --color-gray-700: #424245;
+  --color-gray-800: #333336;
+  --color-gray-900: #1d1d1f;
+  --color-gray-950: #0e0e10;
+
+  --radius-lg: 0.625rem;
+  --radius-xl: 0.875rem;
+  --radius-2xl: 1.25rem;
+
+  --tracking-title: -0.014em;
+
+  --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.04);
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.06), 0 1px 1px rgb(0 0 0 / 0.04);
+  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.08), 0 1px 3px rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 12px 28px rgb(0 0 0 / 0.1), 0 2px 8px rgb(0 0 0 / 0.06);
+  --shadow-xl: 0 24px 60px rgb(0 0 0 / 0.12), 0 4px 12px rgb(0 0 0 / 0.05);
 }
 
 @layer components {
@@ -33,14 +60,14 @@
   .loader {
     width: 50px;
     height: 50px;
-    background-color: #e5e7eb;
+    background-color: var(--color-gray-200);
   }
 }
 
 body {
   -webkit-font-smoothing: antialiased;
-  color: #111827;
-  background-color: #fafafa;
+  color: var(--color-gray-900);
+  background-color: var(--color-gray-50);
   height: 100%;
 }
 

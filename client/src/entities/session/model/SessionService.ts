@@ -1,7 +1,8 @@
-import { injectable } from 'tsyringe';
-
 import { ApiService } from '@/shared/api';
+import { AuthTokens, tokenStore } from '@/shared/api/tokenStore';
 import { MinimalUserOutput } from '@/shared/api/types';
+import { injectable } from '@/shared/di';
+import { isTauri } from '@/shared/isTauri';
 
 @injectable()
 export class SessionService {
@@ -12,11 +13,17 @@ export class SessionService {
   }
 
   logout() {
+    tokenStore.clear();
     return this.api.post<{ ok: boolean }>('/auth/logout');
   }
 
   async restore() {
-    await this.refreshToken();
+    try {
+      await this.refreshToken();
+    } catch {
+      tokenStore.clear();
+      return undefined;
+    }
 
     try {
       return await this.getMe();
@@ -26,6 +33,11 @@ export class SessionService {
   }
 
   private refreshToken = async () => {
-    await this.api.post('/auth/refresh');
+    const body = isTauri()
+      ? { refreshToken: tokenStore.refreshToken ?? '' }
+      : undefined;
+
+    const tokens = await this.api.post<AuthTokens>('/auth/refresh', body);
+    if (isTauri()) tokenStore.save(tokens);
   };
 }

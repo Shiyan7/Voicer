@@ -16,6 +16,9 @@ async function bootstrap() {
   const corsWhitelist = [
     'http://localhost:3000',
     'http://localhost:5173',
+    'tauri://localhost',
+    'http://tauri.localhost',
+    'https://tauri.localhost',
     configService.get<string>('CLIENT_URL'),
   ];
 

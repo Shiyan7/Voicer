@@ -1,10 +1,9 @@
-import { singleton } from 'tsyringe';
-
+import { singleton } from '@/shared/di';
 import { SingletonViewModel } from '@/shared/view-model';
 
 export type ToastType = 'success' | 'info' | 'warning' | 'error';
 
-type Toast = { id: number; type: ToastType; title: string };
+type Toast = { id: number; type: ToastType; title?: string };
 
 const TOAST_DELETE_DELAY = 4_000;
 
@@ -12,7 +11,7 @@ const TOAST_DELETE_DELAY = 4_000;
 export class ToastsViewModel extends SingletonViewModel {
   items: Toast[] = [];
 
-  show = (type: ToastType, title: string) => {
+  show = (type: ToastType, title?: string) => {
     const id = Date.now() + Math.random();
 
     const newToast = { id, type, title };

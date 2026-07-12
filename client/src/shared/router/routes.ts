@@ -8,6 +8,10 @@ export const routes = [
     component: lazy(() => import('@/pages/meetings/MeetingsPage')),
   },
   {
+    path: paths.meeting,
+    component: lazy(() => import('@/pages/meeting-details/MeetingDetailsPage')),
+  },
+  {
     path: paths.actions,
     component: lazy(() => import('@/pages/actions/ActionsPage')),
   },

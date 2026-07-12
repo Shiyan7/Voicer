@@ -2,22 +2,22 @@ import { tv } from 'tailwind-variants';
 
 export const tabsStyles = tv({
   slots: {
-    root: 'flex items-center',
+    root: 'flex items-center gap-1 rounded-full bg-gray-100 p-1',
     item: 'relative flex-1',
     btn: `
-      py-3 flex items-center justify-center relative w-full
-      after:absolute after:w-full after:h-[1px] after:bg-blue-500
-      after:bottom-0 after:opacity-0 after:transition-opacity
-      transition-colors
+      relative flex w-full items-center justify-center
+      rounded-full px-4 py-2 text-sm font-medium
+      outline-none focus-visible:ring-2 focus-visible:ring-gray-500/60
+      transition-colors duration-200
     `,
   },
   variants: {
     active: {
       true: {
-        btn: 'after:opacity-100 text-blue-500',
+        btn: 'bg-gray-900 text-white',
       },
       false: {
-        btn: 'text-gray-500',
+        btn: 'text-gray-600 hover:text-gray-900',
       },
     },
   },

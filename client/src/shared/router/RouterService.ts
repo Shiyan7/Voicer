@@ -1,5 +1,6 @@
 import { Navigator } from '@solidjs/router';
-import { singleton } from 'tsyringe';
+
+import { singleton } from '@/shared/di';
 
 @singleton()
 export class RouterService {
