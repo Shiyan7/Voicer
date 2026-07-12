@@ -1,8 +1,7 @@
-import { injectable } from '@/shared/di';
-
 import { MeetingsService, MeetingsViewModel } from '@/entities/meeting';
 import { ToastsViewModel } from '@/entities/toasts';
 import { RecorderViewModel } from '@/features/call-recorder';
+import { injectable } from '@/shared/di';
 import { i18n } from '@/shared/i18n';
 import { isTauri } from '@/shared/isTauri';
 import { formatSeconds } from '@/shared/lib/time';
@@ -42,7 +41,7 @@ export class MeetingsPageViewModel extends StatefulViewModel {
 
   /** Desktop-only manual recording, hidden while a recording is in flight. */
   get canRecord() {
-    return isTauri() && !this.recorder.isBarVisible;
+    return isTauri() && !this.recorder.isRecordingInFlight;
   }
 
   get cards() {
@@ -88,6 +87,7 @@ export class MeetingsPageViewModel extends StatefulViewModel {
         title: file.name.replace(/\.[^.]+$/, ''),
         source: 'manual',
         startedAt: new Date().toISOString(),
+        language: i18n.locale(),
       });
 
       const uploaded = await this.meetingsService.uploadAudio(meeting.id, file);

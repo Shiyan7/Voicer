@@ -12,7 +12,11 @@ import { MeetingEntity, MeetingStatus } from '../meetings/meeting.entity';
 import { MeetingsService } from '../meetings/meetings.service';
 import { StorageService } from '../storage/storage.service';
 import { AudioService } from './audio.service';
-import { isGeminiQuotaError, SummaryService } from './summary.service';
+import {
+  isGeminiQuotaError,
+  isInvalidSummaryResponseError,
+  SummaryService,
+} from './summary.service';
 import { TranscriptionService } from './transcription.service';
 
 const ERROR_MESSAGE_MAX_LENGTH = 500;
@@ -135,6 +139,7 @@ export class ProcessingService implements OnModuleInit {
         meeting.id,
         leftChunks,
         rightChunks,
+        meeting.language,
       );
 
       await this.setStatus(meeting, MeetingStatus.SUMMARIZING);
@@ -146,7 +151,7 @@ export class ProcessingService implements OnModuleInit {
         try {
           await this.summaryService.summarizeAndSave(meeting, segments);
         } catch (e) {
-          if (!isGeminiQuotaError(e)) {
+          if (!isGeminiQuotaError(e) && !isInvalidSummaryResponseError(e)) {
             throw e;
           }
 

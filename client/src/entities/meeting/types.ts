@@ -1,11 +1,5 @@
 export type MeetingSource =
-  | 'zoom'
-  | 'meet'
-  | 'teams'
-  | 'telegram'
-  | 'discord'
-  | 'other'
-  | 'manual';
+  'zoom' | 'meet' | 'teams' | 'telegram' | 'discord' | 'other' | 'manual';
 
 export type MeetingStatus =
   | 'recording'
@@ -58,6 +52,7 @@ export type CreateMeetingInput = {
   title?: string;
   source: MeetingSource;
   startedAt: string;
+  language?: 'ru' | 'en';
 };
 
 export type UpdateMeetingInput = {

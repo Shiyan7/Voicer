@@ -5,153 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a2cb5afd-a1c5-4186-8914-dc73aeeb0bc9" name="Changes" comment="voicer mvp">
-      <change afterPath="$PROJECT_DIR$/.claude/launch.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src-tauri/Info.plist" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src-tauri/src/audio/mic.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src-tauri/src/audio/mod.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src-tauri/src/audio/recorder.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src-tauri/src/audio/system.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src-tauri/src/commands.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src-tauri/src/detect/mic_activity.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src-tauri/src/detect/mod.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src-tauri/src/detect/process.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src-tauri/src/permissions.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src-tauri/src/tray.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src-tauri/src/upload.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/entities/action-item/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/entities/action-item/model/ActionItemsService.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/entities/action-item/model/ActionItemsViewModel.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/entities/meeting/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/entities/meeting/model/MeetingsService.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/entities/meeting/model/MeetingsViewModel.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/entities/meeting/types.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/features/call-recorder/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/features/call-recorder/model/RecorderService.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/features/call-recorder/model/RecorderViewModel.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/features/call-recorder/ui/CallPromptToast.styles.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/features/call-recorder/ui/CallPromptToast.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/features/call-recorder/ui/CallRecorderHost.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/features/call-recorder/ui/RecordingBar.styles.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/features/call-recorder/ui/RecordingBar.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/pages/actions/ActionsPage.styles.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/pages/actions/model/ActionsPageViewModel.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/pages/meeting-details/MeetingDetailsPage.styles.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/pages/meeting-details/MeetingDetailsPage.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/pages/meeting-details/model/MeetingDetailsViewModel.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/pages/meetings/MeetingsPage.styles.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/pages/meetings/model/MeetingsPageViewModel.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/pages/settings/SettingsViewModel.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/shared/api/UnauthorizedError.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/shared/api/tokenStore.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/shared/di/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/shared/lib/markdown/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/shared/lib/markdown/parseInlines.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/shared/lib/markdown/parseMarkdownBlocks.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/shared/lib/time/formatMs.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/shared/lib/time/formatSeconds.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/shared/lib/time/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/shared/socket/SocketService.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/shared/socket/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/shared/ui/audio-player/AudioPlayer.styles.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/shared/ui/audio-player/AudioPlayer.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/shared/ui/audio-player/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/shared/ui/status-badge/StatusBadge.styles.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/shared/ui/status-badge/StatusBadge.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/shared/ui/status-badge/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/package-lock.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/events/events.gateway.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/events/events.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/events/meeting.events.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/meetings/action-item.entity.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/meetings/action-items.controller.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/meetings/action-items.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/meetings/dto/create-meeting.input.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/meetings/dto/meeting-list-item.model.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/meetings/dto/meeting.model.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/meetings/dto/update-action-item.input.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/meetings/dto/update-meeting.input.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/meetings/meeting.entity.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/meetings/meetings.controller.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/meetings/meetings.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/meetings/meetings.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/meetings/transcript-segment.entity.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/processing/audio.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/processing/fetch-retry.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/processing/processing.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/processing/processing.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/processing/summary.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/processing/transcript-merge.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/processing/transcription.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/storage/playback.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/storage/storage.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/storage/storage.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/storage/a2a80e53-fed1-47c8-8d1a-40e9804378b9/5ebb5047-37ad-4ec9-8af7-6a9fb9d8f31e.flac" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/storage/a2a80e53-fed1-47c8-8d1a-40e9804378b9/5ebb5047-37ad-4ec9-8af7-6a9fb9d8f31e.playback.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/storage/a2a80e53-fed1-47c8-8d1a-40e9804378b9/860d2bcc-ad22-4452-8783-26ca0f370e77.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/storage/a2a80e53-fed1-47c8-8d1a-40e9804378b9/94b42331-98cc-4c18-baaf-244742bf2228.flac" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/storage/a2a80e53-fed1-47c8-8d1a-40e9804378b9/94b42331-98cc-4c18-baaf-244742bf2228.playback.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/storage/a2a80e53-fed1-47c8-8d1a-40e9804378b9/ad33ea2d-2915-42be-9268-8d25df7f45a1.flac" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/storage/a2a80e53-fed1-47c8-8d1a-40e9804378b9/ad33ea2d-2915-42be-9268-8d25df7f45a1.playback.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/storage/a2a80e53-fed1-47c8-8d1a-40e9804378b9/b52ba71d-4247-40dc-bdbe-4556cec40177.flac" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/storage/a2a80e53-fed1-47c8-8d1a-40e9804378b9/baeb5503-7b7a-4781-a481-26de7e888770.flac" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/storage/a2a80e53-fed1-47c8-8d1a-40e9804378b9/baeb5503-7b7a-4781-a481-26de7e888770.playback.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/storage/a2a80e53-fed1-47c8-8d1a-40e9804378b9/e23bfc96-027f-44e3-9148-fcf87ecfc08c.mp3" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.kiro/skills/mvvm-architecture.md" beforeDir="false" afterPath="$PROJECT_DIR$/.claude/skills/mvvm-architecture.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.kiro/skills/styling-conventions.md" beforeDir="false" afterPath="$PROJECT_DIR$/.claude/skills/styling-conventions.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/locales.txt" beforeDir="false" afterPath="$PROJECT_DIR$/client/locales.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src-tauri/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/Cargo.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src-tauri/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src-tauri/build.rs" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/build.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src-tauri/capabilities/default.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/capabilities/default.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src-tauri/src/audio/recorder.rs" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/src/audio/recorder.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src-tauri/src/detect/mic_activity.rs" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/src/detect/mic_activity.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src-tauri/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/entities/session/model/SessionService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/session/model/SessionService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/entities/session/model/SessionViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/session/model/SessionViewModel.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/entities/toasts/model/ToastsViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/toasts/model/ToastsViewModel.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/entities/toasts/ui/Toasts.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/toasts/ui/Toasts.styles.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/features/auth/model/AuthService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/auth/model/AuthService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/features/auth/model/AuthViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/auth/model/AuthViewModel.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/features/auth/ui/AuthModal.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/auth/ui/AuthModal.styles.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/features/auth/ui/AuthModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/auth/ui/AuthModal.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/pages/actions/ActionsPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/actions/ActionsPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/pages/meetings/MeetingsPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/meetings/MeetingsPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/pages/settings/Settings.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/settings/Settings.styles.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/pages/settings/SettingsPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/settings/SettingsPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/ApplicationViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ApplicationViewModel.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/api/ApiService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/api/ApiService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/api/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/api/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/i18n/locales/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/i18n/locales/en.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/i18n/locales/ru.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/i18n/locales/ru.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/isTauri.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/isTauri.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/lib/modal.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/lib/modal.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/router/LocationService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/router/LocationService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/router/RouterService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/router/RouterService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/router/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/router/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/router/paths.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/router/paths.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/router/routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/router/routes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/ui/button/Button.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ui/button/Button.styles.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/ui/icon/sprite.gen.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ui/icon/sprite.gen.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/ui/input/Input.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ui/input/Input.styles.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/ui/modal/Modal.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ui/modal/Modal.styles.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/ui/tabs/Tabs.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ui/tabs/Tabs.styles.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/view-model/DIContext.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/view-model/DIContext.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/view-model/ViewModelScope.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/view-model/ViewModelScope.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/widgets/main-layout/MainLayout.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/main-layout/MainLayout.styles.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/widgets/main-layout/MainLayout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/main-layout/MainLayout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/model/NavigationViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/navigation/model/NavigationViewModel.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/ui/Navigation.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/navigation/ui/Navigation.styles.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/server/.env.example" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/.eslintrc.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/server/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/app.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/auth/auth.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/auth/auth.controller.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/auth/auth.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/auth/auth.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/auth/jwt.strategy.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/auth/jwt.strategy.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/entities/meeting/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/meeting/types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/features/call-recorder/model/RecorderViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/call-recorder/model/RecorderViewModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/features/call-recorder/ui/CallRecorderHost.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/call-recorder/ui/CallRecorderHost.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/pages/meetings/model/MeetingsPageViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/meetings/model/MeetingsPageViewModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/server/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/meetings/dto/create-meeting.input.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/meetings/dto/create-meeting.input.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/meetings/meeting.entity.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/meetings/meeting.entity.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/meetings/meetings.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/meetings/meetings.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/processing/audio.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/processing/audio.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/processing/processing.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/processing/processing.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/processing/summary.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/processing/summary.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/processing/transcription.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/processing/transcription.service.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -261,7 +133,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.be-dev">
+  <component name="RunManager" selected="npm.dev">
     <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/voicer/client/dist/index.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
@@ -291,7 +163,7 @@
       <workItem from="1783667055543" duration="1480000" />
       <workItem from="1783670446643" duration="4878000" />
       <workItem from="1783746954437" duration="3087000" />
-      <workItem from="1783832460949" duration="201000" />
+      <workItem from="1783832460949" duration="4345000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -349,7 +221,15 @@
       <option name="project" value="LOCAL" />
       <updated>1783750893334</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="voicer mvp">
+      <option name="closed" value="true" />
+      <created>1783832698775</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1783832698776</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

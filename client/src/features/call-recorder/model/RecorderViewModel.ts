@@ -17,8 +17,6 @@ import {
 
 export enum RecorderStatus {
   Idle = 'idle',
-  /** Call detected, waiting for the user to accept or skip. */
-  Prompting = 'prompting',
   Recording = 'recording',
   Uploading = 'uploading',
 }
@@ -39,7 +37,8 @@ export class RecorderViewModel extends SingletonViewModel {
 
   source: CallSource = 'other';
 
-  autoRecord = localStorage.getItem(AUTO_RECORD_KEY) === 'true';
+  /** Calls are recorded automatically unless the user explicitly disables it. */
+  autoRecord = localStorage.getItem(AUTO_RECORD_KEY) !== 'false';
 
   elapsedSec = 0;
 
@@ -55,12 +54,15 @@ export class RecorderViewModel extends SingletonViewModel {
 
   private startedAtMs: number | null = null;
 
-  /** "Skip" mutes further call-detected events until the call ends. */
-  private skippedCurrentCall = false;
-
   private isSetup = false;
 
   private isStarting = false;
+
+  /** Keep the recording controls for user-initiated recordings only. */
+  private displayRecordingBar = false;
+
+  /** Automatic calls complete silently; manual recordings retain feedback. */
+  private notifyOnCompletion = false;
 
   private timerId: ReturnType<typeof setInterval> | null = null;
 
@@ -73,25 +75,24 @@ export class RecorderViewModel extends SingletonViewModel {
     super();
   }
 
-  get isPromptVisible() {
-    return this.status === RecorderStatus.Prompting;
-  }
-
   get isBarVisible() {
     return (
+      this.displayRecordingBar &&
+      (this.status === RecorderStatus.Recording ||
+        this.status === RecorderStatus.Uploading)
+    );
+  }
+
+  get isRecordingInFlight() {
+    return (
       this.status === RecorderStatus.Recording ||
-      this.status === RecorderStatus.Uploading
+      this.status === RecorderStatus.Uploading ||
+      this.isStarting
     );
   }
 
   get isUploading() {
     return this.status === RecorderStatus.Uploading;
-  }
-
-  get promptMessage() {
-    return this.source === 'other'
-      ? i18n.t('recorder.call_detected_unknown')
-      : i18n.t('recorder.call_detected', { source: this.sourceLabel ?? '' });
   }
 
   get sourceLabel() {
@@ -128,19 +129,6 @@ export class RecorderViewModel extends SingletonViewModel {
     this.recorder.onUploadProgress(this.handleUploadProgress);
 
     void this.restoreState();
-  };
-
-  acceptPrompt = () => {
-    if (this.status !== RecorderStatus.Prompting) return;
-
-    void this.startRecording(this.source);
-  };
-
-  skipPrompt = () => {
-    if (this.status !== RecorderStatus.Prompting) return;
-
-    this.skippedCurrentCall = true;
-    this.status = RecorderStatus.Idle;
   };
 
   /** Manual recording (e.g. an in-person meeting), no call detection involved. */
@@ -184,23 +172,13 @@ export class RecorderViewModel extends SingletonViewModel {
   };
 
   private handleCallDetected = (event: CallDetectedEvent) => {
-    if (this.status !== RecorderStatus.Idle || this.skippedCurrentCall) return;
+    if (this.status !== RecorderStatus.Idle || !this.autoRecord) return;
 
-    this.source = event.source;
-
-    if (this.autoRecord) {
-      void this.startRecording(event.source);
-    } else {
-      this.status = RecorderStatus.Prompting;
-    }
+    void this.startRecording(event.source);
   };
 
   private handleCallEnded = () => {
-    this.skippedCurrentCall = false;
-
-    if (this.status === RecorderStatus.Prompting) {
-      this.status = RecorderStatus.Idle;
-    } else if (this.status === RecorderStatus.Recording) {
+    if (this.status === RecorderStatus.Recording) {
       this.stop();
     }
   };
@@ -209,13 +187,15 @@ export class RecorderViewModel extends SingletonViewModel {
     source: CallSource,
     meetingSource: CallSource | 'manual' = source,
   ) => {
-    if (this.isBarVisible || this.isStarting) return;
+    if (this.isRecordingInFlight) return;
     this.isStarting = true;
 
     try {
       const started = await this.recorder.startRecording();
 
       this.status = RecorderStatus.Recording;
+      this.displayRecordingBar = meetingSource === 'manual';
+      this.notifyOnCompletion = meetingSource === 'manual';
       this.source = source;
       this.localId = started.localId;
       this.recordingPath = started.path;
@@ -230,6 +210,7 @@ export class RecorderViewModel extends SingletonViewModel {
         const meeting = await this.meetings.create({
           source: meetingSource,
           startedAt: new Date(started.startedAt).toISOString(),
+          language: i18n.locale(),
         });
         this.meetingId = meeting.id;
         this.writePending();
@@ -238,7 +219,10 @@ export class RecorderViewModel extends SingletonViewModel {
       }
     } catch {
       this.status = RecorderStatus.Idle;
-      this.toasts.show('error', i18n.t('recorder.start_failed') ?? '');
+      this.displayRecordingBar = false;
+      if (meetingSource === 'manual') {
+        this.toasts.show('error', i18n.t('recorder.start_failed') ?? '');
+      }
     } finally {
       this.isStarting = false;
     }
@@ -264,6 +248,7 @@ export class RecorderViewModel extends SingletonViewModel {
         const meeting = await this.meetings.create({
           source: this.source,
           startedAt: new Date(result.startedAt).toISOString(),
+          language: i18n.locale(),
         });
         meetingId = meeting.id;
       }
@@ -281,10 +266,14 @@ export class RecorderViewModel extends SingletonViewModel {
       // Uploaded to the server — the local copy is no longer needed.
       await this.recorder.deleteRecording(result.path).catch(() => {});
 
-      this.toasts.show('success', i18n.t('recorder.upload_done') ?? '');
+      if (this.notifyOnCompletion) {
+        this.toasts.show('success', i18n.t('recorder.upload_done') ?? '');
+      }
       await this.meetings.load();
     } catch {
-      this.toasts.show('error', i18n.t('recorder.upload_failed') ?? '');
+      if (this.notifyOnCompletion) {
+        this.toasts.show('error', i18n.t('recorder.upload_failed') ?? '');
+      }
     } finally {
       this.clearPending();
       this.status = RecorderStatus.Idle;
@@ -292,6 +281,8 @@ export class RecorderViewModel extends SingletonViewModel {
       this.localId = null;
       this.recordingPath = null;
       this.startedAtMs = null;
+      this.displayRecordingBar = false;
+      this.notifyOnCompletion = false;
     }
   };
 

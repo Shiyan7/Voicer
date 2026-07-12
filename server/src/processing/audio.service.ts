@@ -11,6 +11,8 @@ const EXEC_OPTIONS = { maxBuffer: 16 * 1024 * 1024 };
 
 /** Chunk length keeping mono 16kHz FLAC well under Groq's 25MB file limit. */
 const CHUNK_SECONDS = 600;
+/** Chunks below this average level are silence for speech-recognition purposes. */
+const AUDIBLE_MEAN_VOLUME_DB = -70;
 
 export interface SplitChannelsResult {
   /** Left channel (the user, speaker 'me'), mono 16kHz FLAC. */
@@ -23,6 +25,20 @@ export interface AudioChunk {
   path: string;
   /** Absolute offset of this chunk from the start of the recording. */
   offsetMs: number;
+}
+
+export function parseMeanVolumeDb(ffmpegOutput: string): number | null {
+  const match = ffmpegOutput.match(/mean_volume:\s*(-?[\d.]+) dB/);
+  if (!match) {
+    return null;
+  }
+
+  const value = Number.parseFloat(match[1]);
+  return Number.isFinite(value) ? value : null;
+}
+
+export function isAudibleMeanVolume(meanVolumeDb: number): boolean {
+  return meanVolumeDb > AUDIBLE_MEAN_VOLUME_DB;
 }
 
 @Injectable()
@@ -128,8 +144,15 @@ export class AudioService implements OnModuleInit {
 
     for (const name of files) {
       const path = join(workDir, name);
-      chunks.push({ path, offsetMs });
-      offsetMs += await this.probeDurationMs(path);
+      const durationMs = await this.probeDurationMs(path);
+
+      if (await this.hasAudibleAudio(path)) {
+        chunks.push({ path, offsetMs });
+      } else {
+        this.logger.debug(`Skipping silent audio chunk ${name}`);
+      }
+
+      offsetMs += durationMs;
     }
 
     return chunks;
@@ -166,6 +189,23 @@ export class AudioService implements OnModuleInit {
     } catch (e) {
       this.logger.warn(`Failed to clean up temp dir ${workDir}: ${e}`);
     }
+  }
+
+  /**
+   * Do not send digital silence to Whisper: it can hallucinate short phrases
+   * even when no speaker is present.
+   */
+  private async hasAudibleAudio(path: string): Promise<boolean> {
+    const { stderr } = await execFileAsync(
+      'ffmpeg',
+      ['-v', 'info', '-i', path, '-af', 'volumedetect', '-f', 'null', '-'],
+      EXEC_OPTIONS,
+    );
+    const meanVolumeDb = parseMeanVolumeDb(stderr);
+
+    // If ffmpeg does not provide a measurement, preserve the chunk rather
+    // than accidentally dropping a real part of a conversation.
+    return meanVolumeDb === null || isAudibleMeanVolume(meanVolumeDb);
   }
 
   private assertFfmpeg(): void {

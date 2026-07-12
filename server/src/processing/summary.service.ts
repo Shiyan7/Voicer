@@ -7,7 +7,8 @@ import { TranscriptSpeaker } from '../meetings/transcript-segment.entity';
 import { fetchWithRetry } from './fetch-retry';
 import { TranscriptSegmentDraft } from './transcription.service';
 
-const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
+const GEMINI_API_BASE =
+  'https://generativelanguage.googleapis.com/v1beta/models';
 /** Gemini 2.0 Flash was shut down on 2026-06-01. */
 const DEFAULT_GEMINI_MODEL = 'gemini-3.5-flash';
 
@@ -17,10 +18,37 @@ interface SummaryResult {
   actionItems: string[];
 }
 
+const SUMMARY_RESPONSE_SCHEMA = {
+  type: 'object',
+  properties: {
+    title: {
+      type: 'string',
+      description: 'Короткое название встречи, не более 8 слов.',
+    },
+    summary: {
+      type: 'string',
+      description: 'Краткое markdown-резюме встречи.',
+    },
+    actionItems: {
+      type: 'array',
+      description: 'Список задач пользователя.',
+      items: { type: 'string' },
+    },
+  },
+  required: ['title', 'summary', 'actionItems'],
+} as const;
+
+export class InvalidSummaryResponseError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'InvalidSummaryResponseError';
+  }
+}
+
 const PROMPT_HEADER = `Ты — ассистент, обрабатывающий транскрипт звонка. Реплики помечены: "Я" — пользователь, "Собеседник" — вторая сторона.
 
-Верни СТРОГО JSON-объект следующей формы (без markdown-обёртки, без комментариев):
-{"title": string, "summary": string, "actionItems": string[]}
+Верни СТРОГО JSON-объект без markdown-обёртки и комментариев, например:
+{"title":"Короткое название","summary":"- Ключевой пункт","actionItems":["Сделать задачу"]}
 
 Требования:
 - "title": короткое название встречи (до 8 слов) на языке транскрипта.
@@ -125,7 +153,7 @@ export class SummaryService {
       }
     }
 
-    throw lastError;
+    throw new InvalidSummaryResponseError(lastError.message);
   }
 
   private async callGemini(
@@ -136,24 +164,29 @@ export class SummaryService {
       this.configService.get<string>('GEMINI_MODEL') ?? DEFAULT_GEMINI_MODEL;
     const url = `${GEMINI_API_BASE}/${encodeURIComponent(model)}:generateContent`;
 
-    const response = await fetchWithRetry(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-goog-api-key': apiKey,
-      },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: PROMPT_HEADER + transcript }] }],
-        generationConfig: {
-          responseMimeType: 'application/json',
-          temperature: 0.2,
+    const response = await fetchWithRetry(
+      url,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': apiKey,
         },
-      }),
-    }, {
-      // A quota-exhausted request cannot succeed a second later. Retrying it
-      // only makes a small upload appear stuck for several additional seconds.
-      retryOnRateLimit: false,
-    });
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: PROMPT_HEADER + transcript }] }],
+          generationConfig: {
+            responseMimeType: 'application/json',
+            responseSchema: SUMMARY_RESPONSE_SCHEMA,
+            temperature: 0.2,
+          },
+        }),
+      },
+      {
+        // A quota-exhausted request cannot succeed a second later. Retrying it
+        // only makes a small upload appear stuck for several additional seconds.
+        retryOnRateLimit: false,
+      },
+    );
 
     const payload = (await response.json()) as {
       candidates?: Array<{
@@ -173,7 +206,13 @@ export class SummaryService {
   }
 
   private parseSummary(text: string): SummaryResult {
-    const parsed: unknown = JSON.parse(text);
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(this.unwrapJson(text));
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      throw new InvalidSummaryResponseError(message);
+    }
 
     if (
       !parsed ||
@@ -185,10 +224,18 @@ export class SummaryService {
         (item) => typeof item === 'string',
       )
     ) {
-      throw new Error('Unexpected summary JSON shape');
+      throw new InvalidSummaryResponseError('Unexpected summary JSON shape');
     }
 
     return parsed as SummaryResult;
+  }
+
+  /** Tolerate a markdown code fence from older model versions. */
+  private unwrapJson(text: string): string {
+    const trimmed = text.trim();
+    const fenced = trimmed.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
+
+    return fenced ? fenced[1] : trimmed;
   }
 }
 
@@ -199,4 +246,8 @@ export function isGeminiQuotaError(error: unknown): boolean {
     (error.message.includes('HTTP 429') ||
       error.message.includes('RESOURCE_EXHAUSTED'))
   );
+}
+
+export function isInvalidSummaryResponseError(error: unknown): boolean {
+  return error instanceof InvalidSummaryResponseError;
 }

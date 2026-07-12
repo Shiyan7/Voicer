@@ -105,14 +105,25 @@ impl Recorder {
                 None
             }
         };
-        let system = match SystemSource::start(sys_queue.clone()) {
-            Ok(s) => Some(s),
-            Err(e) => {
-                eprintln!("[voicer] system audio capture failed: {e}");
-                warnings.push(format!("system audio unavailable: {e}"));
-                sys_queue.mark_failed();
-                None
+        // ScreenCaptureKit itself opens the macOS consent dialog when access
+        // is unavailable. Never invoke it until the preflight check confirms
+        // access, otherwise every auto-recording attempt can re-open that
+        // system dialog.
+        let system = if crate::permissions::screen_recording_authorized() {
+            match SystemSource::start(sys_queue.clone()) {
+                Ok(s) => Some(s),
+                Err(e) => {
+                    eprintln!("[voicer] system audio capture failed: {e}");
+                    warnings.push(format!("system audio unavailable: {e}"));
+                    sys_queue.mark_failed();
+                    None
+                }
             }
+        } else {
+            warnings
+                .push("system audio unavailable: screen recording permission not granted".into());
+            sys_queue.mark_failed();
+            None
         };
 
         if mic.is_none() && system.is_none() {
@@ -268,7 +279,9 @@ fn writer_loop(
         }
     }
 
-    writer.finalize().map_err(|e| format!("wav finalize: {e}"))?;
+    writer
+        .finalize()
+        .map_err(|e| format!("wav finalize: {e}"))?;
     Ok(frames)
 }
 

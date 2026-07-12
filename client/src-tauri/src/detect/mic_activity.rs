@@ -8,8 +8,8 @@
 //! input device (in that mode, while we record, detection is frozen because
 //! our own stream also flips the property).
 //!
-//! Debounce: `call-detected` is emitted only after ~5 s of continuous
-//! activity, `call-ended` after ~5 s of continuous inactivity.
+//! Debounce: `call-detected` is emitted only after ~2 s of continuous
+//! activity, `call-ended` after ~2 s of continuous inactivity.
 //!
 //! A CoreAudio property listener on the default input device (re-registered
 //! when the default device changes) wakes the thread early; otherwise it
@@ -26,7 +26,6 @@ use coreaudio_sys::{
 };
 use serde::Serialize;
 use tauri::{AppHandle, Emitter};
-use tauri_plugin_notification::NotificationExt;
 
 use super::process::{self, global_address, SYSTEM_OBJECT};
 use crate::audio::RECORDING_ACTIVE;
@@ -36,7 +35,8 @@ const PROP_DEFAULT_INPUT_DEVICE: u32 = u32::from_be_bytes(*b"dIn ");
 /// `kAudioDevicePropertyDeviceIsRunningSomewhere` ('gone')
 const PROP_IS_RUNNING_SOMEWHERE: u32 = u32::from_be_bytes(*b"gone");
 
-const DEBOUNCE: Duration = Duration::from_secs(5);
+const START_DEBOUNCE: Duration = Duration::from_secs(2);
+const END_DEBOUNCE: Duration = Duration::from_secs(2);
 const POLL_INTERVAL: Duration = Duration::from_secs(1);
 
 #[derive(Serialize, Clone)]
@@ -130,7 +130,7 @@ fn run(app: &AppHandle) {
             Phase::Idle if active => Phase::Rising(now),
             Phase::Idle => Phase::Idle,
             Phase::Rising(_) if !active => Phase::Idle,
-            Phase::Rising(since) if now.duration_since(since) >= DEBOUNCE => {
+            Phase::Rising(since) if now.duration_since(since) >= START_DEBOUNCE => {
                 emit_call_detected(app, &last_source, last_bundle.clone());
                 Phase::Active
             }
@@ -138,7 +138,7 @@ fn run(app: &AppHandle) {
             Phase::Active if !active => Phase::Falling(now),
             Phase::Active => Phase::Active,
             Phase::Falling(_) if active => Phase::Active,
-            Phase::Falling(since) if now.duration_since(since) >= DEBOUNCE => {
+            Phase::Falling(since) if now.duration_since(since) >= END_DEBOUNCE => {
                 emit_call_ended(app);
                 Phase::Idle
             }
@@ -184,15 +184,6 @@ fn emit_call_detected(app: &AppHandle, source: &str, bundle_id: Option<String>) 
     };
     if let Err(e) = app.emit("call-detected", payload) {
         eprintln!("[voicer] failed to emit call-detected: {e}");
-    }
-    // Native notification (clicking it activates the app on macOS).
-    if !RECORDING_ACTIVE.load(std::sync::atomic::Ordering::Relaxed) {
-        let _ = app
-            .notification()
-            .builder()
-            .title("Voicer")
-            .body("Идёт звонок — записать?")
-            .show();
     }
 }
 

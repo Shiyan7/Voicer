@@ -16,8 +16,7 @@ pub fn run() {
 
     builder = builder
         .plugin(tauri_plugin_os::init())
-        .plugin(tauri_plugin_opener::init())
-        .plugin(tauri_plugin_notification::init());
+        .plugin(tauri_plugin_opener::init());
 
     #[cfg(desktop)]
     {

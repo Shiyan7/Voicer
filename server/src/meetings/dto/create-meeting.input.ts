@@ -1,4 +1,10 @@
-import { IsDateString, IsEnum, IsOptional, IsString } from 'class-validator';
+import {
+  IsDateString,
+  IsEnum,
+  IsIn,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { MeetingSource } from '../meeting.entity';
 
 export class CreateMeetingInput {
@@ -11,4 +17,8 @@ export class CreateMeetingInput {
 
   @IsDateString()
   startedAt: string;
+
+  @IsOptional()
+  @IsIn(['ru', 'en'])
+  language?: string;
 }

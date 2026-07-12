@@ -40,18 +40,26 @@ export class TranscriptionService {
     meetingId: string,
     leftChunks: AudioChunk[],
     rightChunks: AudioChunk[],
+    language: string | null,
   ): Promise<TranscriptSegmentDraft[]> {
     const apiKey = this.configService.get<string>('GROQ_API_KEY');
     if (!apiKey) {
       throw new Error('GROQ_API_KEY not set');
     }
+    // Meetings created before the client began sending a locale are treated
+    // as Russian by default. Deployments that need a different legacy default
+    // can set DEFAULT_TRANSCRIPTION_LANGUAGE.
+    const transcriptionLanguage =
+      language ??
+      this.configService.get<string>('DEFAULT_TRANSCRIPTION_LANGUAGE') ??
+      'ru';
 
     const meSegments = collectChannelSegments(
-      await this.transcribeChunks(leftChunks, apiKey),
+      await this.transcribeChunks(leftChunks, apiKey, transcriptionLanguage),
       TranscriptSpeaker.ME,
     );
     const otherSegments = collectChannelSegments(
-      await this.transcribeChunks(rightChunks, apiKey),
+      await this.transcribeChunks(rightChunks, apiKey, transcriptionLanguage),
       TranscriptSpeaker.OTHER,
     );
 
@@ -78,11 +86,12 @@ export class TranscriptionService {
   private async transcribeChunks(
     chunks: AudioChunk[],
     apiKey: string,
+    language: string | null,
   ): Promise<TranscribedChunk[]> {
     const result: TranscribedChunk[] = [];
 
     for (const chunk of chunks) {
-      const segments = await this.transcribeFile(chunk.path, apiKey);
+      const segments = await this.transcribeFile(chunk.path, apiKey, language);
       result.push({ offsetMs: chunk.offsetMs, segments });
     }
 
@@ -92,6 +101,7 @@ export class TranscriptionService {
   private async transcribeFile(
     path: string,
     apiKey: string,
+    language: string | null,
   ): Promise<RawWhisperSegment[]> {
     const buffer = await readFile(path);
 
@@ -103,7 +113,9 @@ export class TranscriptionService {
     );
     form.append('model', GROQ_MODEL);
     form.append('response_format', 'verbose_json');
-    // No `language` param — Whisper auto-detects it.
+    if (language) {
+      form.append('language', language);
+    }
 
     const response = await fetchWithRetry(GROQ_TRANSCRIPTIONS_URL, {
       method: 'POST',

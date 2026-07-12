@@ -50,6 +50,7 @@ export class MeetingsService {
       title: input.title ?? null,
       source: input.source,
       startedAt: new Date(input.startedAt),
+      language: input.language ?? null,
     });
 
     return this.meetingsRepository.save(meeting);
