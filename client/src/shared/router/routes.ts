@@ -8,7 +8,7 @@ export const routes = [
     component: lazy(() => import('@/pages/meetings/MeetingsPage')),
   },
   {
-    path: paths.meeting,
+    path: paths.meeting(':id'),
     component: lazy(() => import('@/pages/meeting-details/MeetingDetailsPage')),
   },
   {

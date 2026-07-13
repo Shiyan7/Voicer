@@ -1,27 +1,20 @@
-import { ActionItemsViewModel } from '@/entities/action-item';
-import { ToastsViewModel } from '@/entities/toasts';
-import { injectable } from '@/shared/di';
+import { injectable } from 'tsyringe';
+
+import { ActionItemData, ActionItemsService } from '@/entities/action-item';
 import { i18n } from '@/shared/i18n';
-import { getMeetingPath } from '@/shared/router';
 import { Tab } from '@/shared/ui/tabs';
 import { StatefulViewModel } from '@/shared/view-model';
 
-import { ActionItemGroup } from '../types/ActionItemGroup';
 import { ActionsFilter } from '../types/ActionsFilter';
 
 @injectable()
 export class ActionsPageViewModel extends StatefulViewModel {
+  items: ActionItemData[] = [];
+  isLoading = false;
   filter: ActionsFilter = 'open';
 
-  constructor(
-    private readonly actionItems: ActionItemsViewModel,
-    private readonly toasts: ToastsViewModel,
-  ) {
+  constructor(private readonly actionItems: ActionItemsService) {
     super();
-  }
-
-  get isLoading() {
-    return this.actionItems.isLoading && this.actionItems.items.length === 0;
   }
 
   get tabs(): Tab<ActionsFilter>[] {
@@ -31,52 +24,21 @@ export class ActionsPageViewModel extends StatefulViewModel {
     ];
   }
 
-  get emptyLabel() {
-    return this.actionItems.items.length === 0
-      ? i18n.t('actions.empty')
-      : i18n.t('actions.empty_open');
-  }
-
-  get groups(): ActionItemGroup[] {
-    const visible =
-      this.filter === 'open'
-        ? this.actionItems.items.filter((item) => !item.isDone)
-        : this.actionItems.items;
-
-    const groups = new Map<string, ActionItemGroup>();
-
-    for (const item of visible) {
-      let group = groups.get(item.meetingId);
-
-      if (!group) {
-        group = {
-          meetingId: item.meetingId,
-          title: item.meetingTitle?.trim() || i18n.t('meetings.untitled'),
-          meetingHref: getMeetingPath(item.meetingId),
-          items: [],
-        };
-        groups.set(item.meetingId, group);
-      }
-
-      group.items.push(item);
-    }
-
-    return [...groups.values()];
-  }
-
   setFilter = (value: ActionsFilter) => {
     this.filter = value;
   };
 
-  toggle = async (id: string) => {
+  protected onMount() {
+    void this.load();
+  }
+
+  private load = async () => {
+    this.isLoading = true;
+
     try {
-      await this.actionItems.toggleDone(id);
-    } catch {
-      this.toasts.show('error', i18n.t('actions.update_failed'));
+      this.items = await this.actionItems.get();
+    } finally {
+      this.isLoading = false;
     }
   };
-
-  protected onMount() {
-    void this.actionItems.load();
-  }
 }

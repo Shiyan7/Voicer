@@ -1,3 +1,5 @@
+import { ActionItemData } from '@/entities/action-item';
+
 export type MeetingSource =
   'zoom' | 'meet' | 'teams' | 'telegram' | 'discord' | 'other' | 'manual';
 
@@ -34,18 +36,9 @@ export type TranscriptSegment = {
   text: string;
 };
 
-export type ActionItem = {
-  id: string;
-  meetingId: string;
-  text: string;
-  isDone: boolean;
-  createdAt: string;
-  meetingTitle?: string | null;
-};
-
 export type MeetingDetails = Meeting & {
   segments: TranscriptSegment[];
-  actionItems: ActionItem[];
+  actionItems: ActionItemData[];
 };
 
 export type CreateMeetingInput = {

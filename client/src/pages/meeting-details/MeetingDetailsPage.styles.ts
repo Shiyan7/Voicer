@@ -27,16 +27,6 @@ export const meetingDetailsStyles = tv({
     summaryParagraph: 'text-sm leading-6 text-gray-700',
     summaryList:
       'flex list-disc flex-col gap-1 pl-5 text-sm leading-6 text-gray-700',
-    actionRow: 'flex items-start gap-3 py-2',
-    checkbox: `
-      mt-0.5 flex size-5 shrink-0 cursor-pointer items-center justify-center
-      rounded-full border border-gray-300 bg-transparent text-white
-      transition-colors duration-150 outline-none
-      hover:border-gray-500
-      focus-visible:ring-2 focus-visible:ring-gray-500/60 focus-visible:ring-offset-1
-    `,
-    actionText:
-      'text-sm leading-6 text-gray-800 transition-colors duration-150',
     transcript: 'flex flex-col gap-0.5',
     segment: `
       flex w-full gap-4 rounded-xl px-3 py-2 text-left
@@ -63,12 +53,6 @@ export const meetingDetailsStyles = tv({
     modalActions: 'flex justify-end gap-2',
   },
   variants: {
-    done: {
-      true: {
-        checkbox: 'border-gray-900 bg-gray-900',
-        actionText: 'text-gray-400 line-through',
-      },
-    },
     active: {
       true: {
         segment: 'bg-gray-100',

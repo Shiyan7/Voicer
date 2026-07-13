@@ -1,7 +1,6 @@
 export { MeetingsService } from './model/MeetingsService';
 export { MeetingsViewModel } from './model/MeetingsViewModel';
 export type {
-  ActionItem,
   CreateMeetingInput,
   Meeting,
   MeetingDetails,

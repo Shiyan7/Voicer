@@ -1,1 +1,2 @@
-export { parseMarkdownBlocks } from './parseMarkdownBlocks';
+export type { MarkdownInline } from './parseInlines';
+export { type MarkdownBlock, parseMarkdownBlocks } from './parseMarkdownBlocks';

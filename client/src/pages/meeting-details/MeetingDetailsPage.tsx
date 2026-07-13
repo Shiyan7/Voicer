@@ -1,5 +1,6 @@
 import { For, Match, Show, Switch } from 'solid-js';
 
+import { ActionItem } from '@/entities/action-item';
 import { i18n } from '@/shared/i18n';
 import { MarkdownBlock, MarkdownInline } from '@/shared/lib/markdown';
 import { MODALS } from '@/shared/lib/modal';
@@ -122,23 +123,7 @@ export default function MeetingDetailsPage() {
                     {i18n.t('meetings.action_items')}
                   </h2>
                   <For each={vm.actionItems}>
-                    {(item) => (
-                      <div class={styles.actionRow()}>
-                        <button
-                          class={styles.checkbox({ done: item.isDone })}
-                          aria-pressed={item.isDone}
-                          type="button"
-                          onClick={() => vm.toggleActionItem(item.id)}
-                        >
-                          <Show when={item.isDone}>
-                            <Icon size={11} name="common:check" />
-                          </Show>
-                        </button>
-                        <span class={styles.actionText({ done: item.isDone })}>
-                          {item.text}
-                        </span>
-                      </div>
-                    )}
+                    {(item) => <ActionItem class="py-2" item={item} />}
                   </For>
                 </section>
               </Show>

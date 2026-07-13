@@ -1,2 +1,3 @@
-export { ActionItemsService } from './model/ActionItemsService';
-export { ActionItemsViewModel } from './model/ActionItemsViewModel';
+export { ActionItemsService } from './api/ActionItemsService';
+export type { ActionItemData } from './types/ActionItemData';
+export { ActionItem } from './ui/ActionItem';

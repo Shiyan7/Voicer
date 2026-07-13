@@ -1,3 +1,4 @@
+import { SessionViewModel } from '@/entities/session';
 import {
   PermissionsStatus,
   RecorderService,
@@ -28,25 +29,9 @@ export class SettingsViewModel extends StatefulViewModel {
   constructor(
     private readonly recorderService: RecorderService,
     private readonly recorder: RecorderViewModel,
+    private readonly session: SessionViewModel,
   ) {
     super();
-  }
-
-  protected onMount() {
-    if (!this.isDesktop) return;
-
-    void this.refreshPermissions();
-    this.pollId = setInterval(
-      () => void this.refreshPermissions(),
-      PERMISSIONS_POLL_MS,
-    );
-  }
-
-  protected onDispose() {
-    if (this.pollId !== null) {
-      clearInterval(this.pollId);
-      this.pollId = null;
-    }
   }
 
   get locale() {
@@ -87,18 +72,37 @@ export class SettingsViewModel extends StatefulViewModel {
   requestPermissions = async () => {
     try {
       this.permissions = await this.recorderService.requestPermissions();
-    } catch {
-    }
+    } catch {}
   };
 
   openSystemSettings = (pane: SystemSettingsPane) => {
     void this.recorderService.openSystemSettings(pane);
   };
 
+  onLogoutClick = () => {
+    void this.session.logout();
+  };
+
+  protected onMount() {
+    if (!this.isDesktop) return;
+
+    void this.refreshPermissions();
+    this.pollId = setInterval(
+      () => void this.refreshPermissions(),
+      PERMISSIONS_POLL_MS,
+    );
+  }
+
+  protected onDispose() {
+    if (this.pollId !== null) {
+      clearInterval(this.pollId);
+      this.pollId = null;
+    }
+  }
+
   private refreshPermissions = async () => {
     try {
       this.permissions = await this.recorderService.checkPermissions();
-    } catch {
-    }
+    } catch {}
   };
 }

@@ -37,6 +37,7 @@ export default function SettingsPage() {
                 </For>
               </select>
             </div>
+            <button onClick={vm.onLogoutClick}>logout</button>
           </div>
         </section>
 

@@ -2,5 +2,8 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/client/src-tauri/target/aarch64-apple-ios/debug/build/tauri-17dfaec2bd12a185/out/swift-rs/Tauri/checkouts/swift-rs" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/client/src-tauri/target/aarch64-apple-ios/debug/build/tauri-plugin-notification-f8ca6fe4d3e8beb3/out/swift-rs/tauri-plugin-notification/checkouts/swift-rs" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/client/src-tauri/target/aarch64-apple-ios/debug/build/tauri-plugin-opener-753fbb282229e3d6/out/swift-rs/tauri-plugin-opener/checkouts/swift-rs" vcs="Git" />
   </component>
 </project>

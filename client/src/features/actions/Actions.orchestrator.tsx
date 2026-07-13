@@ -25,10 +25,9 @@ export function ActionsOrchestrator() {
           />
         </header>
         <ActionsList
-          emptyLabel={vm.emptyLabel}
-          groups={vm.groups}
+          items={vm.items}
+          filter={vm.filter}
           isLoading={vm.isLoading}
-          onItemToggle={vm.toggle}
         />
       </div>
     </PageFade>

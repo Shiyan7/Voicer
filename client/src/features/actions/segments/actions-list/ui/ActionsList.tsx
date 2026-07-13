@@ -1,35 +1,30 @@
 import { For, Show } from 'solid-js';
 
-import { ActionItemGroup } from '@/features/actions/types/ActionItemGroup';
+import { useViewModel } from '@/shared/view-model';
 
+import { ActionsListViewModel } from '../model/ActionsListViewModel';
+import { ActionsListDeps } from '../types/ActionsListDeps';
 import { ActionItemsGroup } from './ActionItemsGroup';
 import { actionsListStyles } from './ActionsList.styles';
 
-interface ActionsListProps {
-  isLoading: boolean;
-  groups: ActionItemGroup[];
-  emptyLabel?: string;
-  onItemToggle: (id: string) => void;
-}
-
 const styles = actionsListStyles();
 
-export function ActionsList(props: ActionsListProps) {
+export function ActionsList(props: ActionsListDeps) {
+  const vm = useViewModel(ActionsListViewModel, () => props);
+
   return (
-    <Show when={!props.isLoading} fallback={<div class={styles.skeleton()} />}>
+    <Show when={!vm.isLoading} fallback={<div class={styles.skeleton()} />}>
       <Show
-        when={props.groups.length}
+        when={!vm.isEmpty}
         fallback={
           <div class={styles.empty()}>
-            <span class={styles.emptyTitle()}>{props.emptyLabel}</span>
+            <span class={styles.emptyTitle()}>{vm.emptyLabel}</span>
           </div>
         }
       >
         <div class={styles.groups()}>
-          <For each={props.groups}>
-            {(group) => (
-              <ActionItemsGroup group={group} onToggle={props.onItemToggle} />
-            )}
+          <For each={vm.groups}>
+            {(group) => <ActionItemsGroup group={group} />}
           </For>
         </div>
       </Show>

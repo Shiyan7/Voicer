@@ -1,13 +1,30 @@
-import { useContext } from 'solid-js';
+import { createRenderEffect, useContext } from 'solid-js';
 
 import { DIContext } from './DIContext';
+import type { StatefulViewModel } from './StatefulViewModel';
 
-export function useViewModel<T>(ViewModel: new (...args: any[]) => T): T {
+type DepsOf<T> = T extends StatefulViewModel<infer TDeps> ? TDeps : never;
+
+type DepsArgs<T> = keyof DepsOf<T> extends never ? [] : [deps: () => DepsOf<T>];
+
+export function useViewModel<T>(
+  ViewModel: new (...args: any[]) => T,
+  ...[deps]: DepsArgs<T>
+): T {
   const container = useContext(DIContext);
 
+  let vm: T;
+
   try {
-    return container.resolve(ViewModel);
+    vm = container.resolve(ViewModel);
   } catch {
-    return new ViewModel();
+    vm = new ViewModel();
   }
+
+  if (deps) {
+    const { deps: target } = vm as { deps: DepsOf<T> };
+    createRenderEffect(() => Object.assign(target, deps()));
+  }
+
+  return vm;
 }

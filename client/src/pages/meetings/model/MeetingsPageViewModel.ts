@@ -5,7 +5,7 @@ import { injectable } from '@/shared/di';
 import { i18n } from '@/shared/i18n';
 import { isTauri } from '@/shared/isTauri';
 import { formatSeconds } from '@/shared/lib/time';
-import { getMeetingPath, RouterService } from '@/shared/router';
+import { paths, RouterService } from '@/shared/router';
 import { SocketService } from '@/shared/socket';
 import { StatefulViewModel } from '@/shared/view-model';
 
@@ -68,7 +68,7 @@ export class MeetingsPageViewModel extends StatefulViewModel {
   };
 
   openMeeting = (id: string) => {
-    this.router.push(getMeetingPath(id));
+    this.router.push(paths.meeting(id));
   };
 
   onFileSelected = async (event: Event) => {
