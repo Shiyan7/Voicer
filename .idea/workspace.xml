@@ -4,30 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2cb5afd-a1c5-4186-8914-dc73aeeb0bc9" name="Changes" comment="мертвый код">
-      <change afterPath="$PROJECT_DIR$/client/src/entities/team-select/model/TeamSelectViewModel.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/features/actions/Actions.orchestrator.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/features/actions/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/features/actions/segments/actions-list/ui/ActionItemsGroup.styles.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/features/actions/segments/actions-list/ui/ActionItemsGroup.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/features/actions/segments/actions-list/ui/ActionsList.styles.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/features/actions/segments/actions-list/ui/ActionsList.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/features/actions/types/ActionItemGroup.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/features/actions/types/ActionsFilter.ts" afterDir="false" />
+    <list default="true" id="a2cb5afd-a1c5-4186-8914-dc73aeeb0bc9" name="Changes" comment="рефакторинг">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src-tauri/src/audio/system.rs" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/src/audio/system.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src-tauri/src/detect/process.rs" beforeDir="false" afterPath="$PROJECT_DIR$/client/src-tauri/src/detect/process.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/entities/action-item/model/ActionItemsService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/action-item/model/ActionItemsService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/entities/action-item/model/ActionItemsViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/action-item/model/ActionItemsViewModel.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/entities/team-select/ui/TeamSelect.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/team-select/ui/TeamSelect.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/entities/toasts/model/ToastsViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/toasts/model/ToastsViewModel.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/pages/actions/ActionsPage.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/actions/Actions.styles.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/pages/actions/ActionsPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/actions/ActionsPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/pages/actions/model/ActionsPageViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/actions/model/ActionsPageViewModel.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/ui/tabs/Tabs.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ui/tabs/Tabs.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/ui/tabs/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ui/tabs/types.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/ui/NavList.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/navigation/ui/NavList.styles.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/ui/NavList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/navigation/ui/NavList.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/features/actions/segments/actions-list/ui/ActionsList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/actions/segments/actions-list/ui/ActionsList.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,36 +81,36 @@
     <option name="openDirectoriesWithSingleClick" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "JavaScript Debug.index.html.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "code.cleanup.on.save": "true",
-    "git-widget-placeholder": "voicer-mvp",
-    "javascript.preferred.runtime.type.id": "node",
-    "last_opened_file_path": "/Users/shiyan/projects/voicer",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.standard": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.standard": "",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "npm.be-dev.executor": "Run",
-    "npm.build.executor": "Run",
-    "npm.dev.executor": "Run",
-    "npm.i18n:watch.executor": "Run",
-    "prettierjs.PrettierConfiguration.Package": "/Users/shiyan/projects/voicer/client/node_modules/prettier",
-    "rearrange.code.on.save": "true",
-    "settings.editor.selected.configurable": "actions.on.save",
-    "ts.external.directory.path": "/Users/shiyan/projects/voicer/client/node_modules/typescript/lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JavaScript Debug.index.html.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;code.cleanup.on.save&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/shiyan/projects/voicer&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.be-dev.executor&quot;: &quot;Run&quot;,
+    &quot;npm.build.executor&quot;: &quot;Run&quot;,
+    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
+    &quot;npm.i18n:watch.executor&quot;: &quot;Run&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/Users/shiyan/projects/voicer/client/node_modules/prettier&quot;,
+    &quot;rearrange.code.on.save&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;actions.on.save&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/shiyan/projects/voicer/client/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/client/src/features/actions" />
@@ -138,7 +118,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.be-dev">
+  <component name="RunManager" selected="npm.dev">
     <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/voicer/client/dist/index.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
@@ -169,6 +149,7 @@
       <workItem from="1783670446643" duration="4878000" />
       <workItem from="1783746954437" duration="3087000" />
       <workItem from="1783832460949" duration="9686000" />
+      <workItem from="1783913984675" duration="54000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />

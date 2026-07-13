@@ -18,7 +18,7 @@ export function ActionsList(props: ActionsListProps) {
   return (
     <Show when={!props.isLoading} fallback={<div class={styles.skeleton()} />}>
       <Show
-        when={props.groups.length > 0}
+        when={props.groups.length}
         fallback={
           <div class={styles.empty()}>
             <span class={styles.emptyTitle()}>{props.emptyLabel}</span>
