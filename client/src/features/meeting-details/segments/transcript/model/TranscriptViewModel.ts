@@ -12,7 +12,7 @@ export class TranscriptViewModel extends StatefulViewModel<TranscriptDeps> {
   }
 
   get segments() {
-    return (this.deps.segments ?? []).map((segment) => ({
+    return this.deps.segments.map((segment) => ({
       id: segment.id,
       speakerLabel:
         segment.speaker === 'me'
@@ -29,10 +29,6 @@ export class TranscriptViewModel extends StatefulViewModel<TranscriptDeps> {
   }
 
   get isEmpty() {
-    return this.segments.length === 0;
+    return this.deps.segments.length === 0;
   }
-
-  seekTo = (startMs: number) => {
-    this.deps.onSeek(startMs);
-  };
 }

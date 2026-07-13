@@ -5,7 +5,6 @@ import {
   CreateMeetingInput,
   Meeting,
   MeetingDetails,
-  MeetingListItem,
   UpdateMeetingInput,
 } from '../types';
 
@@ -14,7 +13,7 @@ export class MeetingsService {
   constructor(private readonly api: ApiService) {}
 
   list() {
-    return this.api.get<MeetingListItem[]>('/meetings');
+    return this.api.get<Meeting[]>('/meetings');
   }
 
   get(id: string) {

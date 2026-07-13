@@ -31,8 +31,8 @@ export function MeetingDetailsOrchestrator() {
         </A>
         <Switch>
           <Match when={vm.isLoading}>
-            <div class={styles.skeleton({ class: 'h-16' })} />
-            <div class={styles.skeleton({ class: 'h-64' })} />
+            <div class={styles.skeleton({ size: 'header' })} />
+            <div class={styles.skeleton({ size: 'content' })} />
           </Match>
           <Match when={vm.loadFailed}>
             <div class={styles.notFound()}>
@@ -47,7 +47,7 @@ export function MeetingDetailsOrchestrator() {
           <Match when={vm.meeting}>
             {(meeting) => (
               <>
-                <DetailsHeader meeting={meeting()} meetingId={vm.meetingId} />
+                <DetailsHeader meeting={meeting()} />
 
                 <Show when={vm.showPlayer}>
                   <AudioPlayer
@@ -57,19 +57,17 @@ export function MeetingDetailsOrchestrator() {
                   />
                 </Show>
 
-                <Show when={vm.isProcessing}>
-                  <StatePanel variant="processing" status={meeting().status} />
-                </Show>
-
-                <Show when={vm.isFailed}>
-                  <StatePanel variant="failed" status={meeting().status} />
+                <Show when={vm.statePanelVariant}>
+                  {(variant) => (
+                    <StatePanel variant={variant()} status={meeting().status} />
+                  )}
                 </Show>
 
                 <Show when={vm.isReady}>
-                  <Summary summary={vm.summary} />
-                  <ActionItemsSection items={vm.actionItems} />
+                  <Summary summary={meeting().summary} />
+                  <ActionItemsSection items={meeting().actionItems} />
                   <Transcript
-                    segments={vm.transcriptSegments}
+                    segments={meeting().segments}
                     currentTimeMs={vm.currentTimeMs}
                     onSeek={vm.seekTo}
                   />

@@ -1,4 +1,4 @@
-import { MeetingsService, MeetingsViewModel } from '@/entities/meeting';
+import { MeetingsService } from '@/entities/meeting';
 import { ToastsViewModel } from '@/entities/toasts';
 import { injectable } from '@/shared/di';
 import { i18n } from '@/shared/i18n';
@@ -19,7 +19,6 @@ export class DetailsHeaderViewModel extends StatefulViewModel<DetailsHeaderDeps>
 
   constructor(
     private readonly meetingsService: MeetingsService,
-    private readonly meetings: MeetingsViewModel,
     private readonly router: RouterService,
     private readonly toasts: ToastsViewModel,
   ) {
@@ -82,13 +81,11 @@ export class DetailsHeaderViewModel extends StatefulViewModel<DetailsHeaderDeps>
     if (!next || next === prev) return;
 
     this.meeting.title = next;
-    this.meetings.applyUpdate(this.deps.meetingId, { title: next });
 
     try {
-      await this.meetingsService.update(this.deps.meetingId, { title: next });
+      await this.meetingsService.update(this.meeting.id, { title: next });
     } catch {
       this.meeting.title = prev;
-      this.meetings.applyUpdate(this.deps.meetingId, { title: prev });
       this.toasts.show('error', i18n.t('meetings.rename_failed'));
     }
   };
@@ -101,7 +98,7 @@ export class DetailsHeaderViewModel extends StatefulViewModel<DetailsHeaderDeps>
     this.isDeleting = true;
 
     try {
-      await this.meetings.remove(this.deps.meetingId);
+      await this.meetingsService.remove(this.meeting.id);
       closeModal(MODALS.DELETE_MEETING);
       this.router.push(paths.meetings);
     } catch {

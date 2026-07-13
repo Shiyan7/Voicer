@@ -26,8 +26,6 @@ export type Meeting = {
   createdAt: string;
 };
 
-export type MeetingListItem = Meeting;
-
 export type TranscriptSegment = {
   id: string;
   speaker: Speaker;

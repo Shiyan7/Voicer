@@ -11,4 +11,14 @@ export const meetingDetailsStyles = tv({
     notFound: 'flex flex-col items-start gap-4 py-10',
     notFoundTitle: 'text-xl font-semibold tracking-title text-gray-900',
   },
+  variants: {
+    size: {
+      header: {
+        skeleton: 'h-16',
+      },
+      content: {
+        skeleton: 'h-64',
+      },
+    },
+  },
 });

@@ -1,4 +1,4 @@
-import { MeetingsService, MeetingsViewModel } from '@/entities/meeting';
+import { Meeting, MeetingsService } from '@/entities/meeting';
 import { ToastsViewModel } from '@/entities/toasts';
 import { RecorderViewModel } from '@/features/call-recorder';
 import { injectable } from '@/shared/di';
@@ -11,12 +11,15 @@ import { StatefulViewModel } from '@/shared/view-model';
 
 @injectable()
 export class MeetingsPageViewModel extends StatefulViewModel {
+  meetings: Meeting[] = [];
+
+  isLoading = true;
+
   isUploading = false;
 
   private unsubscribeSocket?: () => void;
 
   constructor(
-    private readonly meetings: MeetingsViewModel,
     private readonly meetingsService: MeetingsService,
     private readonly socket: SocketService,
     private readonly router: RouterService,
@@ -26,12 +29,8 @@ export class MeetingsPageViewModel extends StatefulViewModel {
     super();
   }
 
-  get isLoading() {
-    return this.meetings.isLoading && this.meetings.meetings.length === 0;
-  }
-
   get isEmpty() {
-    return !this.isLoading && this.meetings.meetings.length === 0;
+    return !this.isLoading && this.meetings.length === 0;
   }
 
   get canUpload() {
@@ -50,7 +49,7 @@ export class MeetingsPageViewModel extends StatefulViewModel {
       minute: '2-digit',
     });
 
-    return this.meetings.meetings.map((meeting) => ({
+    return this.meetings.map((meeting) => ({
       id: meeting.id,
       title: meeting.title?.trim() || i18n.t('meetings.untitled'),
       status: meeting.status,
@@ -81,15 +80,16 @@ export class MeetingsPageViewModel extends StatefulViewModel {
     this.isUploading = true;
 
     try {
-      const meeting = await this.meetings.create({
+      const meeting = await this.meetingsService.create({
         title: file.name.replace(/\.[^.]+$/, ''),
         source: 'manual',
         startedAt: new Date().toISOString(),
         language: i18n.locale(),
       });
+      this.meetings = [meeting, ...this.meetings];
 
       const uploaded = await this.meetingsService.uploadAudio(meeting.id, file);
-      this.meetings.applyUpdate(meeting.id, { status: uploaded.status });
+      this.applyUpdate(meeting.id, { status: uploaded.status });
     } catch {
       this.toasts.show('error', i18n.t('meetings.upload_failed'));
     } finally {
@@ -98,15 +98,33 @@ export class MeetingsPageViewModel extends StatefulViewModel {
   };
 
   protected onMount() {
-    void this.meetings.load();
+    void this.load();
 
     this.socket.connect();
-    this.unsubscribeSocket = this.socket.onMeetingUpdated(({ id, status }) =>
-      this.meetings.applyUpdate(id, { status }),
-    );
+    this.unsubscribeSocket = this.socket.onMeetingUpdated(({ id, status }) => {
+      if (this.meetings.some((meeting) => meeting.id === id)) {
+        this.applyUpdate(id, { status });
+      } else {
+        void this.load();
+      }
+    });
   }
 
   protected onDispose() {
     this.unsubscribeSocket?.();
+  }
+
+  private async load() {
+    try {
+      this.meetings = await this.meetingsService.list();
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  private applyUpdate(id: string, patch: Partial<Meeting>) {
+    this.meetings = this.meetings.map((meeting) =>
+      meeting.id === id ? { ...meeting, ...patch } : meeting,
+    );
   }
 }

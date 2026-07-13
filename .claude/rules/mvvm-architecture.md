@@ -1,3 +1,9 @@
+---
+paths:
+  - "client/src/**/*.tsx"
+  - "client/src/**/*.ts"
+---
+
 # MVVM Architecture
 
 This project follows strict MVVM (Model–View–ViewModel). The rules below are mandatory and apply everywhere.

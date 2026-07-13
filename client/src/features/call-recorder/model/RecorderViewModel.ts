@@ -1,4 +1,4 @@
-import { MeetingsService, MeetingsViewModel } from '@/entities/meeting';
+import { MeetingsService } from '@/entities/meeting';
 import { ToastsViewModel } from '@/entities/toasts';
 import { singleton } from '@/shared/di';
 import { i18n } from '@/shared/i18n';
@@ -64,7 +64,6 @@ export class RecorderViewModel extends SingletonViewModel {
   constructor(
     private readonly recorder: RecorderService,
     private readonly meetingsService: MeetingsService,
-    private readonly meetings: MeetingsViewModel,
     private readonly toasts: ToastsViewModel,
   ) {
     super();
@@ -193,7 +192,7 @@ export class RecorderViewModel extends SingletonViewModel {
       this.writePending();
 
       try {
-        const meeting = await this.meetings.create({
+        const meeting = await this.meetingsService.create({
           source: meetingSource,
           startedAt: new Date(started.startedAt).toISOString(),
           language: i18n.locale(),
@@ -229,7 +228,7 @@ export class RecorderViewModel extends SingletonViewModel {
       let meetingId = this.meetingId;
 
       if (!meetingId) {
-        const meeting = await this.meetings.create({
+        const meeting = await this.meetingsService.create({
           source: this.source,
           startedAt: new Date(result.startedAt).toISOString(),
           language: i18n.locale(),
@@ -252,7 +251,6 @@ export class RecorderViewModel extends SingletonViewModel {
       if (this.notifyOnCompletion) {
         this.toasts.show('success', i18n.t('recorder.upload_done') ?? '');
       }
-      await this.meetings.load();
     } catch {
       if (this.notifyOnCompletion) {
         this.toasts.show('error', i18n.t('recorder.upload_failed') ?? '');

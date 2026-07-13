@@ -1,3 +1,3 @@
 export interface SummaryDeps {
-  summary: string;
+  summary: string | null;
 }

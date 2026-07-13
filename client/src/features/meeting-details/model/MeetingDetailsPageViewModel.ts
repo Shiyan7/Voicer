@@ -1,8 +1,8 @@
 import {
+  isMeetingAudioReady,
+  isMeetingProcessing,
   MeetingDetails,
   MeetingsService,
-  MeetingsViewModel,
-  TranscriptSegment,
 } from '@/entities/meeting';
 import { injectable } from '@/shared/di';
 import { RouterService } from '@/shared/router';
@@ -10,78 +10,45 @@ import { SocketService } from '@/shared/socket';
 import { AudioPlayerApi } from '@/shared/ui/audio-player';
 import { StatefulViewModel } from '@/shared/view-model';
 
-const PROCESSING_STATUSES = new Set([
-  'recording',
-  'uploading',
-  'uploaded',
-  'transcribing',
-  'summarizing',
-]);
-
-const PLAYABLE_STATUSES = new Set([
-  'uploaded',
-  'transcribing',
-  'summarizing',
-  'ready',
-]);
-
 @injectable()
 export class MeetingDetailsPageViewModel extends StatefulViewModel {
   meeting: MeetingDetails | null = null;
-
   isLoading = true;
-
   loadFailed = false;
-
   currentTimeMs = 0;
 
   private playerApi: AudioPlayerApi | null = null;
-
   private unsubscribeSocket?: () => void;
 
   constructor(
     private readonly meetingsService: MeetingsService,
-    private readonly meetings: MeetingsViewModel,
     private readonly socket: SocketService,
     private readonly router: RouterService<{ id: string }>,
   ) {
     super();
   }
 
-  get meetingId() {
-    return this.router.params.id;
-  }
-
-  get isProcessing() {
-    return !!this.meeting && PROCESSING_STATUSES.has(this.meeting.status);
-  }
-
-  get isFailed() {
-    return this.meeting?.status === 'failed';
-  }
-
   get isReady() {
     return this.meeting?.status === 'ready';
   }
 
+  get statePanelVariant(): 'processing' | 'failed' | null {
+    if (!this.meeting) return null;
+    if (this.meeting.status === 'failed') return 'failed';
+
+    return isMeetingProcessing(this.meeting.status) ? 'processing' : null;
+  }
+
   get showPlayer() {
-    return !!this.meeting && PLAYABLE_STATUSES.has(this.meeting.status);
+    return !!this.meeting && isMeetingAudioReady(this.meeting.status);
   }
 
   get audioUrl() {
     return this.meetingsService.getAudioUrl(this.meetingId);
   }
 
-  get summary() {
-    return this.meeting?.summary ?? '';
-  }
-
-  get transcriptSegments(): TranscriptSegment[] {
-    return this.meeting?.segments ?? [];
-  }
-
-  get actionItems() {
-    return this.meeting?.actionItems ?? [];
+  private get meetingId() {
+    return this.router.params.id;
   }
 
   setPlayerApi = (api: AudioPlayerApi) => {
@@ -98,12 +65,9 @@ export class MeetingDetailsPageViewModel extends StatefulViewModel {
 
   protected onMount() {
     void this.load();
-
     this.socket.connect();
     this.unsubscribeSocket = this.socket.onMeetingUpdated(({ id, status }) => {
       if (id !== this.meetingId || !this.meeting) return;
-
-      this.meetings.applyUpdate(id, { status });
 
       if (status === 'ready' || status === 'failed') {
         void this.load();

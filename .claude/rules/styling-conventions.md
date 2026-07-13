@@ -1,3 +1,9 @@
+---
+paths:
+  - "client/src/**/*.tsx"
+  - "client/src/**/*.styles.ts"
+---
+
 # Styling Conventions
 
 This project uses [`tailwind-variants`](https://www.tailwind-variants.org/) (`tv`) for all component styling.

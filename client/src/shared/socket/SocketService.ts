@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 
-import { MeetingStatus } from '@/entities/meeting';
+import type { MeetingStatus } from '@/entities/meeting';
 import { tokenStore } from '@/shared/api/tokenStore';
 import { singleton } from '@/shared/di';
 import { isTauri } from '@/shared/isTauri';

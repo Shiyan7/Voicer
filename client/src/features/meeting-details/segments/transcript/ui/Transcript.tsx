@@ -27,7 +27,7 @@ export function Transcript(props: TranscriptDeps) {
               <button
                 class={styles.segment({ active: segment.isActive })}
                 type="button"
-                onClick={() => vm.seekTo(segment.startMs)}
+                onClick={() => props.onSeek(segment.startMs)}
               >
                 <span class={styles.segmentHead()}>
                   <span
