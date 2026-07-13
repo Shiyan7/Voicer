@@ -4,32 +4,27 @@ import { Icon } from '@/shared/ui/icon';
 import { useViewModel } from '@/shared/view-model';
 
 import { ActionItemViewModel } from '../model/ActionItemViewModel';
-import { ActionItemData } from '../types/ActionItemData';
+import { ActionItemDeps } from '../types/ActionItemDeps';
 import { actionItemStyles } from './ActionItem.styles';
-
-interface ActionItemRowProps {
-  item: ActionItemData;
-  class?: string;
-}
 
 const styles = actionItemStyles();
 
-export function ActionItem(props: ActionItemRowProps) {
-  const vm = useViewModel(ActionItemViewModel, () => ({ item: props.item }));
+export function ActionItem(props: ActionItemDeps) {
+  const vm = useViewModel(ActionItemViewModel, () => props);
 
   return (
-    <div class={styles.row({ class: props.class })}>
+    <div class={styles.row()}>
       <button
-        class={styles.checkbox({ done: vm.isDone })}
-        aria-pressed={vm.isDone}
+        class={styles.checkbox({ done: vm.item.isDone })}
+        aria-pressed={vm.item.isDone}
         type="button"
         onClick={() => vm.toggle()}
       >
-        <Show when={vm.isDone}>
-          <Icon size={11} name="common:check" />
+        <Show when={vm.item.isDone}>
+          <Icon size={12} name="common:check" />
         </Show>
       </button>
-      <span class={styles.text({ done: vm.isDone })}>{vm.text}</span>
+      <span class={styles.text({ done: vm.item.isDone })}>{vm.item.text}</span>
     </div>
   );
 }

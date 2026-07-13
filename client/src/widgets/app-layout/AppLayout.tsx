@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from '@solidjs/router';
+import { useLocation, useNavigate, useParams } from '@solidjs/router';
 import { onMount, type ParentProps, Show, Suspense } from 'solid-js';
 
 import { Toasts } from '@/entities/toasts';
@@ -10,19 +10,21 @@ import { isTauri } from '@/shared/isTauri';
 import { useViewModel } from '@/shared/view-model';
 import { Navigation } from '@/widgets/navigation';
 
-import { mainLayoutStyles } from './MainLayout.styles';
+import { appLayoutStyles } from './AppLayout.styles';
 
-const styles = mainLayoutStyles();
+const styles = appLayoutStyles();
 
-export function MainLayout(props: ParentProps) {
-  const app = useViewModel(ApplicationViewModel);
+export function AppLayout(props: ParentProps) {
+  const vm = useViewModel(ApplicationViewModel);
 
   const navigator = useNavigate();
+  const params = useParams();
   const location = useLocation();
 
-  onMount(async () => {
-    await i18n.init();
-    app.initApp(navigator, location);
+  onMount(() => {
+    void i18n.init();
+    vm.initApp();
+    vm.initRouter(navigator, location, params);
   });
 
   return (

@@ -23,7 +23,7 @@ export class TeamSelectViewModel extends StatefulViewModel<TeamSelectDeps> {
       : i18n.t('labels.auth_button');
   }
 
-  onAuthBtnClick = () => {
+  onAuthBtnClick() {
     showModal(MODALS.AUTH);
-  };
+  }
 }

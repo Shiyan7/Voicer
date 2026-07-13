@@ -11,7 +11,9 @@ export class ActionItemsService {
     return this.api.get<ActionItemData[]>('/action-items');
   }
 
-  toggle(id: string, isDone: boolean) {
-    return this.api.patch<ActionItemData>(`/action-items/${id}`, { isDone });
+  toggle(item: ActionItemData) {
+    return this.api.patch<ActionItemData>(`/action-items/${item.id}`, {
+      isDone: !item.isDone,
+    });
   }
 }

@@ -3,7 +3,7 @@ import { createRenderEffect, useContext } from 'solid-js';
 import { DIContext } from './DIContext';
 import type { StatefulViewModel } from './StatefulViewModel';
 
-type DepsOf<T> = T extends StatefulViewModel<infer TDeps> ? TDeps : never;
+type DepsOf<T> = T extends StatefulViewModel<infer TDeps> ? TDeps : {};
 
 type DepsArgs<T> = keyof DepsOf<T> extends never ? [] : [deps: () => DepsOf<T>];
 

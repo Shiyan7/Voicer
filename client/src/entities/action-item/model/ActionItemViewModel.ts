@@ -4,10 +4,10 @@ import { i18n } from '@/shared/i18n';
 import { StatefulViewModel } from '@/shared/view-model';
 
 import { ActionItemsService } from '../api/ActionItemsService';
-import { ActionItemRowDeps } from '../types/ActionItemRowDeps';
+import { ActionItemDeps } from '../types/ActionItemDeps';
 
 @injectable()
-export class ActionItemViewModel extends StatefulViewModel<ActionItemRowDeps> {
+export class ActionItemViewModel extends StatefulViewModel<ActionItemDeps> {
   constructor(
     private readonly actionItems: ActionItemsService,
     private readonly toasts: ToastsViewModel,
@@ -15,23 +15,15 @@ export class ActionItemViewModel extends StatefulViewModel<ActionItemRowDeps> {
     super();
   }
 
-  get text() {
-    return this.item.text;
-  }
-
-  get isDone() {
-    return this.item.isDone;
-  }
-
-  private get item() {
+  get item() {
     return this.deps.item;
   }
 
-  toggle() {
+  async toggle() {
     try {
-      void this.actionItems.toggle(this.item.id, !this.isDone);
-      this.item.isDone = !this.isDone;
-    } catch {
+      await this.actionItems.toggle(this.item);
+      this.item.isDone = !this.item.isDone;
+    } catch (e) {
       this.toasts.show('error', i18n.t('actions.update_failed'));
     }
   }

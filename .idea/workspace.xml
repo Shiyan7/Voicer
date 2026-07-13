@@ -4,46 +4,55 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a2cb5afd-a1c5-4186-8914-dc73aeeb0bc9" name="Changes" comment="gitignore">
-      <change afterPath="$PROJECT_DIR$/.claude/skills/feature-anatomy.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/.claude/launch.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/entities/action-item/api/ActionItemsService.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/entities/action-item/model/ActionItemViewModel.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/entities/action-item/types/ActionItemData.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/entities/action-item/types/ActionItemRowDeps.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/entities/action-item/ui/ActionItem.styles.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/entities/action-item/ui/ActionItem.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/entities/team-select/types/TeamSelectDeps.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/features/actions/segments/actions-list/model/ActionsListViewModel.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/features/actions/segments/actions-list/types/ActionItemGroup.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/features/actions/segments/actions-list/types/ActionsListDeps.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="a2cb5afd-a1c5-4186-8914-dc73aeeb0bc9" name="Changes" comment="фикс вмки">
+      <change afterPath="$PROJECT_DIR$/client/src/features/meeting-details/MeetingDetails.orchestrator.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/meeting-details/MeetingDetails.styles.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/meeting-details/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/meeting-details/model/MeetingDetailsPageViewModel.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/meeting-details/segments/action-items/types/ActionItemsParams.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/meeting-details/segments/action-items/ui/ActionItemsSection.styles.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/meeting-details/segments/action-items/ui/ActionItemsSection.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/meeting-details/segments/details-header/model/DetailsHeaderViewModel.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/meeting-details/segments/details-header/types/DetailsHeaderDeps.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/meeting-details/segments/details-header/ui/DetailsHeader.styles.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/meeting-details/segments/details-header/ui/DetailsHeader.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/meeting-details/segments/state-panel/types/StatePanelDeps.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/meeting-details/segments/state-panel/ui/StatePanel.styles.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/meeting-details/segments/state-panel/ui/StatePanel.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/meeting-details/segments/summary/model/SummaryViewModel.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/meeting-details/segments/summary/types/SummaryDeps.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/meeting-details/segments/summary/ui/Summary.styles.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/meeting-details/segments/summary/ui/Summary.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/meeting-details/segments/transcript/model/TranscriptViewModel.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/meeting-details/segments/transcript/types/TranscriptDeps.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/meeting-details/segments/transcript/ui/Transcript.styles.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/features/meeting-details/segments/transcript/ui/Transcript.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/widgets/navigation/types/NavListProps.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/entities/action-item/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/action-item/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/entities/action-item/model/ActionItemsService.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/entities/action-item/model/ActionItemsViewModel.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/entities/meeting/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/meeting/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/entities/meeting/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/meeting/types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/Application.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/Application.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/entities/action-item/api/ActionItemsService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/action-item/api/ActionItemsService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/entities/action-item/model/ActionItemViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/action-item/model/ActionItemViewModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/entities/action-item/types/ActionItemRowDeps.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/action-item/types/ActionItemDeps.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/entities/action-item/ui/ActionItem.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/action-item/ui/ActionItem.styles.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/entities/action-item/ui/ActionItem.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/action-item/ui/ActionItem.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/entities/team-select/model/TeamSelectViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/team-select/model/TeamSelectViewModel.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/entities/team-select/ui/TeamSelect.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/entities/team-select/ui/TeamSelect.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/features/actions/Actions.orchestrator.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/actions/Actions.orchestrator.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/features/actions/model/ActionsPageViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/actions/model/ActionsPageViewModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/features/actions/segments/actions-list/model/ActionsListViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/actions/segments/actions-list/model/ActionsListViewModel.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/features/actions/segments/actions-list/ui/ActionItemsGroup.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/actions/segments/actions-list/ui/ActionItemsGroup.styles.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/features/actions/segments/actions-list/ui/ActionItemsGroup.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/actions/segments/actions-list/ui/ActionItemsGroup.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/features/actions/segments/actions-list/ui/ActionsList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/features/actions/segments/actions-list/ui/ActionsList.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/features/actions/types/ActionItemGroup.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/pages/meeting-details/MeetingDetailsPage.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/meeting-details/MeetingDetailsPage.styles.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/pages/meeting-details/MeetingDetailsPage.styles.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/pages/meeting-details/MeetingDetailsPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/meeting-details/MeetingDetailsPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/pages/meetings/model/MeetingsPageViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/meetings/model/MeetingsPageViewModel.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/pages/settings/SettingsPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/settings/SettingsPage.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/pages/settings/SettingsViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/settings/SettingsViewModel.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/lib/markdown/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/lib/markdown/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/pages/meeting-details/model/MeetingDetailsViewModel.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/ApplicationViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/ApplicationViewModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/router/LocationService.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/shared/router/RouterService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/router/RouterService.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/shared/router/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/router/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/router/paths.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/router/paths.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/router/routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/router/routes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/shared/view-model/StatefulViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/view-model/StatefulViewModel.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/shared/view-model/useViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/shared/view-model/useViewModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/widgets/main-layout/MainLayout.styles.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/app-layout/AppLayout.styles.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/widgets/main-layout/MainLayout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/app-layout/AppLayout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/widgets/main-layout/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/app-layout/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/model/NavigationViewModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/navigation/model/NavigationViewModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/widgets/navigation/ui/NavList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/widgets/navigation/ui/NavList.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -189,7 +198,14 @@
       <workItem from="1783913984675" duration="119000" />
       <workItem from="1783914269054" duration="3837000" />
       <workItem from="1783918119917" duration="712000" />
-      <workItem from="1783919906322" duration="4489000" />
+      <workItem from="1783919906322" duration="8270000" />
+      <workItem from="1783936390000" duration="104000" />
+      <workItem from="1783937167844" duration="188000" />
+      <workItem from="1783937443041" duration="72000" />
+      <workItem from="1783937542150" duration="422000" />
+      <workItem from="1783942575697" duration="620000" />
+      <workItem from="1783951402044" duration="1067000" />
+      <workItem from="1783959693453" duration="682000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -279,7 +295,15 @@
       <option name="project" value="LOCAL" />
       <updated>1783914048447</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="фикс вмки">
+      <option name="closed" value="true" />
+      <created>1783924482362</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1783924482362</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -293,6 +317,7 @@
     <MESSAGE value="voicer mvp" />
     <MESSAGE value="мертвый код" />
     <MESSAGE value="gitignore" />
-    <option name="LAST_COMMIT_MESSAGE" value="gitignore" />
+    <MESSAGE value="фикс вмки" />
+    <option name="LAST_COMMIT_MESSAGE" value="фикс вмки" />
   </component>
 </project>

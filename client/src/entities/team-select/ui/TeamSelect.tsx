@@ -16,7 +16,11 @@ export function TeamSelect(props: TeamSelectDeps) {
     <Show
       when={vm.session.isAuthorized}
       fallback={
-        <Button class={styles.authBtn()} onClick={vm.onAuthBtnClick} size="md">
+        <Button
+          class={styles.authBtn()}
+          onClick={() => vm.onAuthBtnClick()}
+          size="md"
+        >
           {vm.authLabel}
         </Button>
       }

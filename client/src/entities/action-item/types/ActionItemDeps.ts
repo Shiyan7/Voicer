@@ -1,5 +1,5 @@
 import { ActionItemData } from './ActionItemData';
 
-export type ActionItemRowDeps = {
+export interface ActionItemDeps {
   item: ActionItemData;
-};
+}

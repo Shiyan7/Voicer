@@ -23,7 +23,7 @@ export function ActionItemsGroup(props: ActionItemsGroupProps) {
       </div>
       <div class={styles.card()}>
         <For each={props.group.items}>
-          {(item) => <ActionItem class="py-3.5" item={item} />}
+          {(item) => <ActionItem item={item} />}
         </For>
       </div>
     </section>

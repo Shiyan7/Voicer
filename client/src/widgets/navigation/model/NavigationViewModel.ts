@@ -1,5 +1,5 @@
 import { injectable } from '@/shared/di';
-import { LocationService } from '@/shared/router';
+import { RouterService } from '@/shared/router';
 import { StatefulViewModel } from '@/shared/view-model';
 
 import { getNavItems } from '../config/getNavItems';
@@ -9,14 +9,14 @@ export class NavigationViewModel extends StatefulViewModel {
   isCollapsed = false;
   isToggleVisible = false;
 
-  constructor(private readonly location: LocationService) {
+  constructor(private readonly router: RouterService) {
     super();
   }
 
   get navItems() {
     return getNavItems().map((item) => ({
       ...item,
-      isActive: item.href === this.location.pathname,
+      isActive: item.href === this.router.pathname,
     }));
   }
 

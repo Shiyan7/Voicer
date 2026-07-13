@@ -13,10 +13,17 @@ export class ActionsListViewModel extends StatefulViewModel<ActionsListDeps> {
     super();
   }
 
+  get visibleItems() {
+    if (this.deps.filter === 'open') {
+      return this.deps.items.filter((item) => !item.isDone);
+    }
+    return this.deps.items;
+  }
+
   get groups() {
     const groups = new Map<string, ActionItemGroup>();
 
-    for (const item of this.items) {
+    for (const item of this.visibleItems) {
       const newGroup: ActionItemGroup = {
         meetingId: item.meetingId,
         title: item.meetingTitle,
@@ -33,16 +40,12 @@ export class ActionsListViewModel extends StatefulViewModel<ActionsListDeps> {
     return [...groups.values()];
   }
 
-  get items() {
-    return this.deps.items ?? [];
-  }
-
   get isLoading() {
     return this.deps.isLoading;
   }
 
   get isEmpty() {
-    return this.items.length === 0;
+    return this.visibleItems.length === 0;
   }
 
   get emptyLabel() {
