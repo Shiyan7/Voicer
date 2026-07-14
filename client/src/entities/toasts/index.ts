@@ -1,2 +1,2 @@
-export { ToastsViewModel } from './model/ToastsViewModel';
+export { createToasts, type ToastType, useToasts } from './model/useToasts';
 export { Toasts } from './ui/Toasts';

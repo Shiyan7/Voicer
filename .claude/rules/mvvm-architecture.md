@@ -6,7 +6,8 @@ paths:
 
 # MVVM Architecture
 
-This project follows strict MVVM (Model–View–ViewModel). The rules below are mandatory and apply everywhere.
+This project follows strict MVVM (Model–View–ViewModel). ViewModels are **hooks**, not classes. The rules below are
+mandatory and apply everywhere.
 
 ---
 
@@ -19,7 +20,7 @@ Components are **views only**. They render props and forward events. Nothing els
 - `createSignal`, `createStore`, `createMemo`, `createEffect`, `onMount`, `onCleanup`
 - Business logic, conditions, transformations, calculations
 - Direct calls to services or API
-- `useLocation`, `useNavigate` or any router hooks (router state belongs in the VM)
+- `useLocation`, `useNavigate` or any router hooks (router state belongs in the ViewModel hook)
 
 ```tsx
 // ❌ Wrong — signal and logic in component
@@ -40,176 +41,197 @@ export function NavList(props: NavListProps) {
 }
 ```
 
-The **only** permitted exception: `onMount(() => vm.setup())` to initialize a ViewModel. This is wiring, not logic.
+All reactivity, state, and side effects live in the ViewModel hook.
 
 ---
 
-## ViewModel Types
+## ViewModel = a `use*` hook
 
-### SingletonViewModel — global shared state
+A ViewModel is a plain function named `use<Thing>`, living in `model/`. It owns all state and side effects and returns
+a flat object of:
 
-Use `@singleton()` + extend `SingletonViewModel` for state that lives for the entire app lifetime.
+- **accessors** — zero-arg functions that return a value: `cards: () => MeetingCardData[]`
+- **handlers** — plain functions that mutate state or trigger effects: `openMeeting: (id: string) => void`
+
+State is exposed as accessors (never raw values), so the view stays reactive. Handlers are passed by reference.
 
 ```ts
-import {singleton} from 'tsyringe';
-import {SingletonViewModel} from '@/shared/view-model';
+// features/meetings/model/useMeetingsPage.ts
+import { MeetingCardData } from '../types/MeetingCardData';
 
-@singleton()
-export class NavigationViewModel extends SingletonViewModel {
-  isCollapsed = false;
+export function useMeetingsPage() {
+  const cards = (): MeetingCardData[] => [];
 
-  toggleSidebar = () => {
-    this.isCollapsed = !this.isCollapsed;
-  };
+  const isLoading = (): boolean => false;
+
+  const isEmpty = (): boolean => false;
+
+  const startRecording = () => {};
+
+  const openMeeting = (id: string) => {};
+
+  const onFileSelected = (event: Event) => {};
+
+  return { cards, isLoading, isEmpty, startRecording, openMeeting, onFileSelected };
 }
 ```
 
-**Use for:** `ApplicationViewModel`, `SessionViewModel`, `NavigationViewModel`, `ToastsViewModel` — anything that must
-persist and be shared across the whole app.
+**Rules:**
 
-### StatefulViewModel — scoped per component tree
+- One ViewModel hook per feature/segment, file named after the hook (`useMeetingsPage.ts`).
+- Return only what the UI uses — no dead fields.
+- Accessors for state, plain functions for handlers. No getters, no `this`, no classes, no decorators.
+- Derived data is just another accessor that reads other state — never computed in JSX.
 
-Use `@injectable()` + extend `StatefulViewModel` for ViewModels tied to a specific screen or modal.
+---
 
-```ts
-import {injectable} from 'tsyringe';
-import {StatefulViewModel} from '@/shared/view-model';
+## Orchestrator wires the hook to segments
 
-@injectable()
-export class AuthViewModel extends StatefulViewModel {
-  mode: AuthMode = AuthMode.LogIn;
+The orchestrator calls exactly one ViewModel hook and passes its output down. It **calls accessors** (`vm.cards()`)
+when handing values to segment props, and passes handlers by reference (`vm.openMeeting`).
 
-  protected onMount() {
-    // runs when the component mounts
-  }
+```tsx
+export function MeetingsOrchestrator() {
+  const vm = useMeetingsPage();
 
-  protected onDispose() {
-    // runs on cleanup
-  }
+  return (
+    <div class={styles.root()}>
+      <Toolbar
+        canRecord={vm.canRecord()}
+        isUploading={vm.isUploading()}
+        onStartRecording={vm.startRecording}
+        onFileSelected={vm.onFileSelected}
+      />
+      <MeetingsList
+        cards={vm.cards()}
+        isLoading={vm.isLoading()}
+        isEmpty={vm.isEmpty()}
+        onOpen={vm.openMeeting}
+      />
+    </div>
+  );
 }
 ```
 
-**Use for:** page ViewModels, modal ViewModels, feature ViewModels — anything scoped to one screen.
+The orchestrator holds no reactive primitives of its own — it only composes the hook and the segments.
+
+---
+
+## Pure helpers live in `lib/`
+
+Mapping and formatting are **not** ViewModel logic. Extract them into pure functions under a `lib/` directory and call
+them from the hook.
+
+```ts
+// features/meetings/lib/toMeetingCard.ts
+export function toMeetingCard(meeting: Meeting): MeetingCardData { /* ... */ }
+
+// shared/lib/time/formatDateTime.ts — cross-feature formatters live in shared/lib
+export function formatDateTime(date: Date | string | number) { /* ... */ }
+```
+
+The hook stays thin: `const cards = () => meetings().map(toMeetingCard)`.
 
 ---
 
 ## Services
 
 Services handle I/O and side effects: API calls, storage, external SDKs. They contain no reactive state and no UI logic.
+A ViewModel hook calls a service; a service never knows about a ViewModel.
 
 ```ts
-
-@injectable()
-export class SessionService {
-  constructor(private readonly api: ApiService) {
-  }
-
-  async restore() { /* ... */
-  }
-
-  async logout() { /* ... */
-  }
+export class MeetingsService {
+  async list() { /* ... */ }
+  async create(input: CreateMeetingInput) { /* ... */ }
 }
 ```
-
-Services are always `@injectable()` (never singleton unless they are truly stateless infrastructure like `ApiService`).
 
 ---
 
 ## Who Knows About Whom
 
 ```
-Component  →  ViewModel  →  Service  →  API / Storage
+Component  →  ViewModel hook  →  Service  →  API / Storage
 ```
 
-- Components know only their ViewModel (via `useViewModel`)
-- ViewModels know Services and other ViewModels (via DI constructor injection)
-- Services know other Services (via DI constructor injection)
-- **Nothing flows upward** — a Service never knows about a ViewModel
+- Components know only their props.
+- ViewModel hooks know services, pure `lib/` helpers, and other hooks (via composition).
+- Services know other services.
+- **Nothing flows upward** — a service never imports a ViewModel.
 
 ---
 
 ## "Dumb" Child Components
 
-Child components that are part of a larger widget receive **only props** — they never call `useViewModel` themselves.
+Only the **orchestrator / root component of a widget** calls the ViewModel hook. Every sub-component (segment UI, cards,
+skeletons) receives **only props** — it never calls a `use*` ViewModel hook itself.
 
 ```tsx
-// ❌ Wrong — child reaches into global VM
-export function ActivityBar() {
-  const navigation = useViewModel(NavigationViewModel); // forbidden here
-  return <Show when={navigation.isActivityOpened}>...</Show>;
+// ❌ Wrong — child reaches into a hook
+export function MeetingCard() {
+  const vm = useMeetingsPage(); // forbidden here
+  // ...
 }
 
-// ✅ Correct — parent owns the VM, child gets props
-export function ActivityBar(props: { isOpen: boolean }) {
-  return <Show when={props.isOpen}>...</Show>;
-}
-
-// Parent (Navigation) owns the VM and passes down
-export function Navigation() {
-  const vm = useViewModel(NavigationViewModel);
-  return (
-    <>
-      <NavList items={vm.navItems} isCollapsed={vm.isCollapsed}/>
-      <ActivityBar isOpen={vm.isActivityOpened}/>
-    </>
-  );
+// ✅ Correct — child gets props
+export function MeetingCard(props: MeetingCardProps) {
+  return <button onClick={() => props.onOpen(props.card.id)}>...</button>;
 }
 ```
 
-**Rule:** only the **root component of a widget** calls `useViewModel`. Every sub-component inside that widget is dumb.
-
 ---
 
-## Computed State Belongs in the ViewModel
+## Derived State Belongs in the Hook
 
-If the View needs derived data, compute it in the ViewModel as a `get` property.
+If the View needs derived data, expose it as an accessor from the hook — never compute it in JSX.
 
-```ts
+```tsx
 // ❌ Wrong — derived state computed in JSX
-<span>{mode === AuthMode.LogIn ? t('auth.title.login') : t('auth.title.signup')
-}
-</span>
+<span>{mode() === AuthMode.LogIn ? t('auth.title.login') : t('auth.title.signup')}</span>
 
-// ✅ Correct — exposed as a getter from the VM
-get
-modalTitle()
-{
-  return this.mode === AuthMode.LogIn
-    ? i18n.t('auth.title.login')
-    : i18n.t('auth.title.signup');
-}
+// ✅ Correct — accessor from the hook
+const modalTitle = () =>
+  mode() === AuthMode.LogIn ? i18n.t('auth.title.login') : i18n.t('auth.title.signup');
 
 // Component just renders it
-<span>{vm.modalTitle} < /span>
+<span>{vm.modalTitle()}</span>
 ```
 
 ---
 
-## DI and Resolving ViewModels
+## Global shared state
 
-```tsx
-// Resolve from DI container — works for both singletons and scoped
-const vm = useViewModel(MyViewModel);
+State that must persist for the whole app lifetime (session, navigation, toasts) lives in a **singleton hook** — a
+`use*` hook whose signals are created once at module scope and shared by every caller.
 
-// For scoped ViewModels, wrap with ViewModelScope so they are
-// created and destroyed together with the component tree
-<ViewModelScope>
-  <MyModal/>
-</ViewModelScope>
+```ts
+// shared/.../useNavigation.ts
+const [isCollapsed, setIsCollapsed] = createSignal(false); // module scope → shared
+
+export function useNavigation() {
+  const toggleSidebar = () => setIsCollapsed((v) => !v);
+  return { isCollapsed, toggleSidebar };
+}
 ```
+
+Scoped state (a page, a modal) is created inside the hook body instead, so it lives and dies with the component tree.
 
 ---
 
 ## File Naming
 
 ```
-src/features/auth/
+src/features/meetings/
+  Meetings.orchestrator.tsx     ← calls the hook, wires segments (no reactivity of its own)
   model/
-    AuthService.ts        ← Service (I/O logic)
-    AuthViewModel.ts      ← ViewModel (UI state + coordination)
-  ui/
-    AuthModal.tsx         ← Component (view only)
-    AuthModal.styles.ts   ← Styles
+    useMeetingsPage.ts          ← ViewModel hook (state + coordination)
+  lib/
+    toMeetingCard.ts            ← pure mapper/helper
+  types/
+    MeetingCardData.ts          ← one type per file
+  segments/
+    meetings-list/ui/
+      MeetingsList.tsx          ← view only
+      MeetingsList.styles.ts    ← collocated styles
   index.ts
 ```

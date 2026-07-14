@@ -2,23 +2,22 @@ import { For, Match, Show, Switch } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
 import { MarkdownInline } from '@/shared/lib/markdown';
-import { useViewModel } from '@/shared/view-model';
 
-import { SummaryViewModel } from '../model/SummaryViewModel';
+import { useSummary } from '../model/useSummary';
 import { SummaryDeps } from '../types/SummaryDeps';
 import { summaryStyles } from './Summary.styles';
 
 const styles = summaryStyles();
 
 export function Summary(props: SummaryDeps) {
-  const vm = useViewModel(SummaryViewModel, () => props);
+  const vm = useSummary(props);
 
   return (
-    <Show when={!vm.isEmpty}>
+    <Show when={!vm.isEmpty()}>
       <section class={styles.card()}>
         <h2 class={styles.sectionTitle()}>{i18n.t('meetings.summary')}</h2>
         <div class={styles.summary()}>
-          <For each={vm.blocks}>
+          <For each={vm.blocks()}>
             {(block) => (
               <Switch>
                 <Match when={block.type === 'heading' && block}>

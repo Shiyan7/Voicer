@@ -1,28 +1,27 @@
 import { For, Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
-import { useViewModel } from '@/shared/view-model';
 
-import { TranscriptViewModel } from '../model/TranscriptViewModel';
+import { useTranscript } from '../model/useTranscript';
 import { TranscriptDeps } from '../types/TranscriptDeps';
 import { transcriptStyles } from './Transcript.styles';
 
 const styles = transcriptStyles();
 
 export function Transcript(props: TranscriptDeps) {
-  const vm = useViewModel(TranscriptViewModel, () => props);
+  const vm = useTranscript(props);
 
   return (
     <section class={styles.card()}>
       <h2 class={styles.sectionTitle()}>{i18n.t('meetings.transcript')}</h2>
       <Show
-        when={!vm.isEmpty}
+        when={!vm.isEmpty()}
         fallback={
           <p class={styles.hint()}>{i18n.t('meetings.transcript_empty')}</p>
         }
       >
         <div class={styles.list()}>
-          <For each={vm.segments}>
+          <For each={vm.segments()}>
             {(segment) => (
               <button
                 class={styles.segment({ active: segment.isActive })}

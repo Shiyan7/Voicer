@@ -5,37 +5,36 @@ import { MODALS } from '@/shared/lib/modal';
 import { Button } from '@/shared/ui/button';
 import { Modal } from '@/shared/ui/modal';
 import { StatusBadge } from '@/shared/ui/status-badge';
-import { useViewModel } from '@/shared/view-model';
 
-import { DetailsHeaderViewModel } from '../model/DetailsHeaderViewModel';
+import { useDetailsHeader } from '../model/useDetailsHeader';
 import { DetailsHeaderDeps } from '../types/DetailsHeaderDeps';
 import { detailsHeaderStyles } from './DetailsHeader.styles';
 
 const styles = detailsHeaderStyles();
 
 export function DetailsHeader(props: DetailsHeaderDeps) {
-  const vm = useViewModel(DetailsHeaderViewModel, () => props);
+  const vm = useDetailsHeader(props);
 
   return (
     <>
       <header class={styles.header()}>
         <div class={styles.titleRow()}>
           <Show
-            when={vm.isEditingTitle}
+            when={vm.isEditingTitle()}
             fallback={
               <h1
                 class={styles.title()}
                 title={i18n.t('meetings.rename')}
                 onClick={vm.startTitleEdit}
               >
-                {vm.title}
+                {vm.title()}
               </h1>
             }
           >
             <input
               class={styles.titleInput()}
               ref={(el) => queueMicrotask(() => el.focus())}
-              value={vm.titleDraft}
+              value={vm.titleDraft()}
               onBlur={vm.commitTitle}
               onInput={vm.onTitleInput}
               onKeyDown={vm.onTitleKeyDown}
@@ -50,8 +49,8 @@ export function DetailsHeader(props: DetailsHeaderDeps) {
           </Button>
         </div>
         <div class={styles.metaRow()}>
-          <span>{vm.metaLabel}</span>
-          <StatusBadge status={vm.status} />
+          <span>{vm.metaLabel()}</span>
+          <StatusBadge status={vm.status()} />
         </div>
       </header>
 
@@ -62,7 +61,7 @@ export function DetailsHeader(props: DetailsHeaderDeps) {
           <Button variant="secondary" onClick={vm.cancelDelete}>
             {i18n.t('meetings.cancel')}
           </Button>
-          <Button disabled={vm.isDeleting} onClick={vm.confirmDelete}>
+          <Button disabled={vm.isDeleting()} onClick={vm.confirmDelete}>
             {i18n.t('meetings.delete')}
           </Button>
         </div>

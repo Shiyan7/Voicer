@@ -7,10 +7,9 @@ import { AudioPlayer } from '@/shared/ui/audio-player';
 import { Button } from '@/shared/ui/button';
 import { Icon } from '@/shared/ui/icon';
 import { PageFade } from '@/shared/ui/page-fade';
-import { useViewModel } from '@/shared/view-model';
 
 import { meetingDetailsStyles } from './MeetingDetails.styles';
-import { MeetingDetailsPageViewModel } from './model/MeetingDetailsPageViewModel';
+import { useMeetingDetailsPage } from './model/useMeetingDetailsPage';
 import { ActionItemsSection } from './segments/action-items/ui/ActionItemsSection';
 import { DetailsHeader } from './segments/details-header/ui/DetailsHeader';
 import { StatePanel } from './segments/state-panel/ui/StatePanel';
@@ -20,7 +19,7 @@ import { Transcript } from './segments/transcript/ui/Transcript';
 const styles = meetingDetailsStyles();
 
 export function MeetingDetailsOrchestrator() {
-  const vm = useViewModel(MeetingDetailsPageViewModel);
+  const vm = useMeetingDetailsPage();
 
   return (
     <PageFade>
@@ -30,11 +29,11 @@ export function MeetingDetailsOrchestrator() {
           {i18n.t('meetings.back')}
         </A>
         <Switch>
-          <Match when={vm.isLoading}>
+          <Match when={vm.isLoading()}>
             <div class={styles.skeleton({ size: 'header' })} />
             <div class={styles.skeleton({ size: 'content' })} />
           </Match>
-          <Match when={vm.loadFailed}>
+          <Match when={vm.loadFailed()}>
             <div class={styles.notFound()}>
               <h1 class={styles.notFoundTitle()}>
                 {i18n.t('meetings.not_found')}
@@ -44,31 +43,31 @@ export function MeetingDetailsOrchestrator() {
               </Button>
             </div>
           </Match>
-          <Match when={vm.meeting}>
+          <Match when={vm.meeting()}>
             {(meeting) => (
               <>
                 <DetailsHeader meeting={meeting()} />
 
-                <Show when={vm.showPlayer}>
+                <Show when={vm.showPlayer()}>
                   <AudioPlayer
                     ref={vm.setPlayerApi}
-                    src={vm.audioUrl}
+                    src={vm.audioUrl()}
                     onTimeUpdate={vm.onPlayerTimeUpdate}
                   />
                 </Show>
 
-                <Show when={vm.statePanelVariant}>
+                <Show when={vm.statePanelVariant()}>
                   {(variant) => (
                     <StatePanel variant={variant()} status={meeting().status} />
                   )}
                 </Show>
 
-                <Show when={vm.isReady}>
+                <Show when={vm.isReady()}>
                   <Summary summary={meeting().summary} />
                   <ActionItemsSection items={meeting().actionItems} />
                   <Transcript
                     segments={meeting().segments}
-                    currentTimeMs={vm.currentTimeMs}
+                    currentTimeMs={vm.currentTimeMs()}
                     onSeek={vm.seekTo}
                   />
                 </Show>

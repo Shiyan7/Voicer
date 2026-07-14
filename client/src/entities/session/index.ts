@@ -1,2 +1,1 @@
-export { SessionService } from './model/SessionService';
-export { SessionViewModel } from './model/SessionViewModel';
+export { createSession, useSession } from './model/useSession';
