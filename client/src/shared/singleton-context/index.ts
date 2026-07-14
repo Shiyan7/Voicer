@@ -1,5 +1,1 @@
-export {
-  SingletonProvider,
-  useSession,
-  useSingletonContext,
-} from './SingletonContext';
+export { SingletonProvider, useSingletonContext } from './SingletonContext';

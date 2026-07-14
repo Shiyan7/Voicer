@@ -44,24 +44,6 @@ export class ApiService {
     return this.request<T>('DELETE', path);
   }
 
-  async postFormData<T>(path: string, formData: FormData): Promise<T> {
-    const res = await fetch(`${this.baseUrl}${path}`, {
-      method: 'POST',
-      headers: this.authHeaders(),
-      body: formData,
-      credentials: 'include',
-    });
-
-    return this.handleResponse<T>(res);
-  }
-
-  getAudioUrl(meetingId: string) {
-    const url = `${this.baseUrl}/meetings/${meetingId}/audio`;
-
-    const token = isTauri() ? tokenStore.accessToken : null;
-    return token ? `${url}?token=${encodeURIComponent(token)}` : url;
-  }
-
   private authHeaders(): Record<string, string> {
     const token = isTauri() ? tokenStore.accessToken : null;
     return token ? { Authorization: `Bearer ${token}` } : {};

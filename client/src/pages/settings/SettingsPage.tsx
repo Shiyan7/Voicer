@@ -3,15 +3,14 @@ import { For, Show } from 'solid-js';
 import { i18n, languages } from '@/shared/i18n';
 import { Button } from '@/shared/ui/button';
 import { PageFade } from '@/shared/ui/page-fade';
-import { useViewModel } from '@/shared/view-model';
 
+import { useSettings } from './model/useSettings';
 import { settingsStyles } from './Settings.styles';
-import { SettingsViewModel } from './SettingsViewModel';
 
 const styles = settingsStyles();
 
 export default function SettingsPage() {
-  const vm = useViewModel(SettingsViewModel);
+  const vm = useSettings();
 
   return (
     <PageFade>
@@ -30,14 +29,14 @@ export default function SettingsPage() {
               <select
                 class={styles.select()}
                 onChange={(e) => vm.changeLang(e.currentTarget.value)}
-                value={vm.locale}
+                value={vm.locale()}
               >
                 <For each={languages}>
                   {(lang) => <option value={lang.value}>{lang.label}</option>}
                 </For>
               </select>
             </div>
-            <button onClick={vm.onLogoutClick}>logout</button>
+            <button onClick={vm.logout}>logout</button>
           </div>
         </section>
 
@@ -57,14 +56,14 @@ export default function SettingsPage() {
                   </span>
                 </div>
                 <button
-                  class={styles.toggle({ checked: vm.autoRecord })}
+                  class={styles.toggle({ checked: vm.autoRecord() })}
                   role="switch"
-                  aria-checked={vm.autoRecord}
+                  aria-checked={vm.autoRecord()}
                   aria-label={i18n.t('settings.recording.auto')}
-                  onClick={() => vm.toggleAutoRecord()}
+                  onClick={vm.toggleAutoRecord}
                 >
                   <span
-                    class={styles.toggleThumb({ checked: vm.autoRecord })}
+                    class={styles.toggleThumb({ checked: vm.autoRecord() })}
                   />
                 </button>
               </div>
@@ -76,7 +75,7 @@ export default function SettingsPage() {
               {i18n.t('settings.permissions.title')}
             </h2>
             <div class={styles.card()}>
-              <For each={vm.permissionRows}>
+              <For each={vm.permissionRows()}>
                 {(row) => (
                   <div class={styles.row()}>
                     <div class={styles.rowText()}>

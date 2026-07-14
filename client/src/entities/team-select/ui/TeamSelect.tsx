@@ -1,39 +1,34 @@
 import { Show } from 'solid-js';
 
 import { Button } from '@/shared/ui/button';
-import { useViewModel } from '@/shared/view-model';
 
-import { TeamSelectViewModel } from '../model/TeamSelectViewModel';
+import { useTeamSelect } from '../model/useTeamSelect';
 import { TeamSelectDeps } from '../types/TeamSelectDeps';
 import { teamSelectStyles } from './TeamSelect.styles';
 
 const styles = teamSelectStyles();
 
 export function TeamSelect(props: TeamSelectDeps) {
-  const vm = useViewModel(TeamSelectViewModel, () => props);
+  const vm = useTeamSelect(props);
 
   return (
     <Show
-      when={vm.session.isAuthorized}
+      when={vm.isAuthorized()}
       fallback={
-        <Button
-          class={styles.authBtn()}
-          onClick={() => vm.onAuthBtnClick()}
-          size="md"
-        >
-          {vm.authLabel}
+        <Button class={styles.authBtn()} onClick={vm.openAuth} size="md">
+          {vm.authLabel()}
         </Button>
       }
     >
       <Show
         when={!props.isCollapsed}
         fallback={
-          <button class={styles.avatarBtn()}>{vm.firstLetterName}</button>
+          <button class={styles.avatarBtn()}>{vm.firstLetterName()}</button>
         }
       >
         <div class={styles.info()}>
-          <span class={styles.name()}>{vm.session.user?.name}</span>
-          <span class={styles.email()}>{vm.session.user?.email}</span>
+          <span class={styles.name()}>{vm.user()?.name}</span>
+          <span class={styles.email()}>{vm.user()?.email}</span>
         </div>
       </Show>
     </Show>
