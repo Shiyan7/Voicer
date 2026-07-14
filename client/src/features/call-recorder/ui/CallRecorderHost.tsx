@@ -1,4 +1,4 @@
-import { onMount, Show } from 'solid-js';
+import { Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
 
@@ -7,8 +7,6 @@ import { RecordingBar } from './RecordingBar';
 
 export function CallRecorderHost() {
   const vm = useRecorder();
-
-  onMount(() => vm.setup());
 
   return (
     <Show when={vm.isBarVisible()}>

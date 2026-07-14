@@ -33,8 +33,6 @@ export function useAuth() {
       ? i18n.t('labels.log_in')
       : i18n.t('labels.sign_up');
 
-  const isPending = () => login.isPending() || signup.isPending();
-
   const toggleAuthMode = () => {
     reset(authForm);
     setMode((current) =>
@@ -57,7 +55,6 @@ export function useAuth() {
     authForm,
     modalTitle,
     buttonText,
-    isPending,
     toggleAuthMode,
     onSubmit,
   };

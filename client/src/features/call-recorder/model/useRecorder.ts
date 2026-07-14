@@ -1,3 +1,5 @@
+import { onMount } from 'solid-js';
+
 export function useRecorder() {
   const isBarVisible = (): boolean => false;
 
@@ -13,5 +15,15 @@ export function useRecorder() {
 
   const stop = () => {};
 
-  return { isBarVisible, isUploading, barText, timeLabel, uploadPercent, setup, stop };
+  onMount(() => setup());
+
+  return {
+    isBarVisible,
+    isUploading,
+    barText,
+    timeLabel,
+    uploadPercent,
+    setup,
+    stop,
+  };
 }
