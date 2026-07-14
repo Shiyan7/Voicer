@@ -4,10 +4,12 @@ import { RecorderViewModel } from '@/features/call-recorder';
 import { injectable } from '@/shared/di';
 import { i18n } from '@/shared/i18n';
 import { isTauri } from '@/shared/isTauri';
-import { formatSeconds } from '@/shared/lib/time';
 import { paths, RouterService } from '@/shared/router';
 import { SocketService } from '@/shared/socket';
 import { StatefulViewModel } from '@/shared/view-model';
+
+import { toMeetingCard } from '../lib/toMeetingCard';
+import { MeetingCardData } from '../types/MeetingCardData';
 
 @injectable()
 export class MeetingsPageViewModel extends StatefulViewModel {
@@ -41,25 +43,8 @@ export class MeetingsPageViewModel extends StatefulViewModel {
     return isTauri() && !this.recorder.isRecordingInFlight;
   }
 
-  get cards() {
-    const dateFormat = new Intl.DateTimeFormat(i18n.locale(), {
-      day: 'numeric',
-      month: 'short',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-
-    return this.meetings.map((meeting) => ({
-      id: meeting.id,
-      title: meeting.title?.trim() || i18n.t('meetings.untitled'),
-      status: meeting.status,
-      meta: [
-        dateFormat.format(new Date(meeting.startedAt)),
-        meeting.durationSec != null ? formatSeconds(meeting.durationSec) : null,
-      ]
-        .filter(Boolean)
-        .join(' · '),
-    }));
+  get cards(): MeetingCardData[] {
+    return this.meetings.map(toMeetingCard);
   }
 
   startRecording = () => {

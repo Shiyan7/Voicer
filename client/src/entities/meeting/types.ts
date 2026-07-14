@@ -1,7 +1,13 @@
 import { ActionItemData } from '@/entities/action-item';
 
 export type MeetingSource =
-  'zoom' | 'meet' | 'teams' | 'telegram' | 'discord' | 'other' | 'manual';
+  | 'zoom'
+  | 'meet'
+  | 'teams'
+  | 'telegram'
+  | 'discord'
+  | 'other'
+  | 'manual';
 
 export type MeetingStatus =
   | 'recording'
@@ -16,7 +22,7 @@ export type Speaker = 'me' | 'other';
 
 export type Meeting = {
   id: string;
-  title: string | null;
+  title: string;
   source: MeetingSource;
   status: MeetingStatus;
   startedAt: string;
