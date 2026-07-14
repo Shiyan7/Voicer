@@ -1,23 +1,23 @@
 import { createContext, ParentProps, useContext } from 'solid-js';
 
-import { createSession } from '@/entities/session';
 import { createToasts } from '@/entities/toasts';
+import { createUserMe } from '@/entities/user-me';
 
 type SingletonContextValue = {
-  session: ReturnType<typeof createSession>;
+  userMe: ReturnType<typeof createUserMe>;
   toasts: ReturnType<typeof createToasts>;
 };
 
 const SingletonContext = createContext<SingletonContextValue>();
 
 export function SingletonProvider(props: ParentProps) {
-  const session = createSession();
+  const userMe = createUserMe();
   const toasts = createToasts();
 
   return (
     <SingletonContext.Provider
       value={{
-        session,
+        userMe,
         toasts,
       }}
     >

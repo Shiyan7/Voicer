@@ -12,6 +12,7 @@ import { ActionItemEntity } from './meetings/action-item.entity';
 import { StorageModule } from './storage/storage.module';
 import { ProcessingModule } from './processing/processing.module';
 import { EventsModule } from './events/events.module';
+import { GraphqlModule } from './graphql/graphql.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { EventsModule } from './events/events.module';
         };
       },
     }),
+    GraphqlModule,
     AuthModule,
     UsersModule,
     StorageModule,

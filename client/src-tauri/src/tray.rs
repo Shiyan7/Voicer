@@ -5,7 +5,13 @@ use tauri::{AppHandle, Manager};
 pub const TRAY_ID: &str = "voicer-tray";
 
 pub fn create_tray(app: &AppHandle) -> tauri::Result<()> {
-    let stop = MenuItem::with_id(app, "stop-recording", "Остановить запись", true, None::<&str>)?;
+    let stop = MenuItem::with_id(
+        app,
+        "stop-recording",
+        "Остановить запись",
+        true,
+        None::<&str>,
+    )?;
     let open = MenuItem::with_id(app, "open", "Открыть Voicer", true, None::<&str>)?;
     let quit = MenuItem::with_id(app, "quit", "Выйти", true, None::<&str>)?;
     let menu = Menu::with_items(app, &[&stop, &open, &quit])?;

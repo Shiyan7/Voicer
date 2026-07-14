@@ -6,8 +6,6 @@ import { AuthService } from './auth.service';
 import { JwtDto } from './dto/jwt.dto';
 import { UserEntity } from '../users/user.entity';
 
-type RequestWithCookies = Request & { cookies?: Record<string, string> };
-
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
@@ -15,11 +13,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     readonly configService: ConfigService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([
-        (req: RequestWithCookies) => req?.cookies?.accessToken,
-        ExtractJwt.fromAuthHeaderAsBearerToken(),
-        ExtractJwt.fromUrlQueryParameter('token'),
-      ]),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: configService.get('JWT_ACCESS_SECRET'),
     });
   }

@@ -77,7 +77,12 @@ fn run(app: &AppHandle) {
             let run_addr = global_address(PROP_IS_RUNNING_SOMEWHERE);
             unsafe {
                 if let Some(old) = listened_device {
-                    AudioObjectRemovePropertyListener(old, &run_addr, Some(wake_listener), wake_ptr);
+                    AudioObjectRemovePropertyListener(
+                        old,
+                        &run_addr,
+                        Some(wake_listener),
+                        wake_ptr,
+                    );
                 }
                 if let Some(new) = device {
                     AudioObjectAddPropertyListener(new, &run_addr, Some(wake_listener), wake_ptr);

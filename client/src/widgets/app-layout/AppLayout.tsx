@@ -5,6 +5,7 @@ import { AuthModal } from '@/features/auth';
 import { CallRecorderHost } from '@/features/call-recorder';
 import { i18n } from '@/shared/i18n';
 import { isTauri } from '@/shared/isTauri';
+import { SingletonProvider } from '@/shared/singleton-context';
 import { Navigation } from '@/widgets/navigation';
 
 import { appLayoutStyles } from './AppLayout.styles';
@@ -17,22 +18,24 @@ export function AppLayout(props: ParentProps) {
   });
 
   return (
-    <Suspense>
-      <Show when={i18n.ready}>
-        <div class={styles.root()}>
-          <Navigation />
-          <main class={styles.main()}>
-            <Suspense>
-              {props.children}
-              <Toasts />
-            </Suspense>
-          </main>
-        </div>
-        <AuthModal />
-        <Show when={isTauri()}>
-          <CallRecorderHost />
+    <SingletonProvider>
+      <Suspense>
+        <Show when={i18n.ready}>
+          <div class={styles.root()}>
+            <Navigation />
+            <main class={styles.main()}>
+              <Suspense>
+                {props.children}
+                <Toasts />
+              </Suspense>
+            </main>
+          </div>
+          <AuthModal />
+          <Show when={isTauri()}>
+            <CallRecorderHost />
+          </Show>
         </Show>
-      </Show>
-    </Suspense>
+      </Suspense>
+    </SingletonProvider>
   );
 }

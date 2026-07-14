@@ -1,20 +1,18 @@
 import { createFormStore, reset, valiForm } from '@modular-forms/solid';
 import { createSignal } from 'solid-js';
 
-import { useSession } from '@/entities/session';
 import { i18n } from '@/shared/i18n';
 import { closeModal, MODALS } from '@/shared/lib/modal';
+import { authRoot } from '@/shared/roots/authRoot';
 
-import { createLoginMutation } from '../api/createLoginMutation';
-import { createSignupMutation } from '../api/createSignupMutation';
+import { createSignInMutation } from '../api/createSignInMutation';
+import { createSignUpMutation } from '../api/createSignUpMutation';
 import { AuthForm, createAuthSchema } from '../config/createAuthSchema';
 import { AuthMode } from '../types';
 
 export function useAuth() {
-  const session = useSession();
-
-  const login = createLoginMutation();
-  const signup = createSignupMutation();
+  const [, signIn] = createSignInMutation();
+  const [, signUp] = createSignUpMutation();
 
   const [mode, setMode] = createSignal(AuthMode.LogIn);
 
@@ -41,12 +39,21 @@ export function useAuth() {
   };
 
   const onSubmit = async (formValues: AuthForm) => {
-    const user =
-      mode() === AuthMode.LogIn
-        ? await login.mutateAsync(formValues)
-        : await signup.mutateAsync(formValues);
+    const input = { email: formValues.email, password: formValues.password };
 
-    session.login(user);
+    const result =
+      mode() === AuthMode.LogIn
+        ? await signIn({ input })
+        : await signUp({ input });
+
+    const tokens =
+      result.data && 'signIn' in result.data
+        ? result.data.signIn
+        : result.data?.signUp;
+
+    if (!tokens) return;
+
+    authRoot.saveToken(tokens);
     closeModal(MODALS.AUTH);
   };
 

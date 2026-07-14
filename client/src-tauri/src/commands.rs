@@ -31,7 +31,11 @@ pub struct StopRecordingResult {
 }
 
 #[derive(Serialize, Clone)]
-#[serde(tag = "state", rename_all = "camelCase", rename_all_fields = "camelCase")]
+#[serde(
+    tag = "state",
+    rename_all = "camelCase",
+    rename_all_fields = "camelCase"
+)]
 #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
 pub enum RecorderStateDto {
     Idle,

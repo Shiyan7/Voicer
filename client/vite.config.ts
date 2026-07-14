@@ -46,6 +46,7 @@ export default defineConfig(async () => ({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      '@schema': path.resolve(__dirname, 'Dictionary/types.ts'),
     },
   },
 }));

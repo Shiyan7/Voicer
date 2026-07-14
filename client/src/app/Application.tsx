@@ -1,17 +1,18 @@
 import './styles.css';
 
 import { Router } from '@solidjs/router';
+import { Provider } from '@urql/solid';
 
+import { urqlClient } from '@/shared/api/graphql';
 import { routes } from '@/shared/router';
-import { SingletonProvider } from '@/shared/singleton-context';
 import { AppLayout } from '@/widgets/app-layout';
 
 export function Application() {
   return (
-    <div class="app">
-      <SingletonProvider>
+    <Provider value={urqlClient}>
+      <div class="app">
         <Router root={AppLayout}>{routes}</Router>
-      </SingletonProvider>
-    </div>
+      </div>
+    </Provider>
   );
 }

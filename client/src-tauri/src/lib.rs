@@ -12,7 +12,7 @@ mod upload;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    let mut builder = tauri::Builder::default();
+    let mut builder = tauri::Builder::default().plugin(tauri_plugin_store::Builder::new().build());
 
     builder = builder
         .plugin(tauri_plugin_os::init())

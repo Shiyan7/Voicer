@@ -1,25 +1,11 @@
-import { createSignal } from 'solid-js';
+import type { AuthPayload } from '@schema';
+import { createMutation } from '@urql/solid';
 
-import { api } from '@/shared/api';
-import { AuthTokens, tokenStore } from '@/shared/api/tokenStore';
-import { MinimalUserOutput, SignUpDTO } from '@/shared/api/types';
-import { isTauri } from '@/shared/isTauri';
+import { SIGN_UP_MUTATION } from './gql/SIGN_UP_MUTATION';
 
-export function createSignupMutation() {
-  const [isPending, setIsPending] = createSignal(false);
-
-  const mutateAsync = async (dto: SignUpDTO) => {
-    setIsPending(true);
-
-    try {
-      const tokens = await api.post<AuthTokens>('/auth/sign-up', dto);
-      if (isTauri()) tokenStore.save(tokens);
-
-      return await api.get<MinimalUserOutput>('/users/me');
-    } finally {
-      setIsPending(false);
-    }
-  };
-
-  return { mutateAsync, isPending };
+interface SignUpMutation {
+  signUp: AuthPayload;
 }
+
+export const createSignUpMutation = () =>
+  createMutation<SignUpMutation>(SIGN_UP_MUTATION);
