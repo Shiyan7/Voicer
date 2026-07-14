@@ -1,4 +1,4 @@
-import type { SystemSettingsPane } from '@/features/call-recorder/model/RecorderService';
+export type SystemSettingsPane = 'mic' | 'screenRecording';
 
 export type PermissionRow = {
   pane: SystemSettingsPane;

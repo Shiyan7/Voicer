@@ -17,7 +17,6 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@abraham/reflection": "^0.13.0",
     "@modular-forms/solid": "^0.25.1",
     "@neodx/svg": "0.8.0",
     "@solid-primitives/cookies": "^0.0.3",
@@ -38,7 +37,6 @@
     "tailwind-merge": "^3.6.0",
     "tailwind-variants": "^3.2.2",
     "tailwindcss": "^4.3.0",
-    "tsyringe": "^4.10.0",
     "valibot": "^1.4.1"
   },
   "devDependencies": {

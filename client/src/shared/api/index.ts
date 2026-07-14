@@ -1,2 +1,2 @@
-export { ApiService } from './ApiService';
+export { api } from './api';
 export { UnauthorizedError } from './UnauthorizedError';

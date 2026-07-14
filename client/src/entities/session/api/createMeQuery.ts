@@ -1,11 +1,9 @@
 import { createSignal } from 'solid-js';
 
-import { ApiService } from '@/shared/api';
+import { api } from '@/shared/api';
 import { MinimalUserOutput } from '@/shared/api/types';
-import { container } from '@/shared/di';
 
 export function createMeQuery() {
-  const api = container.resolve(ApiService);
   const [isPending, setIsPending] = createSignal(false);
 
   const query = async () => {
