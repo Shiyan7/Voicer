@@ -44,7 +44,7 @@ export type MutationSignUpArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  userMe: UserModel;
+  userMe: UserMeOutput;
 };
 
 export type RefreshInput = {
@@ -61,8 +61,8 @@ export type SignUpInput = {
   password: Scalars['String']['input'];
 };
 
-export type UserModel = {
-  __typename?: 'UserModel';
+export type UserMeOutput = {
+  __typename?: 'UserMeOutput';
   avatar?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['DateTime']['output'];
   email: Scalars['String']['output'];

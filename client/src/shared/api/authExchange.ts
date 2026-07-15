@@ -11,14 +11,12 @@ export const authExchange = makeAuthExchange(async (utils) => ({
       Authorization: `Bearer ${token}`,
     });
   },
-
   didAuthError(error) {
     return (
       error.response?.status === 401 ||
       error.graphQLErrors.some((e) => e.extensions?.code === 'UNAUTHENTICATED')
     );
   },
-
   async refreshAuth() {
     const result = await utils.mutate(REFRESH_MUTATION, {
       input: { refreshToken: authRoot.refreshToken ?? '' },

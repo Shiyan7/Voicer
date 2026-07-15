@@ -19,7 +19,7 @@ type Mutation {
 }
 
 type Query {
-  userMe: UserModel!
+  userMe: UserMeOutput!
 }
 
 input RefreshInput {
@@ -36,7 +36,7 @@ input SignUpInput {
   password: String!
 }
 
-type UserModel {
+type UserMeOutput {
   avatar: String
   createdAt: DateTime!
   email: String!

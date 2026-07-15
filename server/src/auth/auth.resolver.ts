@@ -2,7 +2,7 @@ import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 import { UserEntity } from '../users/user.entity';
-import { UserModel } from '../users/models/user.model';
+import { UserMeOutput } from '../users/models/user.model';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { RefreshInput } from './dto/refresh.input';
@@ -30,9 +30,9 @@ export class AuthResolver {
     return this.auth.refreshToken(input.refreshToken);
   }
 
-  @Query(() => UserModel)
+  @Query(() => UserMeOutput)
   @UseGuards(GqlAuthGuard)
-  userMe(@CurrentUser() user: UserEntity): UserModel {
+  userMe(@CurrentUser() user: UserEntity): UserMeOutput {
     return user;
   }
 }
