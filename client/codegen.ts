@@ -11,6 +11,13 @@ const config: CodegenConfig = {
         commentDescriptions: true,
       },
     },
+    './Dictionary/schema.generated.gql': {
+      plugins: ['schema-ast'],
+      config: {
+        includeDirectives: true,
+        commentDescriptions: true,
+      },
+    },
   },
 };
 

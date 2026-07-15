@@ -3,7 +3,7 @@ import './styles.css';
 import { Router } from '@solidjs/router';
 import { Provider } from '@urql/solid';
 
-import { urqlClient } from '@/shared/api/graphql';
+import { urqlClient } from '@/shared/api';
 import { routes } from '@/shared/router';
 import { AppLayout } from '@/widgets/app-layout';
 

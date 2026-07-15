@@ -20,7 +20,7 @@ import { UserEntity } from '../users/user.entity';
         return {
           secret: configService.get<string>('JWT_ACCESS_SECRET'),
           signOptions: {
-            expiresIn: '30m',
+            expiresIn: '30d',
           },
         };
       },

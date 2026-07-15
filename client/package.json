@@ -32,7 +32,6 @@
     "@tauri-apps/plugin-opener": "^2.5.4",
     "@tauri-apps/plugin-os": "^2.3.2",
     "@tauri-apps/plugin-store": "^2.4.3",
-    "@urql/exchange-auth": "^3.0.0",
     "@urql/solid": "^1.0.1",
     "@xeonlink/prettier-plugin-organize-attributes": "^1.1.0",
     "eslint": "^9.7.0",

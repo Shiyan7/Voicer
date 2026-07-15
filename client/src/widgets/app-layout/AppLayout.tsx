@@ -1,10 +1,10 @@
+import { isTauri } from '@tauri-apps/api/core';
 import { onMount, type ParentProps, Show, Suspense } from 'solid-js';
 
 import { Toasts } from '@/entities/toasts';
 import { AuthModal } from '@/features/auth';
 import { CallRecorderHost } from '@/features/call-recorder';
 import { i18n } from '@/shared/i18n';
-import { isTauri } from '@/shared/isTauri';
 import { SingletonProvider } from '@/shared/singleton-context';
 import { Navigation } from '@/widgets/navigation';
 

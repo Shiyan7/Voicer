@@ -20,18 +20,12 @@ export type Scalars = {
 export type AuthPayload = {
   __typename?: 'AuthPayload';
   accessToken: Scalars['String']['output'];
-  refreshToken: Scalars['String']['output'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  refresh: AuthPayload;
   signIn: AuthPayload;
   signUp: AuthPayload;
-};
-
-export type MutationRefreshArgs = {
-  input: RefreshInput;
 };
 
 export type MutationSignInArgs = {
@@ -45,10 +39,6 @@ export type MutationSignUpArgs = {
 export type Query = {
   __typename?: 'Query';
   userMe: UserMeOutput;
-};
-
-export type RefreshInput = {
-  refreshToken: Scalars['String']['input'];
 };
 
 export type SignInInput = {

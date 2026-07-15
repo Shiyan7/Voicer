@@ -5,7 +5,6 @@ import { UserEntity } from '../users/user.entity';
 import { UserMeOutput } from '../users/models/user.model';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
-import { RefreshInput } from './dto/refresh.input';
 import { SignInInput } from './dto/sign-in.input';
 import { SignUpInput } from './dto/sign-up.input';
 import { GqlAuthGuard } from './guards/gql-auth.guard';
@@ -23,11 +22,6 @@ export class AuthResolver {
   @Mutation(() => AuthPayload)
   signIn(@Args('input') input: SignInInput): Promise<AuthPayload> {
     return this.auth.signIn(input.email, input.password);
-  }
-
-  @Mutation(() => AuthPayload)
-  refresh(@Args('input') input: RefreshInput): AuthPayload {
-    return this.auth.refreshToken(input.refreshToken);
   }
 
   @Query(() => UserMeOutput)

@@ -24,8 +24,6 @@ async function bootstrap() {
     origin: corsWhitelist,
   });
 
-  app.setGlobalPrefix('api/v1');
-
   await app.listen(1488);
 }
 

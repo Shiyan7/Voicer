@@ -1,5 +1,6 @@
 import { createServerCookie } from '@solid-primitives/cookies';
 import * as i18nLib from '@solid-primitives/i18n';
+import { isTauri } from '@tauri-apps/api/core';
 import { locale as getOsLocale } from '@tauri-apps/plugin-os';
 import {
   createEffect,
@@ -7,8 +8,6 @@ import {
   createRoot,
   createSignal,
 } from 'solid-js';
-
-import { isTauri } from '@/shared/isTauri';
 
 import type { Dictionary, Locale, RawDictionary } from './types';
 

@@ -1,16 +1,30 @@
-import { cacheExchange, createClient, fetchExchange, subscriptionExchange } from '@urql/solid';
+import {
+  cacheExchange,
+  createClient,
+  fetchExchange,
+  mapExchange,
+  subscriptionExchange,
+} from '@urql/solid';
 import { SubscribePayload } from 'graphql-ws';
 
-import { authExchange } from './authExchange';
-import { graphqlHttpUrl } from './url';
+import { authRoot } from '../roots/authRoot';
+import { isAuthError } from './lib/isAuthError';
 import { wsClient } from './wsClient';
 
 export const urqlClient = createClient({
-  url: graphqlHttpUrl,
+  url: import.meta.env.VITE_GRAPHQL_API_URL,
   preferGetMethod: false,
+  fetchOptions: () => {
+    const token = authRoot.accessToken;
+    return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+  },
   exchanges: [
     cacheExchange,
-    authExchange,
+    mapExchange({
+      onError(error) {
+        if (isAuthError(error)) authRoot.clear();
+      },
+    }),
     subscriptionExchange({
       forwardSubscription(operation) {
         return {
