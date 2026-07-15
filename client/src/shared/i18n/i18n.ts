@@ -1,5 +1,5 @@
-import { createServerCookie } from '@solid-primitives/cookies';
 import * as i18nLib from '@solid-primitives/i18n';
+import { makePersisted } from '@solid-primitives/storage';
 import { isTauri } from '@tauri-apps/api/core';
 import { locale as getOsLocale } from '@tauri-apps/plugin-os';
 import {
@@ -11,7 +11,13 @@ import {
 
 import type { Dictionary, Locale, RawDictionary } from './types';
 
-const [cookieLocale, setCookieLocale] = createServerCookie('locale');
+const [persistedLocale, setPersistedLocale] = makePersisted(
+  createSignal<string>(),
+  {
+    name: 'i18n.locale',
+    storage: localStorage,
+  },
+);
 
 export const i18n = createRoot(() => {
   const [locale, setLocale] = createSignal<Locale>('en');
@@ -33,15 +39,15 @@ export const i18n = createRoot(() => {
       osLocale = await getOsLocale();
     }
 
-    const initial = cookieLocale() ?? osLocale?.split('-')[0] ?? 'en';
+    const initial = persistedLocale() ?? osLocale?.split('-')[0] ?? 'en';
 
     setLocale(initial as Locale);
-    setCookieLocale(initial);
+    setPersistedLocale(initial);
     setReady(true);
   };
 
   const changeLang = (next: Locale) => {
-    setCookieLocale(next);
+    setPersistedLocale(next);
     setLocale(next);
   };
 

@@ -1,10 +1,12 @@
 import { authRoot } from '@/shared/roots/authRoot';
-import { useSingletonContext } from '@/shared/singleton-context';
+import { useSingletonContext } from '@/shared/singleton';
 
 import { userMeQuery } from '../api/userMeQuery';
 
 export const createUserMe = () => {
-  const [userMeResult] = userMeQuery(() => !authRoot.accessToken);
+  const [userMeResult] = userMeQuery({
+    pause: () => !authRoot.accessToken,
+  });
 
   const user = () => userMeResult.data?.userMe ?? null;
 

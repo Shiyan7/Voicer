@@ -5,7 +5,7 @@ import { Toasts } from '@/entities/toasts';
 import { AuthModal } from '@/features/auth';
 import { CallRecorderHost } from '@/features/call-recorder';
 import { i18n } from '@/shared/i18n';
-import { SingletonProvider } from '@/shared/singleton-context';
+import { SingletonProvider } from '@/shared/singleton';
 import { Navigation } from '@/widgets/navigation';
 
 import { appLayoutStyles } from './AppLayout.styles';

@@ -1,6 +1,6 @@
 import { createSignal } from 'solid-js';
 
-import { useSingletonContext } from '@/shared/singleton-context';
+import { useSingletonContext } from '@/shared/singleton';
 
 export type ToastType = 'success' | 'info' | 'warning' | 'error';
 

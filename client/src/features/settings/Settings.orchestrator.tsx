@@ -1,3 +1,4 @@
+import { isTauri } from '@tauri-apps/api/core';
 import { Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
@@ -18,10 +19,8 @@ export function SettingsOrchestrator() {
     <PageFade>
       <div class={styles.root()}>
         <h1 class={styles.pageTitle()}>{i18n.t('labels.settings')}</h1>
-
         <General />
-
-        <Show when={vm.isDesktop}>
+        <Show when={isTauri()}>
           <Recording />
           <Permissions />
         </Show>
