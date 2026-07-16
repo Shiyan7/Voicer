@@ -1,9 +1,3 @@
----
-paths:
-  - "client/src/**/*.tsx"
-  - "client/src/**/*.ts"
----
-
 # MVVM Architecture
 
 This project follows strict MVVM (Model–View–ViewModel). ViewModels are **hooks**, not classes. The rules below are

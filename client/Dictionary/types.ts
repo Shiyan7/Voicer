@@ -22,6 +22,27 @@ export type AuthPayload = {
   accessToken: Scalars['String']['output'];
 };
 
+export type MeetingOutput = {
+  __typename?: 'MeetingOutput';
+  createdAt: Scalars['DateTime']['output'];
+  durationSec?: Maybe<Scalars['Int']['output']>;
+  endedAt?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['ID']['output'];
+  source?: Maybe<Scalars['String']['output']>;
+  startedAt: Scalars['DateTime']['output'];
+  status: MeetingStatus;
+  title?: Maybe<Scalars['String']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export enum MeetingStatus {
+  Failed = 'FAILED',
+  Ready = 'READY',
+  Recording = 'RECORDING',
+  Summarizing = 'SUMMARIZING',
+  Transcribing = 'TRANSCRIBING',
+}
+
 export type Mutation = {
   __typename?: 'Mutation';
   signIn: AuthPayload;
@@ -38,6 +59,7 @@ export type MutationSignUpArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  meetings: Array<MeetingOutput>;
   userMe: UserMeOutput;
 };
 

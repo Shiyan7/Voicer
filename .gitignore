@@ -6,3 +6,6 @@
 .idea/usage.statistics.xml
 .idea/shelf/
 .idea/httpRequests/
+
+# Reference-only fork (patterns source, not part of this repo)
+/backend/

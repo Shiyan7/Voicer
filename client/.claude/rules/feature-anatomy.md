@@ -1,8 +1,3 @@
----
-paths:
-  - "client/src/features/**"
----
-
 # Feature Anatomy
 
 ## Required files (every feature)
