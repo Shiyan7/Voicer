@@ -1,21 +1,20 @@
 import { For } from 'solid-js';
 import { Portal } from 'solid-js/web';
 
-import { ToastsViewModel } from '@/entities/toasts';
+import { useToasts } from '@/entities/toasts';
 import { Icon } from '@/shared/ui/icon';
-import { useViewModel } from '@/shared/view-model';
 
 import { toastsStyles } from './Toasts.styles';
 
 const styles = toastsStyles();
 
 export function Toasts() {
-  const model = useViewModel(ToastsViewModel);
+  const toasts = useToasts();
 
   return (
     <Portal>
       <div class={styles.root()}>
-        <For each={model.items}>
+        <For each={toasts.items()}>
           {(toast) => (
             <div class={styles.toast({ variant: toast.type })}>
               <div class={styles.left()}>
@@ -23,7 +22,7 @@ export function Toasts() {
               </div>
               <button
                 class={styles.close()}
-                onClick={() => model.remove(toast.id)}
+                onClick={() => toasts.remove(toast.id)}
                 aria-label="Close toast"
               >
                 <Icon size={16} name="common:cross" />

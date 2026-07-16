@@ -13,18 +13,6 @@ export type StatusBadgeStatus =
   | 'ready'
   | 'failed';
 
-type BadgeKind = 'ready' | 'failed' | 'recording' | 'progress';
-
-const KIND_BY_STATUS: Record<StatusBadgeStatus, BadgeKind> = {
-  recording: 'recording',
-  uploading: 'progress',
-  uploaded: 'progress',
-  transcribing: 'progress',
-  summarizing: 'progress',
-  ready: 'ready',
-  failed: 'failed',
-};
-
 interface StatusBadgeProps {
   status: StatusBadgeStatus;
   class?: string;
@@ -33,7 +21,13 @@ interface StatusBadgeProps {
 const styles = statusBadgeStyles();
 
 export function StatusBadge(props: StatusBadgeProps) {
-  const kind = () => KIND_BY_STATUS[props.status];
+  const kind = () => {
+    const { status } = props;
+
+    return status === 'recording' || status === 'ready' || status === 'failed'
+      ? status
+      : 'progress';
+  };
 
   return (
     <span class={styles.root({ kind: kind(), class: props.class })}>

@@ -1,0 +1,1 @@
+export { urqlClient } from './client';

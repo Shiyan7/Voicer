@@ -2,7 +2,7 @@ import { tv } from 'tailwind-variants';
 
 export const actionItemStyles = tv({
   slots: {
-    row: 'flex items-start gap-3',
+    row: 'flex items-start py-2.5 gap-3',
     checkbox: `
       mt-0.5 flex size-5 shrink-0 cursor-pointer items-center justify-center
       rounded-full border border-gray-300 bg-transparent text-white

@@ -90,9 +90,10 @@ async fn upload_inner(
     let app_events = app.clone();
     let event_path = path.to_string();
 
-    let stream = tokio_util::io::ReaderStream::with_capacity(file, 64 * 1024).inspect_ok(
-        move |chunk| {
-            let sent_now = sent.fetch_add(chunk.len() as u64, Ordering::Relaxed) + chunk.len() as u64;
+    let stream =
+        tokio_util::io::ReaderStream::with_capacity(file, 64 * 1024).inspect_ok(move |chunk| {
+            let sent_now =
+                sent.fetch_add(chunk.len() as u64, Ordering::Relaxed) + chunk.len() as u64;
             let last = last_emitted.load(Ordering::Relaxed);
             if sent_now >= total || sent_now.saturating_sub(last) >= PROGRESS_GRANULARITY {
                 last_emitted.store(sent_now, Ordering::Relaxed);
@@ -105,13 +106,13 @@ async fn upload_inner(
                     },
                 );
             }
-        },
-    );
+        });
 
-    let part = reqwest::multipart::Part::stream_with_length(reqwest::Body::wrap_stream(stream), total)
-        .file_name(file_name)
-        .mime_str(mime)
-        .map_err(|e| format!("invalid mime: {e}"))?;
+    let part =
+        reqwest::multipart::Part::stream_with_length(reqwest::Body::wrap_stream(stream), total)
+            .file_name(file_name)
+            .mime_str(mime)
+            .map_err(|e| format!("invalid mime: {e}"))?;
     let form = reqwest::multipart::Form::new().part("file", part);
 
     let client = reqwest::Client::new();

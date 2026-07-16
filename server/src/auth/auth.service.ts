@@ -3,9 +3,7 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -15,7 +13,6 @@ import { UserEntity } from '../users/user.entity';
 
 export type AuthTokens = {
   accessToken: string;
-  refreshToken: string;
 };
 
 @Injectable()
@@ -25,7 +22,6 @@ export class AuthService {
     @InjectRepository(UserEntity)
     private readonly usersRepository: Repository<UserEntity>,
     private readonly passwordService: PasswordService,
-    private readonly configService: ConfigService,
   ) {}
 
   async signUp({ email, password }: SignUpInput): Promise<AuthTokens> {
@@ -82,21 +78,8 @@ export class AuthService {
 
   generateTokens(payload: { userId: string }): AuthTokens {
     return {
-      accessToken: this.generateAccessToken(payload),
-      refreshToken: this.generateRefreshToken(payload),
+      accessToken: this.jwtService.sign(payload),
     };
-  }
-
-  refreshToken(token: string): AuthTokens {
-    try {
-      const { userId } = this.jwtService.verify(token, {
-        secret: this.configService.get('JWT_REFRESH_SECRET'),
-      });
-
-      return this.generateTokens({ userId });
-    } catch (e) {
-      throw new UnauthorizedException();
-    }
   }
 
   private isUniqueConstraintError(e: unknown): boolean {
@@ -106,16 +89,5 @@ export class AuthService {
 
     const err: any = e;
     return err?.code === '23505';
-  }
-
-  private generateAccessToken(payload: { userId: string }): string {
-    return this.jwtService.sign(payload);
-  }
-
-  private generateRefreshToken(payload: { userId: string }): string {
-    return this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_REFRESH_SECRET'),
-      expiresIn: '30d',
-    });
   }
 }

@@ -1,15 +1,22 @@
-import { IsEmail } from 'class-validator';
-import { BaseModel } from 'src/common/models/base.model';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 
-export class User extends BaseModel {
-  @IsEmail()
+@ObjectType()
+export class UserMeOutput {
+  @Field(() => ID)
+  id: string;
+
+  @Field()
   email: string;
 
+  @Field()
   name: string;
 
-  avatar: string;
+  @Field({ nullable: true })
+  avatar?: string;
 
-  password: string;
+  @Field()
+  createdAt: Date;
 
-  googleId?: string;
+  @Field()
+  updatedAt: Date;
 }

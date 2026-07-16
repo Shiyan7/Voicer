@@ -4,6 +4,10 @@
   "description": "Capability for the main window",
   "windows": ["main"],
   "permissions": [
+    "store:allow-load",
+    "store:allow-get",
+    "store:allow-set",
+    "store:allow-delete",
     "core:default",
     "opener:default",
     {

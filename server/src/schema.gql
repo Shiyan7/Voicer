@@ -1,0 +1,72 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type ActionItemOutput {
+  createdAt: DateTime!
+  id: ID!
+  isDone: Boolean!
+  meetingId: ID!
+  meetingTitle: String
+  text: String!
+}
+
+type AuthPayload {
+  accessToken: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type MeetingOutput {
+  createdAt: DateTime!
+  durationSec: Int
+  endedAt: DateTime
+  id: ID!
+  source: String
+  startedAt: DateTime!
+  status: MeetingStatus!
+  title: String
+  updatedAt: DateTime!
+}
+
+enum MeetingStatus {
+  FAILED
+  READY
+  RECORDING
+  SUMMARIZING
+  TRANSCRIBING
+}
+
+type Mutation {
+  signIn(input: SignInInput!): AuthPayload!
+  signUp(input: SignUpInput!): AuthPayload!
+}
+
+type Query {
+  actionItems: [ActionItemOutput!]!
+  meetingActionItems(meetingId: ID!): [ActionItemOutput!]!
+  meetings: [MeetingOutput!]!
+  userMe: UserMeOutput!
+}
+
+input SignInInput {
+  email: String!
+  password: String!
+}
+
+input SignUpInput {
+  email: String!
+  password: String!
+}
+
+type UserMeOutput {
+  avatar: String
+  createdAt: DateTime!
+  email: String!
+  id: ID!
+  name: String!
+  updatedAt: DateTime!
+}
