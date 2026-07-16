@@ -6,8 +6,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PasswordService } from './password.service';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
-import { JwtAuthGuard } from './auth.guard';
-import { GqlAuthGuard } from './guards/gql-auth.guard';
 import { AuthResolver } from './auth.resolver';
 import { UserEntity } from '../users/user.entity';
 
@@ -27,14 +25,7 @@ import { UserEntity } from '../users/user.entity';
       inject: [ConfigService],
     }),
   ],
-  providers: [
-    AuthService,
-    JwtStrategy,
-    JwtAuthGuard,
-    GqlAuthGuard,
-    AuthResolver,
-    PasswordService,
-  ],
-  exports: [JwtAuthGuard, GqlAuthGuard, AuthService, JwtModule],
+  providers: [AuthService, JwtStrategy, AuthResolver, PasswordService],
+  exports: [AuthService, JwtModule],
 })
 export class AuthModule {}
