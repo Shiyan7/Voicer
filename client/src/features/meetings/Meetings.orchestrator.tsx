@@ -25,7 +25,7 @@ export function MeetingsOrchestrator() {
           />
         </header>
         <MeetingsList
-          cards={vm.cards()}
+          items={vm.items()}
           isLoading={vm.isLoading()}
           isEmpty={vm.isEmpty()}
           onOpen={vm.openMeeting}

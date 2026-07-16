@@ -1,8 +1,8 @@
-import { MeetingStatus } from '@/entities/meeting';
+import { MeetingStatus } from '@schema';
 
 export interface MeetingCardData {
   id: string;
-  title: string;
-  meta: string;
+  title?: string;
   status: MeetingStatus;
+  source?: string | null;
 }

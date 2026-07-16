@@ -9,6 +9,9 @@ const config: CodegenConfig = {
       config: {
         includeDirectives: true,
         commentDescriptions: true,
+        scalars: {
+          DateTime: 'string',
+        },
       },
     },
     './Dictionary/schema.generated.gql': {

@@ -1,4 +1,4 @@
-import { MeetingStatus } from '@/entities/meeting';
+import { MeetingStatus } from '@schema';
 
 import { DetailsHeaderDeps } from '../types/DetailsHeaderDeps';
 

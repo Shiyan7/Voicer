@@ -1,11 +1,14 @@
-import { MeetingCardData } from '../types/MeetingCardData';
+import { meetingsQuery } from '../api/meetingsQuery';
+import { mapMeetingCards } from '../lib/mapMeetingCards';
 
 export function useMeetingsPage() {
-  const cards = (): MeetingCardData[] => [];
+  const [meetingsResult] = meetingsQuery();
 
-  const isLoading = (): boolean => false;
+  const isLoading = () => meetingsResult.fetching;
 
-  const isEmpty = (): boolean => false;
+  const items = () => mapMeetingCards(meetingsResult.data?.meetings);
+
+  const isEmpty = () => !meetingsResult.fetching && !meetingsResult.data;
 
   const isUploading = (): boolean => false;
 
@@ -20,7 +23,7 @@ export function useMeetingsPage() {
   const onFileSelected = (event: Event) => {};
 
   return {
-    cards,
+    items,
     isLoading,
     isEmpty,
     isUploading,

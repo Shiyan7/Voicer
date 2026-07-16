@@ -21,7 +21,7 @@ export function MeetingsList(props: MeetingsListDeps) {
         }
       >
         <div class={styles.list()}>
-          <For each={props.cards}>
+          <For each={props.items}>
             {(card) => <MeetingCard card={card} onOpen={props.onOpen} />}
           </For>
         </div>
