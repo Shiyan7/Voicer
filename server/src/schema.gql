@@ -43,6 +43,7 @@ enum MeetingStatus {
 type Mutation {
   signIn(input: SignInInput!): AuthPayload!
   signUp(input: SignUpInput!): AuthPayload!
+  toggleActionItem(id: ID!): Boolean!
 }
 
 type Query {

@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { PasswordService } from './password.service';
 import { SignUpInput } from './dto/sign-up.input';
 import { UserEntity } from '../users/user.entity';
+import { isUniqueConstraintError } from '../common/is-unique-constraint-error';
 
 export type AuthTokens = {
   accessToken: string;
@@ -25,13 +26,14 @@ export class AuthService {
   ) {}
 
   async signUp({ email, password }: SignUpInput): Promise<AuthTokens> {
+    const normalizedEmail = email.toLowerCase();
     const hashedPassword = await this.passwordService.hashPassword(password);
-    const name = email.split('@')[0];
+    const [name] = normalizedEmail.split('@');
 
     try {
       const user = await this.usersRepository.save(
         this.usersRepository.create({
-          email,
+          email: normalizedEmail,
           password: hashedPassword,
           name,
         }),
@@ -39,7 +41,7 @@ export class AuthService {
 
       return this.generateTokens({ userId: user.id });
     } catch (e) {
-      if (this.isUniqueConstraintError(e)) {
+      if (isUniqueConstraintError(e)) {
         throw new ConflictException('Такой e-mail уже существует');
       }
 
@@ -49,7 +51,7 @@ export class AuthService {
 
   async signIn(email: string, password: string): Promise<AuthTokens> {
     const user = await this.usersRepository.findOne({
-      where: { email },
+      where: { email: email.toLowerCase() },
     });
 
     if (!user) {
@@ -80,14 +82,5 @@ export class AuthService {
     return {
       accessToken: this.jwtService.sign(payload),
     };
-  }
-
-  private isUniqueConstraintError(e: unknown): boolean {
-    if (!e || typeof e !== 'object') {
-      return false;
-    }
-
-    const err: any = e;
-    return err?.code === '23505';
   }
 }

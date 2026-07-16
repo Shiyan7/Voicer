@@ -1,2 +1,3 @@
+export { toggleActionItemMutation } from './api/toggleActionItemMutation';
 export type { ActionItemData } from './types/ActionItemData';
 export { ActionItem } from './ui/ActionItem';

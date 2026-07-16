@@ -9,7 +9,7 @@ import { actionItemStyles } from './ActionItem.styles';
 const styles = actionItemStyles();
 
 export function ActionItem(props: ActionItemDeps) {
-  const vm = useActionItem(() => props.item.isDone);
+  const vm = useActionItem(props);
 
   return (
     <div class={styles.row()}>

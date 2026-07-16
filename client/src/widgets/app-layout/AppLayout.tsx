@@ -13,9 +13,7 @@ import { appLayoutStyles } from './AppLayout.styles';
 const styles = appLayoutStyles();
 
 export function AppLayout(props: ParentProps) {
-  onMount(() => {
-    void i18n.init();
-  });
+  onMount(i18n.init);
 
   return (
     <SingletonProvider>

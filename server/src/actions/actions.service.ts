@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ActionItemEntity } from './action-item.entity';
@@ -34,6 +38,35 @@ export class ActionsService {
     });
 
     return actionItems.map((actionItem) => this.serialize(actionItem));
+  }
+
+  async toggleActionItem(userId: string, id: string): Promise<boolean> {
+    const actionItem = await this.findOwnedActionItem(userId, id);
+    actionItem.isDone = !actionItem.isDone;
+
+    await this.actionItemsRepository.save(actionItem);
+
+    return true;
+  }
+
+  private async findOwnedActionItem(
+    userId: string,
+    id: string,
+  ): Promise<ActionItemEntity> {
+    const actionItem = await this.actionItemsRepository.findOne({
+      where: { id },
+      comment: this.getFnName(this.findOwnedActionItem.name),
+    });
+
+    if (!actionItem) {
+      throw new NotFoundException('Action item не найден');
+    }
+
+    if (actionItem.userId !== userId) {
+      throw new ForbiddenException();
+    }
+
+    return actionItem;
   }
 
   private serialize(actionItem: ActionItemEntity): ActionItemOutput {

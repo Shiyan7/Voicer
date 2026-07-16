@@ -1,10 +1,20 @@
 import { createSignal } from 'solid-js';
 
-export function useActionItem(isInitialDone: () => boolean) {
-  const [isDone, setIsDone] = createSignal(isInitialDone());
+import { toggleActionItemMutation } from '../api/toggleActionItemMutation';
+import { ActionItemDeps } from '../types/ActionItemDeps';
 
-  const toggle = () => {
+export function useActionItem(props: ActionItemDeps) {
+  const [isDone, setIsDone] = createSignal(props.item.isDone);
+  const [, toggleActionItem] = toggleActionItemMutation();
+
+  const toggle = async () => {
     setIsDone((prev) => !prev);
+
+    const result = await toggleActionItem({ id: props.item.id });
+
+    if (result.error) {
+      setIsDone((prev) => !prev);
+    }
   };
 
   return { isDone, toggle };

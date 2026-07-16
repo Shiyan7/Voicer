@@ -1,6 +1,7 @@
 import { For, Show } from 'solid-js';
 
-import { useActionsList } from '../model/useActionsList';
+import { i18n } from '@/shared/i18n';
+
 import { ActionsListDeps } from '../types/ActionsListDeps';
 import { ActionItemsGroup } from './ActionItemsGroup';
 import { actionsListStyles } from './ActionsList.styles';
@@ -8,20 +9,18 @@ import { actionsListStyles } from './ActionsList.styles';
 const styles = actionsListStyles();
 
 export function ActionsList(props: ActionsListDeps) {
-  const vm = useActionsList(props);
-
   return (
-    <Show when={!vm.isLoading()} fallback={<div class={styles.skeleton()} />}>
+    <Show when={!props.isLoading} fallback={<div class={styles.skeleton()} />}>
       <Show
-        when={!vm.isEmpty()}
+        when={!props.isEmpty}
         fallback={
           <div class={styles.empty()}>
-            <span class={styles.emptyTitle()}>{vm.emptyLabel()}</span>
+            <span class={styles.emptyTitle()}>{i18n.t('actions.empty')}</span>
           </div>
         }
       >
         <div class={styles.groups()}>
-          <For each={vm.groups()}>
+          <For each={props.groups}>
             {(group) => <ActionItemsGroup group={group} />}
           </For>
         </div>

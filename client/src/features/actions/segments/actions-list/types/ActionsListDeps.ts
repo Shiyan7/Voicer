@@ -1,8 +1,7 @@
-import { ActionItemData } from '@/entities/action-item';
-import { ActionsFilter } from '@/features/actions/types/ActionsFilter';
+import { ActionItemGroup } from '@/features/actions/types/ActionItemGroup';
 
 export interface ActionsListDeps {
-  items: ActionItemData[];
-  filter: ActionsFilter;
+  groups: ActionItemGroup[];
+  isEmpty: boolean;
   isLoading: boolean;
 }

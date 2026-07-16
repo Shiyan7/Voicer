@@ -1,4 +1,4 @@
-import { Args, ID, Query, Resolver } from '@nestjs/graphql';
+import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { UserEntity } from '../users/user.entity';
 import { ActionItemOutput } from './action-item.output';
@@ -19,5 +19,13 @@ export class ActionsResolver {
     @Args('meetingId', { type: () => ID }) meetingId: string,
   ): Promise<ActionItemOutput[]> {
     return this.actionsService.getMeetingActionItems(user.id, meetingId);
+  }
+
+  @Mutation(() => Boolean)
+  toggleActionItem(
+    @CurrentUser() user: UserEntity,
+    @Args('id', { type: () => ID }) id: string,
+  ): Promise<boolean> {
+    return this.actionsService.toggleActionItem(user.id, id);
   }
 }

@@ -57,6 +57,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   signIn: AuthPayload;
   signUp: AuthPayload;
+  toggleActionItem: Scalars['Boolean']['output'];
 };
 
 export type MutationSignInArgs = {
@@ -65,6 +66,10 @@ export type MutationSignInArgs = {
 
 export type MutationSignUpArgs = {
   input: SignUpInput;
+};
+
+export type MutationToggleActionItemArgs = {
+  id: Scalars['ID']['input'];
 };
 
 export type Query = {

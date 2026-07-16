@@ -1,6 +1,5 @@
 import { i18n } from '@/shared/i18n';
 import { PageFade } from '@/shared/ui/page-fade';
-import { Tabs } from '@/shared/ui/tabs';
 
 import { actionsStyles } from './Actions.styles';
 import { useActionsPage } from './model/useActionsPage';
@@ -16,16 +15,10 @@ export function ActionsOrchestrator() {
       <div class={styles.root()}>
         <header class={styles.header()}>
           <h1 class={styles.title()}>{i18n.t('actions.title')}</h1>
-          <Tabs
-            class={styles.tabs()}
-            activeTab={vm.filter()}
-            tabs={vm.tabs()}
-            onSelect={vm.setFilter}
-          />
         </header>
         <ActionsList
-          items={vm.items()}
-          filter={vm.filter()}
+          groups={vm.groups()}
+          isEmpty={vm.isEmpty()}
           isLoading={vm.isLoading()}
         />
       </div>
