@@ -1,5 +1,6 @@
+import { Show } from 'solid-js';
+
 import { Icon } from '@/shared/ui/icon';
-import { StatusBadge } from '@/shared/ui/status-badge';
 
 import { MeetingCardProps } from '../types/MeetingCardProps';
 import { meetingCardStyles } from './MeetingCard.styles';
@@ -13,12 +14,14 @@ export function MeetingCard(props: MeetingCardProps) {
       type="button"
       onClick={() => props.onOpen(props.card.id)}
     >
+      <Icon class={styles.icon()} size={20} name="common:audio" />
       <span class={styles.body()}>
         <span class={styles.title()}>{props.card.title}</span>
-        <span class={styles.meta()}>{props.card.meta}</span>
+        <Show when={props.card.duration}>
+          <span class={styles.duration()}>{props.card.duration}</span>
+        </Show>
       </span>
-      <StatusBadge status={props.card.status} />
-      <Icon class={styles.chevron()} size={14} name="common:chevron-right" />
+      <span class={styles.date()}>{props.card.dateLabel}</span>
     </button>
   );
 }

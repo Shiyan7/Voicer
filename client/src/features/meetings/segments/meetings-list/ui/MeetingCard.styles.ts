@@ -3,16 +3,16 @@ import { tv } from 'tailwind-variants';
 export const meetingCardStyles = tv({
   slots: {
     card: `
-      group flex w-full items-center gap-4 rounded-2xl border border-black/5
-      bg-white px-5 py-4 text-left shadow-xs outline-none
-      transition-[box-shadow,transform] duration-150
-      hover:shadow-md active:scale-[0.995]
+      group flex w-full items-center gap-4 rounded-xl border border-black/5
+      bg-white px-5 py-4 text-left hover:scale-[1.005]
+      transition-[border,scale] active:scale-[0.998]
       focus-visible:ring-2 focus-visible:ring-gray-500/60
+      hover:border-black/8
     `,
-    body: 'flex min-w-0 flex-1 flex-col gap-1',
+    icon: 'shrink-0 transition-colors',
+    body: 'flex min-w-0 flex-1 items-center gap-2',
     title: 'truncate text-[15px] font-medium text-gray-900',
-    meta: 'text-[13px] text-gray-500',
-    chevron:
-      'shrink-0 text-gray-300 transition-colors group-hover:text-gray-500',
+    duration: 'shrink-0 text-[13px] text-gray-400',
+    date: 'shrink-0 text-[13px] text-gray-500 tabular-nums',
   },
 });
