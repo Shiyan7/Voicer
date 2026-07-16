@@ -1,9 +1,11 @@
-import { ActionItemDeps } from '../types/ActionItemDeps';
+import { createSignal } from 'solid-js';
 
-export function useActionItem(props: ActionItemDeps) {
-  const item = () => props.item;
+export function useActionItem(isInitialDone: () => boolean) {
+  const [isDone, setIsDone] = createSignal(isInitialDone());
 
-  const toggle = () => {};
+  const toggle = () => {
+    setIsDone((prev) => !prev);
+  };
 
-  return { item, toggle };
+  return { isDone, toggle };
 }

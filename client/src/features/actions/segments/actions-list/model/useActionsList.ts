@@ -1,14 +1,25 @@
+import { i18n } from '@/shared/i18n';
+
+import { groupActionItems } from '../lib/groupActionItems';
 import { ActionItemGroup } from '../types/ActionItemGroup';
 import { ActionsListDeps } from '../types/ActionsListDeps';
 
 export function useActionsList(props: ActionsListDeps) {
-  const groups = (): ActionItemGroup[] => [];
+  const visibleItems = () =>
+    props.filter === 'open'
+      ? props.items.filter((item) => !item.isDone)
+      : props.items;
 
-  const isLoading = (): boolean => false;
+  const groups = (): ActionItemGroup[] => groupActionItems(visibleItems());
 
-  const isEmpty = (): boolean => true;
+  const isLoading = (): boolean => props.isLoading;
 
-  const emptyLabel = (): string => '';
+  const isEmpty = (): boolean => !visibleItems().length;
+
+  const emptyLabel = () =>
+    props.filter === 'open'
+      ? i18n.t('actions.empty_open')
+      : i18n.t('actions.empty');
 
   return { groups, isLoading, isEmpty, emptyLabel };
 }

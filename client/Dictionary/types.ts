@@ -17,6 +17,16 @@ export type Scalars = {
   DateTime: { input: string; output: string };
 };
 
+export type ActionItemOutput = {
+  __typename?: 'ActionItemOutput';
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  isDone: Scalars['Boolean']['output'];
+  meetingId: Scalars['ID']['output'];
+  meetingTitle?: Maybe<Scalars['String']['output']>;
+  text: Scalars['String']['output'];
+};
+
 export type AuthPayload = {
   __typename?: 'AuthPayload';
   accessToken: Scalars['String']['output'];
@@ -59,8 +69,14 @@ export type MutationSignUpArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  actionItems: Array<ActionItemOutput>;
+  meetingActionItems: Array<ActionItemOutput>;
   meetings: Array<MeetingOutput>;
   userMe: UserMeOutput;
+};
+
+export type QueryMeetingActionItemsArgs = {
+  meetingId: Scalars['ID']['input'];
 };
 
 export type SignInInput = {

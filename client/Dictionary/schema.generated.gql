@@ -3,6 +3,15 @@ schema {
   mutation: Mutation
 }
 
+type ActionItemOutput {
+  createdAt: DateTime!
+  id: ID!
+  isDone: Boolean!
+  meetingId: ID!
+  meetingTitle: String
+  text: String!
+}
+
 type AuthPayload {
   accessToken: String!
 }
@@ -38,6 +47,8 @@ type Mutation {
 }
 
 type Query {
+  actionItems: [ActionItemOutput!]!
+  meetingActionItems(meetingId: ID!): [ActionItemOutput!]!
   meetings: [MeetingOutput!]!
   userMe: UserMeOutput!
 }

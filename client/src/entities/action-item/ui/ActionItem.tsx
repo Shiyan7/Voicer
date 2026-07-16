@@ -9,23 +9,21 @@ import { actionItemStyles } from './ActionItem.styles';
 const styles = actionItemStyles();
 
 export function ActionItem(props: ActionItemDeps) {
-  const vm = useActionItem(props);
+  const vm = useActionItem(() => props.item.isDone);
 
   return (
     <div class={styles.row()}>
       <button
-        class={styles.checkbox({ done: vm.item().isDone })}
-        aria-pressed={vm.item().isDone}
+        class={styles.checkbox({ done: vm.isDone() })}
+        aria-pressed={vm.isDone()}
         type="button"
-        onClick={vm.toggle}
+        onClick={() => vm.toggle()}
       >
-        <Show when={vm.item().isDone}>
+        <Show when={vm.isDone()}>
           <Icon size={12} name="common:check" />
         </Show>
       </button>
-      <span class={styles.text({ done: vm.item().isDone })}>
-        {vm.item().text}
-      </span>
+      <span class={styles.text({ done: vm.isDone() })}>{props.item.text}</span>
     </div>
   );
 }
