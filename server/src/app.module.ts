@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { GqlAuthGuard } from './auth/guards/gql-auth.guard';
 import { UsersModule } from './users/users.module';
 import { MeetingsModule } from './meetings/meetings.module';
+import { ActionsModule } from './actions/actions.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { MeetingsModule } from './meetings/meetings.module';
     AuthModule,
     UsersModule,
     MeetingsModule,
+    ActionsModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: GqlAuthGuard }],
 })
