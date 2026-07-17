@@ -11,7 +11,7 @@ export const actionItemsGroupStyles = tv({
     `,
     card: `
       flex flex-col divide-y divide-gray-100 rounded-2xl
-      border border-black/5 bg-white px-5 py-2 shadow-xs
+      border border-black/5 bg-white px-5 py-2
     `,
   },
 });

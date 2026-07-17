@@ -12,7 +12,7 @@ export const toastsStyles = tv({
       relative overflow-hidden min-w-[320px]
       rounded-xl border border-black/5
       bg-white/85 backdrop-blur-xl text-gray-900
-      shadow-lg transition-all duration-300
+      transition-all duration-300
     `,
     left: `
       flex-1 flex gap-2.5 items-center

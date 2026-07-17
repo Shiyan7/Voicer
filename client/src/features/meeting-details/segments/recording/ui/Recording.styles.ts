@@ -3,7 +3,7 @@ import { tv } from 'tailwind-variants';
 export const recordingStyles = tv({
   slots: {
     root: 'flex flex-col gap-4',
-    card: 'rounded-2xl border border-black/5 bg-white p-5 shadow-xs',
+    card: 'rounded-2xl border border-black/5 bg-white p-5',
     hint: 'max-w-sm text-sm text-gray-500',
     list: 'flex flex-col gap-0.5',
     segment: `

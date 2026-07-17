@@ -9,7 +9,7 @@ export const modalStyles = tv({
       relative z-10 flex-col text-left sm:overflow-hidden
       w-full inline-flex mx-auto max-h-[90vh] sm:my-7
       rounded-none rounded-t-2xl sm:rounded-2xl align-bottom sm:align-middle
-      border border-black/5 bg-white shadow-xl
+      border border-black/5 bg-white
       overflow-y-auto sm:max-h-none
       transition-[opacity,translate,scale] ease-out duration-250
     `,

@@ -13,7 +13,7 @@ export const settingsSectionStyles = tv({
     sectionTitle: 'px-1 text-[13px] font-medium text-gray-500',
     card: `
       flex flex-col divide-y divide-gray-200
-      rounded-2xl border border-gray-200 bg-white shadow-xs
+      rounded-2xl border border-gray-200 bg-white
     `,
     row: 'flex items-center justify-between gap-4 px-5 py-4',
     rowText: 'flex min-w-0 flex-col gap-0.5',

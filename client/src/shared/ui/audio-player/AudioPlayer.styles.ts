@@ -4,7 +4,7 @@ export const audioPlayerStyles = tv({
   slots: {
     root: `
       flex items-center gap-4 rounded-2xl border border-black/5
-      bg-white px-4 py-3 shadow-xs
+      bg-white px-4 py-3
     `,
     playBtn: `
       flex size-10 shrink-0 items-center justify-center rounded-full
@@ -24,7 +24,7 @@ export const audioPlayerStyles = tv({
     trackFill: 'absolute inset-y-0 left-0 rounded-full bg-gray-900',
     thumb: `
       pointer-events-none absolute top-1/2 size-3 -translate-x-1/2
-      -translate-y-1/2 rounded-full bg-gray-900 opacity-0 shadow-sm
+      -translate-y-1/2 rounded-full bg-gray-900 opacity-0
       transition-opacity duration-150 group-hover:opacity-100
     `,
     rateBtn: `

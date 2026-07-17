@@ -10,7 +10,7 @@ export const recordingStyles = tv({
     `,
     toggleThumb: `
       absolute left-0.5 top-0.5 size-6 rounded-full
-      bg-white shadow-sm transition-transform duration-200
+      bg-white transition-transform duration-200
     `,
   },
   variants: {
