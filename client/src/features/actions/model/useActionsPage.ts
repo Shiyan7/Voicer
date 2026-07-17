@@ -14,4 +14,4 @@ export const useActionsPage = () => {
   const isEmpty = () => !isLoading() && !items().length;
 
   return { groups, isLoading, isEmpty };
-}
+};

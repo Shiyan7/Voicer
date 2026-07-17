@@ -11,4 +11,4 @@ export const useKeyPoints = (props: KeyPointsParams) => {
   const isEmpty = () => !result.fetching && points().length === 0;
 
   return { points, isEmpty };
-}
+};

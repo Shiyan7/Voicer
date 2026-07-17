@@ -18,7 +18,9 @@ export function General() {
       <div class={section.card()}>
         <div class={section.row()}>
           <div class={section.rowText()}>
-            <span class={section.rowLabel()}>{i18n.t('labels.change_lang')}</span>
+            <span class={section.rowLabel()}>
+              {i18n.t('labels.change_lang')}
+            </span>
           </div>
           <select
             class={styles.select()}

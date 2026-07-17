@@ -82,16 +82,16 @@ File: `*.orchestrator.tsx`
 ```tsx
 // ✅ correct orchestrator
 export const MyFeature: Component<MyFeatureProps> = (props) => {
-  const vm = useViewModel(FeatureViewModel)
+  const vm = useViewModel(FeatureViewModel);
 
-  return <MyFeatureView data={vm.data()} onAction={vm.handleAction}/>
-}
+  return <MyFeatureView data={vm.data()} onAction={vm.handleAction} />;
+};
 
 // ❌ wrong — reactive primitive in orchestrator
 export const MyFeature: Component = () => {
-  const [count, setCount] = createSignal(0)   // forbidden
-  return <div>{count()}</div>
-}
+  const [count, setCount] = createSignal(0); // forbidden
+  return <div>{count()}</div>;
+};
 ```
 
 ## Segments rules
@@ -140,13 +140,13 @@ Declare the deps shape as the `StatefulViewModel` generic and read it via `this.
 
 ```ts
 interface TeamSelectDeps {
-  isCollapsed: boolean
+  isCollapsed: boolean;
 }
 
 @injectable()
 export class TeamSelectViewModel extends StatefulViewModel<TeamSelectDeps> {
   get authLabel() {
-    return this.deps.isCollapsed ? '...' : '...'   // reads reactive deps
+    return this.deps.isCollapsed ? '...' : '...'; // reads reactive deps
   }
 }
 ```
@@ -158,10 +158,12 @@ values are re-synced into `this.deps` inside a `createEffect`:
 // ✅ reactive — accessor re-reads props on change
 const vm = useViewModel(TeamSelectViewModel, () => ({
   isCollapsed: props.isCollapsed,
-}))
+}));
 
 // ❌ not reactive — reads props once at call time
-const vm = useViewModel(TeamSelectViewModel, { isCollapsed: props.isCollapsed })
+const vm = useViewModel(TeamSelectViewModel, {
+  isCollapsed: props.isCollapsed,
+});
 ```
 
 Typing rules enforced automatically:

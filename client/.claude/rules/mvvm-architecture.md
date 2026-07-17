@@ -29,7 +29,11 @@ export function NavList() {
 export function NavList(props: NavListProps) {
   return (
     <For each={props.items}>
-      {(item) => <a href={item.href} data-active={item.isActive}>{item.label}</a>}
+      {(item) => (
+        <a href={item.href} data-active={item.isActive}>
+          {item.label}
+        </a>
+      )}
     </For>
   );
 }
@@ -66,7 +70,14 @@ export function useMeetingsPage() {
 
   const onFileSelected = (event: Event) => {};
 
-  return { cards, isLoading, isEmpty, startRecording, openMeeting, onFileSelected };
+  return {
+    cards,
+    isLoading,
+    isEmpty,
+    startRecording,
+    openMeeting,
+    onFileSelected,
+  };
 }
 ```
 
@@ -118,10 +129,14 @@ them from the hook.
 
 ```ts
 // features/meetings/lib/toMeetingCard.ts
-export function toMeetingCard(meeting: Meeting): MeetingCardData { /* ... */ }
+export function toMeetingCard(meeting: Meeting): MeetingCardData {
+  /* ... */
+}
 
 // shared/lib/time/formatDateTime.ts — cross-feature formatters live in shared/lib
-export function formatDateTime(date: Date | string | number) { /* ... */ }
+export function formatDateTime(date: Date | string | number) {
+  /* ... */
+}
 ```
 
 The hook stays thin: `const cards = () => meetings().map(toMeetingCard)`.
@@ -135,8 +150,12 @@ A ViewModel hook calls a service; a service never knows about a ViewModel.
 
 ```ts
 export class MeetingsService {
-  async list() { /* ... */ }
-  async create(input: CreateMeetingInput) { /* ... */ }
+  async list() {
+    /* ... */
+  }
+  async create(input: CreateMeetingInput) {
+    /* ... */
+  }
 }
 ```
 
@@ -181,14 +200,18 @@ If the View needs derived data, expose it as an accessor from the hook — never
 
 ```tsx
 // ❌ Wrong — derived state computed in JSX
-<span>{mode() === AuthMode.LogIn ? t('auth.title.login') : t('auth.title.signup')}</span>
+<span>
+  {mode() === AuthMode.LogIn ? t('auth.title.login') : t('auth.title.signup')}
+</span>;
 
 // ✅ Correct — accessor from the hook
 const modalTitle = () =>
-  mode() === AuthMode.LogIn ? i18n.t('auth.title.login') : i18n.t('auth.title.signup');
+  mode() === AuthMode.LogIn
+    ? i18n.t('auth.title.login')
+    : i18n.t('auth.title.signup');
 
 // Component just renders it
-<span>{vm.modalTitle()}</span>
+<span>{vm.modalTitle()}</span>;
 ```
 
 ---

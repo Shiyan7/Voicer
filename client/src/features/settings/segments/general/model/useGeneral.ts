@@ -13,4 +13,4 @@ export const useGeneral = () => {
   };
 
   return { locale, changeLang, logout };
-}
+};

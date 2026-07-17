@@ -26,4 +26,4 @@ export const useRecorder = () => {
     setup,
     stop,
   };
-}
+};

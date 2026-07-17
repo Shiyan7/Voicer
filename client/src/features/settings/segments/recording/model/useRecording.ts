@@ -4,4 +4,4 @@ export const useRecording = () => {
   const toggleAutoRecord = () => {};
 
   return { autoRecord, toggleAutoRecord };
-}
+};

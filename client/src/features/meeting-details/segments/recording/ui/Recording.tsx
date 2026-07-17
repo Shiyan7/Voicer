@@ -41,11 +41,15 @@ export function Recording(props: RecordingParams) {
                 >
                   <span class={styles.segmentHead()}>
                     <span
-                      class={styles.segmentSpeaker({ speaker: segment.speaker })}
+                      class={styles.segmentSpeaker({
+                        speaker: segment.speaker,
+                      })}
                     >
                       {segment.speakerLabel}
                     </span>
-                    <span class={styles.segmentTime()}>{segment.timeLabel}</span>
+                    <span class={styles.segmentTime()}>
+                      {segment.timeLabel}
+                    </span>
                   </span>
                   <span class={styles.segmentText()}>{segment.text}</span>
                 </button>

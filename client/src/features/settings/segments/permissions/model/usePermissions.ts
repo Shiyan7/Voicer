@@ -8,4 +8,4 @@ export const usePermissions = () => {
   const openSystemSettings = (pane: SystemSettingsPane) => {};
 
   return { rows, requestPermissions, openSystemSettings };
-}
+};

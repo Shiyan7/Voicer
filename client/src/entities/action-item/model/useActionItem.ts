@@ -18,4 +18,4 @@ export const useActionItem = (props: ActionItemDeps) => {
   };
 
   return { isDone, toggle };
-}
+};

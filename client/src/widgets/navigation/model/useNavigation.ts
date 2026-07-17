@@ -29,4 +29,4 @@ export const useNavigation = () => {
     onMouseEnter,
     onMouseLeave,
   };
-}
+};

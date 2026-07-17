@@ -21,4 +21,4 @@ export const useTeamSelect = (props: TeamSelectDeps) => {
     authLabel,
     openAuth,
   };
-}
+};

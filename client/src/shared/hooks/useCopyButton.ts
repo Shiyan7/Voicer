@@ -64,4 +64,4 @@ export const useCopyButton = (getValue: Accessor<string>) => {
     tooltipText,
     isCopied,
   };
-}
+};

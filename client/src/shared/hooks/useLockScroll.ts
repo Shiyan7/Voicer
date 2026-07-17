@@ -29,5 +29,4 @@ export const useLockScroll = (locked: Accessor<boolean>) => {
       }
     });
   });
-}
-
+};

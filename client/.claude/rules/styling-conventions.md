@@ -85,11 +85,11 @@ Variants must be passed at the **slot call site** — not by re-calling the top-
 ```tsx
 // ❌ Wrong — wraps the entire styles call, re-creates all slots on every render
 const styles = () => navigationStyles({ collapsed: vm.isCollapsed });
-<div class={styles().sidebar()} />
+<div class={styles().sidebar()} />;
 
 // ✅ Correct — styles object created once at module level, variant passed only to the slot that needs it
 const styles = navigationStyles();
-<div class={styles.sidebar({ collapsed: vm.isCollapsed })} />
+<div class={styles.sidebar({ collapsed: vm.isCollapsed })} />;
 ```
 
 ### 6. Never define empty variant values or redundant defaultVariants
@@ -135,7 +135,8 @@ import { tv } from 'tailwind-variants';
 export const cardStyles = tv({
   slots: {
     root: 'flex flex-col rounded-xl border border-gray-200 bg-white shadow-sm',
-    header: 'flex items-center justify-between px-5 py-4 border-b border-gray-100',
+    header:
+      'flex items-center justify-between px-5 py-4 border-b border-gray-100',
     body: 'flex flex-col gap-3 px-5 py-4',
     footer: 'px-5 py-3 text-xs text-gray-500',
   },

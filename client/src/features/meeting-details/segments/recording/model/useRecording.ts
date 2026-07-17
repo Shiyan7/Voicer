@@ -27,4 +27,4 @@ export const useRecording = (props: RecordingParams) => {
   const isEmpty = () => !result.fetching && segments().length === 0;
 
   return { segments, isEmpty, setPlayerApi, onTimeUpdate, seekTo };
-}
+};

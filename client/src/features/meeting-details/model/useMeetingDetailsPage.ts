@@ -30,4 +30,4 @@ export const useMeetingDetailsPage = () => {
     setActiveTab,
     tabs: getMeetingTabs,
   };
-}
+};

@@ -28,4 +28,4 @@ export const useModal = (modalId: Accessor<MODALS>) => {
   });
 
   return { mounted, opened };
-}
+};
