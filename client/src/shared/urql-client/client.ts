@@ -16,7 +16,15 @@ export const urqlClient = createClient({
   preferGetMethod: false,
   fetchOptions: () => {
     const token = authRoot.accessToken;
-    return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+    const headers: Record<string, string> = {
+      'Apollo-Require-Preflight': 'true',
+    };
+
+    if (token) headers.Authorization = `Bearer ${token}`;
+
+    return {
+      headers,
+    };
   },
   exchanges: [
     cacheExchange,

@@ -15,6 +15,8 @@ export type Scalars = {
   Float: { input: number; output: number };
   /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: { input: string; output: string };
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: { input: File; output: File };
 };
 
 export type ActionItemOutput = {
@@ -68,9 +70,14 @@ export enum MeetingStatus {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  meetingUploadAudio: MeetingOutput;
   signIn: AuthPayload;
   signUp: AuthPayload;
   toggleActionItem: Scalars['Boolean']['output'];
+};
+
+export type MutationMeetingUploadAudioArgs = {
+  file: Scalars['Upload']['input'];
 };
 
 export type MutationSignInArgs = {

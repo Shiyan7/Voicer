@@ -3,23 +3,21 @@ import { useNavigate } from '@solidjs/router';
 import { paths } from '@/shared/router';
 
 import { meetingsQuery } from '../api/meetingsQuery';
+import { uploadMeetingMutation } from '../api/uploadMeetingMutation';
 import { mapMeetingCards } from '../lib/mapMeetingCards';
 
-export function useMeetingsPage() {
+export const useMeetingsPage = () => {
   const [meetingsResult] = meetingsQuery();
+  const [uploadResult, uploadMeeting] = uploadMeetingMutation();
   const navigate = useNavigate();
 
   const isLoading = () => meetingsResult.fetching;
 
   const items = () => mapMeetingCards(meetingsResult.data?.meetings);
 
-  const isEmpty = () => !meetingsResult.fetching && !meetingsResult.data;
+  const isEmpty = () => !meetingsResult.fetching && !items().length;
 
-  const isUploading = (): boolean => false;
-
-  const canUpload = (): boolean => false;
-
-  const canRecord = (): boolean => false;
+  const isUploading = () => uploadResult.fetching;
 
   const startRecording = () => {};
 
@@ -27,17 +25,23 @@ export function useMeetingsPage() {
     navigate(paths.meeting(id));
   };
 
-  const onFileSelected = (event: Event) => {};
+  const onFileSelected = async (event: Event) => {
+    const input = event.currentTarget as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+
+    if (!file) return;
+
+    await uploadMeeting({ file });
+  };
 
   return {
     items,
     isLoading,
     isEmpty,
     isUploading,
-    canUpload,
-    canRecord,
     startRecording,
     openMeeting,
     onFileSelected,
   };
-}
+};

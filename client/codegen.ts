@@ -11,6 +11,7 @@ const config: CodegenConfig = {
         commentDescriptions: true,
         scalars: {
           DateTime: 'string',
+          Upload: 'File',
         },
       },
     },

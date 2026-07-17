@@ -53,6 +53,7 @@ enum MeetingStatus {
 }
 
 type Mutation {
+  meetingUploadAudio(file: Upload!): MeetingOutput!
   signIn(input: SignInInput!): AuthPayload!
   signUp(input: SignUpInput!): AuthPayload!
   toggleActionItem(id: ID!): Boolean!
@@ -86,6 +87,9 @@ type TranscriptSegmentOutput {
   startMs: Int!
   text: String!
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 type UserMeOutput {
   avatar: String
