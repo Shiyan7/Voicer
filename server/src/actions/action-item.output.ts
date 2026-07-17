@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class ActionItemOutput {
@@ -13,6 +13,15 @@ export class ActionItemOutput {
 
   @Field()
   isDone: boolean;
+
+  @Field(() => Int, { nullable: true })
+  speakerIndex: number | null;
+
+  @Field(() => Int, { nullable: true })
+  atMs: number | null;
+
+  @Field(() => Date, { nullable: true })
+  dueDate: Date | null;
 
   @Field()
   createdAt: Date;

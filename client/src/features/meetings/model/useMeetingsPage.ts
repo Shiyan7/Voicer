@@ -1,8 +1,13 @@
+import { useNavigate } from '@solidjs/router';
+
+import { paths } from '@/shared/router';
+
 import { meetingsQuery } from '../api/meetingsQuery';
 import { mapMeetingCards } from '../lib/mapMeetingCards';
 
 export function useMeetingsPage() {
   const [meetingsResult] = meetingsQuery();
+  const navigate = useNavigate();
 
   const isLoading = () => meetingsResult.fetching;
 
@@ -18,7 +23,9 @@ export function useMeetingsPage() {
 
   const startRecording = () => {};
 
-  const openMeeting = (id: string) => {};
+  const openMeeting = (id: string) => {
+    navigate(paths.meeting(id));
+  };
 
   const onFileSelected = (event: Event) => {};
 

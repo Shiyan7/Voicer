@@ -1,42 +1,33 @@
-import { MeetingDetails } from '@/entities/meeting';
-import { AudioPlayerApi } from '@/shared/ui/audio-player';
+import { MeetingStatus } from '@schema';
+import { useParams } from '@solidjs/router';
+import { createSignal } from 'solid-js';
 
-type StatePanelVariant = 'processing' | 'failed';
+import { mapMeeting } from '@/entities/meeting';
+
+import { meetingQuery } from '../api/meetingQuery';
+import { getMeetingTabs } from '../config/getMeetingTabs';
+import { MeetingTab } from '../types/MeetingTab';
 
 export function useMeetingDetailsPage() {
-  const meeting = (): MeetingDetails | null => null;
+  const params = useParams<{ id: string }>();
+  const [meetingResult] = meetingQuery({ id: params.id });
+  const [activeTab, setActiveTab] = createSignal<MeetingTab>('notes');
 
-  const isLoading = (): boolean => false;
+  const meeting = () => mapMeeting(meetingResult.data?.meeting);
 
-  const loadFailed = (): boolean => false;
+  const isLoading = () => meetingResult.fetching;
 
-  const isReady = (): boolean => false;
+  const isEmpty = () => !isLoading() && !meeting();
 
-  const showPlayer = (): boolean => false;
-
-  const statePanelVariant = (): StatePanelVariant | null => null;
-
-  const currentTimeMs = (): number => 0;
-
-  const audioUrl = (): string => '';
-
-  const setPlayerApi = (api: AudioPlayerApi) => {};
-
-  const onPlayerTimeUpdate = (seconds: number) => {};
-
-  const seekTo = (startMs: number) => {};
+  const isReady = () => meeting()?.status === MeetingStatus.Ready;
 
   return {
     meeting,
     isLoading,
-    loadFailed,
+    isEmpty,
     isReady,
-    showPlayer,
-    statePanelVariant,
-    currentTimeMs,
-    audioUrl,
-    setPlayerApi,
-    onPlayerTimeUpdate,
-    seekTo,
+    activeTab,
+    setActiveTab,
+    tabs: getMeetingTabs,
   };
 }

@@ -6,8 +6,6 @@ import { statusBadgeStyles } from './StatusBadge.styles';
 
 export type StatusBadgeStatus =
   | 'recording'
-  | 'uploading'
-  | 'uploaded'
   | 'transcribing'
   | 'summarizing'
   | 'ready'

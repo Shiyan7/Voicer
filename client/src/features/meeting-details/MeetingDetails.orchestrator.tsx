@@ -3,18 +3,17 @@ import { Match, Show, Switch } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
 import { paths } from '@/shared/router';
-import { AudioPlayer } from '@/shared/ui/audio-player';
 import { Button } from '@/shared/ui/button';
 import { Icon } from '@/shared/ui/icon';
 import { PageFade } from '@/shared/ui/page-fade';
+import { Tabs } from '@/shared/ui/tabs';
 
 import { meetingDetailsStyles } from './MeetingDetails.styles';
 import { useMeetingDetailsPage } from './model/useMeetingDetailsPage';
-import { ActionItemsSection } from './segments/action-items/ui/ActionItemsSection';
-import { DetailsHeader } from './segments/details-header/ui/DetailsHeader';
-import { StatePanel } from './segments/state-panel/ui/StatePanel';
-import { Summary } from './segments/summary/ui/Summary';
-import { Transcript } from './segments/transcript/ui/Transcript';
+import { ActionItemsSection } from './segments/action-items';
+import { DetailsHeader } from './segments/details-header';
+import { KeyPoints } from './segments/key-points';
+import { Recording } from './segments/recording';
 
 const styles = meetingDetailsStyles();
 
@@ -33,7 +32,7 @@ export function MeetingDetailsOrchestrator() {
             <div class={styles.skeleton({ size: 'header' })} />
             <div class={styles.skeleton({ size: 'content' })} />
           </Match>
-          <Match when={vm.loadFailed()}>
+          <Match when={vm.isEmpty()}>
             <div class={styles.notFound()}>
               <h1 class={styles.notFoundTitle()}>
                 {i18n.t('meetings.not_found')}
@@ -47,29 +46,24 @@ export function MeetingDetailsOrchestrator() {
             {(meeting) => (
               <>
                 <DetailsHeader meeting={meeting()} />
-
-                <Show when={vm.showPlayer()}>
-                  <AudioPlayer
-                    ref={vm.setPlayerApi}
-                    src={vm.audioUrl()}
-                    onTimeUpdate={vm.onPlayerTimeUpdate}
-                  />
-                </Show>
-
-                <Show when={vm.statePanelVariant()}>
-                  {(variant) => (
-                    <StatePanel variant={variant()} status={meeting().status} />
-                  )}
-                </Show>
-
                 <Show when={vm.isReady()}>
-                  <Summary summary={meeting().summary} />
-                  <ActionItemsSection items={meeting().actionItems} />
-                  <Transcript
-                    segments={meeting().segments}
-                    currentTimeMs={vm.currentTimeMs()}
-                    onSeek={vm.seekTo}
+                  <Tabs
+                    tabs={vm.tabs}
+                    activeTab={vm.activeTab()}
+                    onSelect={vm.setActiveTab}
                   />
+                  <Show
+                    when={vm.activeTab() === 'notes'}
+                    fallback={
+                      <Recording
+                        meetingId={meeting().id}
+                        audioUrl={meeting().audioUrl}
+                      />
+                    }
+                  >
+                    <ActionItemsSection meetingId={meeting().id} />
+                    <KeyPoints meetingId={meeting().id} />
+                  </Show>
                 </Show>
               </>
             )}
