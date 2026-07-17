@@ -54,6 +54,7 @@ enum MeetingStatus {
 }
 
 type Mutation {
+  meetingDelete(id: ID!): MeetingOutput!
   meetingUploadAudio(file: Upload!): MeetingOutput!
   signIn(input: SignInInput!): AuthPayload!
   signUp(input: SignUpInput!): AuthPayload!

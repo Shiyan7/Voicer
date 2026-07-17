@@ -67,7 +67,13 @@
     "player_error": "Couldn't load audio",
     "notes": "Notes",
     "recording_transcript": "Recording & Transcript",
-    "key_points": "Key Points"
+    "key_points": "Key Points",
+    "delete": {
+      "title": "Delete meeting?",
+      "description": "This permanently removes the meeting and its transcript. This can't be undone.",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    }
   },
   "recorder": {
     "stop": "Stop"

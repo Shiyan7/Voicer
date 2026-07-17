@@ -26,6 +26,14 @@ export class MeetingsResolver {
     return this.meetingsService.createFromUpload(user.id, await upload);
   }
 
+  @Mutation(() => MeetingOutput)
+  meetingDelete(
+    @CurrentUser() user: UserEntity,
+    @Args('id', { type: () => ID }) id: string,
+  ): Promise<MeetingOutput> {
+    return this.meetingsService.deleteMeeting(user.id, id);
+  }
+
   @Query(() => MeetingOutput)
   meeting(
     @CurrentUser() user: UserEntity,

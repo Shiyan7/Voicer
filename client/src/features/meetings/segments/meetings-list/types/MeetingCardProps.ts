@@ -3,4 +3,5 @@ import { MeetingCardData } from '@/features/meetings/types/MeetingCardData';
 export interface MeetingCardProps {
   card: MeetingCardData;
   onOpen: (id: string) => void;
+  onDelete: (id: string) => void;
 }

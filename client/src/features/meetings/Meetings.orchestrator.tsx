@@ -3,7 +3,8 @@ import { PageFade } from '@/shared/ui/page-fade';
 
 import { meetingsStyles } from './Meetings.styles';
 import { useMeetingsPage } from './model/useMeetingsPage';
-import { MeetingsList } from './segments/meetings-list/ui/MeetingsList';
+import { DeleteMeetingModal } from './segments/delete-meeting';
+import { MeetingsList } from './segments/meetings-list';
 import { Toolbar } from './segments/toolbar/ui/Toolbar';
 
 const styles = meetingsStyles();
@@ -27,8 +28,14 @@ export function MeetingsOrchestrator() {
           isLoading={vm.isLoading()}
           isEmpty={vm.isEmpty()}
           onOpen={vm.openMeeting}
+          onDelete={vm.requestDeleteMeeting}
         />
       </div>
+      <DeleteMeetingModal
+        isDeleting={vm.isDeleting()}
+        onConfirm={vm.confirmDeleteMeeting}
+        onCancel={vm.cancelDeleteMeeting}
+      />
     </PageFade>
   );
 }

@@ -70,10 +70,15 @@ export enum MeetingStatus {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  meetingDelete: MeetingOutput;
   meetingUploadAudio: MeetingOutput;
   signIn: AuthPayload;
   signUp: AuthPayload;
   toggleActionItem: Scalars['Boolean']['output'];
+};
+
+export type MutationMeetingDeleteArgs = {
+  id: Scalars['ID']['input'];
 };
 
 export type MutationMeetingUploadAudioArgs = {
