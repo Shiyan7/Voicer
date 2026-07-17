@@ -11,11 +11,6 @@
     "copy": "Copy",
     "copied": "Copied"
   },
-  "common": {
-    "brand_name": "Voicer",
-    "brand_url": "Voicer.io",
-    "or": "or"
-  },
   "auth": {
     "title": {
       "login": "Sign in to your account",
@@ -28,6 +23,9 @@
       "log_in": "Already have an account?",
       "sign_up": "New to Voicer?"
     }
+  },
+  "common": {
+    "or": "or"
   },
   "validation": {
     "common": {
@@ -44,8 +42,7 @@
   "nav": {
     "activity": "Activity",
     "meetings": "Meetings",
-    "actions": "Actions",
-    "workspace": "Personal workspace"
+    "actions": "Actions"
   },
   "meetings": {
     "title": "Meetings",
@@ -53,30 +50,6 @@
     "record_now": "Record now",
     "upload_audio": "Upload audio",
     "untitled": "Untitled meeting",
-    "rename": "Rename",
-    "delete": "Delete meeting",
-    "delete_confirm": "Delete this meeting? This cannot be undone.",
-    "summary": "Summary",
-    "notes": "Notes",
-    "recording_transcript": "Recording & Transcript",
-    "key_points": "Key Points",
-    "transcript": "Transcript",
-    "transcript_empty": "No transcript for this meeting",
-    "action_items": "Action items",
-    "back": "All meetings",
-    "not_found": "Meeting not found",
-    "cancel": "Cancel",
-    "uploading_file": "Uploading…",
-    "upload_failed": "Failed to upload audio",
-    "rename_failed": "Failed to rename meeting",
-    "delete_failed": "Failed to delete meeting",
-    "player_error": "Couldn't load audio",
-    "processing_hint": "The recording is being processed — transcript and summary will appear here automatically.",
-    "failed_hint": "Processing failed. Please try uploading the recording again.",
-    "speaker": {
-      "me": "Me",
-      "other": "Them"
-    },
     "status": {
       "recording": "Recording",
       "uploading": "Uploading",
@@ -85,28 +58,29 @@
       "summarizing": "Summarizing",
       "ready": "Ready",
       "failed": "Failed"
-    }
+    },
+    "transcript_empty": "No transcript for this meeting",
+    "action_items": "Action items",
+    "back": "All meetings",
+    "not_found": "Meeting not found",
+    "uploading_file": "Uploading…",
+    "player_error": "Couldn't load audio",
+    "notes": "Notes",
+    "recording_transcript": "Recording & Transcript",
+    "key_points": "Key Points"
   },
   "recorder": {
-    "call_detected": "A call in {{ source }} has started — record it?",
-    "call_detected_unknown": "A call has started — record it?",
-    "record": "Record",
-    "skip": "Skip",
-    "stop": "Stop",
-    "recording": "Recording…",
-    "uploading": "Uploading recording…",
-    "upload_failed": "Failed to upload recording",
-    "upload_done": "Recording uploaded",
-    "start_failed": "Failed to start recording",
-    "stop_failed": "Failed to stop recording",
-    "source": {
-      "zoom": "Zoom",
-      "meet": "Google Meet",
-      "teams": "Microsoft Teams",
-      "telegram": "Telegram",
-      "discord": "Discord",
-      "other": "another app"
-    }
+    "stop": "Stop"
+  },
+  "actions": {
+    "title": "Action items",
+    "empty": "No action items yet",
+    "open_meeting": "Open meeting"
+  },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "speed": "Speed"
   },
   "settings": {
     "general": "General",
@@ -117,30 +91,11 @@
     },
     "permissions": {
       "title": "Permissions",
-      "mic": "Microphone",
-      "screen": "Screen recording (system audio)",
       "granted": "Allowed",
       "denied": "Not allowed",
       "request": "Request access",
       "open_settings": "Open System Settings",
       "hint": "Required to record calls"
     }
-  },
-  "actions": {
-    "title": "Action items",
-    "empty": "No action items yet",
-    "empty_open": "All caught up — no open items",
-    "open_meeting": "Open meeting",
-    "update_failed": "Failed to update the item",
-    "filter": {
-      "all": "All",
-      "open": "Open"
-    },
-    "delete": "Delete"
-  },
-  "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "speed": "Speed"
   }
 }
