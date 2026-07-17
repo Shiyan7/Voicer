@@ -1,47 +1,16 @@
-import { MeetingStatus } from '@schema';
+import { formatDurationLabel, formatShortDateTime } from '@/shared/lib/time';
 
 import { DetailsHeaderDeps } from '../types/DetailsHeaderDeps';
 
 export function useDetailsHeader(props: DetailsHeaderDeps) {
-  const isEditingTitle = (): boolean => false;
+  const title = () => props.meeting.title;
 
-  const title = (): string => '';
+  const metaLabel = () => {
+    const date = formatShortDateTime(props.meeting.startedAt);
+    const duration = props.meeting.durationSec;
 
-  const titleDraft = (): string => '';
-
-  const status = (): MeetingStatus => props.meeting.status;
-
-  const metaLabel = (): string => '';
-
-  const isDeleting = (): boolean => false;
-
-  const startTitleEdit = () => {};
-
-  const onTitleInput = (event: Event) => {};
-
-  const onTitleKeyDown = (event: KeyboardEvent) => {};
-
-  const commitTitle = () => {};
-
-  const requestDelete = () => {};
-
-  const cancelDelete = () => {};
-
-  const confirmDelete = () => {};
-
-  return {
-    isEditingTitle,
-    title,
-    titleDraft,
-    status,
-    metaLabel,
-    isDeleting,
-    startTitleEdit,
-    onTitleInput,
-    onTitleKeyDown,
-    commitTitle,
-    requestDelete,
-    cancelDelete,
-    confirmDelete,
+    return duration ? `${date} · ${formatDurationLabel(duration)}` : date;
   };
+
+  return { title, metaLabel };
 }

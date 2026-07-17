@@ -37,6 +37,9 @@ export class MeetingEntity {
   @Column({ type: 'varchar', nullable: true })
   source: string | null;
 
+  @Column({ type: 'varchar', nullable: true })
+  audioUrl: string | null;
+
   @Column({
     type: 'enum',
     enum: MeetingStatus,

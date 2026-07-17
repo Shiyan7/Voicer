@@ -1,7 +1,9 @@
-import { Query, Resolver } from '@nestjs/graphql';
+import { Args, ID, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { UserEntity } from '../users/user.entity';
 import { MeetingOutput } from './meeting.output';
+import { TranscriptSegmentOutput } from './transcript-segment.output';
+import { KeyPointOutput } from './key-point.output';
 import { MeetingsService } from './meetings.service';
 
 @Resolver(() => MeetingOutput)
@@ -11,5 +13,29 @@ export class MeetingsResolver {
   @Query(() => [MeetingOutput])
   meetings(@CurrentUser() user: UserEntity): Promise<MeetingOutput[]> {
     return this.meetingsService.getUserMeetings(user.id);
+  }
+
+  @Query(() => MeetingOutput)
+  meeting(
+    @CurrentUser() user: UserEntity,
+    @Args('id', { type: () => ID }) id: string,
+  ): Promise<MeetingOutput> {
+    return this.meetingsService.getMeetingById(user.id, id);
+  }
+
+  @Query(() => [TranscriptSegmentOutput])
+  meetingTranscript(
+    @CurrentUser() user: UserEntity,
+    @Args('meetingId', { type: () => ID }) meetingId: string,
+  ): Promise<TranscriptSegmentOutput[]> {
+    return this.meetingsService.getMeetingTranscript(user.id, meetingId);
+  }
+
+  @Query(() => [KeyPointOutput])
+  meetingKeyPoints(
+    @CurrentUser() user: UserEntity,
+    @Args('meetingId', { type: () => ID }) meetingId: string,
+  ): Promise<KeyPointOutput[]> {
+    return this.meetingsService.getMeetingKeyPoints(user.id, meetingId);
   }
 }

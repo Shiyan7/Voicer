@@ -38,6 +38,15 @@ export class ActionItemEntity {
   @Column({ type: 'boolean', default: false })
   isDone: boolean;
 
+  @Column({ type: 'int', nullable: true })
+  speakerIndex: number | null;
+
+  @Column({ type: 'int', nullable: true })
+  atMs: number | null;
+
+  @Column({ type: 'timestamptz', nullable: true })
+  dueDate: Date | null;
+
   @CreateDateColumn()
   createdAt: Date;
 

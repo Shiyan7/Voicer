@@ -1,14 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MeetingOutput } from './meeting.output';
 import { MeetingEntity } from './meeting.entity';
+import { TranscriptSegmentEntity } from './transcript-segment.entity';
+import { TranscriptSegmentOutput } from './transcript-segment.output';
+import { KeyPointEntity } from './key-point.entity';
+import { KeyPointOutput } from './key-point.output';
 
 @Injectable()
 export class MeetingsService {
   constructor(
     @InjectRepository(MeetingEntity)
     private readonly meetingsRepository: Repository<MeetingEntity>,
+    @InjectRepository(TranscriptSegmentEntity)
+    private readonly transcriptSegmentsRepository: Repository<TranscriptSegmentEntity>,
+    @InjectRepository(KeyPointEntity)
+    private readonly keyPointsRepository: Repository<KeyPointEntity>,
   ) {}
 
   async getUserMeetings(userId: string): Promise<MeetingOutput[]> {
@@ -21,17 +29,93 @@ export class MeetingsService {
     return meetings.map(this.serialize);
   }
 
+  async getMeetingById(userId: string, id: string): Promise<MeetingOutput> {
+    const meeting = await this.findOwnedMeeting(userId, id);
+
+    return this.serialize(meeting);
+  }
+
+  async getMeetingTranscript(
+    userId: string,
+    meetingId: string,
+  ): Promise<TranscriptSegmentOutput[]> {
+    await this.findOwnedMeeting(userId, meetingId);
+
+    const segments = await this.transcriptSegmentsRepository.find({
+      where: { meetingId },
+      order: { startMs: 'ASC' },
+      comment: this.getFnName(this.getMeetingTranscript.name),
+    });
+
+    return segments.map(this.serializeSegment);
+  }
+
+  async getMeetingKeyPoints(
+    userId: string,
+    meetingId: string,
+  ): Promise<KeyPointOutput[]> {
+    await this.findOwnedMeeting(userId, meetingId);
+
+    const keyPoints = await this.keyPointsRepository.find({
+      where: { meetingId },
+      order: { order: 'ASC' },
+      comment: this.getFnName(this.getMeetingKeyPoints.name),
+    });
+
+    return keyPoints.map(this.serializeKeyPoint);
+  }
+
+  private async findOwnedMeeting(
+    userId: string,
+    id: string,
+  ): Promise<MeetingEntity> {
+    const meeting = await this.meetingsRepository.findOne({
+      where: { id, userId },
+      comment: this.getFnName(this.findOwnedMeeting.name),
+    });
+
+    if (!meeting) {
+      throw new NotFoundException('Meeting не найден');
+    }
+
+    return meeting;
+  }
+
   private serialize(meeting: MeetingEntity): MeetingOutput {
     return {
       id: meeting.id,
       title: meeting.title,
       source: meeting.source,
+      audioUrl: meeting.audioUrl,
       status: meeting.status,
       startedAt: meeting.startedAt,
       endedAt: meeting.endedAt,
       durationSec: meeting.durationSec,
       createdAt: meeting.createdAt,
       updatedAt: meeting.updatedAt,
+    };
+  }
+
+  private serializeSegment(
+    segment: TranscriptSegmentEntity,
+  ): TranscriptSegmentOutput {
+    return {
+      id: segment.id,
+      meetingId: segment.meetingId,
+      speakerIndex: segment.speakerIndex,
+      startMs: segment.startMs,
+      endMs: segment.endMs,
+      text: segment.text,
+    };
+  }
+
+  private serializeKeyPoint(keyPoint: KeyPointEntity): KeyPointOutput {
+    return {
+      id: keyPoint.id,
+      meetingId: keyPoint.meetingId,
+      text: keyPoint.text,
+      atMs: keyPoint.atMs,
+      order: keyPoint.order,
     };
   }
 

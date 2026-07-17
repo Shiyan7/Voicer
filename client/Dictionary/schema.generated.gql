@@ -4,11 +4,14 @@ schema {
 }
 
 type ActionItemOutput {
+  atMs: Int
   createdAt: DateTime!
+  dueDate: DateTime
   id: ID!
   isDone: Boolean!
   meetingId: ID!
   meetingTitle: String
+  speakerIndex: Int
   text: String!
 }
 
@@ -21,7 +24,16 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type KeyPointOutput {
+  atMs: Int
+  id: ID!
+  meetingId: ID!
+  order: Int!
+  text: String!
+}
+
 type MeetingOutput {
+  audioUrl: String
   createdAt: DateTime!
   durationSec: Int
   endedAt: DateTime
@@ -49,7 +61,10 @@ type Mutation {
 
 type Query {
   actionItems: [ActionItemOutput!]!
+  meeting(id: ID!): MeetingOutput!
   meetingActionItems(meetingId: ID!): [ActionItemOutput!]!
+  meetingKeyPoints(meetingId: ID!): [KeyPointOutput!]!
+  meetingTranscript(meetingId: ID!): [TranscriptSegmentOutput!]!
   meetings: [MeetingOutput!]!
   userMe: UserMeOutput!
 }
@@ -62,6 +77,15 @@ input SignInInput {
 input SignUpInput {
   email: String!
   password: String!
+}
+
+type TranscriptSegmentOutput {
+  endMs: Int!
+  id: ID!
+  meetingId: ID!
+  speakerIndex: Int!
+  startMs: Int!
+  text: String!
 }
 
 type UserMeOutput {

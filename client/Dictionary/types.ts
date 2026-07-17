@@ -19,11 +19,14 @@ export type Scalars = {
 
 export type ActionItemOutput = {
   __typename?: 'ActionItemOutput';
+  atMs?: Maybe<Scalars['Int']['output']>;
   createdAt: Scalars['DateTime']['output'];
+  dueDate?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['ID']['output'];
   isDone: Scalars['Boolean']['output'];
   meetingId: Scalars['ID']['output'];
   meetingTitle?: Maybe<Scalars['String']['output']>;
+  speakerIndex?: Maybe<Scalars['Int']['output']>;
   text: Scalars['String']['output'];
 };
 
@@ -32,8 +35,18 @@ export type AuthPayload = {
   accessToken: Scalars['String']['output'];
 };
 
+export type KeyPointOutput = {
+  __typename?: 'KeyPointOutput';
+  atMs?: Maybe<Scalars['Int']['output']>;
+  id: Scalars['ID']['output'];
+  meetingId: Scalars['ID']['output'];
+  order: Scalars['Int']['output'];
+  text: Scalars['String']['output'];
+};
+
 export type MeetingOutput = {
   __typename?: 'MeetingOutput';
+  audioUrl?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['DateTime']['output'];
   durationSec?: Maybe<Scalars['Int']['output']>;
   endedAt?: Maybe<Scalars['DateTime']['output']>;
@@ -75,12 +88,27 @@ export type MutationToggleActionItemArgs = {
 export type Query = {
   __typename?: 'Query';
   actionItems: Array<ActionItemOutput>;
+  meeting: MeetingOutput;
   meetingActionItems: Array<ActionItemOutput>;
+  meetingKeyPoints: Array<KeyPointOutput>;
+  meetingTranscript: Array<TranscriptSegmentOutput>;
   meetings: Array<MeetingOutput>;
   userMe: UserMeOutput;
 };
 
+export type QueryMeetingArgs = {
+  id: Scalars['ID']['input'];
+};
+
 export type QueryMeetingActionItemsArgs = {
+  meetingId: Scalars['ID']['input'];
+};
+
+export type QueryMeetingKeyPointsArgs = {
+  meetingId: Scalars['ID']['input'];
+};
+
+export type QueryMeetingTranscriptArgs = {
   meetingId: Scalars['ID']['input'];
 };
 
@@ -92,6 +120,16 @@ export type SignInInput = {
 export type SignUpInput = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
+};
+
+export type TranscriptSegmentOutput = {
+  __typename?: 'TranscriptSegmentOutput';
+  endMs: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
+  meetingId: Scalars['ID']['output'];
+  speakerIndex: Scalars['Int']['output'];
+  startMs: Scalars['Int']['output'];
+  text: Scalars['String']['output'];
 };
 
 export type UserMeOutput = {

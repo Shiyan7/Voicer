@@ -14,6 +14,9 @@ export class MeetingOutput {
   @Field(() => String, { nullable: true })
   source: string | null;
 
+  @Field(() => String, { nullable: true })
+  audioUrl: string | null;
+
   @Field(() => MeetingStatus)
   status: MeetingStatus;
 
