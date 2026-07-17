@@ -1,5 +1,5 @@
-export function useRecording() {
-  const autoRecord = (): boolean => false;
+export const useRecording = () => {
+  const autoRecord = () => false;
 
   const toggleAutoRecord = () => {};
 

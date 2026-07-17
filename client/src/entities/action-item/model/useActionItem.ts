@@ -3,7 +3,7 @@ import { createSignal } from 'solid-js';
 import { toggleActionItemMutation } from '../api/toggleActionItemMutation';
 import { ActionItemDeps } from '../types/ActionItemDeps';
 
-export function useActionItem(props: ActionItemDeps) {
+export const useActionItem = (props: ActionItemDeps) => {
   const [isDone, setIsDone] = createSignal(props.item.isDone);
   const [, toggleActionItem] = toggleActionItemMutation();
 

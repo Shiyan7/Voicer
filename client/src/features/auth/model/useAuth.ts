@@ -10,7 +10,7 @@ import { createSignUpMutation } from '../api/createSignUpMutation';
 import { AuthForm, createAuthSchema } from '../config/createAuthSchema';
 import { AuthMode } from '../types';
 
-export function useAuth() {
+export const useAuth = () => {
   const [, signIn] = createSignInMutation();
   const [, signUp] = createSignUpMutation();
 
@@ -65,4 +65,4 @@ export function useAuth() {
     toggleAuthMode,
     onSubmit,
   };
-}
+};

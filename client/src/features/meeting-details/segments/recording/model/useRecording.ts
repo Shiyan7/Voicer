@@ -6,7 +6,7 @@ import { AudioPlayerApi } from '@/shared/ui/audio-player';
 import { mapTranscriptSegments } from '../lib/mapTranscriptSegments';
 import { RecordingParams } from '../types/RecordingParams';
 
-export function useRecording(props: RecordingParams) {
+export const useRecording = (props: RecordingParams) => {
   const [result] = meetingTranscriptQuery({ meetingId: props.meetingId });
   const [currentTimeMs, setCurrentTimeMs] = createSignal(0);
 

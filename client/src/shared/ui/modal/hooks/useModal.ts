@@ -5,7 +5,7 @@ import { activeModals, MODALS } from '@/shared/lib/modal';
 
 const ANIMATION_MS = 250;
 
-export function useModal(modalId: Accessor<MODALS>) {
+export const useModal = (modalId: Accessor<MODALS>) => {
   const [mounted, setMounted] = createSignal(false);
   const [opened, setOpened] = createSignal(false);
 

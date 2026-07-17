@@ -4,7 +4,7 @@ let lockCount = 0;
 let originalOverflow = '';
 let originalPaddingRight = '';
 
-export function useLockScroll(locked: Accessor<boolean>) {
+export const useLockScroll = (locked: Accessor<boolean>) => {
   createEffect(() => {
     if (!locked()) return;
 

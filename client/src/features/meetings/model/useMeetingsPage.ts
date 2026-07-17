@@ -23,7 +23,7 @@ export const useMeetingsPage = () => {
 
   const items = () => mapMeetingCards(meetingsResult.data?.meetings);
 
-  const isEmpty = () => !meetingsResult.fetching && !items().length;
+  const isEmpty = () => !isLoading() && !items().length;
 
   const isUploading = () => uploadResult.fetching;
 

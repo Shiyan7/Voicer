@@ -4,7 +4,7 @@ import { MODALS, showModal } from '@/shared/lib/modal';
 
 import { TeamSelectDeps } from '../types/TeamSelectDeps';
 
-export function useTeamSelect(props: TeamSelectDeps) {
+export const useTeamSelect = (props: TeamSelectDeps) => {
   const { isAuthorized, user } = useUserMe();
 
   const firstLetterName = () => user()?.name[0].toUpperCase();

@@ -1,6 +1,6 @@
 import { PermissionRow, SystemSettingsPane } from '../types/PermissionRow';
 
-export function usePermissions() {
+export const usePermissions = () => {
   const rows = (): PermissionRow[] => [];
 
   const requestPermissions = () => {};

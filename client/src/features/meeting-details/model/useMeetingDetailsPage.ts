@@ -8,7 +8,7 @@ import { meetingQuery } from '../api/meetingQuery';
 import { getMeetingTabs } from '../config/getMeetingTabs';
 import { MeetingTab } from '../types/MeetingTab';
 
-export function useMeetingDetailsPage() {
+export const useMeetingDetailsPage = () => {
   const params = useParams<{ id: string }>();
   const [meetingResult] = meetingQuery({ id: params.id });
   const [activeTab, setActiveTab] = createSignal<MeetingTab>('notes');

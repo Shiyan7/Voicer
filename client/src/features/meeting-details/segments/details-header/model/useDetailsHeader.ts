@@ -2,7 +2,7 @@ import { formatDurationLabel, formatShortDateTime } from '@/shared/lib/time';
 
 import { DetailsHeaderDeps } from '../types/DetailsHeaderDeps';
 
-export function useDetailsHeader(props: DetailsHeaderDeps) {
+export const useDetailsHeader = (props: DetailsHeaderDeps) => {
   const title = () => props.meeting.title;
 
   const metaLabel = () => {

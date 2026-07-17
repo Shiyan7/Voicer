@@ -1,7 +1,7 @@
 import { i18n, Locale } from '@/shared/i18n';
 import { authRoot } from '@/shared/roots/authRoot';
 
-export function useGeneral() {
+export const useGeneral = () => {
   const locale = () => i18n.locale();
 
   const changeLang = (value: string) => {

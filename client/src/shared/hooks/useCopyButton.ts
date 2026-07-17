@@ -9,7 +9,7 @@ export const getTooltipTexts = () => ({
   copied: i18n.t('labels.copied'),
 });
 
-export function useCopyButton(getValue: Accessor<string>) {
+export const useCopyButton = (getValue: Accessor<string>) => {
   const [tooltipState, setTooltipState] = createSignal<TooltipState>('copy');
 
   let timeoutId: ReturnType<typeof setTimeout> | null = null;

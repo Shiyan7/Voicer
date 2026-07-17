@@ -3,7 +3,7 @@ import { meetingKeyPointsQuery } from '@/features/meeting-details/api/meetingKey
 import { mapKeyPoints } from '../lib/mapKeyPoints';
 import { KeyPointsParams } from '../types/KeyPointsParams';
 
-export function useKeyPoints(props: KeyPointsParams) {
+export const useKeyPoints = (props: KeyPointsParams) => {
   const [result] = meetingKeyPointsQuery({ meetingId: props.meetingId });
 
   const points = () => mapKeyPoints(result.data?.meetingKeyPoints);

@@ -3,7 +3,7 @@ import { createSignal } from 'solid-js';
 
 import { getNavItems } from '../config/getNavItems';
 
-export function useNavigation() {
+export const useNavigation = () => {
   const location = useLocation();
 
   const [isCollapsed, setIsCollapsed] = createSignal(false);

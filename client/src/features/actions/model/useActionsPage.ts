@@ -2,16 +2,16 @@ import { actionItemsQuery } from '../api/actionItemsQuery';
 import { groupActionItems } from '../lib/groupActionItems';
 import { mapActionItems } from '../lib/mapActionItems';
 
-export function useActionsPage() {
+export const useActionsPage = () => {
   const [actionItemsResult] = actionItemsQuery();
 
   const items = () => mapActionItems(actionItemsResult.data?.actionItems);
 
   const groups = () => groupActionItems(items());
 
-  const isLoading = (): boolean => actionItemsResult.fetching;
+  const isLoading = () => actionItemsResult.fetching;
 
-  const isEmpty = (): boolean => !isLoading() && !items().length;
+  const isEmpty = () => !isLoading() && !items().length;
 
   return { groups, isLoading, isEmpty };
 }

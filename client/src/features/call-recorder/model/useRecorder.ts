@@ -1,15 +1,15 @@
 import { onMount } from 'solid-js';
 
-export function useRecorder() {
-  const isBarVisible = (): boolean => false;
+export const useRecorder = () => {
+  const isBarVisible = () => false;
 
-  const isUploading = (): boolean => false;
+  const isUploading = () => false;
 
-  const barText = (): string => '';
+  const barText = () => '';
 
-  const timeLabel = (): string => '';
+  const timeLabel = () => '';
 
-  const uploadPercent = (): number => 0;
+  const uploadPercent = () => 0;
 
   const setup = () => {};
 
