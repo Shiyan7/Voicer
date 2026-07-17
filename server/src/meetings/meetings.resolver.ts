@@ -1,6 +1,8 @@
-import { Args, ID, Query, Resolver } from '@nestjs/graphql';
+import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { GraphQLUpload } from 'graphql-upload-minimal';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { UserEntity } from '../users/user.entity';
+import { FileUpload } from '../file/file-upload';
 import { MeetingOutput } from './meeting.output';
 import { TranscriptSegmentOutput } from './transcript-segment.output';
 import { KeyPointOutput } from './key-point.output';
@@ -13,6 +15,15 @@ export class MeetingsResolver {
   @Query(() => [MeetingOutput])
   meetings(@CurrentUser() user: UserEntity): Promise<MeetingOutput[]> {
     return this.meetingsService.getUserMeetings(user.id);
+  }
+
+  @Mutation(() => MeetingOutput)
+  async meetingUploadAudio(
+    @CurrentUser() user: UserEntity,
+    @Args({ name: 'file', type: () => GraphQLUpload })
+    upload: FileUpload,
+  ): Promise<MeetingOutput> {
+    return this.meetingsService.createFromUpload(user.id, await upload);
   }
 
   @Query(() => MeetingOutput)

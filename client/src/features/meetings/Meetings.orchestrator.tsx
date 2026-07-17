@@ -17,8 +17,6 @@ export function MeetingsOrchestrator() {
         <header class={styles.header()}>
           <h1 class={styles.title()}>{i18n.t('meetings.title')}</h1>
           <Toolbar
-            canRecord={vm.canRecord()}
-            canUpload={vm.canUpload()}
             isUploading={vm.isUploading()}
             onStartRecording={vm.startRecording}
             onFileSelected={vm.onFileSelected}

@@ -1,6 +1,4 @@
-export interface ToolbarDeps {
-  canRecord: boolean;
-  canUpload: boolean;
+export interface ToolbarProps {
   isUploading: boolean;
   onStartRecording: () => void;
   onFileSelected: (event: Event) => void;

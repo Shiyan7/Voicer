@@ -1,8 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { basename, extname } from 'path';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MeetingOutput } from './meeting.output';
-import { MeetingEntity } from './meeting.entity';
+import { MeetingEntity, MeetingStatus } from './meeting.entity';
+import { FileStorageService } from '../file/file-storage.service';
+import { FileUpload } from '../file/file-upload';
 import { TranscriptSegmentEntity } from './transcript-segment.entity';
 import { TranscriptSegmentOutput } from './transcript-segment.output';
 import { KeyPointEntity } from './key-point.entity';
@@ -17,7 +24,36 @@ export class MeetingsService {
     private readonly transcriptSegmentsRepository: Repository<TranscriptSegmentEntity>,
     @InjectRepository(KeyPointEntity)
     private readonly keyPointsRepository: Repository<KeyPointEntity>,
+    private readonly fileStorageService: FileStorageService,
   ) {}
+
+  async createFromUpload(
+    userId: string,
+    upload: FileUpload,
+  ): Promise<MeetingOutput> {
+    if (!upload.mimetype.startsWith('audio/')) {
+      throw new BadRequestException('Только аудиофайлы');
+    }
+
+    const audioUrl = await this.fileStorageService.save(userId, upload);
+
+    const meeting = this.meetingsRepository.create({
+      userId,
+      title: this.titleFromFileName(upload.filename),
+      source: 'upload',
+      audioUrl,
+      status: MeetingStatus.READY,
+      startedAt: new Date(),
+    });
+
+    const saved = await this.meetingsRepository.save(meeting);
+
+    return this.serialize(saved);
+  }
+
+  private titleFromFileName(fileName: string): string {
+    return basename(fileName, extname(fileName)).trim() || 'Untitled meeting';
+  }
 
   async getUserMeetings(userId: string): Promise<MeetingOutput[]> {
     const meetings = await this.meetingsRepository.find({
