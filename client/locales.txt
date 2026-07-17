@@ -59,3 +59,7 @@ actions.open_meeting = Open meeting
 meetings.notes = Notes
 meetings.recording_transcript = Recording & Transcript
 meetings.key_points = Key Points
+meetings.delete.title = Delete meeting?
+meetings.delete.description = This permanently removes the meeting and its transcript. This can't be undone.
+meetings.delete.confirm = Delete
+meetings.delete.cancel = Cancel

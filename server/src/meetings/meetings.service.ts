@@ -101,6 +101,19 @@ export class MeetingsService {
     return keyPoints.map(this.serializeKeyPoint);
   }
 
+  async deleteMeeting(userId: string, id: string): Promise<MeetingOutput> {
+    const meeting = await this.findOwnedMeeting(userId, id);
+    const deleted = this.serialize(meeting);
+
+    await this.meetingsRepository.remove(meeting);
+
+    if (deleted.audioUrl) {
+      await this.fileStorageService.remove(userId, deleted.audioUrl);
+    }
+
+    return deleted;
+  }
+
   private async findOwnedMeeting(
     userId: string,
     id: string,

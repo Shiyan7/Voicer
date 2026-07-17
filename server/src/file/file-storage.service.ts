@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 import { createWriteStream } from 'fs';
-import { mkdir } from 'fs/promises';
-import { extname, join } from 'path';
+import { mkdir, rm } from 'fs/promises';
+import { basename, extname, join } from 'path';
 import { pipeline } from 'stream/promises';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -30,6 +30,11 @@ export class FileStorageService {
     );
 
     return `${this.publicBaseUrl}/storage/${userId}/${fileName}`;
+  }
+
+  async remove(userId: string, fileUrl: string): Promise<void> {
+    const fileName = basename(fileUrl);
+    await rm(join(this.storageDir, userId, fileName), { force: true });
   }
 
   private resolveExtension(upload: FileUpload): string {
