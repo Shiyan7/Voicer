@@ -80,6 +80,10 @@ input SignUpInput {
   password: String!
 }
 
+type Subscription {
+  meetingUpdated(id: ID!): MeetingOutput!
+}
+
 type TranscriptSegmentOutput {
   endMs: Int!
   id: ID!

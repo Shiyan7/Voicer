@@ -134,6 +134,15 @@ export type SignUpInput = {
   password: Scalars['String']['input'];
 };
 
+export type Subscription = {
+  __typename?: 'Subscription';
+  meetingUpdated: MeetingOutput;
+};
+
+export type SubscriptionMeetingUpdatedArgs = {
+  id: Scalars['ID']['input'];
+};
+
 export type TranscriptSegmentOutput = {
   __typename?: 'TranscriptSegmentOutput';
   endMs: Scalars['Int']['output'];

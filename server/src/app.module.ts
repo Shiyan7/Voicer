@@ -8,11 +8,13 @@ import { GqlAuthGuard } from './auth/guards/gql-auth.guard';
 import { UsersModule } from './users/users.module';
 import { MeetingsModule } from './meetings/meetings.module';
 import { ActionsModule } from './actions/actions.module';
+import { PubSubModule } from './pubsub/pubsub.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     DatabaseModule,
+    PubSubModule,
     GraphqlModule,
     AuthModule,
     UsersModule,
