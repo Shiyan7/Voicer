@@ -46,6 +46,21 @@ export function MeetingDetailsOrchestrator() {
             {(meeting) => (
               <>
                 <DetailsHeader meeting={meeting()} />
+                <Show when={vm.processingStatus()}>
+                  <div class={styles.processing()}>
+                    <span class={styles.processingSpinner()} />
+                    <span class={styles.processingLabel()}>
+                      {vm.processingLabel()}…
+                    </span>
+                  </div>
+                </Show>
+                <Show when={vm.isFailed()}>
+                  <div class={styles.processing()}>
+                    <span class={styles.processingLabel()}>
+                      {i18n.t('meetings.processing_failed')}
+                    </span>
+                  </div>
+                </Show>
                 <Show when={vm.isReady()}>
                   <Tabs
                     tabs={vm.tabs}
