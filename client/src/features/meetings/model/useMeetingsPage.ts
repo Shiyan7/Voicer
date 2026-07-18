@@ -1,7 +1,7 @@
 import { useNavigate } from '@solidjs/router';
-import { isTauri } from '@tauri-apps/api/core';
 import { createSignal } from 'solid-js';
 
+import { uploadMeetingAudioMutation } from '@/entities/meeting';
 import { closeModal, MODALS, showModal } from '@/shared/lib/modal';
 import { startRecording as startRecorderCommand } from '@/shared/recorder';
 import { authRoot } from '@/shared/roots/authRoot';
@@ -9,14 +9,13 @@ import { paths } from '@/shared/router';
 
 import { deleteMeetingMutation } from '../api/deleteMeetingMutation';
 import { meetingsQuery } from '../api/meetingsQuery';
-import { uploadMeetingMutation } from '../api/uploadMeetingMutation';
 import { mapMeetingCards } from '../lib/mapMeetingCards';
 
 export const useMeetingsPage = () => {
   const [meetingsResult] = meetingsQuery({
     pause: () => !authRoot.isAuth,
   });
-  const [uploadResult, uploadMeeting] = uploadMeetingMutation();
+  const [uploadResult, uploadAudio] = uploadMeetingAudioMutation();
   const [deleteResult, deleteMeeting] = deleteMeetingMutation();
   const [pendingDeleteId, setPendingDeleteId] = createSignal<string | null>(
     null,
@@ -35,8 +34,6 @@ export const useMeetingsPage = () => {
   const isDeleting = () => deleteResult.fetching;
 
   const startRecording = async () => {
-    if (!isTauri()) return;
-
     try {
       const result = await startRecorderCommand();
       if (result.warnings.length) {
@@ -58,7 +55,7 @@ export const useMeetingsPage = () => {
 
     if (!file) return;
 
-    await uploadMeeting({ file });
+    await uploadAudio({ file });
   };
 
   const requestDeleteMeeting = (id: string) => {

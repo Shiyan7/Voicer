@@ -1,6 +1,7 @@
 import { useNavigate } from '@solidjs/router';
 import { onMount } from 'solid-js';
 
+import { uploadMeetingAudioMutation } from '@/entities/meeting';
 import { useElapsedTimer } from '@/shared/hooks/useElapsedTimer';
 import { formatSeconds } from '@/shared/lib/time';
 import {
@@ -8,13 +9,15 @@ import {
   onRecordingStarted,
   onRecordingStopped,
   stopRecording,
-  uploadRecording,
 } from '@/shared/recorder';
 import { paths } from '@/shared/router';
+
+import { readRecordingFile } from '../lib/readRecordingFile';
 
 export const useRecorder = () => {
   const timer = useElapsedTimer();
   const navigate = useNavigate();
+  const [, uploadAudio] = uploadMeetingAudioMutation();
 
   const isBarVisible = () => timer.isRunning();
 
@@ -22,7 +25,11 @@ export const useRecorder = () => {
 
   const openRecordedMeeting = async (path: string, startedAt: number) => {
     try {
-      const meetingId = await uploadRecording(path, startedAt);
+      const file = await readRecordingFile(path, startedAt);
+      const result = await uploadAudio({ file });
+      const meetingId = result.data?.meetingUploadAudio.id;
+
+      if (!meetingId) return;
       navigate(paths.meeting(meetingId));
     } catch (error) {
       console.error('[recorder] failed to upload recording:', error);
