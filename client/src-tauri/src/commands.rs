@@ -50,7 +50,7 @@ pub enum RecorderStateDto {
 #[serde(rename_all = "camelCase")]
 pub struct PermissionsDto {
     pub mic: bool,
-    pub screen_recording: bool,
+    pub system_audio: bool,
 }
 
 pub fn recordings_dir(app: &AppHandle) -> Result<PathBuf, String> {
@@ -186,14 +186,14 @@ pub fn check_permissions() -> Result<PermissionsDto, String> {
     {
         Ok(PermissionsDto {
             mic: crate::permissions::mic_authorized(),
-            screen_recording: crate::permissions::screen_recording_authorized(),
+            system_audio: crate::permissions::system_audio_authorized(),
         })
     }
     #[cfg(not(target_os = "macos"))]
     {
         Ok(PermissionsDto {
             mic: false,
-            screen_recording: false,
+            system_audio: false,
         })
     }
 }
@@ -204,9 +204,6 @@ pub fn request_permissions() -> Result<PermissionsDto, String> {
     {
         if !crate::permissions::mic_authorized() {
             crate::permissions::request_mic_access();
-        }
-        if !crate::permissions::screen_recording_authorized() {
-            crate::permissions::request_screen_recording_access();
         }
         check_permissions()
     }

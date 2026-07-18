@@ -77,6 +77,7 @@
     }
   },
   "recorder": {
+    "recording": "Идёт запись",
     "stop": "Stop"
   },
   "actions": {

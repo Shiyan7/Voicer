@@ -4,12 +4,12 @@ import { i18n } from '@/shared/i18n';
 import { AudioPlayer } from '@/shared/ui/audio-player';
 
 import { useRecording } from '../model/useRecording';
-import { RecordingParams } from '../types/RecordingParams';
+import { RecordingDeps } from '../types/RecordingDeps';
 import { recordingStyles } from './Recording.styles';
 
 const styles = recordingStyles();
 
-export function Recording(props: RecordingParams) {
+export function Recording(props: RecordingDeps) {
   const vm = useRecording(props);
 
   return (

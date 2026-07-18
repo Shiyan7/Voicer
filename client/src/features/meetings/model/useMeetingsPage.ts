@@ -1,7 +1,10 @@
 import { useNavigate } from '@solidjs/router';
+import { isTauri } from '@tauri-apps/api/core';
 import { createSignal } from 'solid-js';
 
 import { closeModal, MODALS, showModal } from '@/shared/lib/modal';
+import { startRecording as startRecorderCommand } from '@/shared/recorder';
+import { authRoot } from '@/shared/roots/authRoot';
 import { paths } from '@/shared/router';
 
 import { deleteMeetingMutation } from '../api/deleteMeetingMutation';
@@ -10,7 +13,9 @@ import { uploadMeetingMutation } from '../api/uploadMeetingMutation';
 import { mapMeetingCards } from '../lib/mapMeetingCards';
 
 export const useMeetingsPage = () => {
-  const [meetingsResult] = meetingsQuery();
+  const [meetingsResult] = meetingsQuery({
+    pause: () => !authRoot.isAuth,
+  });
   const [uploadResult, uploadMeeting] = uploadMeetingMutation();
   const [deleteResult, deleteMeeting] = deleteMeetingMutation();
   const [pendingDeleteId, setPendingDeleteId] = createSignal<string | null>(
@@ -29,7 +34,18 @@ export const useMeetingsPage = () => {
 
   const isDeleting = () => deleteResult.fetching;
 
-  const startRecording = () => {};
+  const startRecording = async () => {
+    if (!isTauri()) return;
+
+    try {
+      const result = await startRecorderCommand();
+      if (result.warnings.length) {
+        console.warn('[recorder] start warnings:', result.warnings);
+      }
+    } catch (error) {
+      console.error('[recorder] failed to start recording:', error);
+    }
+  };
 
   const openMeeting = (id: string) => {
     navigate(paths.meeting(id));
