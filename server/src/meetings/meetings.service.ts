@@ -1,11 +1,15 @@
 import { basename, extname } from 'path';
 import {
   BadRequestException,
+  Inject,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PubSub } from 'graphql-subscriptions';
 import { Repository } from 'typeorm';
+import { PUB_SUB } from '../pubsub/pubsub.module';
 import { MeetingOutput } from './meeting.output';
 import { MeetingEntity, MeetingStatus } from './meeting.entity';
 import { FileStorageService } from '../file/file-storage.service';
@@ -14,9 +18,19 @@ import { TranscriptSegmentEntity } from './transcript-segment.entity';
 import { TranscriptSegmentOutput } from './transcript-segment.output';
 import { KeyPointEntity } from './key-point.entity';
 import { KeyPointOutput } from './key-point.output';
+import { ActionItemEntity } from '../actions/action-item.entity';
+import { TranscriptionService } from '../transcription/transcription.service';
+import { TranscribedSegment } from '../transcription/transcription.types';
+import { SummarizationService } from '../summarization/summarization.service';
+import {
+  SummarizedActionItem,
+  SummarizedKeyPoint,
+} from '../summarization/summarization.types';
 
 @Injectable()
 export class MeetingsService {
+  private readonly logger = new Logger(MeetingsService.name);
+
   constructor(
     @InjectRepository(MeetingEntity)
     private readonly meetingsRepository: Repository<MeetingEntity>,
@@ -24,8 +38,36 @@ export class MeetingsService {
     private readonly transcriptSegmentsRepository: Repository<TranscriptSegmentEntity>,
     @InjectRepository(KeyPointEntity)
     private readonly keyPointsRepository: Repository<KeyPointEntity>,
+    @InjectRepository(ActionItemEntity)
+    private readonly actionItemsRepository: Repository<ActionItemEntity>,
     private readonly fileStorageService: FileStorageService,
+    private readonly transcriptionService: TranscriptionService,
+    private readonly summarizationService: SummarizationService,
+    @Inject(PUB_SUB) private readonly pubSub: PubSub,
   ) {}
+
+  static meetingUpdatedTopic(meetingId: string): string {
+    return `meetingUpdated.${meetingId}`;
+  }
+
+  async *subscribeToMeetingUpdated(
+    userId: string,
+    meetingId: string,
+  ): AsyncGenerator<{ meetingUpdated: MeetingOutput }> {
+    const meeting = await this.findOwnedMeeting(userId, meetingId);
+
+    yield { meetingUpdated: this.serialize(meeting) };
+
+    const updates = this.pubSub.asyncIterableIterator<{
+      meetingUpdated: MeetingOutput;
+    }>(MeetingsService.meetingUpdatedTopic(meetingId)) as AsyncIterable<{
+      meetingUpdated: MeetingOutput;
+    }>;
+
+    for await (const update of updates) {
+      yield update;
+    }
+  }
 
   async createFromUpload(
     userId: string,
@@ -42,17 +84,15 @@ export class MeetingsService {
       title: this.titleFromFileName(upload.filename),
       source: 'upload',
       audioUrl,
-      status: MeetingStatus.READY,
+      status: MeetingStatus.TRANSCRIBING,
       startedAt: new Date(),
     });
 
     const saved = await this.meetingsRepository.save(meeting);
 
-    return this.serialize(saved);
-  }
+    void this.processMeeting(saved);
 
-  private titleFromFileName(fileName: string): string {
-    return basename(fileName, extname(fileName)).trim() || 'Untitled meeting';
+    return this.serialize(saved);
   }
 
   async getUserMeetings(userId: string): Promise<MeetingOutput[]> {
@@ -112,6 +152,127 @@ export class MeetingsService {
     }
 
     return deleted;
+  }
+
+  private async updateMeetingStatus(
+    meetingId: string,
+    updates: Partial<MeetingEntity>,
+  ): Promise<void> {
+    await this.meetingsRepository.update(meetingId, updates);
+
+    const meeting = await this.meetingsRepository.findOne({
+      where: { id: meetingId },
+      comment: this.getFnName(this.updateMeetingStatus.name),
+    });
+
+    if (!meeting) return;
+
+    await this.pubSub.publish(MeetingsService.meetingUpdatedTopic(meetingId), {
+      meetingUpdated: this.serialize(meeting),
+    });
+  }
+
+  private async processMeeting(meeting: MeetingEntity): Promise<void> {
+    try {
+      const segments = await this.transcribeMeeting(meeting);
+      await this.summarizeMeeting(meeting, segments);
+    } catch (error) {
+      this.logger.error(
+        `Failed to process meeting ${meeting.id}`,
+        error instanceof Error ? error.stack : String(error),
+      );
+      await this.updateMeetingStatus(meeting.id, {
+        status: MeetingStatus.FAILED,
+      });
+    }
+  }
+
+  private async transcribeMeeting(
+    meeting: MeetingEntity,
+  ): Promise<TranscribedSegment[]> {
+    const filePath = this.fileStorageService.resolveLocalPath(
+      meeting.userId,
+      meeting.audioUrl,
+    );
+
+    const segments = await this.transcriptionService.transcribeAudio(filePath);
+
+    await this.transcriptSegmentsRepository.save(
+      segments.map((segment) =>
+        this.transcriptSegmentsRepository.create({
+          meetingId: meeting.id,
+          ...segment,
+        }),
+      ),
+    );
+
+    const lastSegment = segments.at(-1);
+    await this.updateMeetingStatus(meeting.id, {
+      status: MeetingStatus.SUMMARIZING,
+      endedAt: new Date(),
+      durationSec: lastSegment ? Math.round(lastSegment.endMs / 1000) : null,
+    });
+
+    return segments;
+  }
+
+  private async summarizeMeeting(
+    meeting: MeetingEntity,
+    segments: TranscribedSegment[],
+  ): Promise<void> {
+    try {
+      const summary = await this.summarizationService.summarize(segments);
+      await this.saveKeyPoints(meeting.id, summary.keyPoints);
+      await this.saveActionItems(meeting, summary.actionItems);
+    } catch (error) {
+      this.logger.error(
+        `Failed to summarize meeting ${meeting.id}`,
+        error instanceof Error ? error.stack : String(error),
+      );
+    } finally {
+      await this.updateMeetingStatus(meeting.id, {
+        status: MeetingStatus.READY,
+      });
+    }
+  }
+
+  private async saveKeyPoints(
+    meetingId: string,
+    keyPoints: SummarizedKeyPoint[],
+  ): Promise<void> {
+    await this.keyPointsRepository.delete({ meetingId });
+    await this.keyPointsRepository.save(
+      keyPoints.map((keyPoint, index) =>
+        this.keyPointsRepository.create({
+          meetingId,
+          text: keyPoint.text,
+          atMs: keyPoint.atMs,
+          order: index,
+        }),
+      ),
+    );
+  }
+
+  private async saveActionItems(
+    meeting: MeetingEntity,
+    actionItems: SummarizedActionItem[],
+  ): Promise<void> {
+    await this.actionItemsRepository.delete({ meetingId: meeting.id });
+    await this.actionItemsRepository.save(
+      actionItems.map((actionItem) =>
+        this.actionItemsRepository.create({
+          meetingId: meeting.id,
+          userId: meeting.userId,
+          text: actionItem.text,
+          atMs: actionItem.atMs,
+          speakerIndex: actionItem.speakerIndex,
+        }),
+      ),
+    );
+  }
+
+  private titleFromFileName(fileName: string): string {
+    return basename(fileName, extname(fileName)).trim() || 'Untitled meeting';
   }
 
   private async findOwnedMeeting(

@@ -32,6 +32,10 @@ export class FileStorageService {
     return `${this.publicBaseUrl}/storage/${userId}/${fileName}`;
   }
 
+  resolveLocalPath(userId: string, fileUrl: string): string {
+    return join(this.storageDir, userId, basename(fileUrl));
+  }
+
   async remove(userId: string, fileUrl: string): Promise<void> {
     const fileName = basename(fileUrl);
     await rm(join(this.storageDir, userId, fileName), { force: true });

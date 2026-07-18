@@ -1,6 +1,14 @@
-import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  ID,
+  Mutation,
+  Query,
+  Resolver,
+  Subscription,
+} from '@nestjs/graphql';
 import { GraphQLUpload } from 'graphql-upload-minimal';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { Public } from '../auth/decorators/public.decorator';
 import { UserEntity } from '../users/user.entity';
 import { FileUpload } from '../file/file-upload';
 import { MeetingOutput } from './meeting.output';
@@ -48,6 +56,17 @@ export class MeetingsResolver {
     @Args('meetingId', { type: () => ID }) meetingId: string,
   ): Promise<TranscriptSegmentOutput[]> {
     return this.meetingsService.getMeetingTranscript(user.id, meetingId);
+  }
+
+  @Public()
+  @Subscription(() => MeetingOutput, {
+    name: 'meetingUpdated',
+  })
+  meetingUpdated(
+    @CurrentUser() user: UserEntity,
+    @Args('id', { type: () => ID }) id: string,
+  ): AsyncIterator<{ meetingUpdated: MeetingOutput }> {
+    return this.meetingsService.subscribeToMeetingUpdated(user.id, id);
   }
 
   @Query(() => [KeyPointOutput])

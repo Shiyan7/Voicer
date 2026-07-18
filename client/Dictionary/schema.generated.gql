@@ -1,6 +1,7 @@
 schema {
   query: Query
   mutation: Mutation
+  subscription: Subscription
 }
 
 type ActionItemOutput {
@@ -79,6 +80,10 @@ input SignInInput {
 input SignUpInput {
   email: String!
   password: String!
+}
+
+type Subscription {
+  meetingUpdated(id: ID!): MeetingOutput!
 }
 
 type TranscriptSegmentOutput {

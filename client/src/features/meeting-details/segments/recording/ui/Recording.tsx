@@ -23,7 +23,6 @@ export function Recording(props: RecordingParams) {
           />
         )}
       </Show>
-
       <section class={styles.card()}>
         <Show
           when={!vm.isEmpty()}

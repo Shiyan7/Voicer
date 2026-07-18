@@ -65,6 +65,7 @@
     "not_found": "Meeting not found",
     "uploading_file": "Uploading…",
     "player_error": "Couldn't load audio",
+    "processing_failed": "Processing failed",
     "notes": "Notes",
     "recording_transcript": "Recording & Transcript",
     "key_points": "Key Points",

@@ -1,8 +1,8 @@
 import { gql } from '@urql/solid';
 
-export const MEETING_QUERY = gql`
-  query Meeting($id: ID!) {
-    meeting(id: $id) {
+export const MEETING_UPDATED_SUBSCRIPTION = gql`
+  subscription MeetingUpdated($id: ID!) {
+    meetingUpdated(id: $id) {
       id
       title
       status
