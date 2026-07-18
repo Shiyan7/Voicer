@@ -11,9 +11,7 @@ export function CallRecorderHost() {
   return (
     <Show when={vm.isBarVisible()}>
       <RecordingBar
-        text={vm.barText()}
         timeLabel={vm.timeLabel()}
-        isUploading={vm.isUploading()}
         stopLabel={i18n.t('recorder.stop')}
         onStop={vm.stop}
       />

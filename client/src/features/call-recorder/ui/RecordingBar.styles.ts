@@ -15,13 +15,5 @@ export const recordingBarStyles = tv({
       bg-white text-gray-900
       hover:bg-gray-100 active:bg-gray-200
     `,
-    progress: 'absolute inset-x-0 bottom-0 h-0.5 animate-pulse bg-white/60',
-  },
-  variants: {
-    uploading: {
-      true: {
-        dot: 'animate-none bg-white/60',
-      },
-    },
   },
 });
