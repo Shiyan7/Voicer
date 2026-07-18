@@ -7,14 +7,13 @@ mod detect;
 mod permissions;
 #[cfg(desktop)]
 mod tray;
-#[cfg(not(any(target_os = "android", target_os = "ios")))]
-mod upload;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let mut builder = tauri::Builder::default();
 
     builder = builder
+        .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_opener::init());
@@ -33,7 +32,6 @@ pub fn run() {
             commands::delete_recording,
             commands::check_permissions,
             commands::request_permissions,
-            commands::upload_recording,
         ])
         .setup(|app| {
             #[cfg(all(desktop, not(debug_assertions)))]

@@ -9,24 +9,25 @@ import {
   onRecordingStarted,
   onRecordingStopped,
   stopRecording,
+  uploadRecording,
 } from '@/shared/recorder';
 
 export const useRecorder = () => {
   const [startedAt, setStartedAt] = createSignal<number | null>(null);
   const [now, setNow] = createSignal(Date.now());
+  const [uploading, setUploading] = createSignal(false);
 
   let timer: ReturnType<typeof setInterval> | undefined;
   const unlisteners: UnlistenFn[] = [];
 
   const isRecording = () => startedAt() !== null;
 
-  const isBarVisible = () => isRecording();
+  const isUploading = () => uploading();
 
-  const isUploading = () => false;
+  const isBarVisible = () => isRecording() || isUploading();
 
-  const uploadPercent = () => 0;
-
-  const barText = () => i18n.t('recorder.recording');
+  const barText = () =>
+    isUploading() ? i18n.t('recorder.uploading') : i18n.t('recorder.recording');
 
   const elapsedSeconds = () => {
     const start = startedAt();
@@ -57,13 +58,23 @@ export const useRecorder = () => {
     stopTicking();
   };
 
+  const startUpload = async (path: string, startedAtMs: number) => {
+    setUploading(true);
+    try {
+      await uploadRecording(path, startedAtMs);
+    } catch (error) {
+      console.error('[recorder] failed to upload recording:', error);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const stop = async () => {
     try {
       await stopRecording();
     } catch (error) {
       console.error('[recorder] failed to stop recording:', error);
     }
-    end();
   };
 
   const setup = async () => {
@@ -77,7 +88,12 @@ export const useRecorder = () => {
     unlisteners.push(
       await onRecordingStarted((payload) => begin(payload.startedAt)),
     );
-    unlisteners.push(await onRecordingStopped(() => end()));
+    unlisteners.push(
+      await onRecordingStopped((payload) => {
+        end();
+        void startUpload(payload.path, payload.startedAt);
+      }),
+    );
   };
 
   onMount(() => {
@@ -94,7 +110,6 @@ export const useRecorder = () => {
     isUploading,
     barText,
     timeLabel,
-    uploadPercent,
     stop,
   };
 };

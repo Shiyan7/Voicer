@@ -14,7 +14,6 @@ export function CallRecorderHost() {
         text={vm.barText()}
         timeLabel={vm.timeLabel()}
         isUploading={vm.isUploading()}
-        uploadPercent={vm.uploadPercent()}
         stopLabel={i18n.t('recorder.stop')}
         onStop={vm.stop}
       />

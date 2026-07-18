@@ -1,13 +1,12 @@
-import type { MeetingOutput, MutationMeetingUploadAudioArgs } from '@schema';
+import type { MutationMeetingUploadAudioArgs } from '@schema';
 import { createMutation } from '@urql/solid';
 
-import { UPLOAD_MEETING_MUTATION } from './gql/UPLOAD_MEETING_MUTATION';
-
-interface UploadMeetingMutation {
-  meetingUploadAudio: Pick<MeetingOutput, 'id'>;
-}
+import {
+  MEETING_UPLOAD_AUDIO_MUTATION,
+  type MeetingUploadAudioMutation,
+} from '@/shared/api';
 
 export const uploadMeetingMutation = () =>
-  createMutation<UploadMeetingMutation, MutationMeetingUploadAudioArgs>(
-    UPLOAD_MEETING_MUTATION,
+  createMutation<MeetingUploadAudioMutation, MutationMeetingUploadAudioArgs>(
+    MEETING_UPLOAD_AUDIO_MUTATION,
   );

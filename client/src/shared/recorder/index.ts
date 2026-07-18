@@ -10,3 +10,4 @@ export {
   startRecording,
   stopRecording,
 } from './recorderBridge';
+export { uploadRecording } from './uploadRecording';

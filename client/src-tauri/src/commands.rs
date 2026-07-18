@@ -213,20 +213,3 @@ pub fn request_permissions() -> Result<PermissionsDto, String> {
     }
 }
 
-#[tauri::command]
-pub async fn upload_recording(
-    app: AppHandle,
-    path: String,
-    url: String,
-    token: Option<String>,
-) -> Result<(), String> {
-    #[cfg(not(any(target_os = "android", target_os = "ios")))]
-    {
-        crate::upload::upload(app, path, url, token).await
-    }
-    #[cfg(any(target_os = "android", target_os = "ios"))]
-    {
-        let _ = (app, path, url, token);
-        Err("upload_recording is not supported on mobile".into())
-    }
-}
