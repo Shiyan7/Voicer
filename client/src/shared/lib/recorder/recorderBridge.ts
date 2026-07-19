@@ -19,6 +19,16 @@ export type RecorderState =
   | { state: 'idle' }
   | { state: 'recording'; localId: string; startedAt: number; path: string };
 
+export interface CallDetectedPayload {
+  source: string;
+  bundleId: string | null;
+  at: number;
+}
+
+export interface CallEndedPayload {
+  at: number;
+}
+
 export const startRecording = () =>
   invoke<StartRecordingResult>('start_recording');
 
@@ -41,3 +51,15 @@ export const onRecordingStopped = (
   listen<StopRecordingResult>('recording-stopped', (event) =>
     handler(event.payload),
   );
+
+export const onCallDetected = (
+  handler: (payload: CallDetectedPayload) => void,
+): Promise<UnlistenFn> =>
+  listen<CallDetectedPayload>('call-detected', (event) =>
+    handler(event.payload),
+  );
+
+export const onCallEnded = (
+  handler: (payload: CallEndedPayload) => void,
+): Promise<UnlistenFn> =>
+  listen<CallEndedPayload>('call-ended', (event) => handler(event.payload));
