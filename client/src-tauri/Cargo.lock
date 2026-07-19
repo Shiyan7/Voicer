@@ -4602,7 +4602,6 @@ dependencies = [
  "cpal",
  "flacenc",
  "hound",
- "libc",
  "objc2",
  "objc2-foundation",
  "serde",
