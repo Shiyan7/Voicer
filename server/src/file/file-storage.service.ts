@@ -6,6 +6,7 @@ import { pipeline } from 'stream/promises';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FileUpload } from './file-upload';
+import { transcodeToMp3 } from './transcode-to-mp3';
 
 @Injectable()
 export class FileStorageService {
@@ -20,16 +21,29 @@ export class FileStorageService {
   }
 
   async save(userId: string, upload: FileUpload): Promise<string> {
-    const fileName = `${randomUUID()}${this.resolveExtension(upload)}`;
     const userDir = join(this.storageDir, userId);
-
     await mkdir(userDir, { recursive: true });
+
+    const sourceName = `${randomUUID()}${this.resolveExtension(upload)}`;
     await pipeline(
       upload.createReadStream(),
-      createWriteStream(join(userDir, fileName)),
+      createWriteStream(join(userDir, sourceName)),
     );
 
-    return `${this.publicBaseUrl}/storage/${userId}/${fileName}`;
+    const playbackName = await this.ensurePlayable(userDir, sourceName);
+    return `${this.publicBaseUrl}/storage/${userId}/${playbackName}`;
+  }
+
+  private async ensurePlayable(
+    userDir: string,
+    sourceName: string,
+  ): Promise<string> {
+    if (sourceName.endsWith('.mp3')) return sourceName;
+
+    const mp3Name = `${randomUUID()}.mp3`;
+    await transcodeToMp3(join(userDir, sourceName), join(userDir, mp3Name));
+    await rm(join(userDir, sourceName), { force: true });
+    return mp3Name;
   }
 
   resolveLocalPath(userId: string, fileUrl: string): string {

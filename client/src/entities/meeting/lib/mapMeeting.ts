@@ -1,6 +1,6 @@
 import type { MeetingOutput } from '@schema';
 
-import { i18n } from '@/shared/i18n';
+import { getInitialMeetingTitle } from '@/shared/lib/time';
 
 import { MeetingDetails } from '../types/MeetingDetails';
 
@@ -9,7 +9,7 @@ export function mapMeeting(meeting?: MeetingOutput): MeetingDetails | null {
 
   return {
     id: meeting.id,
-    title: meeting.title ?? i18n.t('meetings.untitled'),
+    title: meeting.title?.trim() || getInitialMeetingTitle(meeting.startedAt),
     status: meeting.status,
     audioUrl: meeting.audioUrl ?? null,
     durationSec: meeting.durationSec ?? null,

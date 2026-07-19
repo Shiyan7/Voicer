@@ -14,6 +14,9 @@ export const authRoot = createRoot(() => {
   });
 
   return {
+    get isAuth() {
+      return Boolean(accessToken());
+    },
     get accessToken() {
       return accessToken();
     },

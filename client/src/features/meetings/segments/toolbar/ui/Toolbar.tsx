@@ -1,3 +1,4 @@
+import { isTauri } from '@tauri-apps/api/core';
 import { Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
@@ -11,9 +12,11 @@ const styles = toolbarStyles();
 export function Toolbar(props: ToolbarProps) {
   return (
     <div class={styles.root()}>
-      <Button variant="primary" onClick={props.onStartRecording}>
-        {i18n.t('meetings.record_now')}
-      </Button>
+      <Show when={isTauri()}>
+        <Button variant="primary" onClick={props.onStartRecording}>
+          {i18n.t('meetings.record_now')}
+        </Button>
+      </Show>
       <Button
         class={props.isUploading ? 'pointer-events-none opacity-60' : ''}
         as="label"

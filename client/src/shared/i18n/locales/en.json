@@ -50,6 +50,7 @@
     "record_now": "Record now",
     "upload_audio": "Upload audio",
     "untitled": "Untitled meeting",
+    "untitled_short": "Untitled",
     "status": {
       "recording": "Recording",
       "uploading": "Uploading",
@@ -77,6 +78,7 @@
     }
   },
   "recorder": {
+    "recording": "Recording",
     "stop": "Stop"
   },
   "actions": {

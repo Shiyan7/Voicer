@@ -17,7 +17,7 @@ const PROCESSING_STATUSES = [
 export const useMeetingDetailsPage = () => {
   const params = useParams<{ id: string }>();
   const [meetingResult] = meetingUpdatedSubscription({ id: params.id });
-  const [activeTab, setActiveTab] = createSignal<MeetingTab>('notes');
+  const [activeTab, setActiveTab] = createSignal<MeetingTab>('recording');
 
   const meeting = () => mapMeeting(meetingResult.data?.meetingUpdated);
 

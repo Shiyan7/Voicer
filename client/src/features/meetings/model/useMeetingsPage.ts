@@ -1,17 +1,21 @@
 import { useNavigate } from '@solidjs/router';
 import { createSignal } from 'solid-js';
 
+import { uploadMeetingAudioMutation } from '@/entities/meeting';
 import { closeModal, MODALS, showModal } from '@/shared/lib/modal';
+import { startRecording as startRecorderCommand } from '@/shared/lib/recorder';
+import { authRoot } from '@/shared/roots/authRoot';
 import { paths } from '@/shared/router';
 
 import { deleteMeetingMutation } from '../api/deleteMeetingMutation';
 import { meetingsQuery } from '../api/meetingsQuery';
-import { uploadMeetingMutation } from '../api/uploadMeetingMutation';
 import { mapMeetingCards } from '../lib/mapMeetingCards';
 
 export const useMeetingsPage = () => {
-  const [meetingsResult] = meetingsQuery();
-  const [uploadResult, uploadMeeting] = uploadMeetingMutation();
+  const [meetingsResult] = meetingsQuery({
+    pause: () => !authRoot.isAuth,
+  });
+  const [uploadResult, uploadAudio] = uploadMeetingAudioMutation();
   const [deleteResult, deleteMeeting] = deleteMeetingMutation();
   const [pendingDeleteId, setPendingDeleteId] = createSignal<string | null>(
     null,
@@ -29,7 +33,16 @@ export const useMeetingsPage = () => {
 
   const isDeleting = () => deleteResult.fetching;
 
-  const startRecording = () => {};
+  const startRecording = async () => {
+    try {
+      const result = await startRecorderCommand();
+      if (result.warnings.length) {
+        console.warn('[recorder] start warnings:', result.warnings);
+      }
+    } catch (error) {
+      console.error('[recorder] failed to start recording:', error);
+    }
+  };
 
   const openMeeting = (id: string) => {
     navigate(paths.meeting(id));
@@ -42,7 +55,7 @@ export const useMeetingsPage = () => {
 
     if (!file) return;
 
-    await uploadMeeting({ file });
+    await uploadAudio({ file });
   };
 
   const requestDeleteMeeting = (id: string) => {

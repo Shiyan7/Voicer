@@ -87,21 +87,14 @@ impl Recorder {
                 None
             }
         };
-        let system = if crate::permissions::screen_recording_authorized() {
-            match SystemSource::start(sys_queue.clone()) {
-                Ok(s) => Some(s),
-                Err(e) => {
-                    eprintln!("[voicer] system audio capture failed: {e}");
-                    warnings.push(format!("system audio unavailable: {e}"));
-                    sys_queue.mark_failed();
-                    None
-                }
+        let system = match SystemSource::start(sys_queue.clone()) {
+            Ok(s) => Some(s),
+            Err(e) => {
+                eprintln!("[voicer] system audio capture unavailable: {e}");
+                warnings.push(format!("system audio unavailable: {e}"));
+                sys_queue.mark_failed();
+                None
             }
-        } else {
-            warnings
-                .push("system audio unavailable: screen recording permission not granted".into());
-            sys_queue.mark_failed();
-            None
         };
 
         if mic.is_none() && system.is_none() {
@@ -235,11 +228,12 @@ fn writer_loop(
         };
 
         for i in 0..n {
-            let l = pending_mic.get(i).copied().unwrap_or(0);
-            let r = pending_sys.get(i).copied().unwrap_or(0);
+            let mic = pending_mic.get(i).copied().unwrap_or(0);
+            let sys = pending_sys.get(i).copied().unwrap_or(0);
+            let mixed = (mic as i32 + sys as i32).clamp(i16::MIN as i32, i16::MAX as i32) as i16;
             writer
-                .write_sample(l)
-                .and_then(|_| writer.write_sample(r))
+                .write_sample(mixed)
+                .and_then(|_| writer.write_sample(mixed))
                 .map_err(|e| format!("wav write: {e}"))?;
         }
         pending_mic.drain(..n.min(pending_mic.len()));

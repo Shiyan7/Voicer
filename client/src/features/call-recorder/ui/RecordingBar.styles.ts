@@ -11,21 +11,9 @@ export const recordingBarStyles = tv({
     dot: 'size-2 shrink-0 animate-pulse rounded-full bg-red-500',
     text: 'text-sm font-medium',
     time: 'text-sm tabular-nums text-white/70',
-    percent: 'text-sm tabular-nums text-white/70',
     stop: `
       bg-white text-gray-900
       hover:bg-gray-100 active:bg-gray-200
     `,
-    progress: `
-      absolute inset-x-0 bottom-0 h-0.5
-      bg-white/60 transition-[width] duration-300
-    `,
-  },
-  variants: {
-    uploading: {
-      true: {
-        dot: 'animate-none bg-white/60',
-      },
-    },
   },
 });

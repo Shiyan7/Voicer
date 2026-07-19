@@ -84,7 +84,7 @@ File: `*.orchestrator.tsx`
 export const MyFeature: Component<MyFeatureProps> = (props) => {
   const vm = useViewModel(FeatureViewModel);
 
-  return <MyFeatureView data={vm.data()} onAction={vm.handleAction} />;
+  return <MyFeatureView data={vm.data()} onAction={vm.handleAction}/>;
 };
 
 // ❌ wrong — reactive primitive in orchestrator
@@ -131,40 +131,6 @@ Types flow bottom-up: define them at their source, import upward.
 
 The linter allows multiple files in `model/` (the single-file rule applies per concern, not per directory), but each
 file must have a single responsibility. The main hook only composes sub-hooks — no logic of its own.
-
-## Passing reactive params into a ViewModel
-
-`useViewModel` can feed component props into a class ViewModel and keep them reactive.
-
-Declare the deps shape as the `StatefulViewModel` generic and read it via `this.deps`:
-
-```ts
-interface TeamSelectDeps {
-  isCollapsed: boolean;
-}
-
-@injectable()
-export class TeamSelectViewModel extends StatefulViewModel<TeamSelectDeps> {
-  get authLabel() {
-    return this.deps.isCollapsed ? '...' : '...'; // reads reactive deps
-  }
-}
-```
-
-Pass the second argument as an **accessor function** (not a plain object) — this is what keeps it reactive; the
-values are re-synced into `this.deps` inside a `createEffect`:
-
-```tsx
-// ✅ reactive — accessor re-reads props on change
-const vm = useViewModel(TeamSelectViewModel, () => ({
-  isCollapsed: props.isCollapsed,
-}));
-
-// ❌ not reactive — reads props once at call time
-const vm = useViewModel(TeamSelectViewModel, {
-  isCollapsed: props.isCollapsed,
-});
-```
 
 Typing rules enforced automatically:
 

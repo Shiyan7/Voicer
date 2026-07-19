@@ -1,108 +1,110 @@
 {
   "labels": {
-    "settings": "Settings",
-    "change_lang": "Change Lang",
-    "auth_button": "Log in / Sign up",
-    "log_in": "Log In",
-    "sign_up": "Sign Up",
-    "our": "our",
-    "terms_of_service": "Terms of Service",
-    "privacy_policy": "Privacy Policy",
-    "copy": "Copy",
-    "copied": "Copied"
+    "settings": "Настройки",
+    "change_lang": "Сменить язык",
+    "auth_button": "Войти / Зарегистрироваться",
+    "log_in": "Войти",
+    "sign_up": "Зарегистрироваться",
+    "our": "с",
+    "terms_of_service": "Условиями использования",
+    "privacy_policy": "Политикой конфиденциальности",
+    "copy": "Копировать",
+    "copied": "Скопировано"
   },
   "auth": {
     "title": {
-      "login": "Sign in to your account",
-      "signup": "Create your account"
+      "login": "Вход в аккаунт",
+      "signup": "Создание аккаунта"
     },
     "footer": {
-      "disclaimer": "By logging in, you agree to"
+      "disclaimer": "Входя, вы соглашаетесь с"
     },
     "hint": {
-      "log_in": "Already have an account?",
-      "sign_up": "New to Voicer?"
+      "log_in": "Уже есть аккаунт?",
+      "sign_up": "Впервые в Voicer?"
     }
   },
   "common": {
-    "or": "or"
+    "or": "или"
   },
   "validation": {
     "common": {
-      "minLength": "Must be at least {{ min }} characters long."
+      "minLength": "Должно содержать не менее {{ min }} символов."
     },
     "email": {
-      "invalid": "Please enter a valid email address."
+      "invalid": "Введите корректный адрес электронной почты."
     },
     "required": {
-      "email": "Email is required.",
-      "password": "Password is required."
+      "email": "Укажите электронную почту.",
+      "password": "Укажите пароль."
     }
   },
   "nav": {
-    "activity": "Activity",
-    "meetings": "Meetings",
-    "actions": "Actions"
+    "activity": "Активность",
+    "meetings": "Встречи",
+    "actions": "Задачи"
   },
   "meetings": {
-    "title": "Meetings",
-    "empty": "No meetings yet",
-    "record_now": "Record now",
-    "upload_audio": "Upload audio",
-    "untitled": "Untitled meeting",
+    "title": "Встречи",
+    "empty": "Пока нет встреч",
+    "record_now": "Записать сейчас",
+    "upload_audio": "Загрузить аудио",
+    "untitled": "Встреча без названия",
+    "untitled_short": "Без названия",
     "status": {
-      "recording": "Recording",
-      "uploading": "Uploading",
-      "uploaded": "Uploaded",
-      "transcribing": "Transcribing",
-      "summarizing": "Summarizing",
-      "ready": "Ready",
-      "failed": "Failed"
+      "recording": "Идёт запись",
+      "uploading": "Загрузка",
+      "uploaded": "Загружено",
+      "transcribing": "Расшифровка",
+      "summarizing": "Составление сводки",
+      "ready": "Готово",
+      "failed": "Ошибка"
     },
-    "transcript_empty": "No transcript for this meeting",
-    "action_items": "Action items",
-    "back": "All meetings",
-    "not_found": "Meeting not found",
-    "uploading_file": "Uploading…",
-    "player_error": "Couldn't load audio",
-    "processing_failed": "Processing failed",
-    "notes": "Notes",
-    "recording_transcript": "Recording & Transcript",
-    "key_points": "Key Points",
+    "transcript_empty": "Для этой встречи нет расшифровки",
+    "action_items": "Задачи",
+    "back": "Все встречи",
+    "not_found": "Встреча не найдена",
+    "uploading_file": "Загрузка…",
+    "player_error": "Не удалось загрузить аудио",
+    "processing_failed": "Не удалось обработать",
+    "notes": "Заметки",
+    "recording_transcript": "Запись и расшифровка",
+    "key_points": "Ключевые моменты",
     "delete": {
-      "title": "Delete meeting?",
-      "description": "This permanently removes the meeting and its transcript. This can't be undone.",
-      "confirm": "Delete",
-      "cancel": "Cancel"
+      "title": "Удалить встречу?",
+      "description": "Встреча и её расшифровка будут удалены навсегда. Это действие нельзя отменить.",
+      "confirm": "Удалить",
+      "cancel": "Отмена"
     }
   },
   "recorder": {
-    "stop": "Stop"
+    "recording": "Идёт запись",
+    "stop": "Остановить"
   },
   "actions": {
-    "title": "Action items",
-    "empty": "No action items yet",
-    "open_meeting": "Open meeting"
+    "title": "Задачи",
+    "empty": "Пока нет задач",
+    "open_meeting": "Открыть встречу"
   },
   "player": {
-    "play": "Play",
-    "pause": "Pause",
-    "speed": "Speed"
+    "play": "Воспроизвести",
+    "pause": "Пауза",
+    "speed": "Скорость"
   },
   "settings": {
-    "general": "General",
+    "general": "Основные",
     "recording": {
-      "title": "Recording",
-      "auto": "Record calls automatically",
-      "auto_hint": "Start recording without asking when a call is detected"
+      "title": "Запись",
+      "auto": "Записывать звонки автоматически",
+      "auto_hint": "Начинать запись без запроса при обнаружении звонка"
     },
     "permissions": {
-      "title": "Permissions",
-      "granted": "Allowed",
-      "denied": "Not allowed",
-      "request": "Request access",
-      "open_settings": "Open System Settings",
-      "hint": "Required to record calls"
+      "title": "Разрешения",
+      "granted": "Разрешено",
+      "denied": "Не разрешено",
+      "request": "Запросить доступ",
+      "open_settings": "Открыть системные настройки",
+      "hint": "Требуется для записи звонков"
     }
   }
 }

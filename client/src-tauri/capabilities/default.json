@@ -13,6 +13,11 @@
     {
       "identifier": "opener:allow-open-url",
       "allow": [{ "url": "x-apple.systempreferences:*" }]
+    },
+    "fs:allow-read-file",
+    {
+      "identifier": "fs:scope",
+      "allow": ["$APPDATA/recordings/*", "$APPDATA/recordings/**/*"]
     }
   ]
 }

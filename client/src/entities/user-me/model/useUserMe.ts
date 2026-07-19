@@ -5,7 +5,7 @@ import { userMeQuery } from '../api/userMeQuery';
 
 export const createUserMe = () => {
   const [userMeResult] = userMeQuery({
-    pause: () => !authRoot.accessToken,
+    pause: () => !authRoot.isAuth,
   });
 
   const user = () => userMeResult.data?.userMe ?? null;
