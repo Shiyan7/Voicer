@@ -63,7 +63,7 @@ export function MeetingDetailsOrchestrator() {
                 </Show>
                 <Show when={vm.isReady()}>
                   <Tabs
-                    tabs={vm.tabs}
+                    tabs={vm.tabs()}
                     activeTab={vm.activeTab()}
                     onSelect={vm.setActiveTab}
                   />
