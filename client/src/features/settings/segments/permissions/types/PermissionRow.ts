@@ -1,4 +1,4 @@
-export type SystemSettingsPane = 'mic' | 'systemAudio';
+export type SystemSettingsPane = 'mic' | 'screenRecording';
 
 export type PermissionRow = {
   pane: SystemSettingsPane;
