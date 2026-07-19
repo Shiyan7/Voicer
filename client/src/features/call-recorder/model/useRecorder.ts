@@ -3,13 +3,13 @@ import { onMount } from 'solid-js';
 
 import { uploadMeetingAudioMutation } from '@/entities/meeting';
 import { useElapsedTimer } from '@/shared/hooks/useElapsedTimer';
-import { formatSeconds } from '@/shared/lib/time';
 import {
   getRecorderState,
   onRecordingStarted,
   onRecordingStopped,
   stopRecording,
-} from '@/shared/recorder';
+} from '@/shared/lib/recorder';
+import { formatSeconds } from '@/shared/lib/time';
 import { paths } from '@/shared/router';
 
 import { readRecordingFile } from '../lib/readRecordingFile';
@@ -21,7 +21,7 @@ export const useRecorder = () => {
 
   const isBarVisible = () => timer.isRunning();
 
-  const timeLabel = () => formatSeconds(timer.elapsedSeconds());
+  const formattedSeconds = () => formatSeconds(timer.elapsedSeconds());
 
   const openRecordedMeeting = async (path: string, startedAt: number) => {
     try {
@@ -64,8 +64,8 @@ export const useRecorder = () => {
   });
 
   return {
-    isBarVisible,
-    timeLabel,
     stop,
+    isBarVisible,
+    formattedSeconds,
   };
 };

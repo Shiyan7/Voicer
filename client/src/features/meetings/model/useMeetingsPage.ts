@@ -3,7 +3,7 @@ import { createSignal } from 'solid-js';
 
 import { uploadMeetingAudioMutation } from '@/entities/meeting';
 import { closeModal, MODALS, showModal } from '@/shared/lib/modal';
-import { startRecording as startRecorderCommand } from '@/shared/recorder';
+import { startRecording as startRecorderCommand } from '@/shared/lib/recorder';
 import { authRoot } from '@/shared/roots/authRoot';
 import { paths } from '@/shared/router';
 
