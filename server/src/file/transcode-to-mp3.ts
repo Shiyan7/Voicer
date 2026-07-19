@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import ffmpegPath = require('ffmpeg-static');
+import { path as ffmpegPath } from '@ffmpeg-installer/ffmpeg';
 
 export function transcodeToMp3(
   sourcePath: string,
