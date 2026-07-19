@@ -1,10 +1,9 @@
 import { readFile } from '@tauri-apps/plugin-fs';
 
-import { i18n } from '@/shared/i18n';
-import { formatShortDateTime } from '@/shared/lib/time';
+import { getInitialMeetingTitle } from '@/shared/lib/time';
 
 const fileNameFor = (extension: string, startedAt: number) =>
-  `${i18n.t('recorder.recording')} ${formatShortDateTime(startedAt)}.${extension}`;
+  `${getInitialMeetingTitle(startedAt)}.${extension}`;
 
 export const readRecordingFile = async (
   path: string,

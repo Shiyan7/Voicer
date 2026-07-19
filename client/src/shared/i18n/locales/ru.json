@@ -50,6 +50,7 @@
     "record_now": "Записать сейчас",
     "upload_audio": "Загрузить аудио",
     "untitled": "Встреча без названия",
+    "untitled_short": "Без названия",
     "status": {
       "recording": "Идёт запись",
       "uploading": "Загрузка",
