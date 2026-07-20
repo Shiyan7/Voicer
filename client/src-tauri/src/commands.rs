@@ -46,13 +46,6 @@ pub enum RecorderStateDto {
     },
 }
 
-#[derive(Serialize, Clone)]
-#[serde(rename_all = "camelCase")]
-pub struct PermissionsDto {
-    pub mic: bool,
-    pub system_audio: bool,
-}
-
 pub fn recordings_dir(app: &AppHandle) -> Result<PathBuf, String> {
     let dir = app
         .path()
@@ -178,38 +171,5 @@ pub fn resolve_recording_path(app: &AppHandle, path: &str) -> Result<PathBuf, St
         return Err("not a file".into());
     }
     Ok(file)
-}
-
-#[tauri::command]
-pub fn check_permissions() -> Result<PermissionsDto, String> {
-    #[cfg(target_os = "macos")]
-    {
-        Ok(PermissionsDto {
-            mic: crate::permissions::mic_authorized(),
-            system_audio: crate::permissions::system_audio_authorized(),
-        })
-    }
-    #[cfg(not(target_os = "macos"))]
-    {
-        Ok(PermissionsDto {
-            mic: false,
-            system_audio: false,
-        })
-    }
-}
-
-#[tauri::command]
-pub fn request_permissions() -> Result<PermissionsDto, String> {
-    #[cfg(target_os = "macos")]
-    {
-        if !crate::permissions::mic_authorized() {
-            crate::permissions::request_mic_access();
-        }
-        check_permissions()
-    }
-    #[cfg(not(target_os = "macos"))]
-    {
-        check_permissions()
-    }
 }
 

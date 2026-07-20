@@ -97,10 +97,16 @@ impl Recorder {
             }
         };
 
-        if mic.is_none() && system.is_none() {
+        if mic.is_none() || system.is_none() {
             RECORDING_ACTIVE.store(false, std::sync::atomic::Ordering::Relaxed);
+            if let Some(mic) = mic {
+                mic.stop();
+            }
+            if let Some(system) = system {
+                system.stop();
+            }
             return Err(format!(
-                "no audio source could be started: {}",
+                "missing audio permission, recording not started: {}",
                 warnings.join("; ")
             ));
         }
