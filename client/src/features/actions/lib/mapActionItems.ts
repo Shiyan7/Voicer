@@ -1,7 +1,7 @@
 import type { ActionItemOutput } from '@schema';
 
 import { ActionItemData } from '@/entities/action-item';
-import { i18n } from '@/shared/i18n';
+import { getMeetingTitle } from '@/entities/meeting';
 
 export function mapActionItems(items?: ActionItemOutput[]): ActionItemData[] {
   if (!items?.length) return [];
@@ -12,6 +12,6 @@ export function mapActionItems(items?: ActionItemOutput[]): ActionItemData[] {
     text: item.text,
     isDone: item.isDone,
     createdAt: item.createdAt,
-    meetingTitle: item.meetingTitle?.trim() || i18n.t('meetings.untitled'),
+    meetingTitle: getMeetingTitle(item.meetingSource, item.meetingStartedAt),
   }));
 }

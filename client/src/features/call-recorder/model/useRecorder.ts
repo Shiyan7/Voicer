@@ -27,10 +27,18 @@ export const useRecorder = () => {
 
   const formattedSeconds = () => formatSeconds(timer.elapsedSeconds());
 
-  const openRecordedMeeting = async (path: string, startedAt: number) => {
+  const openRecordedMeeting = async (
+    path: string,
+    startedAt: number,
+    source: string,
+  ) => {
     try {
-      const file = await readRecordingFile(path, startedAt);
-      const result = await uploadAudio({ file });
+      const file = await readRecordingFile(path);
+      const result = await uploadAudio({
+        file,
+        source: source,
+        startedAt: new Date(startedAt).toISOString(),
+      });
       const meetingId = result.data?.meetingUploadAudio.id;
 
       if (!meetingId) return;
@@ -78,7 +86,7 @@ export const useRecorder = () => {
 
     await onRecordingStopped((payload) => {
       timer.stop();
-      void openRecordedMeeting(payload.path, payload.startedAt);
+      void openRecordedMeeting(payload.path, payload.startedAt, payload.source);
     });
 
     await onCallDetected(() => void autoStart());

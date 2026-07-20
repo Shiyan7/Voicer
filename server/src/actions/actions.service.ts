@@ -79,7 +79,8 @@ export class ActionsService {
       atMs: actionItem.atMs,
       dueDate: actionItem.dueDate,
       createdAt: actionItem.createdAt,
-      meetingTitle: actionItem.meeting?.title ?? null,
+      meetingSource: actionItem.meeting.source,
+      meetingStartedAt: actionItem.meeting.startedAt,
     };
   }
 

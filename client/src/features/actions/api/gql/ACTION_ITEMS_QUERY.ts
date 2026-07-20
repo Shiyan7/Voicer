@@ -8,7 +8,8 @@ export const ACTION_ITEMS_QUERY = gql`
       text
       isDone
       createdAt
-      meetingTitle
+      meetingSource
+      meetingStartedAt
     }
   }
 `;

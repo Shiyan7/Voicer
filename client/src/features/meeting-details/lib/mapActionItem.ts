@@ -1,6 +1,7 @@
 import type { ActionItemOutput } from '@schema';
 
 import { ActionItemData } from '@/entities/action-item';
+import { getMeetingTitle } from '@/entities/meeting';
 
 export function mapActionItem(item: ActionItemOutput): ActionItemData {
   return {
@@ -9,6 +10,6 @@ export function mapActionItem(item: ActionItemOutput): ActionItemData {
     text: item.text,
     isDone: item.isDone,
     createdAt: item.createdAt,
-    meetingTitle: item.meetingTitle ?? undefined,
+    meetingTitle: getMeetingTitle(item.meetingSource, item.meetingStartedAt),
   };
 }

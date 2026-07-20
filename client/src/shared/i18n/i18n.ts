@@ -9,7 +9,7 @@ import {
   createSignal,
 } from 'solid-js';
 
-import type { Dictionary, Locale, RawDictionary } from './types';
+import type { Dictionary, DictKey, Locale, RawDictionary } from './types';
 
 const [persistedLocale, setPersistedLocale] = makePersisted(
   createSignal<string>(),
@@ -30,7 +30,13 @@ export const i18n = createRoot(() => {
 
   const [dict] = createResource(locale, fetchDictionary);
 
-  const t = i18nLib.translator(dict, i18nLib.resolveTemplate);
+  const t = (key: DictKey, params?: Record<string, string>): string => {
+    const translation = i18nLib.translator(dict, i18nLib.resolveTemplate)(
+      key,
+      params,
+    );
+    return typeof translation === 'string' ? translation : '';
+  };
 
   const init = async () => {
     let osLocale: string | null = 'en';

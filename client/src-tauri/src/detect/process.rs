@@ -27,6 +27,7 @@ pub fn global_address(selector: u32) -> AudioObjectPropertyAddress {
 #[derive(Debug, Clone)]
 pub struct AudioProcess {
     pub bundle_id: String,
+    pub pid: i32,
 }
 
 pub fn processes_running_input() -> Result<Vec<AudioProcess>, String> {
@@ -68,54 +69,57 @@ pub fn processes_running_input() -> Result<Vec<AudioProcess>, String> {
                 continue;
             }
             let bundle_id = get_string_property(id, PROP_PROCESS_BUNDLE_ID).unwrap_or_default();
-            result.push(AudioProcess { bundle_id });
+            result.push(AudioProcess { bundle_id, pid });
         }
         Ok(result)
     }
 }
 
-pub fn map_bundle_to_source(bundle_id: &str) -> &'static str {
-    let b = bundle_id.to_ascii_lowercase();
-    if b.starts_with("us.zoom") {
-        return "zoom";
+fn capitalize(value: &str) -> String {
+    let mut chars = value.chars();
+    match chars.next() {
+        Some(first) => first.to_uppercase().collect::<String>() + chars.as_str(),
+        None => String::new(),
     }
-    if b.contains("teams") && b.starts_with("com.microsoft") {
-        return "teams";
-    }
-    if b.starts_with("ru.keepcoder.telegram") || b.starts_with("org.telegram") {
-        return "telegram";
-    }
-    if b.starts_with("com.hnc.discord") {
-        return "discord";
-    }
-    const BROWSERS: &[&str] = &[
-        "com.google.chrome",
-        "com.apple.safari",
-        "company.thebrowser.browser",
-        "org.mozilla.firefox",
-        "com.microsoft.edgemac",
-        "com.brave.browser",
-        "com.vivaldi.vivaldi",
-        "com.operasoftware.opera",
-    ];
-    if BROWSERS.iter().any(|p| b.starts_with(p)) {
-        return "meet";
-    }
-    "other"
 }
 
-pub fn best_source(processes: &[AudioProcess]) -> (&'static str, Option<String>) {
-    let mut best: (&'static str, Option<String>) = ("other", None);
+fn app_name_for_pid(pid: i32) -> Option<String> {
+    use objc2::rc::Retained;
+    use objc2::runtime::{AnyClass, AnyObject};
+    use objc2_foundation::NSString;
+
+    let cls = AnyClass::get(c"NSRunningApplication")?;
+    unsafe {
+        let app: Option<Retained<AnyObject>> =
+            objc2::msg_send![cls, runningApplicationWithProcessIdentifier: pid];
+        let app = app?;
+        let name: Option<Retained<NSString>> = objc2::msg_send![&*app, localizedName];
+        name.map(|value| value.to_string())
+    }
+}
+
+fn name_from_bundle(bundle_id: &str) -> String {
+    bundle_id
+        .rsplit('.')
+        .find(|part| !part.is_empty())
+        .map(capitalize)
+        .unwrap_or_default()
+}
+
+pub fn app_display_name(process: &AudioProcess) -> String {
+    app_name_for_pid(process.pid)
+        .filter(|name| !name.is_empty())
+        .unwrap_or_else(|| name_from_bundle(&process.bundle_id))
+}
+
+pub fn best_source(processes: &[AudioProcess]) -> (String, Option<String>) {
     for p in processes {
-        let source = map_bundle_to_source(&p.bundle_id);
-        if best.1.is_none() {
-            best = (source, Some(p.bundle_id.clone()));
-        }
-        if source != "other" {
-            return (source, Some(p.bundle_id.clone()));
+        let name = app_display_name(p);
+        if !name.is_empty() {
+            return (name, Some(p.bundle_id.clone()));
         }
     }
-    best
+    (String::new(), None)
 }
 
 unsafe fn get_u32_property(id: AudioObjectID, selector: u32) -> Option<u32> {

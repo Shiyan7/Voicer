@@ -30,8 +30,15 @@ export class MeetingsResolver {
     @CurrentUser() user: UserEntity,
     @Args({ name: 'file', type: () => GraphQLUpload })
     upload: FileUpload,
+    @Args('source', { type: () => String, nullable: true })
+    source?: string,
+    @Args('startedAt', { type: () => Date, nullable: true })
+    startedAt?: Date,
   ): Promise<MeetingOutput> {
-    return this.meetingsService.createFromUpload(user.id, await upload);
+    return this.meetingsService.createFromUpload(user.id, await upload, {
+      source,
+      startedAt,
+    });
   }
 
   @Mutation(() => MeetingOutput)

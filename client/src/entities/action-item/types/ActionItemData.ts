@@ -4,5 +4,5 @@ export type ActionItemData = {
   text: string;
   isDone: boolean;
   createdAt: string;
-  meetingTitle?: string;
+  meetingTitle: string;
 };

@@ -13,6 +13,7 @@ export interface StopRecordingResult {
   startedAt: number;
   path: string;
   durationSec: number;
+  source: string;
 }
 
 export type RecorderState =

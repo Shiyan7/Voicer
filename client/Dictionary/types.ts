@@ -27,7 +27,8 @@ export type ActionItemOutput = {
   id: Scalars['ID']['output'];
   isDone: Scalars['Boolean']['output'];
   meetingId: Scalars['ID']['output'];
-  meetingTitle?: Maybe<Scalars['String']['output']>;
+  meetingSource?: Maybe<Scalars['String']['output']>;
+  meetingStartedAt: Scalars['DateTime']['output'];
   speakerIndex?: Maybe<Scalars['Int']['output']>;
   text: Scalars['String']['output'];
 };
@@ -83,6 +84,8 @@ export type MutationMeetingDeleteArgs = {
 
 export type MutationMeetingUploadAudioArgs = {
   file: Scalars['Upload']['input'];
+  source?: InputMaybe<Scalars['String']['input']>;
+  startedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type MutationSignInArgs = {

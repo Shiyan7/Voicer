@@ -11,7 +11,8 @@ export const MEETING_ACTION_ITEMS_QUERY = gql`
       atMs
       dueDate
       createdAt
-      meetingTitle
+      meetingSource
+      meetingStartedAt
     }
   }
 `;

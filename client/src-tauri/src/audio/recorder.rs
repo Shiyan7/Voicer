@@ -22,6 +22,7 @@ pub struct StopInfo {
     pub started_at_ms: i64,
     pub path: PathBuf,
     pub duration_sec: u32,
+    pub source: String,
 }
 
 pub enum RecorderState {
@@ -38,6 +39,7 @@ struct Active {
     started_at_ms: i64,
     wav_path: PathBuf,
     flac_path: PathBuf,
+    source: String,
     mic: Option<MicSource>,
     system: Option<SystemSource>,
     writer_stop: Sender<()>,
@@ -111,6 +113,10 @@ impl Recorder {
             ));
         }
 
+        let source = crate::detect::process::processes_running_input()
+            .map(|procs| crate::detect::process::best_source(&procs).0)
+            .unwrap_or_default();
+
         let (writer_stop, stop_rx) = mpsc::channel::<()>();
         let wav_for_writer = wav_path.clone();
         let mic_q = mic_queue.clone();
@@ -129,6 +135,7 @@ impl Recorder {
             started_at_ms,
             wav_path,
             flac_path: flac_path.clone(),
+            source,
             mic,
             system,
             writer_stop,
@@ -180,6 +187,7 @@ impl Recorder {
             started_at_ms: active.started_at_ms,
             path,
             duration_sec,
+            source: active.source,
         })
     }
 }
