@@ -1,24 +1,23 @@
-import { isTauri } from '@tauri-apps/api/core';
-import { onMount, type ParentProps, Show, Suspense } from 'solid-js';
+import { type ParentProps, Show, Suspense } from 'solid-js';
 
 import { Toasts } from '@/entities/toasts';
 import { AuthModal } from '@/features/auth';
 import { CallRecorderHost } from '@/features/call-recorder';
-import { i18n } from '@/shared/i18n';
 import { SingletonProvider } from '@/shared/singleton';
 import { Navigation } from '@/widgets/navigation';
 
 import { appLayoutStyles } from './AppLayout.styles';
+import { useAppLayout } from './model/useAppLayout';
 
 const styles = appLayoutStyles();
 
 export function AppLayout(props: ParentProps) {
-  onMount(i18n.init);
+  const vm = useAppLayout();
 
   return (
     <SingletonProvider>
       <Suspense>
-        <Show when={i18n.ready}>
+        <Show when={vm.ready()}>
           <div class={styles.root()}>
             <Navigation />
             <main class={styles.main()}>
@@ -29,7 +28,7 @@ export function AppLayout(props: ParentProps) {
             </main>
           </div>
           <AuthModal />
-          <Show when={isTauri()}>
+          <Show when={vm.isDesktop()}>
             <CallRecorderHost />
           </Show>
         </Show>

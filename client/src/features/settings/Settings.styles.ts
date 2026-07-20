@@ -6,18 +6,3 @@ export const settingsStyles = tv({
     pageTitle: 'text-2xl font-semibold tracking-title text-gray-900',
   },
 });
-
-export const settingsSectionStyles = tv({
-  slots: {
-    section: 'flex flex-col gap-2',
-    sectionTitle: 'px-1 text-[13px] font-medium text-gray-500',
-    card: `
-      flex flex-col divide-y divide-gray-200
-      rounded-2xl border border-gray-200 bg-white
-    `,
-    row: 'flex items-center justify-between gap-4 px-5 py-4',
-    rowText: 'flex min-w-0 flex-col gap-0.5',
-    rowLabel: 'text-[15px] text-gray-900',
-    rowHint: 'text-[13px] text-gray-500',
-  },
-});

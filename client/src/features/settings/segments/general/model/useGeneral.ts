@@ -1,5 +1,6 @@
 import { i18n, Locale } from '@/shared/i18n';
 import { authRoot } from '@/shared/roots/authRoot';
+import { themeRoot } from '@/shared/roots/themeRoot';
 
 export const useGeneral = () => {
   const locale = () => i18n.locale();
@@ -8,9 +9,17 @@ export const useGeneral = () => {
     i18n.changeLang(value as Locale);
   };
 
+  const theme = () => themeRoot.theme;
+
+  const themes = () => themeRoot.themes;
+
+  const changeTheme = (value: string) => {
+    themeRoot.changeTheme(value);
+  };
+
   const logout = () => {
     authRoot.clear();
   };
 
-  return { locale, changeLang, logout };
+  return { locale, changeLang, theme, themes, changeTheme, logout };
 };
