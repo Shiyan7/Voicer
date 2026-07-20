@@ -7,7 +7,7 @@ export const settingsRoot = createRoot(() => {
   const [autoRecord, setAutoRecord] = makePersisted(createSignal(true), {
     name: 'settings.autoRecord',
     storage,
-    serialize: (value) => (value ? '1' : '0'),
+    serialize: (value: boolean) => (value ? '1' : '0'),
     deserialize: (raw) => raw === '1',
   });
 

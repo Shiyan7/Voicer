@@ -3,8 +3,6 @@ mod audio;
 mod commands;
 #[cfg(target_os = "macos")]
 mod detect;
-#[cfg(target_os = "macos")]
-mod permissions;
 #[cfg(desktop)]
 mod tray;
 
@@ -30,8 +28,6 @@ pub fn run() {
             commands::stop_recording,
             commands::get_recorder_state,
             commands::delete_recording,
-            commands::check_permissions,
-            commands::request_permissions,
         ])
         .setup(|app| {
             #[cfg(all(desktop, not(debug_assertions)))]
