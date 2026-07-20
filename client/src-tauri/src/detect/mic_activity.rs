@@ -95,7 +95,7 @@ fn run(app: &AppHandle) {
             continue;
         };
         if let Some((source, bundle)) = observation.details {
-            last_source = source.to_string();
+            last_source = source;
             last_bundle = bundle;
         }
         let active = observation.active;
@@ -124,7 +124,7 @@ fn run(app: &AppHandle) {
 
 struct Observation {
     active: bool,
-    details: Option<(&'static str, Option<String>)>,
+    details: Option<(String, Option<String>)>,
 }
 
 fn observe_activity(default_device: Option<AudioObjectID>) -> Option<Observation> {

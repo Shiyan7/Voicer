@@ -49,8 +49,8 @@
     "empty": "Пока нет встреч",
     "record_now": "Записать сейчас",
     "upload_audio": "Загрузить аудио",
-    "untitled": "Встреча без названия",
-    "untitled_short": "Без названия",
+    "title_untitled": "Без названия",
+    "title_with_source": "Встреча в {{source}}",
     "status": {
       "recording": "Идёт запись",
       "uploading": "Загрузка",

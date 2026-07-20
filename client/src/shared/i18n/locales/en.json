@@ -49,8 +49,8 @@
     "empty": "No meetings yet",
     "record_now": "Record now",
     "upload_audio": "Upload audio",
-    "untitled": "Untitled meeting",
-    "untitled_short": "Untitled",
+    "title_untitled": "Untitled",
+    "title_with_source": "{{source}} meeting",
     "status": {
       "recording": "Recording",
       "uploading": "Uploading",

@@ -11,7 +11,8 @@ type ActionItemOutput {
   id: ID!
   isDone: Boolean!
   meetingId: ID!
-  meetingTitle: String
+  meetingSource: String
+  meetingStartedAt: DateTime!
   speakerIndex: Int
   text: String!
 }
@@ -56,7 +57,7 @@ enum MeetingStatus {
 
 type Mutation {
   meetingDelete(id: ID!): MeetingOutput!
-  meetingUploadAudio(file: Upload!): MeetingOutput!
+  meetingUploadAudio(file: Upload!, source: String, startedAt: DateTime): MeetingOutput!
   signIn(input: SignInInput!): AuthPayload!
   signUp(input: SignUpInput!): AuthPayload!
   toggleActionItem(id: ID!): Boolean!

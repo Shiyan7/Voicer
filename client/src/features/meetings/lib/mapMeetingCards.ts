@@ -1,10 +1,7 @@
 import type { MeetingOutput } from '@schema';
 
-import {
-  formatDurationLabel,
-  formatShortDateTime,
-  getInitialMeetingTitle,
-} from '@/shared/lib/time';
+import { getMeetingTitle } from '@/entities/meeting';
+import { formatDurationLabel, formatShortDateTime } from '@/shared/lib/time';
 
 import { MeetingCardData } from '../types/MeetingCardData';
 
@@ -13,7 +10,7 @@ export function mapMeetingCards(meetings?: MeetingOutput[]): MeetingCardData[] {
 
   return meetings.map((meeting) => ({
     id: meeting.id,
-    title: meeting.title?.trim() || getInitialMeetingTitle(meeting.startedAt),
+    title: getMeetingTitle(meeting.source, meeting.startedAt),
     duration: formatDurationLabel(meeting.durationSec),
     dateLabel: formatShortDateTime(meeting.startedAt),
   }));

@@ -28,6 +28,7 @@ pub struct StopRecordingResult {
     pub duration_sec: u32,
     pub local_id: String,
     pub started_at: i64,
+    pub source: String,
 }
 
 #[derive(Serialize, Clone)]
@@ -113,6 +114,7 @@ pub fn do_stop_recording(app: &AppHandle) -> Result<StopRecordingResult, String>
         duration_sec: info.duration_sec,
         local_id: info.local_id,
         started_at: info.started_at_ms,
+        source: info.source,
     };
     let _ = app.emit("recording-stopped", result.clone());
     #[cfg(desktop)]

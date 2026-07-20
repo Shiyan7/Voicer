@@ -1,4 +1,3 @@
-import { basename, extname } from 'path';
 import {
   BadRequestException,
   Inject,
@@ -72,20 +71,21 @@ export class MeetingsService {
   async createFromUpload(
     userId: string,
     upload: FileUpload,
+    options: { source?: string; startedAt?: Date } = {},
   ): Promise<MeetingOutput> {
     if (!upload.mimetype.startsWith('audio/')) {
       throw new BadRequestException('Только аудиофайлы');
     }
 
     const audioUrl = await this.fileStorageService.save(userId, upload);
+    const { source, startedAt } = options;
 
     const meeting = this.meetingsRepository.create({
       userId,
-      title: this.titleFromFileName(upload.filename),
-      source: 'upload',
+      source: source ?? null,
       audioUrl,
       status: MeetingStatus.TRANSCRIBING,
-      startedAt: new Date(),
+      startedAt: startedAt ?? new Date(),
     });
 
     const saved = await this.meetingsRepository.save(meeting);
@@ -269,10 +269,6 @@ export class MeetingsService {
         }),
       ),
     );
-  }
-
-  private titleFromFileName(fileName: string): string {
-    return basename(fileName, extname(fileName)).trim() || 'Untitled meeting';
   }
 
   private async findOwnedMeeting(

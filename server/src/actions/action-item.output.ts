@@ -27,5 +27,8 @@ export class ActionItemOutput {
   createdAt: Date;
 
   @Field(() => String, { nullable: true })
-  meetingTitle: string | null;
+  meetingSource: string | null;
+
+  @Field(() => Date)
+  meetingStartedAt: Date;
 }

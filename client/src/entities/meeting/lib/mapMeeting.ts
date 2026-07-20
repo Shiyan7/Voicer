@@ -1,15 +1,14 @@
 import type { MeetingOutput } from '@schema';
 
-import { getInitialMeetingTitle } from '@/shared/lib/time';
-
 import { MeetingDetails } from '../types/MeetingDetails';
+import { getMeetingTitle } from './getMeetingTitle';
 
 export function mapMeeting(meeting?: MeetingOutput): MeetingDetails | null {
   if (!meeting) return null;
 
   return {
     id: meeting.id,
-    title: meeting.title?.trim() || getInitialMeetingTitle(meeting.startedAt),
+    title: getMeetingTitle(meeting.source, meeting.startedAt),
     status: meeting.status,
     audioUrl: meeting.audioUrl ?? null,
     durationSec: meeting.durationSec ?? null,
