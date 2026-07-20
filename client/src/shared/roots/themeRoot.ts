@@ -14,6 +14,8 @@ export const themeRoot = createRoot(() => {
   const [theme, setTheme] = makePersisted(createSignal<Theme>('system'), {
     name: 'settings.theme',
     storage: localStorage,
+    serialize: (value: Theme) => JSON.stringify(value),
+    deserialize: (raw) => JSON.parse(raw) as Theme,
   });
 
   const [systemDark, setSystemDark] = createSignal(darkQuery.matches);
