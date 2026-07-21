@@ -27,8 +27,10 @@ export function MeetingsOrchestrator() {
           items={vm.items()}
           isLoading={vm.isLoading()}
           isEmpty={vm.isEmpty()}
+          hasMore={vm.hasMore()}
           onOpen={vm.openMeeting}
           onDelete={vm.requestDeleteMeeting}
+          setTriggerRef={vm.setTriggerRef}
         />
       </div>
       <DeleteMeetingModal

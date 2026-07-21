@@ -1,20 +1,38 @@
+import type { MeetingOutput } from '@schema';
 import { useNavigate } from '@solidjs/router';
 import { createSignal } from 'solid-js';
 
 import { uploadMeetingAudioMutation } from '@/entities/meeting';
+import { useInfiniteScroll } from '@/shared/lib/infinite-scroll';
 import { closeModal, MODALS, showModal } from '@/shared/lib/modal';
 import { startRecording as startRecorderCommand } from '@/shared/lib/recorder';
 import { authRoot } from '@/shared/roots/authRoot';
 import { paths } from '@/shared/router';
 
 import { deleteMeetingMutation } from '../api/deleteMeetingMutation';
-import { meetingsQuery } from '../api/meetingsQuery';
+import { meetingsPageQuery } from '../api/meetingsPageQuery';
 import { mapMeetingCards } from '../lib/mapMeetingCards';
 
+const PAGE_LIMIT = 10;
+
 export const useMeetingsPage = () => {
-  const [meetingsResult] = meetingsQuery({
-    pause: () => !authRoot.isAuth,
+  const [afterCursor, setAfterCursor] = createSignal<string | null>(null);
+
+  const [meetingsResult] = meetingsPageQuery(
+    () => ({ input: { afterCursor: afterCursor(), limit: PAGE_LIMIT } }),
+    { pause: () => !authRoot.isAuth },
+  );
+
+  const page = () => meetingsResult.data?.meetingsPage;
+  const hasMore = () => Boolean(page()?.meta.hasNextItems);
+
+  const infinite = useInfiniteScroll<MeetingOutput>({
+    items: () => page()?.items,
+    hasMore,
+    isFetching: () => meetingsResult.fetching,
+    loadMore: () => setAfterCursor(page()?.meta.nextCursor ?? null),
   });
+
   const [uploadResult, uploadAudio] = uploadMeetingAudioMutation();
   const [deleteResult, deleteMeeting] = deleteMeetingMutation();
   const [pendingDeleteId, setPendingDeleteId] = createSignal<string | null>(
@@ -23,11 +41,12 @@ export const useMeetingsPage = () => {
 
   const navigate = useNavigate();
 
-  const isLoading = () => meetingsResult.fetching;
+  const items = () => mapMeetingCards(infinite.accumulated());
 
-  const items = () => mapMeetingCards(meetingsResult.data?.meetings);
+  const isLoading = () => meetingsResult.fetching && !items().length;
 
-  const isEmpty = () => !isLoading() && !items().length;
+  const isEmpty = () =>
+    !meetingsResult.fetching && infinite.accumulated().length === 0;
 
   const isUploading = () => uploadResult.fetching;
 
@@ -80,6 +99,7 @@ export const useMeetingsPage = () => {
     items,
     isLoading,
     isEmpty,
+    hasMore,
     isUploading,
     isDeleting,
     startRecording,
@@ -88,5 +108,6 @@ export const useMeetingsPage = () => {
     requestDeleteMeeting,
     cancelDeleteMeeting,
     confirmDeleteMeeting,
+    setTriggerRef: infinite.setTriggerRef,
   };
 };

@@ -38,6 +38,12 @@ export type AuthPayload = {
   accessToken: Scalars['String']['output'];
 };
 
+export type CursorPaginationMetaOutput = {
+  __typename?: 'CursorPaginationMetaOutput';
+  hasNextItems: Scalars['Boolean']['output'];
+  nextCursor?: Maybe<Scalars['String']['output']>;
+};
+
 export type KeyPointOutput = {
   __typename?: 'KeyPointOutput';
   atMs?: Maybe<Scalars['Int']['output']>;
@@ -68,6 +74,17 @@ export enum MeetingStatus {
   Summarizing = 'SUMMARIZING',
   Transcribing = 'TRANSCRIBING',
 }
+
+export type MeetingsPageInput = {
+  afterCursor?: InputMaybe<Scalars['String']['input']>;
+  limit?: Scalars['Int']['input'];
+};
+
+export type MeetingsPageOutput = {
+  __typename?: 'MeetingsPageOutput';
+  items: Array<MeetingOutput>;
+  meta: CursorPaginationMetaOutput;
+};
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -107,7 +124,7 @@ export type Query = {
   meetingActionItems: Array<ActionItemOutput>;
   meetingKeyPoints: Array<KeyPointOutput>;
   meetingTranscript: Array<TranscriptSegmentOutput>;
-  meetings: Array<MeetingOutput>;
+  meetingsPage: MeetingsPageOutput;
   userMe: UserMeOutput;
 };
 
@@ -125,6 +142,10 @@ export type QueryMeetingKeyPointsArgs = {
 
 export type QueryMeetingTranscriptArgs = {
   meetingId: Scalars['ID']['input'];
+};
+
+export type QueryMeetingsPageArgs = {
+  input: MeetingsPageInput;
 };
 
 export type SignInInput = {

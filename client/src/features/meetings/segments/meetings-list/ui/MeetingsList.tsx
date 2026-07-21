@@ -30,6 +30,9 @@ export function MeetingsList(props: MeetingsListProps) {
               />
             )}
           </For>
+          <Show when={props.hasMore}>
+            <div ref={props.setTriggerRef} />
+          </Show>
         </div>
       </Show>
     </Show>
