@@ -2,7 +2,7 @@ import { tv } from 'tailwind-variants';
 
 export const navigationStyles = tv({
   slots: {
-    root: 'relative z-navigation',
+    root: 'sticky top-0 z-navigation h-screen self-start',
     sidebar: `
       relative z-1 h-full p-3
       bg-gray-100

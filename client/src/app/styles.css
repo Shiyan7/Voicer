@@ -25,7 +25,7 @@
   --color-gray-800: #333336;
   --color-gray-900: #1d1d1f;
   --color-gray-950: #0e0e10;
-  
+
   --color-critical: #ff6666;
 
   --radius-lg: 0.625rem;
@@ -92,10 +92,6 @@ body {
 
 button {
   cursor: pointer;
-}
-
-.app {
-  overflow-x: hidden;
 }
 
 @keyframes page-fade-in {
