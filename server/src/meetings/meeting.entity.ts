@@ -19,11 +19,11 @@ export enum MeetingStatus {
 }
 
 @Entity({ name: 'meetings' })
+@Index(['userId', 'startedAt', 'id'])
 export class MeetingEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Index()
   @Column({ type: 'uuid' })
   userId: string;
 

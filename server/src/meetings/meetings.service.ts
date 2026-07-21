@@ -9,7 +9,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PubSub } from 'graphql-subscriptions';
 import { Repository } from 'typeorm';
 import { PUB_SUB } from '../pubsub/pubsub.module';
+import { CursorColumn, paginateByCursor } from '../common/cursor-pagination';
 import { MeetingOutput } from './meeting.output';
+import { MeetingsPageInput } from './meetings-page.input';
+import { MeetingsPageOutput } from './meetings-page.output';
 import { MeetingEntity, MeetingStatus } from './meeting.entity';
 import { FileStorageService } from '../file/file-storage.service';
 import { FileUpload } from '../file/file-upload';
@@ -29,6 +32,19 @@ import {
 @Injectable()
 export class MeetingsService {
   private readonly logger = new Logger(MeetingsService.name);
+
+  private readonly cursorColumns: CursorColumn<MeetingEntity>[] = [
+    {
+      expression: 'meeting.startedAt',
+      key: 'startedAt',
+      toCursorValue: (meeting) => meeting.startedAt.toISOString(),
+    },
+    {
+      expression: 'meeting.id',
+      key: 'id',
+      toCursorValue: (meeting) => meeting.id,
+    },
+  ];
 
   constructor(
     @InjectRepository(MeetingEntity)
@@ -95,14 +111,21 @@ export class MeetingsService {
     return this.serialize(saved);
   }
 
-  async getUserMeetings(userId: string): Promise<MeetingOutput[]> {
-    const meetings = await this.meetingsRepository.find({
-      where: { userId },
-      order: { startedAt: 'DESC' },
-      comment: this.getFnName(this.getUserMeetings.name),
-    });
+  async getUserMeetingsPage(
+    userId: string,
+    input: MeetingsPageInput,
+  ): Promise<MeetingsPageOutput> {
+    const query = this.meetingsRepository
+      .createQueryBuilder('meeting')
+      .where('meeting.userId = :userId', { userId })
+      .comment(this.getFnName(this.getUserMeetingsPage.name));
 
-    return meetings.map(this.serialize);
+    const page = await paginateByCursor(query, this.cursorColumns, input);
+
+    return {
+      items: page.items.map(this.serialize),
+      meta: page.meta,
+    };
   }
 
   async getMeetingById(userId: string, id: string): Promise<MeetingOutput> {
