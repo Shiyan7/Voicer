@@ -60,6 +60,7 @@
       "uploading": "Загрузка",
       "uploaded": "Загружено",
       "transcribing": "Расшифровка",
+      "transcribed": "Расшифровано",
       "summarizing": "Составление сводки",
       "ready": "Готово",
       "failed": "Ошибка"
@@ -74,6 +75,17 @@
     "notes": "Заметки",
     "recording_transcript": "Запись и расшифровка",
     "key_points": "Ключевые моменты",
+    "summarize": "Суммаризация",
+    "summarizing_hint": "Составляем сводку…",
+    "summary_styles": {
+      "auto": "Авто",
+      "concise": "Кратко",
+      "detailed": "Подробно",
+      "bullets": "Тезисно",
+      "formal": "Формально",
+      "casual": "Простыми словами",
+      "action_items": "Фокус на задачах"
+    },
     "delete": {
       "title": "Удалить встречу?",
       "description": "Встреча и её расшифровка будут удалены навсегда. Это действие нельзя отменить.",

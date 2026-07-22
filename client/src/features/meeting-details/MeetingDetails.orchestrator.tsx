@@ -14,6 +14,7 @@ import { ActionItemsSection } from './segments/action-items';
 import { DetailsHeader } from './segments/details-header';
 import { KeyPoints } from './segments/key-points';
 import { Recording } from './segments/recording';
+import { SummarizeAction } from './segments/summarize';
 
 const styles = meetingDetailsStyles();
 
@@ -45,12 +46,21 @@ export function MeetingDetailsOrchestrator() {
           <Match when={vm.meeting()}>
             {(meeting) => (
               <>
-                <DetailsHeader meeting={meeting()} />
-                <Show when={vm.processingStatus()}>
+                <div class={styles.headerRow()}>
+                  <DetailsHeader meeting={meeting()} />
+                  <Show when={vm.hasContent()}>
+                    <SummarizeAction
+                      meetingId={meeting().id}
+                      isSummarizing={vm.isSummarizing()}
+                      onStarted={vm.goToNotesTab}
+                    />
+                  </Show>
+                </div>
+                <Show when={vm.isTranscribing()}>
                   <div class={styles.processing()}>
                     <span class={styles.processingSpinner()} />
                     <span class={styles.processingLabel()}>
-                      {vm.processingLabel()}…
+                      {i18n.t('meetings.status.transcribing')}…
                     </span>
                   </div>
                 </Show>
@@ -61,7 +71,7 @@ export function MeetingDetailsOrchestrator() {
                     </span>
                   </div>
                 </Show>
-                <Show when={vm.isReady()}>
+                <Show when={vm.hasContent()}>
                   <Tabs
                     tabs={vm.tabs()}
                     activeTab={vm.activeTab()}
@@ -76,8 +86,22 @@ export function MeetingDetailsOrchestrator() {
                       />
                     }
                   >
-                    <ActionItemsSection meetingId={meeting().id} />
-                    <KeyPoints meetingId={meeting().id} />
+                    <Show
+                      when={!vm.isSummarizing()}
+                      fallback={
+                        <div class={styles.processing()}>
+                          <span class={styles.processingSpinner()} />
+                          <span class={styles.processingLabel()}>
+                            {i18n.t('meetings.summarizing_hint')}
+                          </span>
+                        </div>
+                      }
+                    >
+                      <div class={styles.tabPanel()}>
+                        <ActionItemsSection meetingId={meeting().id} />
+                        <KeyPoints meetingId={meeting().id} />
+                      </div>
+                    </Show>
                   </Show>
                 </Show>
               </>

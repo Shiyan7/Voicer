@@ -60,6 +60,7 @@
       "uploading": "Uploading",
       "uploaded": "Uploaded",
       "transcribing": "Transcribing",
+      "transcribed": "Transcribed",
       "summarizing": "Summarizing",
       "ready": "Ready",
       "failed": "Failed"
@@ -74,6 +75,17 @@
     "notes": "Notes",
     "recording_transcript": "Recording & Transcript",
     "key_points": "Key Points",
+    "summarize": "Summarize",
+    "summarizing_hint": "Generating summary…",
+    "summary_styles": {
+      "auto": "Auto",
+      "concise": "Concise",
+      "detailed": "Detailed",
+      "bullets": "Bullet points",
+      "formal": "Formal",
+      "casual": "Plain language",
+      "action_items": "Action-focused"
+    },
     "delete": {
       "title": "Delete meeting?",
       "description": "This permanently removes the meeting and its transcript. This can't be undone.",

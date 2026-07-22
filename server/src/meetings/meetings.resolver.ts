@@ -48,6 +48,14 @@ export class MeetingsResolver {
   }
 
   @Mutation(() => MeetingOutput)
+  meetingSummarize(
+    @CurrentUser() user: UserEntity,
+    @Args('id', { type: () => ID }) id: string,
+  ): Promise<MeetingOutput> {
+    return this.meetingsService.summarizeMeeting(user.id, id);
+  }
+
+  @Mutation(() => MeetingOutput)
   meetingDelete(
     @CurrentUser() user: UserEntity,
     @Args('id', { type: () => ID }) id: string,

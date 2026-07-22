@@ -66,6 +66,7 @@ export enum MeetingStatus {
   Ready = 'READY',
   Recording = 'RECORDING',
   Summarizing = 'SUMMARIZING',
+  Transcribed = 'TRANSCRIBED',
   Transcribing = 'TRANSCRIBING',
 }
 
@@ -83,6 +84,7 @@ export type MeetingsPageOutput = {
 export type Mutation = {
   __typename?: 'Mutation';
   meetingDelete: MeetingOutput;
+  meetingSummarize: MeetingOutput;
   meetingUploadAudio: MeetingOutput;
   signIn: AuthPayload;
   signUp: AuthPayload;
@@ -90,6 +92,10 @@ export type Mutation = {
 };
 
 export type MutationMeetingDeleteArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type MutationMeetingSummarizeArgs = {
   id: Scalars['ID']['input'];
 };
 

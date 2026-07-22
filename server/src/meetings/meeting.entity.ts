@@ -13,6 +13,7 @@ import { UserEntity } from '../users/user.entity';
 export enum MeetingStatus {
   RECORDING = 'recording',
   TRANSCRIBING = 'transcribing',
+  TRANSCRIBED = 'transcribed',
   SUMMARIZING = 'summarizing',
   READY = 'ready',
   FAILED = 'failed',

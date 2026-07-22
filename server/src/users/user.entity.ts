@@ -26,6 +26,9 @@ export class UserEntity {
   @Column({ type: 'varchar', nullable: true })
   avatar: string | null;
 
+  @Column({ type: 'int', default: 0 })
+  summarizeCount: number;
+
   @CreateDateColumn()
   createdAt: Date;
 

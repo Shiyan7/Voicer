@@ -2,7 +2,9 @@ import { tv } from 'tailwind-variants';
 
 export const meetingDetailsStyles = tv({
   slots: {
-    root: 'mx-auto flex w-full max-w-3xl flex-col gap-5 py-6',
+    root: 'mx-auto flex w-full max-w-5xl flex-col gap-5 py-6',
+    headerRow: 'flex items-start justify-between gap-4',
+    tabPanel: 'flex flex-col gap-5',
     backLink: `
       inline-flex w-fit items-center gap-1 text-[13px] font-medium
       text-gray-500 transition-colors duration-150 hover:text-gray-900
