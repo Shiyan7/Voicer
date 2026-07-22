@@ -21,11 +21,6 @@ type AuthPayload {
   accessToken: String!
 }
 
-type CursorPaginationMetaOutput {
-  hasNextItems: Boolean!
-  nextCursor: String
-}
-
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -61,13 +56,13 @@ enum MeetingStatus {
 }
 
 input MeetingsPageInput {
-  afterCursor: String
   limit: Int! = 10
+  page: Int! = 1
 }
 
 type MeetingsPageOutput {
   items: [MeetingOutput!]!
-  meta: CursorPaginationMetaOutput!
+  meta: PagePaginationMetaOutput!
 }
 
 type Mutation {
@@ -76,6 +71,12 @@ type Mutation {
   signIn(input: SignInInput!): AuthPayload!
   signUp(input: SignUpInput!): AuthPayload!
   toggleActionItem(id: ID!): Boolean!
+}
+
+type PagePaginationMetaOutput {
+  hasNextItems: Boolean!
+  hasPrevItems: Boolean!
+  page: Int!
 }
 
 type Query {

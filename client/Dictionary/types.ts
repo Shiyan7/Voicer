@@ -38,12 +38,6 @@ export type AuthPayload = {
   accessToken: Scalars['String']['output'];
 };
 
-export type CursorPaginationMetaOutput = {
-  __typename?: 'CursorPaginationMetaOutput';
-  hasNextItems: Scalars['Boolean']['output'];
-  nextCursor?: Maybe<Scalars['String']['output']>;
-};
-
 export type KeyPointOutput = {
   __typename?: 'KeyPointOutput';
   atMs?: Maybe<Scalars['Int']['output']>;
@@ -76,14 +70,14 @@ export enum MeetingStatus {
 }
 
 export type MeetingsPageInput = {
-  afterCursor?: InputMaybe<Scalars['String']['input']>;
   limit?: Scalars['Int']['input'];
+  page?: Scalars['Int']['input'];
 };
 
 export type MeetingsPageOutput = {
   __typename?: 'MeetingsPageOutput';
   items: Array<MeetingOutput>;
-  meta: CursorPaginationMetaOutput;
+  meta: PagePaginationMetaOutput;
 };
 
 export type Mutation = {
@@ -115,6 +109,13 @@ export type MutationSignUpArgs = {
 
 export type MutationToggleActionItemArgs = {
   id: Scalars['ID']['input'];
+};
+
+export type PagePaginationMetaOutput = {
+  __typename?: 'PagePaginationMetaOutput';
+  hasNextItems: Scalars['Boolean']['output'];
+  hasPrevItems: Scalars['Boolean']['output'];
+  page: Scalars['Int']['output'];
 };
 
 export type Query = {

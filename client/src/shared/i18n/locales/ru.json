@@ -44,6 +44,10 @@
     "meetings": "Встречи",
     "actions": "Задачи"
   },
+  "pagination": {
+    "prev": "Назад",
+    "next": "Вперёд"
+  },
   "meetings": {
     "title": "Встречи",
     "empty": "Пока нет встреч",

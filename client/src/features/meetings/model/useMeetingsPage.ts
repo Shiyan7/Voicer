@@ -1,13 +1,9 @@
-import type { MeetingOutput } from '@schema';
-import { useNavigate } from '@solidjs/router';
 import { createSignal } from 'solid-js';
 
 import { uploadMeetingAudioMutation } from '@/entities/meeting';
-import { useInfiniteScroll } from '@/shared/lib/infinite-scroll';
 import { closeModal, MODALS, showModal } from '@/shared/lib/modal';
 import { startRecording as startRecorderCommand } from '@/shared/lib/recorder';
 import { authRoot } from '@/shared/roots/authRoot';
-import { paths } from '@/shared/router';
 
 import { deleteMeetingMutation } from '../api/deleteMeetingMutation';
 import { meetingsPageQuery } from '../api/meetingsPageQuery';
@@ -16,22 +12,15 @@ import { mapMeetingCards } from '../lib/mapMeetingCards';
 const PAGE_LIMIT = 10;
 
 export const useMeetingsPage = () => {
-  const [afterCursor, setAfterCursor] = createSignal<string | null>(null);
+  const [page, setPage] = createSignal(1);
 
-  const [meetingsResult] = meetingsPageQuery(
-    () => ({ input: { afterCursor: afterCursor(), limit: PAGE_LIMIT } }),
+  const [meetingsResult, refetchMeetings] = meetingsPageQuery(
+    () => ({ input: { page: page(), limit: PAGE_LIMIT } }),
     { pause: () => !authRoot.isAuth },
   );
 
-  const page = () => meetingsResult.data?.meetingsPage;
-  const hasMore = () => Boolean(page()?.meta.hasNextItems);
-
-  const infinite = useInfiniteScroll<MeetingOutput>({
-    items: () => page()?.items,
-    hasMore,
-    isFetching: () => meetingsResult.fetching,
-    loadMore: () => setAfterCursor(page()?.meta.nextCursor ?? null),
-  });
+  const meetingsPage = () => meetingsResult.data?.meetingsPage;
+  const meetings = () => meetingsPage()?.items ?? [];
 
   const [uploadResult, uploadAudio] = uploadMeetingAudioMutation();
   const [deleteResult, deleteMeeting] = deleteMeetingMutation();
@@ -39,18 +28,36 @@ export const useMeetingsPage = () => {
     null,
   );
 
-  const navigate = useNavigate();
+  const items = () => mapMeetingCards(meetings());
 
-  const items = () => mapMeetingCards(infinite.accumulated());
+  const currentPage = () => meetingsPage()?.meta.page ?? page();
+
+  const hasPrevPage = () => Boolean(meetingsPage()?.meta.hasPrevItems);
+
+  const hasNextPage = () => Boolean(meetingsPage()?.meta.hasNextItems);
 
   const isLoading = () => meetingsResult.fetching && !items().length;
 
-  const isEmpty = () =>
-    !meetingsResult.fetching && infinite.accumulated().length === 0;
+  const isEmpty = () => !meetingsResult.fetching && items().length === 0;
 
   const isUploading = () => uploadResult.fetching;
 
   const isDeleting = () => deleteResult.fetching;
+
+  const reloadFirstPage = () => {
+    setPage(1);
+    refetchMeetings({ requestPolicy: 'network-only' });
+  };
+
+  const goToPrevPage = () => {
+    if (!hasPrevPage()) return;
+    setPage((current) => Math.max(1, current - 1));
+  };
+
+  const goToNextPage = () => {
+    if (!hasNextPage()) return;
+    setPage((current) => current + 1);
+  };
 
   const startRecording = async () => {
     try {
@@ -63,10 +70,6 @@ export const useMeetingsPage = () => {
     }
   };
 
-  const openMeeting = (id: string) => {
-    navigate(paths.meeting(id));
-  };
-
   const onFileSelected = async (event: Event) => {
     const input = event.currentTarget as HTMLInputElement;
     const file = input.files?.[0];
@@ -75,6 +78,7 @@ export const useMeetingsPage = () => {
     if (!file) return;
 
     await uploadAudio({ file });
+    reloadFirstPage();
   };
 
   const requestDeleteMeeting = (id: string) => {
@@ -90,24 +94,35 @@ export const useMeetingsPage = () => {
     const id = pendingDeleteId();
     if (!id) return;
 
+    const wasLastOnPage = meetings().length === 1;
+
     await deleteMeeting({ id });
     closeModal(MODALS.DELETE_MEETING);
     setPendingDeleteId(null);
+
+    if (wasLastOnPage && page() > 1) {
+      setPage((current) => current - 1);
+      return;
+    }
+
+    refetchMeetings({ requestPolicy: 'network-only' });
   };
 
   return {
     items,
     isLoading,
     isEmpty,
-    hasMore,
+    currentPage,
+    hasPrevPage,
+    hasNextPage,
     isUploading,
     isDeleting,
     startRecording,
-    openMeeting,
     onFileSelected,
     requestDeleteMeeting,
     cancelDeleteMeeting,
     confirmDeleteMeeting,
-    setTriggerRef: infinite.setTriggerRef,
+    goToPrevPage,
+    goToNextPage,
   };
 };

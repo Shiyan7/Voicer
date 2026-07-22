@@ -287,13 +287,14 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['arrow-right-end'], [20]),
         defineSpriteSymbol(['audio'], [24]),
         defineSpriteSymbol(['check'], [24]),
-        defineSpriteSymbol(['chevron-right'], [20]),
+        defineSpriteSymbol(['chevron-left'], [24]),
+        defineSpriteSymbol(['chevron-right'], [24]),
         defineSpriteSymbol(['copy'], [16]),
         defineSpriteSymbol(['cross'], [15]),
         defineSpriteSymbol(['logout'], [24]),
         defineSpriteSymbol(['trash'], [24]),
       ],
-      defineExternalAssetMeta('common.5880b74d.svg'),
+      defineExternalAssetMeta('common.548f1fe1.svg'),
     ),
   ]),
   defineSprite('navigation', [
@@ -335,6 +336,7 @@ export type SpritesMeta = {
     | 'arrow-right-end'
     | 'audio'
     | 'check'
+    | 'chevron-left'
     | 'chevron-right'
     | 'copy'
     | 'cross'

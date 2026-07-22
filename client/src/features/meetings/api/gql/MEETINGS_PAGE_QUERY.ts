@@ -15,8 +15,9 @@ export const MEETINGS_PAGE_QUERY = gql`
         updatedAt
       }
       meta {
-        nextCursor
+        page
         hasNextItems
+        hasPrevItems
       }
     }
   }

@@ -9,7 +9,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PubSub } from 'graphql-subscriptions';
 import { Repository } from 'typeorm';
 import { PUB_SUB } from '../pubsub/pubsub.module';
-import { CursorColumn, paginateByCursor } from '../common/cursor-pagination';
 import { MeetingOutput } from './meeting.output';
 import { MeetingsPageInput } from './meetings-page.input';
 import { MeetingsPageOutput } from './meetings-page.output';
@@ -32,19 +31,6 @@ import {
 @Injectable()
 export class MeetingsService {
   private readonly logger = new Logger(MeetingsService.name);
-
-  private readonly cursorColumns: CursorColumn<MeetingEntity>[] = [
-    {
-      expression: 'meeting.startedAt',
-      key: 'startedAt',
-      toCursorValue: (meeting) => meeting.startedAt.toISOString(),
-    },
-    {
-      expression: 'meeting.id',
-      key: 'id',
-      toCursorValue: (meeting) => meeting.id,
-    },
-  ];
 
   constructor(
     @InjectRepository(MeetingEntity)
@@ -115,16 +101,23 @@ export class MeetingsService {
     userId: string,
     input: MeetingsPageInput,
   ): Promise<MeetingsPageOutput> {
-    const query = this.meetingsRepository
-      .createQueryBuilder('meeting')
-      .where('meeting.userId = :userId', { userId })
-      .comment(this.getFnName(this.getUserMeetingsPage.name));
+    const page = Math.max(1, input.page);
+    const skip = (page - 1) * input.limit;
 
-    const page = await paginateByCursor(query, this.cursorColumns, input);
+    const meetings = await this.meetingsRepository.find({
+      where: { userId },
+      order: { startedAt: 'DESC', id: 'DESC' },
+      skip,
+      take: input.limit + 1,
+      comment: this.getFnName(this.getUserMeetingsPage.name),
+    });
+
+    const hasNextItems = meetings.length > input.limit;
+    const items = hasNextItems ? meetings.slice(0, input.limit) : meetings;
 
     return {
-      items: page.items.map(this.serialize),
-      meta: page.meta,
+      items: items.map(this.serialize),
+      meta: { page, hasNextItems, hasPrevItems: page > 1 },
     };
   }
 

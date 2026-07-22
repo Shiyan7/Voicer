@@ -27,10 +27,12 @@ export function MeetingsOrchestrator() {
           items={vm.items()}
           isLoading={vm.isLoading()}
           isEmpty={vm.isEmpty()}
-          hasMore={vm.hasMore()}
-          onOpen={vm.openMeeting}
+          currentPage={vm.currentPage()}
+          hasPrevPage={vm.hasPrevPage()}
+          hasNextPage={vm.hasNextPage()}
           onDelete={vm.requestDeleteMeeting}
-          setTriggerRef={vm.setTriggerRef}
+          onPrevPage={vm.goToPrevPage}
+          onNextPage={vm.goToNextPage}
         />
       </div>
       <DeleteMeetingModal
