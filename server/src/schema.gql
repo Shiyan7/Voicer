@@ -53,6 +53,16 @@ enum MeetingStatus {
   TRANSCRIBING
 }
 
+input MeetingsPageInput {
+  limit: Int! = 10
+  page: Int! = 1
+}
+
+type MeetingsPageOutput {
+  items: [MeetingOutput!]!
+  meta: PagePaginationMetaOutput!
+}
+
 type Mutation {
   meetingDelete(id: ID!): MeetingOutput!
   meetingUploadAudio(file: Upload!, source: String, startedAt: DateTime): MeetingOutput!
@@ -61,13 +71,19 @@ type Mutation {
   toggleActionItem(id: ID!): Boolean!
 }
 
+type PagePaginationMetaOutput {
+  hasNextItems: Boolean!
+  hasPrevItems: Boolean!
+  page: Int!
+}
+
 type Query {
   actionItems: [ActionItemOutput!]!
   meeting(id: ID!): MeetingOutput!
   meetingActionItems(meetingId: ID!): [ActionItemOutput!]!
   meetingKeyPoints(meetingId: ID!): [KeyPointOutput!]!
   meetingTranscript(meetingId: ID!): [TranscriptSegmentOutput!]!
-  meetings: [MeetingOutput!]!
+  meetingsPage(input: MeetingsPageInput!): MeetingsPageOutput!
   userMe: UserMeOutput!
 }
 

@@ -1,33 +1,37 @@
-import { useNavigate } from '@solidjs/router';
 import { createSignal } from 'solid-js';
 
 import { uploadMeetingAudioMutation } from '@/entities/meeting';
+import { useQueryPagination } from '@/shared/hooks/useQueryPagination';
 import { closeModal, MODALS, showModal } from '@/shared/lib/modal';
 import { startRecording as startRecorderCommand } from '@/shared/lib/recorder';
 import { authRoot } from '@/shared/roots/authRoot';
-import { paths } from '@/shared/router';
 
 import { deleteMeetingMutation } from '../api/deleteMeetingMutation';
-import { meetingsQuery } from '../api/meetingsQuery';
+import { meetingsPageQuery } from '../api/meetingsPageQuery';
 import { mapMeetingCards } from '../lib/mapMeetingCards';
 
 export const useMeetingsPage = () => {
-  const [meetingsResult] = meetingsQuery({
-    pause: () => !authRoot.isAuth,
-  });
+  const pagination = useQueryPagination(() => meetingsPage()?.meta);
+
+  const [meetingsResult] = meetingsPageQuery(
+    () => ({ input: { page: pagination.page(), limit: pagination.limit } }),
+    { pause: () => !authRoot.isAuth },
+  );
+
+  const meetingsPage = () => meetingsResult.data?.meetingsPage;
+  const meetings = () => meetingsPage()?.items ?? [];
+
   const [uploadResult, uploadAudio] = uploadMeetingAudioMutation();
   const [deleteResult, deleteMeeting] = deleteMeetingMutation();
   const [pendingDeleteId, setPendingDeleteId] = createSignal<string | null>(
     null,
   );
 
-  const navigate = useNavigate();
+  const items = () => mapMeetingCards(meetings());
 
-  const isLoading = () => meetingsResult.fetching;
+  const isLoading = () => meetingsResult.fetching && !items().length;
 
-  const items = () => mapMeetingCards(meetingsResult.data?.meetings);
-
-  const isEmpty = () => !isLoading() && !items().length;
+  const isEmpty = () => !meetingsResult.fetching && items().length === 0;
 
   const isUploading = () => uploadResult.fetching;
 
@@ -42,10 +46,6 @@ export const useMeetingsPage = () => {
     } catch (error) {
       console.error('[recorder] failed to start recording:', error);
     }
-  };
-
-  const openMeeting = (id: string) => {
-    navigate(paths.meeting(id));
   };
 
   const onFileSelected = async (event: Event) => {
@@ -83,10 +83,14 @@ export const useMeetingsPage = () => {
     isUploading,
     isDeleting,
     startRecording,
-    openMeeting,
     onFileSelected,
     requestDeleteMeeting,
     cancelDeleteMeeting,
     confirmDeleteMeeting,
+    currentPage: pagination.currentPage,
+    hasPrevPage: pagination.hasPrevPage,
+    hasNextPage: pagination.hasNextPage,
+    goToPrevPage: pagination.goToPrevPage,
+    goToNextPage: pagination.goToNextPage,
   };
 };

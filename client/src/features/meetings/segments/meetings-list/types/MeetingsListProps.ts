@@ -4,6 +4,10 @@ export interface MeetingsListProps {
   items: MeetingCardData[];
   isLoading: boolean;
   isEmpty: boolean;
-  onOpen: (id: string) => void;
+  currentPage: number;
+  hasPrevPage: boolean;
+  hasNextPage: boolean;
   onDelete: (id: string) => void;
+  onPrevPage: () => void;
+  onNextPage: () => void;
 }

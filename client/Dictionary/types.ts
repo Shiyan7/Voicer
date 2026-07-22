@@ -69,6 +69,17 @@ export enum MeetingStatus {
   Transcribing = 'TRANSCRIBING',
 }
 
+export type MeetingsPageInput = {
+  limit?: Scalars['Int']['input'];
+  page?: Scalars['Int']['input'];
+};
+
+export type MeetingsPageOutput = {
+  __typename?: 'MeetingsPageOutput';
+  items: Array<MeetingOutput>;
+  meta: PagePaginationMetaOutput;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   meetingDelete: MeetingOutput;
@@ -100,6 +111,13 @@ export type MutationToggleActionItemArgs = {
   id: Scalars['ID']['input'];
 };
 
+export type PagePaginationMetaOutput = {
+  __typename?: 'PagePaginationMetaOutput';
+  hasNextItems: Scalars['Boolean']['output'];
+  hasPrevItems: Scalars['Boolean']['output'];
+  page: Scalars['Int']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
   actionItems: Array<ActionItemOutput>;
@@ -107,7 +125,7 @@ export type Query = {
   meetingActionItems: Array<ActionItemOutput>;
   meetingKeyPoints: Array<KeyPointOutput>;
   meetingTranscript: Array<TranscriptSegmentOutput>;
-  meetings: Array<MeetingOutput>;
+  meetingsPage: MeetingsPageOutput;
   userMe: UserMeOutput;
 };
 
@@ -125,6 +143,10 @@ export type QueryMeetingKeyPointsArgs = {
 
 export type QueryMeetingTranscriptArgs = {
   meetingId: Scalars['ID']['input'];
+};
+
+export type QueryMeetingsPageArgs = {
+  input: MeetingsPageInput;
 };
 
 export type SignInInput = {

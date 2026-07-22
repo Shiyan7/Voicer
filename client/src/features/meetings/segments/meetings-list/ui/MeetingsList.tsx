@@ -1,6 +1,7 @@
 import { For, Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
+import { Pagination } from '@/shared/ui/pagination';
 
 import { MeetingsListProps } from '../types/MeetingsListProps';
 import { MeetingCard } from './MeetingCard';
@@ -22,14 +23,15 @@ export function MeetingsList(props: MeetingsListProps) {
       >
         <div class={styles.list()}>
           <For each={props.items}>
-            {(card) => (
-              <MeetingCard
-                card={card}
-                onOpen={props.onOpen}
-                onDelete={props.onDelete}
-              />
-            )}
+            {(card) => <MeetingCard card={card} onDelete={props.onDelete} />}
           </For>
+          <Pagination
+            page={props.currentPage}
+            hasPrev={props.hasPrevPage}
+            hasNext={props.hasNextPage}
+            onPrev={props.onPrevPage}
+            onNext={props.onNextPage}
+          />
         </div>
       </Show>
     </Show>

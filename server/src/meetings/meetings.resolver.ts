@@ -12,6 +12,8 @@ import { Public } from '../auth/decorators/public.decorator';
 import { UserEntity } from '../users/user.entity';
 import { FileUpload } from '../file/file-upload';
 import { MeetingOutput } from './meeting.output';
+import { MeetingsPageInput } from './meetings-page.input';
+import { MeetingsPageOutput } from './meetings-page.output';
 import { TranscriptSegmentOutput } from './transcript-segment.output';
 import { KeyPointOutput } from './key-point.output';
 import { MeetingsService } from './meetings.service';
@@ -20,9 +22,13 @@ import { MeetingsService } from './meetings.service';
 export class MeetingsResolver {
   constructor(private readonly meetingsService: MeetingsService) {}
 
-  @Query(() => [MeetingOutput])
-  meetings(@CurrentUser() user: UserEntity): Promise<MeetingOutput[]> {
-    return this.meetingsService.getUserMeetings(user.id);
+  @Query(() => MeetingsPageOutput)
+  meetingsPage(
+    @CurrentUser() user: UserEntity,
+    @Args('input', { type: () => MeetingsPageInput })
+    input: MeetingsPageInput,
+  ): Promise<MeetingsPageOutput> {
+    return this.meetingsService.getUserMeetingsPage(user.id, input);
   }
 
   @Mutation(() => MeetingOutput)

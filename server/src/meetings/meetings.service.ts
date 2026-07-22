@@ -10,6 +10,8 @@ import { PubSub } from 'graphql-subscriptions';
 import { Repository } from 'typeorm';
 import { PUB_SUB } from '../pubsub/pubsub.module';
 import { MeetingOutput } from './meeting.output';
+import { MeetingsPageInput } from './meetings-page.input';
+import { MeetingsPageOutput } from './meetings-page.output';
 import { MeetingEntity, MeetingStatus } from './meeting.entity';
 import { FileStorageService } from '../file/file-storage.service';
 import { FileUpload } from '../file/file-upload';
@@ -95,14 +97,28 @@ export class MeetingsService {
     return this.serialize(saved);
   }
 
-  async getUserMeetings(userId: string): Promise<MeetingOutput[]> {
+  async getUserMeetingsPage(
+    userId: string,
+    input: MeetingsPageInput,
+  ): Promise<MeetingsPageOutput> {
+    const page = Math.max(1, input.page);
+    const skip = (page - 1) * input.limit;
+
     const meetings = await this.meetingsRepository.find({
       where: { userId },
-      order: { startedAt: 'DESC' },
-      comment: this.getFnName(this.getUserMeetings.name),
+      order: { startedAt: 'DESC', id: 'DESC' },
+      skip,
+      take: input.limit + 1,
+      comment: this.getFnName(this.getUserMeetingsPage.name),
     });
 
-    return meetings.map(this.serialize);
+    const hasNextItems = meetings.length > input.limit;
+    const items = hasNextItems ? meetings.slice(0, input.limit) : meetings;
+
+    return {
+      items: items.map(this.serialize),
+      meta: { page, hasNextItems, hasPrevItems: page > 1 },
+    };
   }
 
   async getMeetingById(userId: string, id: string): Promise<MeetingOutput> {

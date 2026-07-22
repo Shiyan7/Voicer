@@ -44,6 +44,10 @@
     "meetings": "Meetings",
     "actions": "Actions"
   },
+  "pagination": {
+    "prev": "Prev",
+    "next": "Next"
+  },
   "meetings": {
     "title": "Meetings",
     "empty": "No meetings yet",
