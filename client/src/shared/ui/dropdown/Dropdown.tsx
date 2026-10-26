@@ -27,10 +27,10 @@ export function Dropdown<T>(props: DropdownProps<T>) {
   };
 
   return (
-    <div ref={dropdown.setRootRef} class={styles.root({ class: props.class })}>
+    <div class={styles.root({ class: props.class })} ref={dropdown.setRootRef}>
       <button
-        type="button"
         class={props.triggerClass}
+        type="button"
         onClick={dropdown.toggle}
       >
         {props.trigger(dropdown.opened())}
@@ -40,11 +40,11 @@ export function Dropdown<T>(props: DropdownProps<T>) {
           <For each={props.options}>
             {(option) => (
               <button
-                type="button"
                 class={styles.item({
                   active: option.value === props.selected,
                   danger: option.isDanger,
                 })}
+                type="button"
                 onClick={() => handleSelect(option.value)}
               >
                 <Show when={option.emoji}>

@@ -1,6 +1,8 @@
 import { useLocation } from '@solidjs/router';
 import { createSignal } from 'solid-js';
 
+import { i18n } from '@/shared/i18n';
+
 import { getNavItems } from '../config/getNavItems';
 
 export const useNavigation = () => {
@@ -17,6 +19,12 @@ export const useNavigation = () => {
 
   const toggleSidebar = () => setIsCollapsed((collapsed) => !collapsed);
 
+  const toggleIcon = () =>
+    isCollapsed() ? 'common:chevron-right' : 'common:chevron-left';
+
+  const toggleLabel = () =>
+    isCollapsed() ? i18n.t('nav.expand') : i18n.t('nav.collapse');
+
   const onMouseEnter = () => setIsToggleVisible(true);
 
   const onMouseLeave = () => setIsToggleVisible(false);
@@ -26,6 +34,8 @@ export const useNavigation = () => {
     isToggleVisible,
     navItems,
     toggleSidebar,
+    toggleIcon,
+    toggleLabel,
     onMouseEnter,
     onMouseLeave,
   };

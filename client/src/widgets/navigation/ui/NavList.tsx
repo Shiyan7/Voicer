@@ -10,11 +10,17 @@ const styles = navListStyles();
 
 export function NavList(props: NavListProps) {
   return (
-    <ul class={styles.root()}>
+    <ul class={styles.root({ collapsed: props.isCollapsed })}>
       <For each={props.items}>
         {(item) => (
           <li>
-            <A class={styles.item({ current: item.isActive })} href={item.href}>
+            <A
+              class={styles.item({
+                current: item.isActive,
+                collapsed: props.isCollapsed,
+              })}
+              href={item.href}
+            >
               <Icon
                 class={styles.itemIcon()}
                 name={item.isActive ? item.activeIcon : item.icon}

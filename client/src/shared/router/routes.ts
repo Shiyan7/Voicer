@@ -12,8 +12,8 @@ export const routes = [
     component: lazy(() => import('@/pages/meeting-details/MeetingDetailsPage')),
   },
   {
-    path: paths.favorites,
-    component: lazy(() => import('@/pages/favorites/FavoritesPage')),
+    path: paths.shared,
+    component: lazy(() => import('@/pages/shared/SharedPage')),
   },
   {
     path: paths.actions,

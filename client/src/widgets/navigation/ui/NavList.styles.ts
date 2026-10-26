@@ -19,5 +19,11 @@ export const navListStyles = tv({
         item: 'active:bg-gray-300',
       },
     },
+    collapsed: {
+      true: {
+        root: 'items-center',
+        item: 'size-11 justify-center px-0 py-0',
+      },
+    },
   },
 });

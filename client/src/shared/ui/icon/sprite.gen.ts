@@ -292,6 +292,7 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['clock'], [16]),
         defineSpriteSymbol(['copy'], [16]),
         defineSpriteSymbol(['cross'], [15]),
+        defineSpriteSymbol(['crown'], [24]),
         defineSpriteSymbol(['document-text'], [24]),
         defineSpriteSymbol(['dots'], [16]),
         defineSpriteSymbol(['exclamation'], [24]),
@@ -311,7 +312,7 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['trash'], [24]),
         defineSpriteSymbol(['upload'], [24]),
       ],
-      defineExternalAssetMeta('common.731b14f8.svg'),
+      defineExternalAssetMeta('common.045ff1bd.svg'),
     ),
   ]),
   defineSprite('navigation', [
@@ -325,8 +326,10 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['check'], [24]),
         defineSpriteSymbol(['settings-solid'], [24]),
         defineSpriteSymbol(['settings'], [24]),
+        defineSpriteSymbol(['users-solid'], [24]),
+        defineSpriteSymbol(['users'], [24]),
       ],
-      defineExternalAssetMeta('navigation.95535ae2.svg'),
+      defineExternalAssetMeta('navigation.9c0bb2cf.svg'),
     ),
   ]),
   defineSprite('social', [
@@ -358,6 +361,7 @@ export type SpritesMeta = {
     | 'clock'
     | 'copy'
     | 'cross'
+    | 'crown'
     | 'document-text'
     | 'dots'
     | 'exclamation'
@@ -384,7 +388,9 @@ export type SpritesMeta = {
     | 'check-solid'
     | 'check'
     | 'settings-solid'
-    | 'settings';
+    | 'settings'
+    | 'users-solid'
+    | 'users';
   social: 'apple' | 'google' | 'telegram';
 };
 

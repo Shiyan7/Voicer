@@ -3,20 +3,17 @@ import { tv } from 'tailwind-variants';
 export const navigationStyles = tv({
   slots: {
     root: 'sticky top-0 z-navigation h-screen self-start',
-    sidebar: `
-      relative z-1 flex h-full flex-col p-3
-      bg-gray-100
-      border-r-[0.5px] border-r-gray-300
-    `,
+    sidebar: 'relative z-1 flex h-full flex-col px-3 py-6 bg-gray-100',
     toggle: `
-      absolute left-full top-5 z-20
-      flex h-8 w-6.5 items-center justify-center
-      rounded-[0_5px_5px_0] border-[0.5px] border-l-0
-      border-gray-300 bg-gray-100 pr-px
+      absolute -right-3 top-6 z-20 flex size-6 items-center justify-center
+      rounded-full border-[0.5px] border-gray-300 bg-white text-gray-500
+      shadow-[0_1px_3px_rgba(0,0,0,0.08)] transition-[color,transform]
+      hover:scale-110 hover:text-gray-900
     `,
-    toggleIcon: 'h-6 w-6',
+    toggleIcon: 'size-3.5',
     search: `
-      flex h-11 w-full items-center gap-2.5 rounded-xl bg-white px-2.5
+      flex h-11 w-full items-center gap-2.5 rounded-xl border-[0.5px]
+      border-gray-200 bg-white px-2.5
       text-[15px] font-medium text-gray-900
       shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-colors
       active:bg-gray-50
@@ -27,13 +24,16 @@ export const navigationStyles = tv({
       rounded-md bg-gray-100 px-1.5 py-0.5
       font-sans text-[11px] font-medium text-gray-500
     `,
-    account: 'mt-auto',
+    logo: 'mb-4 flex h-9 items-center px-1',
+    account: 'mt-auto flex flex-col',
   },
   variants: {
     collapsed: {
       true: {
-        sidebar: 'w-16',
-        search: 'justify-center px-0',
+        sidebar: 'w-[72px] items-center',
+        logo: 'justify-center px-0',
+        search: 'size-11 justify-center px-0',
+        account: 'items-center',
       },
       false: {
         sidebar: 'w-60',

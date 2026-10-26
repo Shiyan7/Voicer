@@ -4,7 +4,7 @@ export const meetingCardStyles = tv({
   slots: {
     card: `
       group relative flex w-full items-center gap-4 px-5 py-4 text-left
-      transition-colors hover:bg-gray-50
+      transition-colors hover:bg-gray-200/50
     `,
     open: `
       absolute inset-0

@@ -85,7 +85,7 @@ export class MeetingsService {
 
     const meeting = this.meetingsRepository.create({
       userId,
-      source: source ?? null,
+      source: source || null,
       audioUrl,
       status: MeetingStatus.TRANSCRIBING,
       startedAt: startedAt ?? new Date(),

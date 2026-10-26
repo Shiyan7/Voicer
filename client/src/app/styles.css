@@ -68,25 +68,25 @@
 }
 
 :root[data-theme='dark'] {
-  --color-white: #1d1d1f;
-  --color-black: #f5f5f7;
+  --color-white: #151922;
+  --color-black: #f1f3f7;
 
-  --color-gray-50: #0e0e10;
-  --color-gray-100: #1d1d1f;
-  --color-gray-200: #2c2c2e;
-  --color-gray-300: #3a3a3c;
-  --color-gray-400: #7c7c81;
-  --color-gray-500: #98989d;
-  --color-gray-600: #a1a1a6;
-  --color-gray-700: #d2d2d7;
-  --color-gray-800: #e8e8ed;
-  --color-gray-900: #f5f5f7;
-  --color-gray-950: #fbfbfd;
+  --color-gray-50: #0a0c11;
+  --color-gray-100: #10131a;
+  --color-gray-200: #1e2330;
+  --color-gray-300: #2a3040;
+  --color-gray-400: #5f6779;
+  --color-gray-500: #8a92a4;
+  --color-gray-600: #a4abba;
+  --color-gray-700: #cacfd9;
+  --color-gray-800: #e3e6ed;
+  --color-gray-900: #f1f3f7;
+  --color-gray-950: #fafbfc;
 
-  --color-banner-from: #0f2420;
-  --color-banner-via: #0f1d2b;
-  --color-banner-to: #211a3a;
-  --color-banner-glow: #4c3a8a;
+  --color-banner-from: #0c2b2a;
+  --color-banner-via: #0f2140;
+  --color-banner-to: #2a1d55;
+  --color-banner-glow: #5b45b8;
 
   color-scheme: dark;
 }

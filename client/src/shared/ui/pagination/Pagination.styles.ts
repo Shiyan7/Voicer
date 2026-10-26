@@ -2,15 +2,17 @@ import { tv } from 'tailwind-variants';
 
 export const paginationStyles = tv({
   slots: {
-    root: 'flex items-center justify-center gap-2 pt-2',
+    root: 'flex justify-center pt-2',
+    group: `
+      inline-flex items-center gap-1 rounded-full border-[0.5px]
+      border-gray-200 bg-white p-1 shadow-[0_1px_2px_rgba(0,0,0,0.04)]
+    `,
     button: `
-      inline-flex items-center gap-1 rounded-full px-4 py-2 text-[15px]
-      font-medium text-gray-900 bg-gray-100 transition-colors duration-150
-      hover:bg-gray-200 disabled:text-gray-400 disabled:hover:bg-gray-100
+      flex size-8 items-center justify-center rounded-full text-gray-700
+      transition-colors hover:bg-gray-200/60 hover:text-gray-900
+      disabled:pointer-events-none disabled:text-gray-300
+      focus-visible:ring-2 focus-visible:ring-gray-500/60
     `,
-    page: `
-      flex size-9 items-center justify-center rounded-lg border-[1.5px] border-gray-300
-      bg-gray-50 text-[15px] font-semibold text-gray-900
-    `,
+    page: 'min-w-16 px-2 text-center text-sm font-medium text-gray-600 tabular-nums',
   },
 });

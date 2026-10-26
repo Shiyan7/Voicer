@@ -3,12 +3,12 @@ import { useSearchParams } from '@solidjs/router';
 
 import { ALL_SOURCES } from '../lib/getSourceOptions';
 
-interface MeetingsSearchParams {
+type MeetingsSearchParams = {
   page?: string;
   sort?: string;
   favorites?: string;
   source?: string;
-}
+};
 
 const SORT_VALUES = Object.values(MeetingsSort) as string[];
 

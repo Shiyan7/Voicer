@@ -11,6 +11,12 @@ export const getNavItems = (): NavItem[] => [
     activeIcon: 'navigation:calendar-solid',
   },
   {
+    href: paths.shared,
+    label: i18n.t('nav.shared'),
+    icon: 'navigation:users',
+    activeIcon: 'navigation:users-solid',
+  },
+  {
     href: paths.actions,
     label: i18n.t('nav.actions'),
     icon: 'navigation:check',

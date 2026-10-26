@@ -42,11 +42,15 @@
   },
   "nav": {
     "meetings": "Meetings",
-    "actions": "Actions"
+    "actions": "Actions",
+    "collapse": "Collapse sidebar",
+    "expand": "Expand sidebar",
+    "shared": "Shared with me"
   },
   "pagination": {
     "prev": "Prev",
-    "next": "Next"
+    "next": "Next",
+    "page": "Page {{page}}"
   },
   "meetings": {
     "title": "Meetings",
@@ -165,5 +169,14 @@
       "auto": "Record calls automatically",
       "auto_hint": "Start recording without asking when a call is detected"
     }
+  },
+  "shared": {
+    "title": "Shared with me",
+    "empty_title": "Nothing shared with you yet",
+    "empty_hint": "When teammates share their meetings with you, they will show up here."
+  },
+  "pro": {
+    "cta": "Go Pro",
+    "hint": "Unlimited & AI features"
   }
 }
