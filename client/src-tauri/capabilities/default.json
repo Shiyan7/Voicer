@@ -14,10 +14,13 @@
       "identifier": "opener:allow-open-url",
       "allow": [{ "url": "x-apple.systempreferences:*" }]
     },
+    "opener:allow-reveal-item-in-dir",
     "fs:allow-read-file",
+    "fs:allow-write-file",
+    "fs:allow-exists",
     {
       "identifier": "fs:scope",
-      "allow": ["$APPDATA/recordings/*", "$APPDATA/recordings/**/*"]
+      "allow": ["$APPDATA/recordings/*", "$APPDATA/recordings/**/*", "$DOWNLOAD/*"]
     }
   ]
 }

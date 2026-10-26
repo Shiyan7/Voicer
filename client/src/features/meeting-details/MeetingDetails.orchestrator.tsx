@@ -13,6 +13,7 @@ import { useMeetingDetailsPage } from './model/useMeetingDetailsPage';
 import { ActionItemsSection } from './segments/action-items';
 import { DetailsHeader } from './segments/details-header';
 import { KeyPoints } from './segments/key-points';
+import { MoreActions } from './segments/more-actions';
 import { Recording } from './segments/recording';
 import { SummarizeAction } from './segments/summarize';
 
@@ -49,11 +50,17 @@ export function MeetingDetailsOrchestrator() {
                 <div class={styles.headerRow()}>
                   <DetailsHeader meeting={meeting()} />
                   <Show when={vm.hasContent()}>
-                    <SummarizeAction
-                      meetingId={meeting().id}
-                      isSummarizing={vm.isSummarizing()}
-                      onStarted={vm.goToNotesTab}
-                    />
+                    <div class={styles.headerActions()}>
+                      <SummarizeAction
+                        meetingId={meeting().id}
+                        isSummarizing={vm.isSummarizing()}
+                        onStarted={vm.goToNotesTab}
+                      />
+                      <MoreActions
+                        audioUrl={meeting().audioUrl}
+                        fileName={meeting().title}
+                      />
+                    </div>
                   </Show>
                 </div>
                 <Show when={vm.isTranscribing()}>

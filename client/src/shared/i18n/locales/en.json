@@ -76,6 +76,7 @@
     "recording_transcript": "Recording & Transcript",
     "key_points": "Key Points",
     "summarize": "Summarize",
+    "show_in_finder": "Show in Finder",
     "summarizing_hint": "Generating summary…",
     "summary_styles": {
       "auto": "Auto",

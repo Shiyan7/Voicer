@@ -13,7 +13,6 @@ import { MeetingOutput } from './meeting.output';
 import { MeetingsPageInput } from './meetings-page.input';
 import { MeetingsPageOutput } from './meetings-page.output';
 import { MeetingEntity, MeetingStatus } from './meeting.entity';
-import { UserEntity } from '../users/user.entity';
 import { FileStorageService } from '../file/file-storage.service';
 import { FileUpload } from '../file/file-upload';
 import { TranscriptSegmentEntity } from './transcript-segment.entity';
@@ -33,13 +32,9 @@ import {
 export class MeetingsService {
   private readonly logger = new Logger(MeetingsService.name);
 
-  private static readonly MAX_SUMMARIZE_COUNT = 3;
-
   constructor(
     @InjectRepository(MeetingEntity)
     private readonly meetingsRepository: Repository<MeetingEntity>,
-    @InjectRepository(UserEntity)
-    private readonly usersRepository: Repository<UserEntity>,
     @InjectRepository(TranscriptSegmentEntity)
     private readonly transcriptSegmentsRepository: Repository<TranscriptSegmentEntity>,
     @InjectRepository(KeyPointEntity)
@@ -182,34 +177,14 @@ export class MeetingsService {
       return this.serialize(meeting);
     }
 
-    await this.assertSummarizeQuota(userId);
-
     await this.updateMeetingStatus(meeting.id, {
       status: MeetingStatus.SUMMARIZING,
     });
-    await this.usersRepository.increment({ id: userId }, 'summarizeCount', 1);
 
     const segments = await this.getTranscribedSegments(meeting.id);
     void this.runSummarization(meeting, segments);
 
     return this.serialize({ ...meeting, status: MeetingStatus.SUMMARIZING });
-  }
-
-  private async assertSummarizeQuota(userId: string): Promise<void> {
-    const user = await this.usersRepository.findOne({
-      where: { id: userId },
-      comment: this.getFnName(this.assertSummarizeQuota.name),
-    });
-
-    if (!user) {
-      throw new NotFoundException('User не найден');
-    }
-
-    if (user.summarizeCount >= MeetingsService.MAX_SUMMARIZE_COUNT) {
-      throw new BadRequestException(
-        `Лимит суммаризаций исчерпан (${MeetingsService.MAX_SUMMARIZE_COUNT})`,
-      );
-    }
   }
 
   private async updateMeetingStatus(

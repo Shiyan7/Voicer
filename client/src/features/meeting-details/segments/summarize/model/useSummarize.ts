@@ -10,8 +10,6 @@ export const useSummarize = (props: SummarizeParams) => {
   const [, summarize] = meetingSummarizeMutation();
   const [selectedStyle, setSelectedStyle] = createSignal<SummaryStyle>('auto');
 
-  const styleOptions = getSummaryStyles;
-
   const selectStyle = (style: SummaryStyle) => setSelectedStyle(style);
 
   const runSummarize = async () => {
@@ -19,5 +17,10 @@ export const useSummarize = (props: SummarizeParams) => {
     await summarize({ id: props.meetingId });
   };
 
-  return { styleOptions, selectedStyle, selectStyle, runSummarize };
+  return {
+    styleOptions: getSummaryStyles,
+    selectedStyle,
+    selectStyle,
+    runSummarize,
+  };
 };

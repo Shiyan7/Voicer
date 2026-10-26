@@ -21,6 +21,7 @@ export class TranscriptionService {
   constructor(configService: ConfigService) {
     this.client = new DeepgramClient({
       apiKey: configService.get<string>('DEEPGRAM_API_KEY'),
+      timeoutInSeconds: 1800,
     });
   }
 
@@ -38,6 +39,9 @@ export class TranscriptionService {
         punctuate: true,
         smart_format: true,
         detect_language: true,
+      },
+      {
+        timeoutInSeconds: 1800,
       },
     );
 

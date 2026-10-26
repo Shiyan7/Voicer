@@ -291,10 +291,13 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['chevron-right'], [24]),
         defineSpriteSymbol(['copy'], [16]),
         defineSpriteSymbol(['cross'], [15]),
+        defineSpriteSymbol(['dots'], [16]),
+        defineSpriteSymbol(['folder'], [16]),
         defineSpriteSymbol(['logout'], [24]),
+        defineSpriteSymbol(['sparkles'], [16]),
         defineSpriteSymbol(['trash'], [24]),
       ],
-      defineExternalAssetMeta('common.548f1fe1.svg'),
+      defineExternalAssetMeta('common.532d167b.svg'),
     ),
   ]),
   defineSprite('navigation', [
@@ -340,7 +343,10 @@ export type SpritesMeta = {
     | 'chevron-right'
     | 'copy'
     | 'cross'
+    | 'dots'
+    | 'folder'
     | 'logout'
+    | 'sparkles'
     | 'trash';
   navigation:
     | 'bell-solid'

@@ -4,6 +4,7 @@ export const meetingDetailsStyles = tv({
   slots: {
     root: 'mx-auto flex w-full max-w-5xl flex-col gap-5 py-6',
     headerRow: 'flex items-start justify-between gap-4',
+    headerActions: 'flex shrink-0 items-center gap-2',
     tabPanel: 'flex flex-col gap-5',
     backLink: `
       inline-flex w-fit items-center gap-1 text-[13px] font-medium

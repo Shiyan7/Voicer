@@ -28,11 +28,25 @@
 
   --color-critical: #ff6666;
 
+  --color-ai-foreground: #ffffff;
+
+  --animate-ai-flow: ai-flow 6s ease-in-out infinite;
+
   --radius-lg: 0.625rem;
   --radius-xl: 0.875rem;
   --radius-2xl: 1.25rem;
 
   --tracking-title: -0.014em;
+}
+
+@keyframes ai-flow {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 :root[data-theme='light'] {

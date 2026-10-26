@@ -76,6 +76,7 @@
     "recording_transcript": "Запись и расшифровка",
     "key_points": "Ключевые моменты",
     "summarize": "Суммаризация",
+    "show_in_finder": "Показать в Finder",
     "summarizing_hint": "Составляем сводку…",
     "summary_styles": {
       "auto": "Авто",
