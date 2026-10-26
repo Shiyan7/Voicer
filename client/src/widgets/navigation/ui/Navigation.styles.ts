@@ -16,12 +16,13 @@ export const navigationStyles = tv({
     `,
     toggleIcon: 'h-6 w-6',
     search: `
-      flex h-11 w-full items-center gap-2.5 rounded-xl bg-white px-3
-      text-[15px] text-gray-500 shadow-[0_1px_2px_rgba(0,0,0,0.04)]
-      transition-colors hover:text-gray-700 active:bg-gray-50
+      flex h-11 w-full items-center gap-2.5 rounded-xl bg-white px-2.5
+      text-[15px] font-medium text-gray-900
+      shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-colors
+      active:bg-gray-50
     `,
     searchIcon: 'size-[18px] shrink-0',
-    searchLabel: 'flex-1 text-left',
+    searchLabel: 'flex-1 text-left text-gray-500',
     searchHotkey: `
       rounded-md bg-gray-100 px-1.5 py-0.5
       font-sans text-[11px] font-medium text-gray-500

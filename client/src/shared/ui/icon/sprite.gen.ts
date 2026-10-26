@@ -295,11 +295,11 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['dots'], [16]),
         defineSpriteSymbol(['folder'], [24]),
         defineSpriteSymbol(['logout'], [24]),
-        defineSpriteSymbol(['search'], [16]),
+        defineSpriteSymbol(['search'], [24]),
         defineSpriteSymbol(['sparkles'], [16]),
         defineSpriteSymbol(['trash'], [24]),
       ],
-      defineExternalAssetMeta('common.cdd2b239.svg'),
+      defineExternalAssetMeta('common.8aafa08e.svg'),
     ),
   ]),
   defineSprite('navigation', [
