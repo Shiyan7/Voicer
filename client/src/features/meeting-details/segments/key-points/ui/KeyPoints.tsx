@@ -13,7 +13,7 @@ export function KeyPoints(props: KeyPointsParams) {
 
   return (
     <Show when={!vm.isEmpty()}>
-      <section class={styles.card()}>
+      <section class={styles.section()}>
         <h2 class={styles.sectionTitle()}>{i18n.t('meetings.key_points')}</h2>
         <div class={styles.list()}>
           <For each={vm.points()}>

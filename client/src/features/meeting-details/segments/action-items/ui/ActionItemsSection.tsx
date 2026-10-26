@@ -14,7 +14,7 @@ export function ActionItemsSection(props: ActionItemsParams) {
 
   return (
     <Show when={!vm.isEmpty()}>
-      <section class={styles.card()}>
+      <section class={styles.section()}>
         <h2 class={styles.sectionTitle()}>{i18n.t('meetings.action_items')}</h2>
         <For each={vm.items()}>{(item) => <ActionItem item={item} />}</For>
       </section>

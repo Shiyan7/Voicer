@@ -2,12 +2,12 @@ import { tv } from 'tailwind-variants';
 
 export const keyPointsStyles = tv({
   slots: {
-    card: 'rounded-2xl border border-black/5 bg-white p-5',
-    sectionTitle: 'mb-3 text-sm font-semibold text-gray-900',
+    section: 'flex flex-col',
+    sectionTitle: 'mb-3 text-xl font-semibold tracking-title text-gray-900',
     list: 'flex flex-col gap-3',
-    item: 'flex gap-3 text-sm leading-6 text-gray-700',
-    bullet: 'mt-2 size-1.5 shrink-0 rounded-full bg-gray-300',
+    item: 'flex gap-3 text-[15px] leading-7 text-gray-800',
+    bullet: 'mt-[11px] size-1.5 shrink-0 rounded-full bg-gray-800',
     text: 'min-w-0 flex-1',
-    time: 'ml-1 text-xs tabular-nums text-gray-400',
+    time: 'ml-1.5 text-[13px] tabular-nums text-gray-400',
   },
 });

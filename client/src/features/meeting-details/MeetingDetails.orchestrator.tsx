@@ -15,6 +15,8 @@ import { ActionItemsSection } from './segments/action-items';
 import { DetailsHeader } from './segments/details-header';
 import { KeyPoints } from './segments/key-points';
 import { MoreActions } from './segments/more-actions';
+import { NotesEmpty } from './segments/notes-empty';
+import { NotesLoading } from './segments/notes-loading';
 import { Recording } from './segments/recording';
 import { SummarizeAction } from './segments/summarize';
 
@@ -27,11 +29,7 @@ export function MeetingDetailsOrchestrator() {
     <PageFade>
       <div class={styles.page()}>
         <div class={styles.root()}>
-          <button
-            class={styles.backLink()}
-            type="button"
-            onClick={vm.goBack}
-          >
+          <button class={styles.backLink()} type="button" onClick={vm.goBack}>
             <Icon size={12} name="common:arrow-left" />
             {i18n.t('meetings.back')}
           </button>
@@ -105,19 +103,17 @@ export function MeetingDetailsOrchestrator() {
                     >
                       <Show
                         when={!vm.isSummarizing()}
-                        fallback={
-                          <div class={styles.processing()}>
-                            <span class={styles.processingSpinner()} />
-                            <span class={styles.processingLabel()}>
-                              {i18n.t('meetings.summarizing_hint')}
-                            </span>
-                          </div>
-                        }
+                        fallback={<NotesLoading />}
                       >
-                        <div class={styles.tabPanel()}>
-                          <ActionItemsSection meetingId={meeting().id} />
-                          <KeyPoints meetingId={meeting().id} />
-                        </div>
+                        <Show
+                          when={!vm.isTranscribed()}
+                          fallback={<NotesEmpty />}
+                        >
+                          <div class={styles.tabPanel()}>
+                            <ActionItemsSection meetingId={meeting().id} />
+                            <KeyPoints meetingId={meeting().id} />
+                          </div>
+                        </Show>
                       </Show>
                     </Show>
                   </Show>

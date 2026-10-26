@@ -30,10 +30,7 @@ export function Recording(props: RecordingDeps) {
                     type="button"
                     onClick={() => props.onSeek(group.startMs)}
                   >
-                    <SpeakerAvatar
-                      size="md"
-                      tone={group.tone}
-                    />
+                    <SpeakerAvatar size="md" tone={group.tone} />
                     <span class={styles.speaker()}>{group.speakerLabel}</span>
                     <span class={styles.time({ tone: group.tone })}>
                       {group.timeLabel}

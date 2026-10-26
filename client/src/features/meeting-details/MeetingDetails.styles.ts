@@ -6,7 +6,7 @@ export const meetingDetailsStyles = tv({
     root: 'mx-auto flex w-full max-w-5xl flex-1 flex-col gap-5 pt-6 pb-10',
     headerRow: 'flex items-start justify-between gap-4',
     headerActions: 'flex shrink-0 items-center gap-2',
-    tabPanel: 'flex flex-col gap-5',
+    tabPanel: 'flex flex-col gap-10 px-1 pt-2',
     backLink: `
       inline-flex w-fit items-center gap-1 text-[13px] font-medium
       text-gray-500 transition-colors duration-150 hover:text-gray-900

@@ -23,7 +23,19 @@ export function ActionItem(props: ActionItemDeps) {
           <Icon size={12} name="common:check" />
         </Show>
       </button>
-      <span class={styles.text({ done: vm.isDone() })}>{props.item.text}</span>
+      <p class={styles.text({ done: vm.isDone() })}>
+        <Show when={props.item.speakerLabel}>
+          {(label) => (
+            <span class={styles.mention({ tone: props.item.speakerTone })}>
+              @{label()}
+            </span>
+          )}
+        </Show>
+        {props.item.text}
+        <Show when={props.item.timeLabel}>
+          {(time) => <span class={styles.time()}>{time()}</span>}
+        </Show>
+      </p>
     </div>
   );
 }

@@ -97,6 +97,15 @@
       "description": "This permanently removes the meeting and its transcript. This can't be undone.",
       "confirm": "Delete",
       "cancel": "Cancel"
+    },
+    "notes_empty": {
+      "title": "No notes yet",
+      "description": "Summarize this meeting and AI will pull out key points and action items from the transcript.",
+      "hint": "Use “Summarize” at the top"
+    },
+    "notes_loading": {
+      "title": "AI is writing notes",
+      "description": "Pulling key points and action items from the transcript"
     }
   },
   "recorder": {
