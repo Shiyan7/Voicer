@@ -57,6 +57,9 @@ export class MeetingEntity {
   @Column({ type: 'int', nullable: true })
   durationSec: number | null;
 
+  @Column({ type: 'boolean', default: false })
+  isFavorite: boolean;
+
   @CreateDateColumn()
   createdAt: Date;
 

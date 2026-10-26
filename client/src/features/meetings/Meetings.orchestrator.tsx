@@ -1,32 +1,37 @@
-import { i18n } from '@/shared/i18n';
+import { Show } from 'solid-js';
+
+import { DeleteMeetingModal } from '@/entities/meeting';
 import { PageFade } from '@/shared/ui/page-fade';
 
 import { meetingsStyles } from './Meetings.styles';
 import { useMeetingsPage } from './model/useMeetingsPage';
-import { DeleteMeetingModal } from './segments/delete-meeting';
 import { MeetingsList } from './segments/meetings-list';
 import { Toolbar } from './segments/toolbar/ui/Toolbar';
+import { MeetingsDeps } from './types/MeetingsDeps';
 
 const styles = meetingsStyles();
 
-export function MeetingsOrchestrator() {
-  const vm = useMeetingsPage();
+export function MeetingsOrchestrator(props: MeetingsDeps) {
+  const vm = useMeetingsPage(props);
 
   return (
     <PageFade>
       <div class={styles.root()}>
         <header class={styles.header()}>
-          <h1 class={styles.title()}>{i18n.t('meetings.title')}</h1>
-          <Toolbar
-            isUploading={vm.isUploading()}
-            onStartRecording={vm.startRecording}
-            onFileSelected={vm.onFileSelected}
-          />
+          <h1 class={styles.title()}>{vm.title()}</h1>
+          <Show when={vm.showToolbar()}>
+            <Toolbar
+              isUploading={vm.isUploading()}
+              onStartRecording={vm.startRecording}
+              onFileSelected={vm.onFileSelected}
+            />
+          </Show>
         </header>
         <MeetingsList
           items={vm.items()}
           isLoading={vm.isLoading()}
           isEmpty={vm.isEmpty()}
+          emptyLabel={vm.emptyLabel()}
           currentPage={vm.currentPage()}
           hasPrevPage={vm.hasPrevPage()}
           hasNextPage={vm.hasNextPage()}

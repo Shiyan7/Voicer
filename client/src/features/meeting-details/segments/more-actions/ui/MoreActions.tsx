@@ -1,3 +1,4 @@
+import { DeleteMeetingModal } from '@/entities/meeting';
 import { Dropdown } from '@/shared/ui/dropdown';
 import { Icon } from '@/shared/ui/icon';
 
@@ -11,11 +12,18 @@ export function MoreActions(props: MoreActionsDeps) {
   const vm = useMoreActions(props);
 
   return (
-    <Dropdown
-      options={vm.options()}
-      onSelect={vm.selectAction}
-      triggerClass={styles.trigger()}
-      trigger={() => <Icon size={18} name="common:dots" />}
-    />
+    <>
+      <Dropdown
+        options={vm.options()}
+        onSelect={vm.selectAction}
+        triggerClass={styles.trigger()}
+        trigger={() => <Icon size={18} name="common:dots" />}
+      />
+      <DeleteMeetingModal
+        isDeleting={vm.isDeleting()}
+        onConfirm={vm.confirmDelete}
+        onCancel={vm.cancelDelete}
+      />
+    </>
   );
 }

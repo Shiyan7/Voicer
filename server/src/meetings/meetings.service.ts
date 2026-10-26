@@ -105,7 +105,7 @@ export class MeetingsService {
     const skip = (page - 1) * input.limit;
 
     const meetings = await this.meetingsRepository.find({
-      where: { userId },
+      where: input.favoritesOnly ? { userId, isFavorite: true } : { userId },
       order: { startedAt: 'DESC', id: 'DESC' },
       skip,
       take: input.limit + 1,
@@ -168,6 +168,18 @@ export class MeetingsService {
     }
 
     return deleted;
+  }
+
+  async setMeetingFavorite(
+    userId: string,
+    id: string,
+    isFavorite: boolean,
+  ): Promise<MeetingOutput> {
+    const meeting = await this.findOwnedMeeting(userId, id);
+
+    await this.updateMeetingStatus(meeting.id, { isFavorite });
+
+    return this.serialize({ ...meeting, isFavorite });
   }
 
   async summarizeMeeting(userId: string, id: string): Promise<MeetingOutput> {
@@ -346,6 +358,7 @@ export class MeetingsService {
       startedAt: meeting.startedAt,
       endedAt: meeting.endedAt,
       durationSec: meeting.durationSec,
+      isFavorite: meeting.isFavorite,
       createdAt: meeting.createdAt,
       updatedAt: meeting.updatedAt,
     };

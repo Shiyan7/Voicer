@@ -24,5 +24,11 @@ export const dropdownStyles = tv({
         item: 'text-gray-900',
       },
     },
+    danger: {
+      true: {
+        item: 'text-critical',
+        itemIcon: 'text-critical',
+      },
+    },
   },
 });

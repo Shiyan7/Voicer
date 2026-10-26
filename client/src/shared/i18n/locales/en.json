@@ -9,7 +9,8 @@
     "terms_of_service": "Terms of Service",
     "privacy_policy": "Privacy Policy",
     "copy": "Copy",
-    "copied": "Copied"
+    "copied": "Copied",
+    "search": "Search"
   },
   "auth": {
     "title": {
@@ -41,6 +42,7 @@
   },
   "nav": {
     "meetings": "Meetings",
+    "favorites": "Favorites",
     "actions": "Actions"
   },
   "pagination": {
@@ -76,6 +78,10 @@
     "key_points": "Key Points",
     "summarize": "Summarize",
     "show_in_finder": "Show in Finder",
+    "add_favorite": "Add to favorites",
+    "remove_favorite": "Remove from favorites",
+    "export_text": "Export as text",
+    "delete_meeting": "Delete meeting",
     "summarizing_hint": "Generating summary…",
     "summary_styles": {
       "auto": "Auto",
@@ -121,5 +127,9 @@
       "auto": "Record calls automatically",
       "auto_hint": "Start recording without asking when a call is detected"
     }
+  },
+  "favorites": {
+    "title": "Favorites",
+    "empty": "No favorite meetings yet"
   }
 }

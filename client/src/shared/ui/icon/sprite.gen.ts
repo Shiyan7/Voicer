@@ -291,18 +291,22 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['chevron-right'], [24]),
         defineSpriteSymbol(['copy'], [16]),
         defineSpriteSymbol(['cross'], [15]),
+        defineSpriteSymbol(['document-text'], [16]),
         defineSpriteSymbol(['dots'], [16]),
         defineSpriteSymbol(['folder'], [16]),
         defineSpriteSymbol(['logout'], [24]),
+        defineSpriteSymbol(['search'], [16]),
         defineSpriteSymbol(['sparkles'], [16]),
         defineSpriteSymbol(['trash'], [24]),
       ],
-      defineExternalAssetMeta('common.532d167b.svg'),
+      defineExternalAssetMeta('common.eb9a2100.svg'),
     ),
   ]),
   defineSprite('navigation', [
     defineSpriteAsset(
       [
+        defineSpriteSymbol(['bookmark-solid'], [16]),
+        defineSpriteSymbol(['bookmark'], [16]),
         defineSpriteSymbol(['calendar-solid'], [24]),
         defineSpriteSymbol(['calendar'], [24]),
         defineSpriteSymbol(['check-solid'], [24]),
@@ -310,7 +314,7 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['settings-solid'], [24]),
         defineSpriteSymbol(['settings'], [24]),
       ],
-      defineExternalAssetMeta('navigation.96df6889.svg'),
+      defineExternalAssetMeta('navigation.1c57fc22.svg'),
     ),
   ]),
   defineSprite('social', [
@@ -341,12 +345,16 @@ export type SpritesMeta = {
     | 'chevron-right'
     | 'copy'
     | 'cross'
+    | 'document-text'
     | 'dots'
     | 'folder'
     | 'logout'
+    | 'search'
     | 'sparkles'
     | 'trash';
   navigation:
+    | 'bookmark-solid'
+    | 'bookmark'
     | 'calendar-solid'
     | 'calendar'
     | 'check-solid'

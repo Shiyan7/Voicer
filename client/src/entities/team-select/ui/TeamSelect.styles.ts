@@ -3,9 +3,8 @@ import { tv } from 'tailwind-variants';
 export const teamSelectStyles = tv({
   slots: {
     card: `
-      flex w-full items-center gap-3 rounded-2xl border border-gray-200
-      bg-white p-2.5 transition-colors duration-150
-      hover:border-gray-300 active:bg-gray-50
+      flex w-full items-center gap-3 rounded-xl p-2
+      transition-colors duration-150 hover:bg-gray-200 active:bg-gray-300
     `,
     avatar: `
       relative flex size-10 shrink-0 items-center justify-center
@@ -23,7 +22,7 @@ export const teamSelectStyles = tv({
   variants: {
     collapsed: {
       true: {
-        card: 'justify-center border-transparent bg-transparent p-0',
+        card: 'justify-center p-1',
         avatar: 'size-9 text-sm',
       },
     },

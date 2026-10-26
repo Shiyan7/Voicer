@@ -11,6 +11,12 @@ export const getNavItems = (): NavItem[] => [
     activeIcon: 'navigation:calendar-solid',
   },
   {
+    href: paths.favorites,
+    label: i18n.t('nav.favorites'),
+    icon: 'navigation:bookmark',
+    activeIcon: 'navigation:bookmark-solid',
+  },
+  {
     href: paths.actions,
     label: i18n.t('nav.actions'),
     icon: 'navigation:check',

@@ -30,6 +30,9 @@ export class MeetingOutput {
   durationSec: number | null;
 
   @Field()
+  isFavorite: boolean;
+
+  @Field()
   createdAt: Date;
 
   @Field()

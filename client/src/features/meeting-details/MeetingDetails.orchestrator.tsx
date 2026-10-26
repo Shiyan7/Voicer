@@ -57,8 +57,10 @@ export function MeetingDetailsOrchestrator() {
                         onStarted={vm.goToNotesTab}
                       />
                       <MoreActions
+                        meetingId={meeting().id}
                         audioUrl={meeting().audioUrl}
-                        fileName={meeting().title}
+                        fileName={meeting().title ?? ''}
+                        isFavorite={meeting().isFavorite}
                       />
                     </div>
                   </Show>

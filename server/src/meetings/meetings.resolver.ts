@@ -56,6 +56,15 @@ export class MeetingsResolver {
   }
 
   @Mutation(() => MeetingOutput)
+  meetingSetFavorite(
+    @CurrentUser() user: UserEntity,
+    @Args('id', { type: () => ID }) id: string,
+    @Args('isFavorite') isFavorite: boolean,
+  ): Promise<MeetingOutput> {
+    return this.meetingsService.setMeetingFavorite(user.id, id, isFavorite);
+  }
+
+  @Mutation(() => MeetingOutput)
   meetingDelete(
     @CurrentUser() user: UserEntity,
     @Args('id', { type: () => ID }) id: string,

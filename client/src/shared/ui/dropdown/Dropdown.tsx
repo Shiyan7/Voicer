@@ -41,7 +41,10 @@ export function Dropdown<T>(props: DropdownProps<T>) {
             {(option) => (
               <button
                 type="button"
-                class={styles.item({ active: option.value === props.selected })}
+                class={styles.item({
+                  active: option.value === props.selected,
+                  danger: option.isDanger,
+                })}
                 onClick={() => handleSelect(option.value)}
               >
                 <Show when={option.emoji}>
@@ -50,7 +53,7 @@ export function Dropdown<T>(props: DropdownProps<T>) {
                 <Show when={option.icon}>
                   {(icon) => (
                     <Icon
-                      class={styles.itemIcon()}
+                      class={styles.itemIcon({ danger: option.isDanger })}
                       size={16}
                       name={icon()}
                     />

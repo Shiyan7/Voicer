@@ -5,4 +5,5 @@ export interface DropdownOption<T> {
   label: string;
   icon?: IconName;
   emoji?: string;
+  isDanger?: boolean;
 }

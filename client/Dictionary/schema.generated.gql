@@ -40,6 +40,7 @@ type MeetingOutput {
   durationSec: Int
   endedAt: DateTime
   id: ID!
+  isFavorite: Boolean!
   source: String
   startedAt: DateTime!
   status: MeetingStatus!
@@ -57,6 +58,7 @@ enum MeetingStatus {
 }
 
 input MeetingsPageInput {
+  favoritesOnly: Boolean! = false
   limit: Int! = 10
   page: Int! = 1
 }
@@ -68,6 +70,7 @@ type MeetingsPageOutput {
 
 type Mutation {
   meetingDelete(id: ID!): MeetingOutput!
+  meetingSetFavorite(id: ID!, isFavorite: Boolean!): MeetingOutput!
   meetingSummarize(id: ID!): MeetingOutput!
   meetingUploadAudio(file: Upload!, source: String, startedAt: DateTime): MeetingOutput!
   signIn(input: SignInInput!): AuthPayload!

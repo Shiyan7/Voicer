@@ -12,6 +12,7 @@ export function mapMeeting(meeting?: MeetingOutput): MeetingDetails | null {
     status: meeting.status,
     audioUrl: meeting.audioUrl ?? null,
     durationSec: meeting.durationSec ?? null,
+    isFavorite: meeting.isFavorite,
     startedAt: meeting.startedAt,
   };
 }

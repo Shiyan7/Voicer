@@ -1,6 +1,7 @@
 import { Show } from 'solid-js';
 
 import { TeamSelect } from '@/entities/team-select';
+import { i18n } from '@/shared/i18n';
 import { Icon } from '@/shared/ui/icon';
 
 import { useNavigation } from '../model/useNavigation';
@@ -31,8 +32,20 @@ export function Navigation() {
             />
           </button>
         </Show>
-        <TeamSelect isCollapsed={vm.isCollapsed()} />
+        <button
+          type="button"
+          class={styles.search({ collapsed: vm.isCollapsed() })}
+        >
+          <Icon class={styles.searchIcon()} name="common:search" />
+          <Show when={!vm.isCollapsed()}>
+            <span class={styles.searchLabel()}>{i18n.t('labels.search')}</span>
+            <kbd class={styles.searchHotkey()}>⌘K</kbd>
+          </Show>
+        </button>
         <NavList items={vm.navItems()} isCollapsed={vm.isCollapsed()} />
+        <div class={styles.account()}>
+          <TeamSelect isCollapsed={vm.isCollapsed()} />
+        </div>
       </div>
     </div>
   );
