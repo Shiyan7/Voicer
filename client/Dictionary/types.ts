@@ -54,6 +54,7 @@ export type MeetingOutput = {
   durationSec?: Maybe<Scalars['Int']['output']>;
   endedAt?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['ID']['output'];
+  isFavorite: Scalars['Boolean']['output'];
   source?: Maybe<Scalars['String']['output']>;
   startedAt: Scalars['DateTime']['output'];
   status: MeetingStatus;
@@ -66,10 +67,12 @@ export enum MeetingStatus {
   Ready = 'READY',
   Recording = 'RECORDING',
   Summarizing = 'SUMMARIZING',
+  Transcribed = 'TRANSCRIBED',
   Transcribing = 'TRANSCRIBING',
 }
 
 export type MeetingsPageInput = {
+  favoritesOnly?: Scalars['Boolean']['input'];
   limit?: Scalars['Int']['input'];
   page?: Scalars['Int']['input'];
 };
@@ -83,6 +86,8 @@ export type MeetingsPageOutput = {
 export type Mutation = {
   __typename?: 'Mutation';
   meetingDelete: MeetingOutput;
+  meetingSetFavorite: MeetingOutput;
+  meetingSummarize: MeetingOutput;
   meetingUploadAudio: MeetingOutput;
   signIn: AuthPayload;
   signUp: AuthPayload;
@@ -90,6 +95,15 @@ export type Mutation = {
 };
 
 export type MutationMeetingDeleteArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type MutationMeetingSetFavoriteArgs = {
+  id: Scalars['ID']['input'];
+  isFavorite: Scalars['Boolean']['input'];
+};
+
+export type MutationMeetingSummarizeArgs = {
   id: Scalars['ID']['input'];
 };
 

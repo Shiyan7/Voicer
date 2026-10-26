@@ -2,13 +2,29 @@ import { tv } from 'tailwind-variants';
 
 export const teamSelectStyles = tv({
   slots: {
-    avatarBtn: `
-      mx-auto flex h-5 w-5 items-center justify-center
-      rounded-sm border border-gray-500 text-gray-500
+    card: `
+      flex w-full items-center gap-3 rounded-xl p-2
+      transition-colors duration-150 hover:bg-gray-200 active:bg-gray-300
     `,
-    info: 'flex flex-col items-start',
-    name: 'text-2xl font-bold text-gray-900',
-    email: 'text-sm text-gray-500',
+    avatar: `
+      relative flex size-10 shrink-0 items-center justify-center
+      overflow-hidden rounded-full text-base font-semibold
+      text-ai-foreground
+      bg-[linear-gradient(135deg,#3b82f6,#8b5cf6,#ec4899)]
+      shadow-[0_2px_10px_-2px_rgba(139,92,246,0.5),inset_0_1px_0_rgba(255,255,255,0.3)]
+    `,
+    avatarImage: 'size-full object-cover',
+    info: 'flex min-w-0 flex-col',
+    name: 'truncate text-[15px] font-semibold leading-5 text-gray-900',
+    email: 'truncate text-[13px] leading-4 text-gray-500',
     authBtn: 'w-full',
+  },
+  variants: {
+    collapsed: {
+      true: {
+        card: 'justify-center p-1',
+        avatar: 'size-9 text-sm',
+      },
+    },
   },
 });

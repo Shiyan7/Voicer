@@ -6,5 +6,6 @@ export interface MeetingDetails {
   status: MeetingStatus;
   audioUrl: string | null;
   durationSec: number | null;
+  isFavorite: boolean;
   startedAt: string;
 }

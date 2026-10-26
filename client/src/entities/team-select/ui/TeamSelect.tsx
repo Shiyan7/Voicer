@@ -1,3 +1,4 @@
+import { A } from '@solidjs/router';
 import { Show } from 'solid-js';
 
 import { Button } from '@/shared/ui/button';
@@ -20,17 +21,22 @@ export function TeamSelect(props: TeamSelectDeps) {
         </Button>
       }
     >
-      <Show
-        when={!props.isCollapsed}
-        fallback={
-          <button class={styles.avatarBtn()}>{vm.firstLetterName()}</button>
-        }
+      <A
+        class={styles.card({ collapsed: props.isCollapsed })}
+        href={vm.accountHref}
       >
-        <div class={styles.info()}>
-          <span class={styles.name()}>{vm.user()?.name}</span>
-          <span class={styles.email()}>{vm.user()?.email}</span>
-        </div>
-      </Show>
+        <span class={styles.avatar({ collapsed: props.isCollapsed })}>
+          <Show when={vm.avatarUrl()} fallback={vm.firstLetterName()}>
+            {(url) => <img class={styles.avatarImage()} src={url()} alt="" />}
+          </Show>
+        </span>
+        <Show when={!props.isCollapsed}>
+          <span class={styles.info()}>
+            <span class={styles.name()}>{vm.name()}</span>
+            <span class={styles.email()}>{vm.email()}</span>
+          </span>
+        </Show>
+      </A>
     </Show>
   );
 }

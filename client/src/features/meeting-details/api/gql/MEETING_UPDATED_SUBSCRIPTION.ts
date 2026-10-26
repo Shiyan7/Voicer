@@ -11,6 +11,7 @@ export const MEETING_UPDATED_SUBSCRIPTION = gql`
       startedAt
       endedAt
       durationSec
+      isFavorite
     }
   }
 `;

@@ -8,7 +8,7 @@ import {
   SUMMARY_RESPONSE_SCHEMA,
 } from './prompts/summarize-meeting.prompt';
 
-const SUMMARY_MODEL = 'gemini-3.5-flash';
+const SUMMARY_MODEL = 'gemini-3-flash-preview';
 
 @Injectable()
 export class SummarizationService {

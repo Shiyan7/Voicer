@@ -7,4 +7,7 @@ export class MeetingsPageInput {
 
   @Field(() => Int, { defaultValue: 10 })
   limit: number = 10;
+
+  @Field({ defaultValue: false })
+  favoritesOnly: boolean = false;
 }

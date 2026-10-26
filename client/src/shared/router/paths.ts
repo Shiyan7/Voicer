@@ -1,7 +1,7 @@
 export const paths = {
   meetings: '/',
   meeting: (id: string) => `/meetings/${id}`,
-  activity: '/activity',
+  favorites: '/favorites',
   actions: '/actions',
   settings: '/settings',
   notFound: '*404',

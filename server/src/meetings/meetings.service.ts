@@ -105,7 +105,7 @@ export class MeetingsService {
     const skip = (page - 1) * input.limit;
 
     const meetings = await this.meetingsRepository.find({
-      where: { userId },
+      where: input.favoritesOnly ? { userId, isFavorite: true } : { userId },
       order: { startedAt: 'DESC', id: 'DESC' },
       skip,
       take: input.limit + 1,
@@ -170,6 +170,35 @@ export class MeetingsService {
     return deleted;
   }
 
+  async setMeetingFavorite(
+    userId: string,
+    id: string,
+    isFavorite: boolean,
+  ): Promise<MeetingOutput> {
+    const meeting = await this.findOwnedMeeting(userId, id);
+
+    await this.updateMeetingStatus(meeting.id, { isFavorite });
+
+    return this.serialize({ ...meeting, isFavorite });
+  }
+
+  async summarizeMeeting(userId: string, id: string): Promise<MeetingOutput> {
+    const meeting = await this.findOwnedMeeting(userId, id);
+
+    if (meeting.status === MeetingStatus.SUMMARIZING) {
+      return this.serialize(meeting);
+    }
+
+    await this.updateMeetingStatus(meeting.id, {
+      status: MeetingStatus.SUMMARIZING,
+    });
+
+    const segments = await this.getTranscribedSegments(meeting.id);
+    void this.runSummarization(meeting, segments);
+
+    return this.serialize({ ...meeting, status: MeetingStatus.SUMMARIZING });
+  }
+
   private async updateMeetingStatus(
     meetingId: string,
     updates: Partial<MeetingEntity>,
@@ -190,8 +219,7 @@ export class MeetingsService {
 
   private async processMeeting(meeting: MeetingEntity): Promise<void> {
     try {
-      const segments = await this.transcribeMeeting(meeting);
-      await this.summarizeMeeting(meeting, segments);
+      await this.transcribeMeeting(meeting);
     } catch (error) {
       this.logger.error(
         `Failed to process meeting ${meeting.id}`,
@@ -224,7 +252,7 @@ export class MeetingsService {
 
     const lastSegment = segments.at(-1);
     await this.updateMeetingStatus(meeting.id, {
-      status: MeetingStatus.SUMMARIZING,
+      status: MeetingStatus.TRANSCRIBED,
       endedAt: new Date(),
       durationSec: lastSegment ? Math.round(lastSegment.endMs / 1000) : null,
     });
@@ -232,7 +260,24 @@ export class MeetingsService {
     return segments;
   }
 
-  private async summarizeMeeting(
+  private async getTranscribedSegments(
+    meetingId: string,
+  ): Promise<TranscribedSegment[]> {
+    const segments = await this.transcriptSegmentsRepository.find({
+      where: { meetingId },
+      order: { startMs: 'ASC' },
+      comment: this.getFnName(this.getTranscribedSegments.name),
+    });
+
+    return segments.map(({ speakerIndex, startMs, endMs, text }) => ({
+      speakerIndex,
+      startMs,
+      endMs,
+      text,
+    }));
+  }
+
+  private async runSummarization(
     meeting: MeetingEntity,
     segments: TranscribedSegment[],
   ): Promise<void> {
@@ -313,6 +358,7 @@ export class MeetingsService {
       startedAt: meeting.startedAt,
       endedAt: meeting.endedAt,
       durationSec: meeting.durationSec,
+      isFavorite: meeting.isFavorite,
       createdAt: meeting.createdAt,
       updatedAt: meeting.updatedAt,
     };

@@ -1,6 +1,5 @@
 import { For, Show } from 'solid-js';
 
-import { i18n } from '@/shared/i18n';
 import { Pagination } from '@/shared/ui/pagination';
 
 import { MeetingsListProps } from '../types/MeetingsListProps';
@@ -17,7 +16,7 @@ export function MeetingsList(props: MeetingsListProps) {
         when={!props.isEmpty}
         fallback={
           <div class={styles.empty()}>
-            <span class={styles.emptyTitle()}>{i18n.t('meetings.empty')}</span>
+            <span class={styles.emptyTitle()}>{props.emptyLabel}</span>
           </div>
         }
       >

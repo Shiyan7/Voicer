@@ -3,16 +3,10 @@ import { useParams } from '@solidjs/router';
 import { createSignal } from 'solid-js';
 
 import { mapMeeting } from '@/entities/meeting';
-import { i18n } from '@/shared/i18n';
 
 import { meetingUpdatedSubscription } from '../api/meetingUpdatedSubscription';
 import { getMeetingTabs } from '../config/getMeetingTabs';
 import { MeetingTab } from '../types/MeetingTab';
-
-const PROCESSING_STATUSES = [
-  MeetingStatus.Transcribing,
-  MeetingStatus.Summarizing,
-];
 
 export const useMeetingDetailsPage = () => {
   const params = useParams<{ id: string }>();
@@ -25,30 +19,35 @@ export const useMeetingDetailsPage = () => {
 
   const isEmpty = () => !meetingResult.fetching && !meeting();
 
-  const isReady = () => meeting()?.status === MeetingStatus.Ready;
+  const status = () => meeting()?.status;
 
-  const isFailed = () => meeting()?.status === MeetingStatus.Failed;
+  const isTranscribing = () => status() === MeetingStatus.Transcribing;
 
-  const processingStatus = () => {
-    const status = meeting()?.status;
-    return status && PROCESSING_STATUSES.includes(status) ? status : null;
-  };
+  const isTranscribed = () => status() === MeetingStatus.Transcribed;
 
-  const processingLabel = () =>
-    processingStatus() === MeetingStatus.Summarizing
-      ? i18n.t('meetings.status.summarizing')
-      : i18n.t('meetings.status.transcribing');
+  const isSummarizing = () => status() === MeetingStatus.Summarizing;
+
+  const isReady = () => status() === MeetingStatus.Ready;
+
+  const isFailed = () => status() === MeetingStatus.Failed;
+
+  const hasContent = () => isTranscribed() || isSummarizing() || isReady();
+
+  const goToNotesTab = () => setActiveTab('notes');
 
   return {
     meeting,
     isLoading,
     isEmpty,
+    isTranscribing,
+    isTranscribed,
+    isSummarizing,
     isReady,
     isFailed,
-    processingStatus,
-    processingLabel,
+    hasContent,
     activeTab,
     setActiveTab,
+    goToNotesTab,
     tabs: getMeetingTabs,
   };
 };

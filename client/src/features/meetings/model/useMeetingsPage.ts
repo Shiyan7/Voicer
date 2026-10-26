@@ -1,20 +1,30 @@
 import { createSignal } from 'solid-js';
 
-import { uploadMeetingAudioMutation } from '@/entities/meeting';
+import {
+  deleteMeetingMutation,
+  uploadMeetingAudioMutation,
+} from '@/entities/meeting';
 import { useQueryPagination } from '@/shared/hooks/useQueryPagination';
+import { i18n } from '@/shared/i18n';
 import { closeModal, MODALS, showModal } from '@/shared/lib/modal';
 import { startRecording as startRecorderCommand } from '@/shared/lib/recorder';
 import { authRoot } from '@/shared/roots/authRoot';
 
-import { deleteMeetingMutation } from '../api/deleteMeetingMutation';
 import { meetingsPageQuery } from '../api/meetingsPageQuery';
 import { mapMeetingCards } from '../lib/mapMeetingCards';
+import { MeetingsDeps } from '../types/MeetingsDeps';
 
-export const useMeetingsPage = () => {
+export const useMeetingsPage = (props: MeetingsDeps) => {
   const pagination = useQueryPagination(() => meetingsPage()?.meta);
 
   const [meetingsResult] = meetingsPageQuery(
-    () => ({ input: { page: pagination.page(), limit: pagination.limit } }),
+    () => ({
+      input: {
+        page: pagination.page(),
+        limit: pagination.limit,
+        favoritesOnly: Boolean(props.favoritesOnly),
+      },
+    }),
     { pause: () => !authRoot.isAuth },
   );
 
@@ -36,6 +46,14 @@ export const useMeetingsPage = () => {
   const isUploading = () => uploadResult.fetching;
 
   const isDeleting = () => deleteResult.fetching;
+
+  const title = () =>
+    props.favoritesOnly ? i18n.t('favorites.title') : i18n.t('meetings.title');
+
+  const emptyLabel = () =>
+    props.favoritesOnly ? i18n.t('favorites.empty') : i18n.t('meetings.empty');
+
+  const showToolbar = () => !props.favoritesOnly;
 
   const startRecording = async () => {
     try {
@@ -77,6 +95,9 @@ export const useMeetingsPage = () => {
   };
 
   return {
+    title,
+    emptyLabel,
+    showToolbar,
     items,
     isLoading,
     isEmpty,

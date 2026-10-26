@@ -1,13 +1,22 @@
 import { useUserMe } from '@/entities/user-me';
 import { i18n } from '@/shared/i18n';
 import { MODALS, showModal } from '@/shared/lib/modal';
+import { paths } from '@/shared/router';
 
 import { TeamSelectDeps } from '../types/TeamSelectDeps';
 
 export const useTeamSelect = (props: TeamSelectDeps) => {
   const { isAuthorized, user } = useUserMe();
 
-  const firstLetterName = () => user()?.name[0].toUpperCase();
+  const firstLetterName = () => user()?.name[0]?.toUpperCase() ?? '';
+
+  const avatarUrl = () => user()?.avatar ?? null;
+
+  const name = () => user()?.name ?? '';
+
+  const email = () => user()?.email ?? '';
+
+  const accountHref = paths.settings;
 
   const authLabel = () =>
     props.isCollapsed ? i18n.t('labels.log_in') : i18n.t('labels.auth_button');
@@ -16,8 +25,11 @@ export const useTeamSelect = (props: TeamSelectDeps) => {
 
   return {
     isAuthorized,
-    user,
     firstLetterName,
+    avatarUrl,
+    name,
+    email,
+    accountHref,
     authLabel,
     openAuth,
   };

@@ -13,6 +13,7 @@ import { UserEntity } from '../users/user.entity';
 export enum MeetingStatus {
   RECORDING = 'recording',
   TRANSCRIBING = 'transcribing',
+  TRANSCRIBED = 'transcribed',
   SUMMARIZING = 'summarizing',
   READY = 'ready',
   FAILED = 'failed',
@@ -55,6 +56,9 @@ export class MeetingEntity {
 
   @Column({ type: 'int', nullable: true })
   durationSec: number | null;
+
+  @Column({ type: 'boolean', default: false })
+  isFavorite: boolean;
 
   @CreateDateColumn()
   createdAt: Date;

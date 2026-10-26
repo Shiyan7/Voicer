@@ -11,6 +11,19 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
+  const corsWhitelist = [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'tauri://localhost',
+    'http://tauri.localhost',
+    'https://tauri.localhost',
+    configService.get<string>('CLIENT_URL'),
+  ];
+
+  app.enableCors({
+    origin: corsWhitelist,
+  });
+
   const storageDir = configService.get<string>('STORAGE_DIR') ?? './storage';
   app.useStaticAssets(join(process.cwd(), storageDir), { prefix: '/storage/' });
 
@@ -24,19 +37,6 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
   app.enableShutdownHooks();
-
-  const corsWhitelist = [
-    'http://localhost:3000',
-    'http://localhost:5173',
-    'tauri://localhost',
-    'http://tauri.localhost',
-    'https://tauri.localhost',
-    configService.get<string>('CLIENT_URL'),
-  ];
-
-  app.enableCors({
-    origin: corsWhitelist,
-  });
 
   await app.listen(configService.get<number>('PORT'));
 }

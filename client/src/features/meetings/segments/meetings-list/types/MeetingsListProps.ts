@@ -4,6 +4,7 @@ export interface MeetingsListProps {
   items: MeetingCardData[];
   isLoading: boolean;
   isEmpty: boolean;
+  emptyLabel: string;
   currentPage: number;
   hasPrevPage: boolean;
   hasNextPage: boolean;
