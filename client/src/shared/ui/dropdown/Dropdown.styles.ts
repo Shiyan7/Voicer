@@ -10,10 +10,10 @@ export const dropdownStyles = tv({
     `,
     item: `
       flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm
-      font-medium text-gray-700 transition-colors hover:bg-gray-200
+      font-medium text-gray-900 transition-colors hover:bg-gray-200
       border-b border-gray-200 last:border-b-0
     `,
-    itemIcon: 'shrink-0 text-gray-500',
+    itemIcon: 'shrink-0 text-gray-900',
     itemEmoji: 'shrink-0 text-base leading-none',
     itemLabel: 'flex-1 truncate',
     check: 'shrink-0 text-gray-900',

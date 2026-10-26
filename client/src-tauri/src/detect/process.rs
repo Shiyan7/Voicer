@@ -98,6 +98,28 @@ fn app_name_for_pid(pid: i32) -> Option<String> {
     }
 }
 
+fn host_app_name_for_pid(pid: i32) -> Option<String> {
+    use objc2::rc::Retained;
+    use objc2::runtime::{AnyClass, AnyObject};
+    use objc2_foundation::NSString;
+
+    let cls = AnyClass::get(c"NSRunningApplication")?;
+    let path = unsafe {
+        let app: Option<Retained<AnyObject>> =
+            objc2::msg_send![cls, runningApplicationWithProcessIdentifier: pid];
+        let url: Option<Retained<AnyObject>> = objc2::msg_send![&*app?, bundleURL];
+        let path: Option<Retained<NSString>> = objc2::msg_send![&*url?, path];
+        path?.to_string()
+    };
+
+    let host_end = path.find(".app/")? + ".app".len();
+    let host_path = &path[..host_end];
+    let file_name = host_path.rsplit('/').next()?;
+    let name = file_name.strip_suffix(".app").unwrap_or(file_name);
+
+    (!name.is_empty()).then(|| name.to_string())
+}
+
 fn name_from_bundle(bundle_id: &str) -> String {
     bundle_id
         .rsplit('.')
@@ -107,7 +129,8 @@ fn name_from_bundle(bundle_id: &str) -> String {
 }
 
 pub fn app_display_name(process: &AudioProcess) -> String {
-    app_name_for_pid(process.pid)
+    host_app_name_for_pid(process.pid)
+        .or_else(|| app_name_for_pid(process.pid))
         .filter(|name| !name.is_empty())
         .unwrap_or_else(|| name_from_bundle(&process.bundle_id))
 }

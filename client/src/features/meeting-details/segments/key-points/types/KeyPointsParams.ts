@@ -1,3 +1,5 @@
+import type { KeyPointOutput } from '@schema';
+
 export interface KeyPointsParams {
-  meetingId: string;
+  points: KeyPointOutput[];
 }

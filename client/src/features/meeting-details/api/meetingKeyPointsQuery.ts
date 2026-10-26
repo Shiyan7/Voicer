@@ -13,7 +13,7 @@ type MeetingKeyPointsQueryOptions = Omit<
 >;
 
 export const meetingKeyPointsQuery = (
-  variables: QueryMeetingKeyPointsArgs,
+  variables: () => QueryMeetingKeyPointsArgs,
   options?: MeetingKeyPointsQueryOptions,
 ) =>
   createQuery<MeetingKeyPointsQueryResult, QueryMeetingKeyPointsArgs>({

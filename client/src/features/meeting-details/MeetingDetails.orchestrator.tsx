@@ -5,7 +5,6 @@ import { MeetingPlayer } from '@/entities/meeting-player';
 import { i18n } from '@/shared/i18n';
 import { paths } from '@/shared/router';
 import { Button } from '@/shared/ui/button';
-import { Icon } from '@/shared/ui/icon';
 import { PageFade } from '@/shared/ui/page-fade';
 import { Tabs } from '@/shared/ui/tabs';
 
@@ -28,11 +27,10 @@ export function MeetingDetailsOrchestrator() {
   return (
     <PageFade>
       <div class={styles.page()}>
+        <div class={styles.glowClip()}>
+          <div class={styles.glow()} />
+        </div>
         <div class={styles.root()}>
-          <button class={styles.backLink()} type="button" onClick={vm.goBack}>
-            <Icon size={12} name="common:arrow-left" />
-            {i18n.t('meetings.back')}
-          </button>
           <Switch>
             <Match when={vm.isLoading()}>
               <div class={styles.skeleton({ size: 'header' })} />
@@ -52,22 +50,26 @@ export function MeetingDetailsOrchestrator() {
               {(meeting) => (
                 <>
                   <div class={styles.headerRow()}>
-                    <DetailsHeader meeting={meeting()} />
-                    <Show when={vm.hasContent()}>
-                      <div class={styles.headerActions()}>
+                    <DetailsHeader
+                      meeting={meeting()}
+                      speakerTones={vm.speakerTones()}
+                      onBack={vm.goBack}
+                    />
+                    <div class={styles.headerActions()}>
+                      <Show when={vm.hasContent()}>
                         <SummarizeAction
                           meetingId={meeting().id}
                           isSummarizing={vm.isSummarizing()}
                           onStarted={vm.goToNotesTab}
                         />
-                        <MoreActions
-                          meetingId={meeting().id}
-                          audioUrl={meeting().audioUrl}
-                          fileName={meeting().title ?? ''}
-                          isFavorite={meeting().isFavorite}
-                        />
-                      </div>
-                    </Show>
+                      </Show>
+                      <MoreActions
+                        meetingId={meeting().id}
+                        audioUrl={meeting().audioUrl}
+                        fileName={meeting().title ?? ''}
+                        isFavorite={meeting().isFavorite}
+                      />
+                    </div>
                   </div>
                   <Show when={vm.isTranscribing()}>
                     <div class={styles.processing()}>
@@ -106,12 +108,12 @@ export function MeetingDetailsOrchestrator() {
                         fallback={<NotesLoading />}
                       >
                         <Show
-                          when={!vm.isTranscribed()}
+                          when={!vm.showNotesEmpty()}
                           fallback={<NotesEmpty />}
                         >
                           <div class={styles.tabPanel()}>
-                            <ActionItemsSection meetingId={meeting().id} />
-                            <KeyPoints meetingId={meeting().id} />
+                            <ActionItemsSection items={vm.actionItems()} />
+                            <KeyPoints points={vm.keyPoints()} />
                           </div>
                         </Show>
                       </Show>

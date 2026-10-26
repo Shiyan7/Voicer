@@ -19,7 +19,11 @@ export function DeleteMeetingModal(props: DeleteMeetingModalProps) {
         <Button variant="secondary" onClick={props.onCancel}>
           {i18n.t('meetings.delete.cancel')}
         </Button>
-        <Button disabled={props.isDeleting} onClick={props.onConfirm}>
+        <Button
+          variant="danger"
+          disabled={props.isDeleting}
+          onClick={props.onConfirm}
+        >
           {i18n.t('meetings.delete.confirm')}
         </Button>
       </div>

@@ -4,6 +4,7 @@ import {
   deleteMeetingMutation,
   uploadMeetingAudioMutation,
 } from '@/entities/meeting';
+import { useToasts } from '@/entities/toasts';
 import { useQueryPagination } from '@/shared/hooks/useQueryPagination';
 import { i18n } from '@/shared/i18n';
 import { closeModal, MODALS, showModal } from '@/shared/lib/modal';
@@ -15,6 +16,7 @@ import { mapMeetingCards } from '../lib/mapMeetingCards';
 import { MeetingsDeps } from '../types/MeetingsDeps';
 
 export const useMeetingsPage = (props: MeetingsDeps) => {
+  const toasts = useToasts();
   const pagination = useQueryPagination(() => meetingsPage()?.meta);
 
   const [meetingsResult] = meetingsPageQuery(
@@ -89,9 +91,15 @@ export const useMeetingsPage = (props: MeetingsDeps) => {
     const id = pendingDeleteId();
     if (!id) return;
 
-    await deleteMeeting({ id });
+    const result = await deleteMeeting({ id });
+    if (result.error) {
+      toasts.show('error', i18n.t('meetings.delete.error'));
+      return;
+    }
+
     closeModal(MODALS.DELETE_MEETING);
     setPendingDeleteId(null);
+    toasts.show('success', i18n.t('meetings.delete.success'));
   };
 
   return {

@@ -289,10 +289,12 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['check'], [24]),
         defineSpriteSymbol(['chevron-left'], [24]),
         defineSpriteSymbol(['chevron-right'], [24]),
+        defineSpriteSymbol(['clock'], [16]),
         defineSpriteSymbol(['copy'], [16]),
         defineSpriteSymbol(['cross'], [15]),
         defineSpriteSymbol(['document-text'], [24]),
         defineSpriteSymbol(['dots'], [16]),
+        defineSpriteSymbol(['exclamation'], [24]),
         defineSpriteSymbol(['folder'], [24]),
         defineSpriteSymbol(['logout'], [24]),
         defineSpriteSymbol(['pause'], [16]),
@@ -305,7 +307,7 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['timeline'], [16]),
         defineSpriteSymbol(['trash'], [24]),
       ],
-      defineExternalAssetMeta('common.6b32e46c.svg'),
+      defineExternalAssetMeta('common.f5d2c705.svg'),
     ),
   ]),
   defineSprite('navigation', [
@@ -328,14 +330,9 @@ export const sprites = defineSpriteMap([
       [
         defineSpriteSymbol(['apple'], [24]),
         defineSpriteSymbol(['google'], [24]),
+        defineSpriteSymbol(['telegram', 'social-telegram-65acfa5c'], [24]),
       ],
-      defineExternalAssetMeta('social.88435a0a.svg'),
-    ),
-    defineSpriteAsset(
-      [defineSpriteSymbol(['telegram', 'social-telegram-65acfa5c'], [24])],
-      defineInjectedAssetMeta(
-        '<svg width="0" height="0"><defs><linearGradient id="social-telegram-ref-b-65acfa5c" x1="1200" x2="1200" y1="0" y2="2382.2" gradientUnits="userSpaceOnUse"><stop stop-color="#2AABEE"/><stop offset="1" stop-color="#229ED9"/></linearGradient><clipPath id="social-telegram-ref-a-65acfa5c"><path fill="#fff" d="M0 0h24v24H0z"/></clipPath></defs><symbol xmlns="http://www.w3.org/2000/svg" id="social-telegram-65acfa5c" fill="none" viewBox="0 0 24 24"><g clip-path="url(#social-telegram-ref-a-65acfa5c)"><path fill="url(#social-telegram-ref-b-65acfa5c)" d="M12 24c6.627 0 12-5.373 12-12S18.627 0 12 0 0 5.373 0 12s5.373 12 12 12"/><path fill="#fff" fill-rule="evenodd" d="M5.432 11.872q5.247-2.286 6.998-3.014c3.333-1.387 4.025-1.627 4.477-1.635.099-.002.32.023.465.14a.5.5 0 0 1 .17.324c.016.094.036.306.02.473-.18 1.897-.962 6.502-1.36 8.627-.167.9-.499 1.2-.82 1.23-.696.064-1.225-.46-1.9-.903-1.056-.692-1.653-1.123-2.678-1.799-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212-.07-.063-.174-.042-.249-.025q-.158.037-5.061 3.346-.72.494-1.302.48c-.428-.009-1.252-.242-1.865-.44-.751-.245-1.349-.374-1.297-.789q.04-.324.893-.663" clip-rule="evenodd"/></g></symbol></svg>',
-      ),
+      defineExternalAssetMeta('social.122163fc.svg'),
     ),
   ]),
 ]);
@@ -349,10 +346,12 @@ export type SpritesMeta = {
     | 'check'
     | 'chevron-left'
     | 'chevron-right'
+    | 'clock'
     | 'copy'
     | 'cross'
     | 'document-text'
     | 'dots'
+    | 'exclamation'
     | 'folder'
     | 'logout'
     | 'pause'

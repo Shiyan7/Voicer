@@ -3,22 +3,22 @@ import { tv } from 'tailwind-variants';
 export const toastsStyles = tv({
   slots: {
     root: `
-      fixed right-0 top-0 z-(--z-toast)
-      flex flex-col items-end justify-start
-      gap-3 p-6 pointer-events-none
+      fixed inset-x-0 bottom-0 z-(--z-toast)
+      flex flex-col items-center justify-end
+      gap-2 p-6 pointer-events-none
     `,
     toast: `
-      flex items-center gap-2 px-4 py-3 pointer-events-auto
-      relative overflow-hidden min-w-[320px]
-      rounded-xl border border-black/5
-      bg-white/85 backdrop-blur-xl text-gray-900
-      transition-all duration-300
+      flex items-center gap-3 py-2 pl-2 pr-2 pointer-events-auto
+      relative overflow-hidden
+      rounded-2xl border border-black/5
+      bg-white/90 backdrop-blur-xl text-gray-900
+      shadow-[0_12px_32px_-12px_rgba(15,15,30,0.3)]
+      animate-[toast-in_220ms_ease-out]
     `,
-    left: `
-      flex-1 flex gap-2.5 items-center
-      before:size-2 before:shrink-0 before:rounded-full
+    badge: `
+      flex size-8 shrink-0 items-center justify-center rounded-xl text-white
     `,
-    title: 'text-sm font-medium flex-1 text-gray-900',
+    title: 'flex-1 pr-2 text-sm font-medium text-gray-900',
     close: `
       flex items-center justify-center h-6 w-6
       rounded-full text-gray-400 transition-colors
@@ -28,16 +28,16 @@ export const toastsStyles = tv({
   variants: {
     variant: {
       success: {
-        left: 'before:bg-green-500',
+        badge: 'bg-emerald-500',
       },
       warning: {
-        left: 'before:bg-amber-500',
+        badge: 'bg-amber-500',
       },
       info: {
-        left: 'before:bg-gray-500',
+        badge: 'bg-gray-500',
       },
       error: {
-        left: 'before:bg-red-500',
+        badge: 'bg-red-500',
       },
     },
   },

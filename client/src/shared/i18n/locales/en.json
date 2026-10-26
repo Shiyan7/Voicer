@@ -96,7 +96,9 @@
       "title": "Delete meeting?",
       "description": "This permanently removes the meeting and its transcript. This can't be undone.",
       "confirm": "Delete",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "success": "Meeting deleted",
+      "error": "Couldn’t delete the meeting"
     },
     "notes_empty": {
       "title": "No notes yet",
@@ -106,7 +108,8 @@
     "notes_loading": {
       "title": "AI is writing notes",
       "description": "Pulling key points and action items from the transcript"
-    }
+    },
+    "speakers_count": "Speakers: {{count}}"
   },
   "recorder": {
     "recording": "Recording",

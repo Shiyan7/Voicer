@@ -6,6 +6,7 @@ import { useClient } from '@urql/solid';
 import { createSignal } from 'solid-js';
 
 import { deleteMeetingMutation } from '@/entities/meeting';
+import { useToasts } from '@/entities/toasts';
 import { fetchMeetingTranscript } from '@/features/meeting-details/api/fetchMeetingTranscript';
 import { meetingSetFavoriteMutation } from '@/features/meeting-details/api/meetingSetFavoriteMutation';
 import { i18n } from '@/shared/i18n';
@@ -20,6 +21,7 @@ import { MoreActionsDeps } from '../types/MoreActionsDeps';
 
 export const useMoreActions = (props: MoreActionsDeps) => {
   const navigate = useNavigate();
+  const toasts = useToasts();
   const client = useClient();
   const [, setFavorite] = meetingSetFavoriteMutation();
   const [deleteResult, deleteMeeting] = deleteMeetingMutation();
@@ -112,9 +114,13 @@ export const useMoreActions = (props: MoreActionsDeps) => {
 
   const confirmDelete = async () => {
     const result = await deleteMeeting({ id: props.meetingId });
-    if (result.error) return;
+    if (result.error) {
+      toasts.show('error', i18n.t('meetings.delete.error'));
+      return;
+    }
 
     closeModal(MODALS.DELETE_MEETING);
+    toasts.show('success', i18n.t('meetings.delete.success'));
     navigate(paths.meetings);
   };
 

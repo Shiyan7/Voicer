@@ -61,9 +61,7 @@ export function PlayerControls(props: PlayerControlsProps) {
       <div class={styles.end()}>
         <div class={styles.avatars()}>
           <For each={props.tracks}>
-            {(track) => (
-              <SpeakerAvatar tone={track.tone} />
-            )}
+            {(track) => <SpeakerAvatar tone={track.tone} />}
           </For>
         </div>
         <button

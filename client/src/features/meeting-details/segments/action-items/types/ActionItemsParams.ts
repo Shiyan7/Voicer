@@ -1,3 +1,5 @@
+import type { ActionItemOutput } from '@schema';
+
 export interface ActionItemsParams {
-  meetingId: string;
+  items: ActionItemOutput[];
 }

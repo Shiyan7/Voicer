@@ -15,6 +15,7 @@ export const buttonStyles = tv({
       primary: 'bg-gray-900 text-white hover:bg-gray-800 active:bg-gray-950',
       secondary:
         'bg-gray-100 text-gray-900 hover:bg-gray-200 active:bg-gray-300',
+      danger: 'bg-red-500 text-white hover:bg-red-600 active:bg-red-700',
       ghost:
         'bg-transparent text-gray-900 hover:bg-gray-900/5 active:bg-gray-900/10',
     },

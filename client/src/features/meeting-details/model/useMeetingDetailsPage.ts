@@ -5,7 +5,10 @@ import { createSignal } from 'solid-js';
 import { mapMeeting } from '@/entities/meeting';
 import { usePlayback } from '@/entities/meeting-player';
 import { paths } from '@/shared/router';
+import { getSpeakerTone } from '@/shared/ui/speaker-avatar';
 
+import { meetingActionItemsQuery } from '../api/meetingActionItemsQuery';
+import { meetingKeyPointsQuery } from '../api/meetingKeyPointsQuery';
 import { meetingTranscriptQuery } from '../api/meetingTranscriptQuery';
 import { meetingUpdatedSubscription } from '../api/meetingUpdatedSubscription';
 import { getMeetingTabs } from '../config/getMeetingTabs';
@@ -43,6 +46,33 @@ export const useMeetingDetailsPage = () => {
 
   const transcript = () => transcriptResult.data?.meetingTranscript ?? [];
 
+  const speakerTones = () =>
+    [...new Set(transcript().map((segment) => segment.speakerIndex))]
+      .sort((a, b) => a - b)
+      .map(getSpeakerTone);
+
+  const [actionItemsResult] = meetingActionItemsQuery(
+    () => ({ meetingId: params.id }),
+    { pause: () => !isReady() },
+  );
+
+  const [keyPointsResult] = meetingKeyPointsQuery(
+    () => ({ meetingId: params.id }),
+    { pause: () => !isReady() },
+  );
+
+  const actionItems = () => actionItemsResult.data?.meetingActionItems ?? [];
+
+  const keyPoints = () => keyPointsResult.data?.meetingKeyPoints ?? [];
+
+  const isNotesLoading = () =>
+    actionItemsResult.fetching || keyPointsResult.fetching;
+
+  const hasNotes = () => actionItems().length > 0 || keyPoints().length > 0;
+
+  const showNotesEmpty = () =>
+    isTranscribed() || (isReady() && !isNotesLoading() && !hasNotes());
+
   const isTranscriptLoading = () => transcriptResult.fetching;
 
   const playback = usePlayback();
@@ -79,6 +109,10 @@ export const useMeetingDetailsPage = () => {
     goBack,
     tabs: getMeetingTabs,
     transcript,
+    speakerTones,
+    actionItems,
+    keyPoints,
+    showNotesEmpty,
     isTranscriptLoading,
     playback,
     currentTimeMs,

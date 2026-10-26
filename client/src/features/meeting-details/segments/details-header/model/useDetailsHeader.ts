@@ -1,3 +1,4 @@
+import { i18n } from '@/shared/i18n';
 import { formatDurationLabel, formatShortDateTime } from '@/shared/lib/time';
 
 import { DetailsHeaderDeps } from '../types/DetailsHeaderDeps';
@@ -5,12 +6,25 @@ import { DetailsHeaderDeps } from '../types/DetailsHeaderDeps';
 export const useDetailsHeader = (props: DetailsHeaderDeps) => {
   const title = () => props.meeting.title;
 
-  const metaLabel = () => {
-    const date = formatShortDateTime(props.meeting.startedAt);
-    const duration = props.meeting.durationSec;
+  const dateLabel = () => formatShortDateTime(props.meeting.startedAt);
 
-    return duration ? `${date} · ${formatDurationLabel(duration)}` : date;
+  const durationLabel = () => {
+    const duration = props.meeting.durationSec;
+    return duration ? formatDurationLabel(duration) : null;
   };
 
-  return { title, metaLabel };
+  const speakersLabel = () =>
+    i18n.t('meetings.speakers_count', {
+      count: props.speakerTones.length.toString(),
+    });
+
+  const hasSpeakers = () => props.speakerTones.length > 0;
+
+  return {
+    title,
+    dateLabel,
+    durationLabel,
+    speakersLabel,
+    hasSpeakers,
+  };
 };

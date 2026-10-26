@@ -2,18 +2,18 @@ import { tv } from 'tailwind-variants';
 
 export const tabsStyles = tv({
   slots: {
-    root: 'flex items-center gap-6 border-b border-gray-200',
-    item: 'relative',
+    root: 'flex w-full items-center gap-1 rounded-xl bg-gray-100 p-1',
+    item: 'relative flex-1',
     btn: `
-      relative flex items-center justify-center px-1 py-3 text-sm font-medium
-      -mb-px border-b-2 border-transparent outline-none
-      transition-colors duration-200
+      relative flex h-10 w-full items-center justify-center rounded-lg px-4 text-sm
+      font-medium outline-none transition-[background-color,color]
+      duration-200 focus-visible:ring-2 focus-visible:ring-gray-300
     `,
   },
   variants: {
     active: {
       true: {
-        btn: 'border-gray-900 text-gray-900',
+        btn: 'bg-white text-gray-900',
       },
       false: {
         btn: 'text-gray-500 hover:text-gray-900',
