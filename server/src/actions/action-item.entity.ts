@@ -11,6 +11,7 @@ import {
 import { UserEntity } from '../users/user.entity';
 import { MeetingEntity } from '../meetings/meeting.entity';
 
+@Index('IDX_action_items_text_trgm', { synchronize: false })
 @Entity({ name: 'action_items' })
 export class ActionItemEntity {
   @PrimaryGeneratedColumn('uuid')

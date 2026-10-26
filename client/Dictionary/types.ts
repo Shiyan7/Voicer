@@ -158,6 +158,7 @@ export type Query = {
   meetingTranscript: Array<TranscriptSegmentOutput>;
   meetingsPage: MeetingsPageOutput;
   meetingsStats: MeetingsStatsOutput;
+  search: Array<SearchResultOutput>;
   userMe: UserMeOutput;
 };
 
@@ -180,6 +181,41 @@ export type QueryMeetingTranscriptArgs = {
 export type QueryMeetingsPageArgs = {
   input: MeetingsPageInput;
 };
+
+export type QuerySearchArgs = {
+  input: SearchInput;
+};
+
+export type SearchInput = {
+  limit?: Scalars['Int']['input'];
+  query: Scalars['String']['input'];
+  sort?: SearchSort;
+};
+
+export enum SearchMatchKind {
+  ActionItem = 'ACTION_ITEM',
+  KeyPoint = 'KEY_POINT',
+  Source = 'SOURCE',
+  Transcript = 'TRANSCRIPT',
+}
+
+export type SearchResultOutput = {
+  __typename?: 'SearchResultOutput';
+  atMs?: Maybe<Scalars['Int']['output']>;
+  durationSec?: Maybe<Scalars['Int']['output']>;
+  kind: SearchMatchKind;
+  matchCount: Scalars['Int']['output'];
+  matchId: Scalars['ID']['output'];
+  meetingId: Scalars['ID']['output'];
+  source?: Maybe<Scalars['String']['output']>;
+  startedAt: Scalars['DateTime']['output'];
+  text: Scalars['String']['output'];
+};
+
+export enum SearchSort {
+  Recent = 'RECENT',
+  Relevance = 'RELEVANCE',
+}
 
 export type SignInInput = {
   email: Scalars['String']['input'];

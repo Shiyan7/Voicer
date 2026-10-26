@@ -39,5 +39,10 @@ export const recordingStyles = tv({
         paragraph: 'bg-gray-100 text-gray-900',
       },
     },
+    focused: {
+      true: {
+        paragraph: 'animate-focus-flash',
+      },
+    },
   },
 });

@@ -1,5 +1,5 @@
 import { MeetingStatus } from '@schema';
-import { useNavigate, useParams } from '@solidjs/router';
+import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
 import { createSignal } from 'solid-js';
 
 import { mapMeeting } from '@/entities/meeting';
@@ -12,12 +12,19 @@ import { meetingKeyPointsQuery } from '../api/meetingKeyPointsQuery';
 import { meetingTranscriptQuery } from '../api/meetingTranscriptQuery';
 import { meetingUpdatedSubscription } from '../api/meetingUpdatedSubscription';
 import { getMeetingTabs } from '../config/getMeetingTabs';
+import { toMeetingTab } from '../lib/toMeetingTab';
+import { MeetingDetailsSearchParams } from '../types/MeetingDetailsSearchParams';
 import { MeetingTab } from '../types/MeetingTab';
 
 export const useMeetingDetailsPage = () => {
   const params = useParams<{ id: string }>();
   const [meetingResult] = meetingUpdatedSubscription(() => ({ id: params.id }));
-  const [activeTab, setActiveTab] = createSignal<MeetingTab>('recording');
+  const [searchParams] = useSearchParams<MeetingDetailsSearchParams>();
+  const [activeTab, setActiveTab] = createSignal<MeetingTab>(
+    toMeetingTab(searchParams.tab),
+  );
+
+  const focusId = () => searchParams.focus ?? null;
 
   const meeting = () => mapMeeting(meetingResult.data?.meetingUpdated);
 
@@ -117,5 +124,6 @@ export const useMeetingDetailsPage = () => {
     playback,
     currentTimeMs,
     seekToMs,
+    focusId,
   };
 };

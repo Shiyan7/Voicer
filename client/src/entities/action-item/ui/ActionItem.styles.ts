@@ -2,7 +2,7 @@ import { tv } from 'tailwind-variants';
 
 export const actionItemStyles = tv({
   slots: {
-    row: 'flex items-start gap-3 py-1.5',
+    row: '-mx-2 flex items-start gap-3 rounded-lg px-2 py-1.5',
     checkbox: `
       mt-1 flex size-5 shrink-0 cursor-pointer items-center justify-center
       rounded-full border-[1.5px] border-gray-300 bg-transparent text-white
@@ -21,6 +21,9 @@ export const actionItemStyles = tv({
     time: 'ml-1.5 text-[13px] tabular-nums text-gray-400',
   },
   variants: {
+    focused: {
+      true: { row: 'animate-focus-flash' },
+    },
     done: {
       true: {
         checkbox: 'border-gray-900 bg-gray-900',

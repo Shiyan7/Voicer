@@ -5,6 +5,7 @@ export interface TranscriptParagraphView {
   text: string;
   startMs: number;
   endMs: number;
+  isFocused: boolean;
 }
 
 export interface TranscriptSegmentView {

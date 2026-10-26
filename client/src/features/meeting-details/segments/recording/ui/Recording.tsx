@@ -1,6 +1,7 @@
 import { For, Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
+import { revealWhen } from '@/shared/lib/dom';
 import { SpeakerAvatar } from '@/shared/ui/speaker-avatar';
 
 import { useRecording } from '../model/useRecording';
@@ -42,7 +43,9 @@ export function Recording(props: RecordingDeps) {
                         <button
                           class={styles.paragraph({
                             active: vm.isParagraphActive(paragraph.id),
+                            focused: paragraph.isFocused,
                           })}
+                          ref={revealWhen(paragraph.isFocused)}
                           type="button"
                           onClick={() => props.onSeek(paragraph.startMs)}
                         >

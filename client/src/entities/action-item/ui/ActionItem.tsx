@@ -1,5 +1,6 @@
 import { Show } from 'solid-js';
 
+import { revealWhen } from '@/shared/lib/dom';
 import { Icon } from '@/shared/ui/icon';
 
 import { useActionItem } from '../model/useActionItem';
@@ -12,7 +13,10 @@ export function ActionItem(props: ActionItemDeps) {
   const vm = useActionItem(props);
 
   return (
-    <div class={styles.row()}>
+    <div
+      class={styles.row({ focused: props.item.isFocused })}
+      ref={revealWhen(props.item.isFocused)}
+    >
       <button
         class={styles.checkbox({ done: vm.isDone() })}
         aria-pressed={vm.isDone()}

@@ -10,4 +10,5 @@ export type ActionItemData = {
   speakerLabel?: string;
   speakerTone?: SpeakerTone;
   timeLabel?: string;
+  isFocused: boolean;
 };

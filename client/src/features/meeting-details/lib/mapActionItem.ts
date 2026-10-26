@@ -5,7 +5,10 @@ import { getMeetingTitle } from '@/entities/meeting';
 import { formatMs } from '@/shared/lib/time';
 import { getSpeakerLabel, getSpeakerTone } from '@/shared/ui/speaker-avatar';
 
-export function mapActionItem(item: ActionItemOutput): ActionItemData {
+export function mapActionItem(
+  item: ActionItemOutput,
+  focusId: string | null,
+): ActionItemData {
   return {
     id: item.id,
     meetingId: item.meetingId,
@@ -20,5 +23,6 @@ export function mapActionItem(item: ActionItemOutput): ActionItemData {
     speakerTone:
       item.speakerIndex != null ? getSpeakerTone(item.speakerIndex) : undefined,
     timeLabel: item.atMs != null ? formatMs(item.atMs) : undefined,
+    isFocused: item.id === focusId,
   };
 }

@@ -4,7 +4,7 @@ export const modalStyles = tv({
   slots: {
     root: 'z-(--z-modal) fixed inset-0 sm:overflow-x-hidden text-center before:inline-block before:h-full before:align-middle',
     overlay:
-      'bg-gray-900/30 backdrop-blur-sm fixed inset-0 pointer-events-none transition-opacity duration-250',
+      'bg-overlay backdrop-blur-sm fixed inset-0 pointer-events-none transition-opacity duration-250',
     inner: `
       relative z-10 flex-col text-left sm:overflow-hidden
       w-full inline-flex mx-auto max-h-[90vh] sm:my-7

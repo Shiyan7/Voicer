@@ -12,7 +12,7 @@ export const createAuthSchema = () =>
     password: v.pipe(
       v.string(),
       v.nonEmpty(i18n.t('validation.required.password')),
-      v.minLength(6, i18n.t('validation.common.minLength', { min: 6 })),
+      v.minLength(6, i18n.t('validation.common.minLength', { min: '6' })),
     ),
   });
 

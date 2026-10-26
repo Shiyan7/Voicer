@@ -21,14 +21,14 @@ interface ModalProps extends ParentProps, VariantProps<typeof modalStyles> {
 const styles = modalStyles();
 
 export function Modal(props: ModalProps) {
-  const modal = useModal(() => props.modalId);
-
   const handleClose = () => {
     if (!props.hideClose) {
       closeModal(props.modalId);
       props.onClose?.();
     }
   };
+
+  const modal = useModal(() => props.modalId, handleClose);
 
   return (
     <Show when={modal.mounted()}>

@@ -7,6 +7,7 @@ import { TranscriptSegmentView } from '../types/TranscriptSegmentView';
 
 export function mapTranscriptSegments(
   segments: TranscriptSegmentOutput[] | undefined,
+  focusId: string | null,
 ): TranscriptSegmentView[] {
   if (!segments?.length) return [];
 
@@ -16,9 +17,10 @@ export function mapTranscriptSegments(
       text: segment.text,
       startMs: segment.startMs,
       endMs: segment.endMs,
+      isFocused: segment.id === focusId,
     };
 
-    const last = groups.at(-1);
+    const last = groups[groups.length - 1];
     if (last && last.speakerIndex === segment.speakerIndex) {
       last.paragraphs.push(paragraph);
       return groups;

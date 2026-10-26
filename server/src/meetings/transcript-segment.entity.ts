@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { MeetingEntity } from './meeting.entity';
 
+@Index('IDX_transcript_segments_text_trgm', { synchronize: false })
 @Entity({ name: 'transcript_segments' })
 export class TranscriptSegmentEntity {
   @PrimaryGeneratedColumn('uuid')

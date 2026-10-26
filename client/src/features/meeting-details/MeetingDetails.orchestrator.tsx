@@ -99,6 +99,7 @@ export function MeetingDetailsOrchestrator() {
                           transcript={vm.transcript()}
                           isLoading={vm.isTranscriptLoading()}
                           currentTimeMs={vm.currentTimeMs()}
+                          focusId={vm.focusId()}
                           onSeek={vm.seekToMs}
                         />
                       }
@@ -112,8 +113,14 @@ export function MeetingDetailsOrchestrator() {
                           fallback={<NotesEmpty />}
                         >
                           <div class={styles.tabPanel()}>
-                            <ActionItemsSection items={vm.actionItems()} />
-                            <KeyPoints points={vm.keyPoints()} />
+                            <ActionItemsSection
+                              items={vm.actionItems()}
+                              focusId={vm.focusId()}
+                            />
+                            <KeyPoints
+                              points={vm.keyPoints()}
+                              focusId={vm.focusId()}
+                            />
                           </div>
                         </Show>
                       </Show>

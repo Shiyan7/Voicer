@@ -3,6 +3,7 @@ import { type ParentProps, Show, Suspense } from 'solid-js';
 import { Toasts } from '@/entities/toasts';
 import { AuthModal } from '@/features/auth';
 import { CallRecorderHost } from '@/features/call-recorder';
+import { SearchOrchestrator } from '@/features/search';
 import { SingletonProvider } from '@/shared/singleton';
 import { Navigation } from '@/widgets/navigation';
 
@@ -28,6 +29,7 @@ export function AppLayout(props: ParentProps) {
             </main>
           </div>
           <AuthModal />
+          <SearchOrchestrator />
           <Show when={vm.isDesktop()}>
             <CallRecorderHost />
           </Show>

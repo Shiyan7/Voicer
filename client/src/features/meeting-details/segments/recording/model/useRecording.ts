@@ -4,7 +4,9 @@ import { mapTranscriptSegments } from '../lib/mapTranscriptSegments';
 import { RecordingDeps } from '../types/RecordingDeps';
 
 export const useRecording = (props: RecordingDeps) => {
-  const segments = createMemo(() => mapTranscriptSegments(props.transcript));
+  const segments = createMemo(() =>
+    mapTranscriptSegments(props.transcript, props.focusId),
+  );
 
   const activeParagraphId = createMemo(() => {
     const time = props.currentTimeMs;

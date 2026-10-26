@@ -2,6 +2,7 @@ import { useLocation } from '@solidjs/router';
 import { createSignal } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
+import { MODALS, showModal } from '@/shared/lib/modal';
 
 import { getNavItems } from '../config/getNavItems';
 
@@ -25,6 +26,8 @@ export const useNavigation = () => {
   const toggleLabel = () =>
     isCollapsed() ? i18n.t('nav.expand') : i18n.t('nav.collapse');
 
+  const openSearch = () => showModal(MODALS.SEARCH);
+
   const onMouseEnter = () => setIsToggleVisible(true);
 
   const onMouseLeave = () => setIsToggleVisible(false);
@@ -36,6 +39,7 @@ export const useNavigation = () => {
     toggleSidebar,
     toggleIcon,
     toggleLabel,
+    openSearch,
     onMouseEnter,
     onMouseLeave,
   };

@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { MeetingEntity } from './meeting.entity';
 
+@Index('IDX_key_points_text_trgm', { synchronize: false })
 @Entity({ name: 'key_points' })
 export class KeyPointEntity {
   @PrimaryGeneratedColumn('uuid')

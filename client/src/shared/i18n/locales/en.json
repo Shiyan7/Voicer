@@ -178,5 +178,16 @@
   "pro": {
     "cta": "Go Pro",
     "hint": "Unlimited & AI features"
+  },
+  "search": {
+    "placeholder": "Search meetings",
+    "clear": "Clear",
+    "results": "Results",
+    "hint": "Search words from transcripts, key points and action items",
+    "empty": "Nothing found for “{{query}}”",
+    "sort": {
+      "relevance": "Most relevant",
+      "recent": "Newest first"
+    }
   }
 }

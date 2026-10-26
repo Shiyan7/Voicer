@@ -13,5 +13,6 @@ export function mapActionItems(items?: ActionItemOutput[]): ActionItemData[] {
     isDone: item.isDone,
     createdAt: item.createdAt,
     meetingTitle: getMeetingTitle(item.meetingSource, item.meetingStartedAt),
+    isFocused: false,
   }));
 }

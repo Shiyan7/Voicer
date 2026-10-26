@@ -38,6 +38,7 @@ export function Navigation() {
         <button
           class={styles.search({ collapsed: vm.isCollapsed() })}
           type="button"
+          onClick={vm.openSearch}
         >
           <Icon class={styles.searchIcon()} name="common:search" />
           <Show when={!vm.isCollapsed()}>

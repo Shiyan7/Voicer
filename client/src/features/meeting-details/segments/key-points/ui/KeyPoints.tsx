@@ -1,6 +1,7 @@
 import { For, Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
+import { revealWhen } from '@/shared/lib/dom';
 
 import { useKeyPoints } from '../model/useKeyPoints';
 import { KeyPointsParams } from '../types/KeyPointsParams';
@@ -18,7 +19,10 @@ export function KeyPoints(props: KeyPointsParams) {
         <div class={styles.list()}>
           <For each={vm.points()}>
             {(point) => (
-              <div class={styles.item()}>
+              <div
+                class={styles.item({ focused: point.isFocused })}
+                ref={revealWhen(point.isFocused)}
+              >
                 <span class={styles.bullet()} />
                 <p class={styles.text()}>
                   {point.text}

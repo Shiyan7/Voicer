@@ -30,7 +30,7 @@ export function Pagination(props: PaginationProps) {
             <Icon name="common:chevron-left" size={16} />
           </button>
           <span class={styles.page()}>
-            {i18n.t('pagination.page', { page: props.page })}
+            {i18n.t('pagination.page', { page: String(props.page) })}
           </span>
           <button
             class={styles.button()}

@@ -106,7 +106,38 @@ type Query {
   meetingTranscript(meetingId: ID!): [TranscriptSegmentOutput!]!
   meetingsPage(input: MeetingsPageInput!): MeetingsPageOutput!
   meetingsStats: MeetingsStatsOutput!
+  search(input: SearchInput!): [SearchResultOutput!]!
   userMe: UserMeOutput!
+}
+
+input SearchInput {
+  limit: Int! = 30
+  query: String!
+  sort: SearchSort! = RELEVANCE
+}
+
+enum SearchMatchKind {
+  ACTION_ITEM
+  KEY_POINT
+  SOURCE
+  TRANSCRIPT
+}
+
+type SearchResultOutput {
+  atMs: Int
+  durationSec: Int
+  kind: SearchMatchKind!
+  matchCount: Int!
+  matchId: ID!
+  meetingId: ID!
+  source: String
+  startedAt: DateTime!
+  text: String!
+}
+
+enum SearchSort {
+  RECENT
+  RELEVANCE
 }
 
 input SignInInput {

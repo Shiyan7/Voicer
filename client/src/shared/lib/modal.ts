@@ -9,6 +9,7 @@ export enum MODALS {
   GIVE_UP = 'GIVE_UP',
   CREDIT = 'CREDIT',
   DELETE_MEETING = 'DELETE_MEETING',
+  SEARCH = 'SEARCH',
 }
 
 export const [activeModals, setActiveModals] = createSignal<MODALS[]>([]);

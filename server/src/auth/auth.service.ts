@@ -74,7 +74,9 @@ export class AuthService {
     return this.generateTokens({ userId: user.id });
   }
 
-  validateUser(userId: string): Promise<UserEntity | null> {
+  async validateUser(userId: unknown): Promise<UserEntity | null> {
+    if (typeof userId !== 'string' || !userId) return null;
+
     return this.usersRepository.findOne({ where: { id: userId } });
   }
 
