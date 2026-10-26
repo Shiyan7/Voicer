@@ -40,7 +40,6 @@
     }
   },
   "nav": {
-    "activity": "Activity",
     "meetings": "Meetings",
     "actions": "Actions"
   },

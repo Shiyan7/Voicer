@@ -303,8 +303,6 @@ export const sprites = defineSpriteMap([
   defineSprite('navigation', [
     defineSpriteAsset(
       [
-        defineSpriteSymbol(['bell-solid'], [24]),
-        defineSpriteSymbol(['bell'], [24]),
         defineSpriteSymbol(['calendar-solid'], [24]),
         defineSpriteSymbol(['calendar'], [24]),
         defineSpriteSymbol(['check-solid'], [24]),
@@ -312,7 +310,7 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['settings-solid'], [24]),
         defineSpriteSymbol(['settings'], [24]),
       ],
-      defineExternalAssetMeta('navigation.7823dfaa.svg'),
+      defineExternalAssetMeta('navigation.96df6889.svg'),
     ),
   ]),
   defineSprite('social', [
@@ -349,8 +347,6 @@ export type SpritesMeta = {
     | 'sparkles'
     | 'trash';
   navigation:
-    | 'bell-solid'
-    | 'bell'
     | 'calendar-solid'
     | 'calendar'
     | 'check-solid'
