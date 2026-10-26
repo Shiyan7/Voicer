@@ -3,7 +3,9 @@ import { useParams } from '@solidjs/router';
 import { createSignal } from 'solid-js';
 
 import { mapMeeting } from '@/entities/meeting';
+import { usePlayback } from '@/entities/meeting-player';
 
+import { meetingTranscriptQuery } from '../api/meetingTranscriptQuery';
 import { meetingUpdatedSubscription } from '../api/meetingUpdatedSubscription';
 import { getMeetingTabs } from '../config/getMeetingTabs';
 import { MeetingTab } from '../types/MeetingTab';
@@ -33,6 +35,21 @@ export const useMeetingDetailsPage = () => {
 
   const hasContent = () => isTranscribed() || isSummarizing() || isReady();
 
+  const [transcriptResult] = meetingTranscriptQuery(
+    () => ({ meetingId: params.id }),
+    { pause: () => !hasContent() },
+  );
+
+  const transcript = () => transcriptResult.data?.meetingTranscript ?? [];
+
+  const isTranscriptLoading = () => transcriptResult.fetching;
+
+  const playback = usePlayback();
+
+  const currentTimeMs = () => playback.currentTime() * 1000;
+
+  const seekToMs = (ms: number) => playback.seek(ms / 1000, { play: true });
+
   const goToNotesTab = () => setActiveTab('notes');
 
   return {
@@ -49,5 +66,10 @@ export const useMeetingDetailsPage = () => {
     setActiveTab,
     goToNotesTab,
     tabs: getMeetingTabs,
+    transcript,
+    isTranscriptLoading,
+    playback,
+    currentTimeMs,
+    seekToMs,
   };
 };

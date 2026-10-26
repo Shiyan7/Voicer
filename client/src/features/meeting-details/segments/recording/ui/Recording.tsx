@@ -1,7 +1,6 @@
 import { For, Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
-import { AudioPlayer } from '@/shared/ui/audio-player';
 
 import { useRecording } from '../model/useRecording';
 import { RecordingDeps } from '../types/RecordingDeps';
@@ -14,15 +13,6 @@ export function Recording(props: RecordingDeps) {
 
   return (
     <div class={styles.root()}>
-      <Show when={props.audioUrl}>
-        {(audioUrl) => (
-          <AudioPlayer
-            ref={vm.setPlayerApi}
-            src={audioUrl()}
-            onTimeUpdate={vm.onTimeUpdate}
-          />
-        )}
-      </Show>
       <section class={styles.card()}>
         <Show
           when={!vm.isEmpty()}
@@ -36,7 +26,7 @@ export function Recording(props: RecordingDeps) {
                 <button
                   class={styles.segment({ active: segment.isActive })}
                   type="button"
-                  onClick={() => vm.seekTo(segment.startMs)}
+                  onClick={() => props.onSeek(segment.startMs)}
                 >
                   <span class={styles.segmentHead()}>
                     <span

@@ -1,0 +1,3 @@
+export const PLAYBACK_RATES = [1, 1.25, 1.5, 2];
+
+export const SKIP_SECONDS = 15;

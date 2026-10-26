@@ -111,7 +111,10 @@
   "player": {
     "play": "Play",
     "pause": "Pause",
-    "speed": "Speed"
+    "speed": "Speed",
+    "back": "Back 15 seconds",
+    "forward": "Forward 15 seconds",
+    "speakers": "Speakers"
   },
   "settings": {
     "general": "General",

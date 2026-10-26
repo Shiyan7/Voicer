@@ -1,4 +1,8 @@
+import type { TranscriptSegmentOutput } from '@schema';
+
 export interface RecordingDeps {
-  meetingId: string;
-  audioUrl: string | null;
+  transcript: TranscriptSegmentOutput[];
+  isLoading: boolean;
+  currentTimeMs: number;
+  onSeek: (ms: number) => void;
 }

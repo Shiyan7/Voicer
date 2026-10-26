@@ -14,8 +14,8 @@ export function SummarizeAction(props: SummarizeParams) {
   return (
     <div class={styles.root()}>
       <button
-        type="button"
         class={styles.summarize()}
+        type="button"
         disabled={props.isSummarizing}
         onClick={vm.runSummarize}
       >

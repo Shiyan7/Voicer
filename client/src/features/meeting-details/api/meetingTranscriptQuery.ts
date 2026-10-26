@@ -16,7 +16,7 @@ type MeetingTranscriptQueryOptions = Omit<
 >;
 
 export const meetingTranscriptQuery = (
-  variables: QueryMeetingTranscriptArgs,
+  variables: () => QueryMeetingTranscriptArgs,
   options?: MeetingTranscriptQueryOptions,
 ) =>
   createQuery<MeetingTranscriptQueryResult, QueryMeetingTranscriptArgs>({
