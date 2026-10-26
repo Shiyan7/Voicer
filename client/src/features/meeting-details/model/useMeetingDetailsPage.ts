@@ -1,9 +1,10 @@
 import { MeetingStatus } from '@schema';
-import { useParams } from '@solidjs/router';
+import { useNavigate, useParams } from '@solidjs/router';
 import { createSignal } from 'solid-js';
 
 import { mapMeeting } from '@/entities/meeting';
 import { usePlayback } from '@/entities/meeting-player';
+import { paths } from '@/shared/router';
 
 import { meetingTranscriptQuery } from '../api/meetingTranscriptQuery';
 import { meetingUpdatedSubscription } from '../api/meetingUpdatedSubscription';
@@ -50,6 +51,16 @@ export const useMeetingDetailsPage = () => {
 
   const seekToMs = (ms: number) => playback.seek(ms / 1000, { play: true });
 
+  const navigate = useNavigate();
+
+  const goBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+    navigate(paths.meetings);
+  };
+
   const goToNotesTab = () => setActiveTab('notes');
 
   return {
@@ -65,6 +76,7 @@ export const useMeetingDetailsPage = () => {
     activeTab,
     setActiveTab,
     goToNotesTab,
+    goBack,
     tabs: getMeetingTabs,
     transcript,
     isTranscriptLoading,

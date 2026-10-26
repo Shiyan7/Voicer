@@ -27,10 +27,14 @@ export function MeetingDetailsOrchestrator() {
     <PageFade>
       <div class={styles.page()}>
         <div class={styles.root()}>
-          <A class={styles.backLink()} href={paths.meetings}>
+          <button
+            class={styles.backLink()}
+            type="button"
+            onClick={vm.goBack}
+          >
             <Icon size={12} name="common:arrow-left" />
             {i18n.t('meetings.back')}
-          </A>
+          </button>
           <Switch>
             <Match when={vm.isLoading()}>
               <div class={styles.skeleton({ size: 'header' })} />
