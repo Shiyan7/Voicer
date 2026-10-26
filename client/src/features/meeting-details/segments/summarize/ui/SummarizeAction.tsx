@@ -19,7 +19,7 @@ export function SummarizeAction(props: SummarizeParams) {
         disabled={props.isSummarizing}
         onClick={vm.runSummarize}
       >
-        <Icon size={16} name="common:sparkles" />
+        <Icon size={18} name="common:sparkles" />
         {i18n.t('meetings.summarize')}
       </button>
       <span class={styles.divider()} />
