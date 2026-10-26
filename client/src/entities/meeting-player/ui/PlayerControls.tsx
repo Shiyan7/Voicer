@@ -2,10 +2,10 @@ import { For, Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
 import { Icon } from '@/shared/ui/icon';
+import { SpeakerAvatar } from '@/shared/ui/speaker-avatar';
 
 import { PlayerControlsProps } from '../types/PlayerControlsProps';
 import { playerControlsStyles } from './PlayerControls.styles';
-import { SpeakerAvatar } from './SpeakerAvatar';
 
 const styles = playerControlsStyles();
 
@@ -62,7 +62,7 @@ export function PlayerControls(props: PlayerControlsProps) {
         <div class={styles.avatars()}>
           <For each={props.tracks}>
             {(track) => (
-              <SpeakerAvatar tone={track.tone} initial={track.initial} />
+              <SpeakerAvatar tone={track.tone} />
             )}
           </For>
         </div>

@@ -1,4 +1,4 @@
-import { SpeakerTone } from '../types/SpeakerTone';
+import { SpeakerTone } from '../types';
 
 export const SPEAKER_TONES: SpeakerTone[] = [
   'violet',
@@ -6,5 +6,11 @@ export const SPEAKER_TONES: SpeakerTone[] = [
   'sky',
   'rose',
   'emerald',
+  'orange',
+  'teal',
+  'fuchsia',
+  'indigo',
+  'lime',
+  'cyan',
   'stone',
 ];

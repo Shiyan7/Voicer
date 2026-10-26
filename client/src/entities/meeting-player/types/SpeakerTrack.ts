@@ -1,4 +1,4 @@
-import { SpeakerTone } from './SpeakerTone';
+import type { SpeakerTone } from '@/shared/ui/speaker-avatar';
 
 export interface SpeakerRange {
   startMs: number;
@@ -9,7 +9,6 @@ export interface SpeakerRange {
 export interface SpeakerTrack {
   speakerIndex: number;
   label: string;
-  initial: string;
   tone: SpeakerTone;
   shareLabel: string;
   ranges: SpeakerRange[];

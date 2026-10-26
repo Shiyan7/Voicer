@@ -1,7 +1,8 @@
 import { For } from 'solid-js';
 
+import { SpeakerAvatar } from '@/shared/ui/speaker-avatar';
+
 import { SpeakerTracksProps } from '../types/SpeakerTracksProps';
-import { SpeakerAvatar } from './SpeakerAvatar';
 import { speakerTracksStyles } from './SpeakerTracks.styles';
 
 const styles = speakerTracksStyles();
@@ -13,7 +14,7 @@ export function SpeakerTracks(props: SpeakerTracksProps) {
         {(track) => (
           <>
             <span class={styles.avatarCell()}>
-              <SpeakerAvatar tone={track.tone} initial={track.initial} />
+              <SpeakerAvatar tone={track.tone} />
             </span>
             <div class={styles.body()}>
               <span class={styles.label()}>{track.label}</span>

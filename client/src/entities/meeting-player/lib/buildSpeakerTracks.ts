@@ -1,6 +1,7 @@
 import type { TranscriptSegmentOutput } from '@schema';
 
-import { SPEAKER_TONES } from '../config/speakerTones';
+import { getSpeakerLabel, getSpeakerTone } from '@/shared/ui/speaker-avatar';
+
 import { SpeakerTrack } from '../types/SpeakerTrack';
 
 const toPercent = (value: number, total: number) =>
@@ -32,12 +33,11 @@ export function buildSpeakerTracks(
       list,
       share: spokenMs(list) / totalSpokenMs,
     }))
-    .sort((a, b) => b.share - a.share)
+    .sort((a, b) => a.speakerIndex - b.speakerIndex)
     .map(({ speakerIndex, list, share }) => ({
       speakerIndex,
-      label: `Speaker ${speakerIndex + 1}`,
-      initial: String(speakerIndex + 1),
-      tone: SPEAKER_TONES[speakerIndex % SPEAKER_TONES.length],
+      label: getSpeakerLabel(speakerIndex),
+      tone: getSpeakerTone(speakerIndex),
       shareLabel: `${Math.round(share * 100)}%`,
       ranges: list.map((segment) => ({
         startMs: segment.startMs,

@@ -1,22 +1,38 @@
 import type { TranscriptSegmentOutput } from '@schema';
 
 import { formatMs } from '@/shared/lib/time';
+import { getSpeakerLabel, getSpeakerTone } from '@/shared/ui/speaker-avatar';
 
 import { TranscriptSegmentView } from '../types/TranscriptSegmentView';
 
 export function mapTranscriptSegments(
   segments: TranscriptSegmentOutput[] | undefined,
-  currentTimeMs: number,
 ): TranscriptSegmentView[] {
   if (!segments?.length) return [];
 
-  return segments.map((segment) => ({
-    id: segment.id,
-    speaker: segment.speakerIndex === 0 ? 'me' : 'other',
-    speakerLabel: `Speaker ${segment.speakerIndex + 1}`,
-    timeLabel: formatMs(segment.startMs),
-    text: segment.text,
-    isActive: currentTimeMs >= segment.startMs && currentTimeMs < segment.endMs,
-    startMs: segment.startMs,
-  }));
+  return segments.reduce<TranscriptSegmentView[]>((groups, segment) => {
+    const paragraph = {
+      id: segment.id,
+      text: segment.text,
+      startMs: segment.startMs,
+      endMs: segment.endMs,
+    };
+
+    const last = groups.at(-1);
+    if (last && last.speakerIndex === segment.speakerIndex) {
+      last.paragraphs.push(paragraph);
+      return groups;
+    }
+
+    groups.push({
+      id: segment.id,
+      speakerIndex: segment.speakerIndex,
+      speakerLabel: getSpeakerLabel(segment.speakerIndex),
+      tone: getSpeakerTone(segment.speakerIndex),
+      timeLabel: formatMs(segment.startMs),
+      startMs: segment.startMs,
+      paragraphs: [paragraph],
+    });
+    return groups;
+  }, []);
 }

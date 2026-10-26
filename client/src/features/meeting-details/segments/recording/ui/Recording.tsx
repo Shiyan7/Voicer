@@ -1,6 +1,7 @@
 import { For, Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
+import { SpeakerAvatar } from '@/shared/ui/speaker-avatar';
 
 import { useRecording } from '../model/useRecording';
 import { RecordingDeps } from '../types/RecordingDeps';
@@ -22,26 +23,38 @@ export function Recording(props: RecordingDeps) {
         >
           <div class={styles.list()}>
             <For each={vm.segments()}>
-              {(segment) => (
-                <button
-                  class={styles.segment({ active: segment.isActive })}
-                  type="button"
-                  onClick={() => props.onSeek(segment.startMs)}
-                >
-                  <span class={styles.segmentHead()}>
-                    <span
-                      class={styles.segmentSpeaker({
-                        speaker: segment.speaker,
-                      })}
-                    >
-                      {segment.speakerLabel}
+              {(group) => (
+                <div class={styles.group()}>
+                  <button
+                    class={styles.head()}
+                    type="button"
+                    onClick={() => props.onSeek(group.startMs)}
+                  >
+                    <SpeakerAvatar
+                      size="md"
+                      tone={group.tone}
+                    />
+                    <span class={styles.speaker()}>{group.speakerLabel}</span>
+                    <span class={styles.time({ tone: group.tone })}>
+                      {group.timeLabel}
                     </span>
-                    <span class={styles.segmentTime()}>
-                      {segment.timeLabel}
-                    </span>
-                  </span>
-                  <span class={styles.segmentText()}>{segment.text}</span>
-                </button>
+                  </button>
+                  <div class={styles.body({ tone: group.tone })}>
+                    <For each={group.paragraphs}>
+                      {(paragraph) => (
+                        <button
+                          class={styles.paragraph({
+                            active: vm.isParagraphActive(paragraph.id),
+                          })}
+                          type="button"
+                          onClick={() => props.onSeek(paragraph.startMs)}
+                        >
+                          {paragraph.text}
+                        </button>
+                      )}
+                    </For>
+                  </div>
+                </div>
               )}
             </For>
           </div>

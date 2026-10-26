@@ -1,11 +1,18 @@
-export type Speaker = 'me' | 'other';
+import type { SpeakerTone } from '@/shared/ui/speaker-avatar';
+
+export interface TranscriptParagraphView {
+  id: string;
+  text: string;
+  startMs: number;
+  endMs: number;
+}
 
 export interface TranscriptSegmentView {
   id: string;
-  speaker: Speaker;
+  speakerIndex: number;
   speakerLabel: string;
+  tone: SpeakerTone;
   timeLabel: string;
-  text: string;
-  isActive: boolean;
   startMs: number;
+  paragraphs: TranscriptParagraphView[];
 }
