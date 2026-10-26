@@ -61,11 +61,27 @@ input MeetingsPageInput {
   favoritesOnly: Boolean! = false
   limit: Int! = 10
   page: Int! = 1
+  sort: MeetingsSort! = DATE_DESC
+  sources: [String!]
 }
 
 type MeetingsPageOutput {
   items: [MeetingOutput!]!
   meta: PagePaginationMetaOutput!
+}
+
+enum MeetingsSort {
+  DATE_ASC
+  DATE_DESC
+  DURATION_ASC
+  DURATION_DESC
+}
+
+type MeetingsStatsOutput {
+  openActionItems: Int!
+  sources: [String!]!
+  weekCount: Int!
+  weekDurationSec: Int!
 }
 
 type Mutation {
@@ -91,6 +107,7 @@ type Query {
   meetingKeyPoints(meetingId: ID!): [KeyPointOutput!]!
   meetingTranscript(meetingId: ID!): [TranscriptSegmentOutput!]!
   meetingsPage(input: MeetingsPageInput!): MeetingsPageOutput!
+  meetingsStats: MeetingsStatsOutput!
   userMe: UserMeOutput!
 }
 

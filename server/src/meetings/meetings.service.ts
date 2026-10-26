@@ -7,11 +7,12 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PubSub } from 'graphql-subscriptions';
-import { Repository } from 'typeorm';
+import { FindOptionsOrder, In, Repository } from 'typeorm';
 import { PUB_SUB } from '../pubsub/pubsub.module';
 import { MeetingOutput } from './meeting.output';
 import { MeetingsPageInput } from './meetings-page.input';
 import { MeetingsPageOutput } from './meetings-page.output';
+import { MeetingsSort } from './meetings-sort.enum';
 import { MeetingEntity, MeetingStatus } from './meeting.entity';
 import { FileStorageService } from '../file/file-storage.service';
 import { FileUpload } from '../file/file-upload';
@@ -105,8 +106,8 @@ export class MeetingsService {
     const skip = (page - 1) * input.limit;
 
     const meetings = await this.meetingsRepository.find({
-      where: input.favoritesOnly ? { userId, isFavorite: true } : { userId },
-      order: { startedAt: 'DESC', id: 'DESC' },
+      where: this.buildPageWhere(userId, input),
+      order: this.buildPageOrder(input.sort),
       skip,
       take: input.limit + 1,
       comment: this.getFnName(this.getUserMeetingsPage.name),
@@ -119,6 +120,37 @@ export class MeetingsService {
       items: items.map(this.serialize),
       meta: { page, hasNextItems, hasPrevItems: page > 1 },
     };
+  }
+
+  private buildPageWhere(userId: string, input: MeetingsPageInput) {
+    const base = input.favoritesOnly
+      ? { userId, isFavorite: true }
+      : { userId };
+
+    if (!input.sources?.length) return base;
+
+    return { ...base, source: In(input.sources) };
+  }
+
+  private buildPageOrder(sort: MeetingsSort): FindOptionsOrder<MeetingEntity> {
+    switch (sort) {
+      case MeetingsSort.DATE_ASC:
+        return { startedAt: 'ASC', id: 'ASC' };
+      case MeetingsSort.DURATION_DESC:
+        return {
+          durationSec: { direction: 'DESC', nulls: 'LAST' },
+          startedAt: 'DESC',
+          id: 'DESC',
+        };
+      case MeetingsSort.DURATION_ASC:
+        return {
+          durationSec: { direction: 'ASC', nulls: 'LAST' },
+          startedAt: 'DESC',
+          id: 'DESC',
+        };
+      default:
+        return { startedAt: 'DESC', id: 'DESC' };
+    }
   }
 
   async getMeetingById(userId: string, id: string): Promise<MeetingOutput> {

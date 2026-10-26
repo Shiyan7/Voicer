@@ -12,11 +12,16 @@ import { startRecording as startRecorderCommand } from '@/shared/lib/recorder';
 import { authRoot } from '@/shared/roots/authRoot';
 
 import { meetingsPageQuery } from '../api/meetingsPageQuery';
+import { meetingsStatsQuery } from '../api/meetingsStatsQuery';
+import { getSortOptions } from '../lib/getSortOptions';
+import { ALL_SOURCES, getSourceOptions } from '../lib/getSourceOptions';
 import { mapMeetingCards } from '../lib/mapMeetingCards';
-import { MeetingsDeps } from '../types/MeetingsDeps';
+import { useMeetingsFilters } from './useMeetingsFilters';
+import { useStatsBanner } from './useStatsBanner';
 
-export const useMeetingsPage = (props: MeetingsDeps) => {
+export const useMeetingsPage = () => {
   const toasts = useToasts();
+  const filters = useMeetingsFilters();
   const pagination = useQueryPagination(() => meetingsPage()?.meta);
 
   const [meetingsResult] = meetingsPageQuery(
@@ -24,7 +29,9 @@ export const useMeetingsPage = (props: MeetingsDeps) => {
       input: {
         page: pagination.page(),
         limit: pagination.limit,
-        favoritesOnly: Boolean(props.favoritesOnly),
+        favoritesOnly: filters.favoritesOnly(),
+        sort: filters.sort(),
+        sources: filters.source() === ALL_SOURCES ? null : [filters.source()],
       },
     }),
     { pause: () => !authRoot.isAuth },
@@ -32,6 +39,10 @@ export const useMeetingsPage = (props: MeetingsDeps) => {
 
   const meetingsPage = () => meetingsResult.data?.meetingsPage;
   const meetings = () => meetingsPage()?.items ?? [];
+
+  const [statsResult] = meetingsStatsQuery({ pause: () => !authRoot.isAuth });
+  const stats = () => statsResult.data?.meetingsStats;
+  const banner = useStatsBanner(stats);
 
   const [uploadResult, uploadAudio] = uploadMeetingAudioMutation();
   const [deleteResult, deleteMeeting] = deleteMeetingMutation();
@@ -49,13 +60,25 @@ export const useMeetingsPage = (props: MeetingsDeps) => {
 
   const isDeleting = () => deleteResult.fetching;
 
-  const title = () =>
-    props.favoritesOnly ? i18n.t('favorites.title') : i18n.t('meetings.title');
+  const emptyLabel = () => {
+    if (filters.source() !== ALL_SOURCES)
+      return i18n.t('meetings.empty_filtered');
+    if (filters.favoritesOnly()) return i18n.t('meetings.empty_favorites');
+    return i18n.t('meetings.empty');
+  };
 
-  const emptyLabel = () =>
-    props.favoritesOnly ? i18n.t('favorites.empty') : i18n.t('meetings.empty');
+  const hasSourceFilter = () => filters.source() !== ALL_SOURCES;
 
-  const showToolbar = () => !props.favoritesOnly;
+  const favoritesIcon = () =>
+    filters.favoritesOnly()
+      ? 'navigation:bookmark-solid'
+      : 'navigation:bookmark';
+
+  const showSourceFilter = () => sourceOptions().length > 1;
+
+  const sortOptions = () => getSortOptions();
+
+  const sourceOptions = () => getSourceOptions(stats()?.sources ?? []);
 
   const startRecording = async () => {
     try {
@@ -103,10 +126,15 @@ export const useMeetingsPage = (props: MeetingsDeps) => {
   };
 
   return {
-    title,
     emptyLabel,
-    showToolbar,
     items,
+    banner,
+    hasSourceFilter,
+    favoritesIcon,
+    showSourceFilter,
+    filters,
+    sortOptions,
+    sourceOptions,
     isLoading,
     isEmpty,
     isUploading,

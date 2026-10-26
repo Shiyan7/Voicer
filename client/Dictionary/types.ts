@@ -75,12 +75,29 @@ export type MeetingsPageInput = {
   favoritesOnly?: Scalars['Boolean']['input'];
   limit?: Scalars['Int']['input'];
   page?: Scalars['Int']['input'];
+  sort?: MeetingsSort;
+  sources?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type MeetingsPageOutput = {
   __typename?: 'MeetingsPageOutput';
   items: Array<MeetingOutput>;
   meta: PagePaginationMetaOutput;
+};
+
+export enum MeetingsSort {
+  DateAsc = 'DATE_ASC',
+  DateDesc = 'DATE_DESC',
+  DurationAsc = 'DURATION_ASC',
+  DurationDesc = 'DURATION_DESC',
+}
+
+export type MeetingsStatsOutput = {
+  __typename?: 'MeetingsStatsOutput';
+  openActionItems: Scalars['Int']['output'];
+  sources: Array<Scalars['String']['output']>;
+  weekCount: Scalars['Int']['output'];
+  weekDurationSec: Scalars['Int']['output'];
 };
 
 export type Mutation = {
@@ -140,6 +157,7 @@ export type Query = {
   meetingKeyPoints: Array<KeyPointOutput>;
   meetingTranscript: Array<TranscriptSegmentOutput>;
   meetingsPage: MeetingsPageOutput;
+  meetingsStats: MeetingsStatsOutput;
   userMe: UserMeOutput;
 };
 

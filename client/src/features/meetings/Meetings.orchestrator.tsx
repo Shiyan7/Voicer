@@ -1,44 +1,64 @@
-import { Show } from 'solid-js';
-
 import { DeleteMeetingModal } from '@/entities/meeting';
+import { i18n } from '@/shared/i18n';
 import { PageFade } from '@/shared/ui/page-fade';
 
 import { meetingsStyles } from './Meetings.styles';
 import { useMeetingsPage } from './model/useMeetingsPage';
+import { ListHeader } from './segments/list-header';
 import { MeetingsList } from './segments/meetings-list';
+import { StatsBanner } from './segments/stats-banner';
 import { Toolbar } from './segments/toolbar/ui/Toolbar';
-import { MeetingsDeps } from './types/MeetingsDeps';
 
 const styles = meetingsStyles();
 
-export function MeetingsOrchestrator(props: MeetingsDeps) {
-  const vm = useMeetingsPage(props);
+export function MeetingsOrchestrator() {
+  const vm = useMeetingsPage();
 
   return (
     <PageFade>
       <div class={styles.root()}>
         <header class={styles.header()}>
-          <h1 class={styles.title()}>{vm.title()}</h1>
-          <Show when={vm.showToolbar()}>
-            <Toolbar
-              isUploading={vm.isUploading()}
-              onStartRecording={vm.startRecording}
-              onFileSelected={vm.onFileSelected}
-            />
-          </Show>
+          <h1 class={styles.title()}>{i18n.t('meetings.title')}</h1>
+          <Toolbar
+            isUploading={vm.isUploading()}
+            onStartRecording={vm.startRecording}
+            onFileSelected={vm.onFileSelected}
+          />
         </header>
-        <MeetingsList
-          items={vm.items()}
-          isLoading={vm.isLoading()}
-          isEmpty={vm.isEmpty()}
-          emptyLabel={vm.emptyLabel()}
-          currentPage={vm.currentPage()}
-          hasPrevPage={vm.hasPrevPage()}
-          hasNextPage={vm.hasNextPage()}
-          onDelete={vm.requestDeleteMeeting}
-          onPrevPage={vm.goToPrevPage}
-          onNextPage={vm.goToNextPage}
+        <StatsBanner
+          greeting={vm.banner.greeting()}
+          tiles={vm.banner.tiles()}
         />
+        <section class={styles.section()}>
+          <ListHeader
+            favoritesOnly={vm.filters.favoritesOnly()}
+            sort={vm.filters.sort()}
+            source={vm.filters.source()}
+            hasSourceFilter={vm.hasSourceFilter()}
+            isCustomSort={vm.filters.isCustomSort()}
+            favoritesIcon={vm.favoritesIcon()}
+            showSourceFilter={vm.showSourceFilter()}
+            sortOptions={vm.sortOptions()}
+            sourceOptions={vm.sourceOptions()}
+            onToggleFavorites={vm.filters.toggleFavoritesOnly}
+            onSortChange={vm.filters.setSort}
+            onSourceChange={vm.filters.setSource}
+          />
+          <MeetingsList
+            items={vm.items()}
+            isLoading={vm.isLoading()}
+            isEmpty={vm.isEmpty()}
+            emptyLabel={vm.emptyLabel()}
+            canResetFilters={vm.filters.hasActiveFilters()}
+            currentPage={vm.currentPage()}
+            hasPrevPage={vm.hasPrevPage()}
+            hasNextPage={vm.hasNextPage()}
+            onDelete={vm.requestDeleteMeeting}
+            onResetFilters={vm.filters.resetFilters}
+            onPrevPage={vm.goToPrevPage}
+            onNextPage={vm.goToNextPage}
+          />
+        </section>
       </div>
       <DeleteMeetingModal
         isDeleting={vm.isDeleting()}

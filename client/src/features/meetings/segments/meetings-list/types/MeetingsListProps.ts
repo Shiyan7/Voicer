@@ -5,10 +5,12 @@ export interface MeetingsListProps {
   isLoading: boolean;
   isEmpty: boolean;
   emptyLabel: string;
+  canResetFilters: boolean;
   currentPage: number;
   hasPrevPage: boolean;
   hasNextPage: boolean;
   onDelete: (id: string) => void;
+  onResetFilters: () => void;
   onPrevPage: () => void;
   onNextPage: () => void;
 }

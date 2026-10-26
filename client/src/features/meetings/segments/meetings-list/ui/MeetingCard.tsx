@@ -28,7 +28,9 @@ export function MeetingCard(props: MeetingCardProps) {
           <span class={styles.duration()}>{props.card.duration}</span>
         </Show>
       </span>
-      <span class={styles.date()}>{props.card.dateLabel}</span>
+      <span class={styles.date()} title={props.card.dateTitle}>
+        {props.card.dateLabel}
+      </span>
       <div class={styles.actions()}>
         <button
           class={styles.deleteBtn()}

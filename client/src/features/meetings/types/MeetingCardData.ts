@@ -3,4 +3,5 @@ export interface MeetingCardData {
   title?: string;
   duration: string | null;
   dateLabel: string;
+  dateTitle: string;
 }

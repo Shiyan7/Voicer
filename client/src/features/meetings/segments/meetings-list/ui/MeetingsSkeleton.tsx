@@ -9,7 +9,14 @@ const PLACEHOLDERS = [0, 1, 2];
 export function MeetingsSkeleton() {
   return (
     <div class={styles.list()}>
-      <For each={PLACEHOLDERS}>{() => <div class={styles.row()} />}</For>
+      <For each={PLACEHOLDERS}>
+        {() => (
+          <div class={styles.row()}>
+            <div class={styles.icon()} />
+            <div class={styles.line()} />
+          </div>
+        )}
+      </For>
     </div>
   );
 }

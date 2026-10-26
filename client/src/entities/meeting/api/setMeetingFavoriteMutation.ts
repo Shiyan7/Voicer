@@ -7,7 +7,7 @@ interface MeetingSetFavoriteMutation {
   meetingSetFavorite: Pick<MeetingOutput, 'id' | 'isFavorite'>;
 }
 
-export const meetingSetFavoriteMutation = () =>
+export const setMeetingFavoriteMutation = () =>
   createMutation<MeetingSetFavoriteMutation, MutationMeetingSetFavoriteArgs>(
     MEETING_SET_FAVORITE_MUTATION,
   );

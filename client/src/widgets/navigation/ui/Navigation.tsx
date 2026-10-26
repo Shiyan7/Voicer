@@ -33,8 +33,8 @@ export function Navigation() {
           </button>
         </Show>
         <button
-          type="button"
           class={styles.search({ collapsed: vm.isCollapsed() })}
+          type="button"
         >
           <Icon class={styles.searchIcon()} name="common:search" />
           <Show when={!vm.isCollapsed()}>

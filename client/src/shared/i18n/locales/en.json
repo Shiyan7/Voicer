@@ -42,7 +42,6 @@
   },
   "nav": {
     "meetings": "Meetings",
-    "favorites": "Favorites",
     "actions": "Actions"
   },
   "pagination": {
@@ -109,7 +108,31 @@
       "title": "AI is writing notes",
       "description": "Pulling key points and action items from the transcript"
     },
-    "speakers_count": "Speakers: {{count}}"
+    "speakers_count": "Speakers: {{count}}",
+    "my_meetings": "My meetings",
+    "only_favorites": "Favorites only",
+    "empty_filtered": "Nothing matches these filters",
+    "empty_favorites": "No favorite meetings yet",
+    "reset_filters": "Reset filters",
+    "sort": {
+      "title": "Sort",
+      "date_desc": "Newest first",
+      "date_asc": "Oldest first",
+      "duration_desc": "Longest first",
+      "duration_asc": "Shortest first"
+    },
+    "filter": {
+      "title": "Source",
+      "all": "All sources"
+    },
+    "banner": {
+      "greeting": "Hi",
+      "greeting_name": "Hi, {{name}}",
+      "subtitle": "Your meetings over the last 7 days",
+      "week_count": "meetings this week",
+      "week_duration": "recorded",
+      "open_actions": "open action items"
+    }
   },
   "recorder": {
     "recording": "Recording",
@@ -142,9 +165,5 @@
       "auto": "Record calls automatically",
       "auto_hint": "Start recording without asking when a call is detected"
     }
-  },
-  "favorites": {
-    "title": "Favorites",
-    "empty": "No favorite meetings yet"
   }
 }

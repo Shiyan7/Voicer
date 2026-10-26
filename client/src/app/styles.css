@@ -11,8 +11,9 @@
   --z-toast: 50;
   --z-navigation: 800;
 
-  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
-  'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+    'Helvetica Neue', Helvetica, Arial, sans-serif;
 
   --color-gray-50: #fbfbfd;
   --color-gray-100: #f5f5f7;
@@ -29,6 +30,11 @@
   --color-critical: #ff6666;
 
   --color-ai-foreground: #ffffff;
+
+  --color-banner-from: #c7f0de;
+  --color-banner-via: #cfe6fb;
+  --color-banner-to: #ddd3fb;
+  --color-banner-glow: #c4b5fd;
 
   --animate-ai-flow: ai-flow 8s ease-in-out infinite;
   --animate-ai-shimmer: ai-flow 2.4s ease-in-out infinite;
@@ -76,6 +82,11 @@
   --color-gray-800: #e8e8ed;
   --color-gray-900: #f5f5f7;
   --color-gray-950: #fbfbfd;
+
+  --color-banner-from: #0f2420;
+  --color-banner-via: #0f1d2b;
+  --color-banner-to: #211a3a;
+  --color-banner-glow: #4c3a8a;
 
   color-scheme: dark;
 }

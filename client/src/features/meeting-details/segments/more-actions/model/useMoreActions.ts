@@ -5,10 +5,12 @@ import { revealItemInDir } from '@tauri-apps/plugin-opener';
 import { useClient } from '@urql/solid';
 import { createSignal } from 'solid-js';
 
-import { deleteMeetingMutation } from '@/entities/meeting';
+import {
+  deleteMeetingMutation,
+  setMeetingFavoriteMutation,
+} from '@/entities/meeting';
 import { useToasts } from '@/entities/toasts';
 import { fetchMeetingTranscript } from '@/features/meeting-details/api/fetchMeetingTranscript';
-import { meetingSetFavoriteMutation } from '@/features/meeting-details/api/meetingSetFavoriteMutation';
 import { i18n } from '@/shared/i18n';
 import { closeModal, MODALS, showModal } from '@/shared/lib/modal';
 import { paths } from '@/shared/router';
@@ -23,7 +25,7 @@ export const useMoreActions = (props: MoreActionsDeps) => {
   const navigate = useNavigate();
   const toasts = useToasts();
   const client = useClient();
-  const [, setFavorite] = meetingSetFavoriteMutation();
+  const [, setFavorite] = setMeetingFavoriteMutation();
   const [deleteResult, deleteMeeting] = deleteMeetingMutation();
   const [isBusy, setIsBusy] = createSignal(false);
 

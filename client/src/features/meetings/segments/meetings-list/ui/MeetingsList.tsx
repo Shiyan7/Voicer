@@ -1,5 +1,7 @@
 import { For, Show } from 'solid-js';
 
+import { i18n } from '@/shared/i18n';
+import { Button } from '@/shared/ui/button';
 import { Pagination } from '@/shared/ui/pagination';
 
 import { MeetingsListProps } from '../types/MeetingsListProps';
@@ -17,13 +19,24 @@ export function MeetingsList(props: MeetingsListProps) {
         fallback={
           <div class={styles.empty()}>
             <span class={styles.emptyTitle()}>{props.emptyLabel}</span>
+            <Show when={props.canResetFilters}>
+              <Button
+                class={styles.emptyAction()}
+                variant="primary"
+                onClick={props.onResetFilters}
+              >
+                {i18n.t('meetings.reset_filters')}
+              </Button>
+            </Show>
           </div>
         }
       >
         <div class={styles.list()}>
-          <For each={props.items}>
-            {(card) => <MeetingCard card={card} onDelete={props.onDelete} />}
-          </For>
+          <div class={styles.rows()}>
+            <For each={props.items}>
+              {(card) => <MeetingCard card={card} onDelete={props.onDelete} />}
+            </For>
+          </div>
           <Pagination
             page={props.currentPage}
             hasPrev={props.hasPrevPage}

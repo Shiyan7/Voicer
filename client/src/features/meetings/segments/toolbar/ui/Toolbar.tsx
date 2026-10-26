@@ -2,7 +2,7 @@ import { isTauri } from '@tauri-apps/api/core';
 import { Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
-import { Button } from '@/shared/ui/button';
+import { Icon } from '@/shared/ui/icon';
 
 import { ToolbarProps } from '../types/ToolbarProps';
 import { toolbarStyles } from './Toolbar.styles';
@@ -13,20 +13,24 @@ export function Toolbar(props: ToolbarProps) {
   return (
     <div class={styles.root()}>
       <Show when={isTauri()}>
-        <Button variant="primary" onClick={props.onStartRecording}>
-          {i18n.t('meetings.record_now')}
-        </Button>
-      </Show>
-      <Button
-        class={props.isUploading ? 'pointer-events-none opacity-60' : ''}
-        as="label"
-        variant="secondary"
-      >
-        <Show
-          when={props.isUploading}
-          fallback={i18n.t('meetings.upload_audio')}
+        <button
+          class={styles.action()}
+          type="button"
+          title={i18n.t('meetings.record_now')}
+          aria-label={i18n.t('meetings.record_now')}
+          onClick={props.onStartRecording}
         >
-          {i18n.t('meetings.uploading_file')}
+          <Icon size={20} name="common:microphone" />
+        </button>
+      </Show>
+      <label
+        class={styles.action({ busy: props.isUploading })}
+        title={i18n.t('meetings.upload_audio')}
+        aria-label={i18n.t('meetings.upload_audio')}
+      >
+        <Icon size={20} name="common:upload" />
+        <Show when={props.isUploading}>
+          <span>{i18n.t('meetings.uploading_file')}</span>
         </Show>
         <input
           class={styles.uploadInput()}
@@ -35,7 +39,7 @@ export function Toolbar(props: ToolbarProps) {
           type="file"
           onChange={props.onFileSelected}
         />
-      </Button>
+      </label>
     </div>
   );
 }
