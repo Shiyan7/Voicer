@@ -1,7 +1,7 @@
 import { makePersisted } from '@solid-primitives/storage';
 import { createEffect, createRoot, createSignal } from 'solid-js';
 
-export type Theme = 'system' | 'light' | 'dark';
+type Theme = 'system' | 'light' | 'dark';
 
 const themes: Theme[] = ['system', 'light', 'dark'];
 

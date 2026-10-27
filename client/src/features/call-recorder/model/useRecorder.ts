@@ -12,7 +12,7 @@ import {
   startRecording,
   stopRecording,
 } from '@/shared/lib/recorder';
-import { formatSeconds } from '@/shared/lib/time';
+import { formatClock } from '@/shared/lib/time';
 import { settingsRoot } from '@/shared/roots/settingsRoot';
 import { paths } from '@/shared/router';
 
@@ -25,7 +25,7 @@ export const useRecorder = () => {
 
   const isBarVisible = () => timer.isRunning();
 
-  const formattedSeconds = () => formatSeconds(timer.elapsedSeconds());
+  const formattedSeconds = () => formatClock(timer.elapsedSeconds());
 
   const openRecordedMeeting = async (
     path: string,

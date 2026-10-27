@@ -3,7 +3,7 @@ import { createMemo, JSX, splitProps } from 'solid-js';
 import { iconStyles } from './Icon.styles';
 import { sprites, type SpritesMeta } from './sprite.gen';
 
-export interface IconProps extends JSX.SvgSVGAttributes<SVGSVGElement> {
+interface IconProps extends JSX.SvgSVGAttributes<SVGSVGElement> {
   name: IconName;
   size?: number;
   invert?: boolean;

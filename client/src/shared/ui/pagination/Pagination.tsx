@@ -7,7 +7,7 @@ import { paginationStyles } from './Pagination.styles';
 
 const styles = paginationStyles();
 
-export interface PaginationProps {
+interface PaginationProps {
   page: number;
   hasPrev: boolean;
   hasNext: boolean;

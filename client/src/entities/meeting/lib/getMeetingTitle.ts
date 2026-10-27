@@ -1,4 +1,5 @@
 import { i18n } from '@/shared/i18n';
+import { formatShortDateTime } from '@/shared/lib/time';
 
 interface MeetingTitleSource {
   title?: string | null;
@@ -13,15 +14,7 @@ function getAutoTitle(meeting: MeetingTitleSource): string {
 
   if (!meeting.startedAt) return prefix;
 
-  const dateTime = new Intl.DateTimeFormat(i18n.locale(), {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(new Date(meeting.startedAt));
-
-  return `${prefix}, ${dateTime}`;
+  return `${prefix}, ${formatShortDateTime(meeting.startedAt)}`;
 }
 
 export const getMeetingTitle = (meeting: MeetingTitleSource): string =>

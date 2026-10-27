@@ -80,8 +80,7 @@ const defineSpriteMap = <const Sprites extends readonly [...SvgSprite[]]>(
       config?: SpritePrepareConfig,
     ) {
       const sprite = map.byName[spriteName as keyof typeof map.byName] as
-        | Sprites[number]
-        | null;
+        Sprites[number] | null;
       const symbol = sprite?.symbols.byName[
         symbolName
       ] as SvgSpriteSymbol | null;
@@ -320,6 +319,8 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['bookmark'], [24]),
         defineSpriteSymbol(['calendar-solid'], [24]),
         defineSpriteSymbol(['calendar'], [24]),
+        defineSpriteSymbol(['chart-solid'], [24]),
+        defineSpriteSymbol(['chart'], [24]),
         defineSpriteSymbol(['check-solid'], [24]),
         defineSpriteSymbol(['check'], [24]),
         defineSpriteSymbol(['settings-solid'], [24]),
@@ -327,7 +328,7 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['users-solid'], [24]),
         defineSpriteSymbol(['users'], [24]),
       ],
-      defineExternalAssetMeta('navigation.9c0bb2cf.svg'),
+      defineExternalAssetMeta('navigation.eb8abf09.svg'),
     ),
   ]),
   defineSprite('social', [
@@ -381,6 +382,8 @@ export type SpritesMeta = {
     | 'bookmark'
     | 'calendar-solid'
     | 'calendar'
+    | 'chart-solid'
+    | 'chart'
     | 'check-solid'
     | 'check'
     | 'settings-solid'

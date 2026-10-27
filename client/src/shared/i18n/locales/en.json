@@ -8,8 +8,6 @@
     "our": "our",
     "terms_of_service": "Terms of Service",
     "privacy_policy": "Privacy Policy",
-    "copy": "Copy",
-    "copied": "Copied",
     "search": "Search"
   },
   "auth": {
@@ -45,7 +43,8 @@
     "actions": "Actions",
     "collapse": "Collapse sidebar",
     "expand": "Expand sidebar",
-    "shared": "Shared with me"
+    "shared": "Shared with me",
+    "stats": "Statistics"
   },
   "pagination": {
     "prev": "Prev",
@@ -60,14 +59,7 @@
     "title_untitled": "Untitled",
     "title_with_source": "{{source}} meeting",
     "status": {
-      "recording": "Recording",
-      "uploading": "Uploading",
-      "uploaded": "Uploaded",
-      "transcribing": "Transcribing",
-      "transcribed": "Transcribed",
-      "summarizing": "Summarizing",
-      "ready": "Ready",
-      "failed": "Failed"
+      "transcribing": "Transcribing"
     },
     "transcript_empty": "No transcript for this meeting",
     "action_items": "Action items",
@@ -194,5 +186,40 @@
       "relevance": "Most relevant",
       "recent": "Newest first"
     }
+  },
+  "stats": {
+    "title": "Statistics",
+    "year_total": "{{count}} · {{duration}} in {{year}}",
+    "less": "Less",
+    "more": "More",
+    "no_calls": "No calls",
+    "pick_day": "Pick a day on the map to see its calls",
+    "day_empty": "No calls on this day",
+    "calls_one": "{{count}} call",
+    "calls_few": "{{count}} calls",
+    "calls_many": "{{count}} calls",
+    "calls_other": "{{count}} calls",
+    "days_one": "{{count}} day",
+    "days_few": "{{count}} days",
+    "days_many": "{{count}} days",
+    "days_other": "{{count}} days",
+    "kpi": {
+      "calls": "Calls",
+      "duration": "Time in calls",
+      "active_days": "Days with calls",
+      "avg_day": "Average per active day",
+      "longest_streak": "Longest streak"
+    },
+    "sources": {
+      "title": "Platforms",
+      "other": "No platform",
+      "rest": "Others ({{count}})"
+    },
+    "empty": "No calls this year"
+  },
+  "duration": {
+    "minutes": "{{minutes}}m",
+    "hours": "{{hours}}h",
+    "hours_minutes": "{{hours}}h {{minutes}}m"
   }
 }
