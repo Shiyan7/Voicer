@@ -2,6 +2,7 @@ import { A } from '@solidjs/router';
 import { Show } from 'solid-js';
 
 import { Button } from '@/shared/ui/button';
+import { Icon } from '@/shared/ui/icon';
 
 import { useAccountCard } from '../model/useAccountCard';
 import { AccountCardDeps } from '../types/AccountCardDeps';
@@ -16,8 +17,14 @@ export function AccountCard(props: AccountCardDeps) {
     <Show
       when={vm.isAuthorized()}
       fallback={
-        <Button class={styles.authBtn()} variant="frost" size="lg" onClick={vm.openAuth}>
-          {vm.authLabel()}
+        <Button
+          class={styles.authBtn({ collapsed: props.isCollapsed })}
+          size="lg"
+          aria-label={vm.authLabel()}
+          onClick={vm.openAuth}
+        >
+          <Icon size={18} name="common:login" />
+          <Show when={!props.isCollapsed}>{vm.authLabel()}</Show>
         </Button>
       }
     >

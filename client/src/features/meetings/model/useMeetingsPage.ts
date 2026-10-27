@@ -32,6 +32,8 @@ export const useMeetingsPage = () => {
   const [statsResult] = meetingsStatsQuery({ pause: () => !authRoot.isAuth });
   const stats = () => statsResult.data?.meetingsStats;
 
+  const isAuthorized = () => authRoot.isAuth;
+
   const meetingsPage = () => meetingsResult.data?.meetingsPage;
 
   const items = () => mapMeetingCards(meetingsPage()?.items);
@@ -64,6 +66,7 @@ export const useMeetingsPage = () => {
     ...useMeetingCapture(),
     ...useMeetingDelete(),
     banner: useStatsBanner(stats),
+    isAuthorized,
     filters,
     items,
     isLoading,

@@ -23,6 +23,7 @@ export const accountCardStyles = tv({
       true: {
         card: 'justify-center p-1',
         avatar: 'size-9 text-sm',
+        authBtn: 'size-11 shrink-0 px-0',
       },
     },
   },

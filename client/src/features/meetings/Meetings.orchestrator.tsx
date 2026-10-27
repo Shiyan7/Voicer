@@ -1,3 +1,5 @@
+import { Show } from 'solid-js';
+
 import { DeleteMeetingModal } from '@/entities/meeting';
 import { i18n } from '@/shared/i18n';
 import { PageFade } from '@/shared/ui/page-fade';
@@ -25,10 +27,12 @@ export function MeetingsOrchestrator() {
             onFileSelected={vm.onFileSelected}
           />
         </header>
-        <StatsBanner
-          greeting={vm.banner.greeting()}
-          tiles={vm.banner.tiles()}
-        />
+        <Show when={vm.isAuthorized()}>
+          <StatsBanner
+            greeting={vm.banner.greeting()}
+            tiles={vm.banner.tiles()}
+          />
+        </Show>
         <section class={styles.section()}>
           <ListHeader
             title={vm.totalLabel()}

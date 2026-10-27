@@ -8,7 +8,8 @@ export const createUserMe = () => {
     pause: () => !authRoot.isAuth,
   });
 
-  const user = () => userMeResult.data?.userMe ?? null;
+  const user = () =>
+    authRoot.isAuth ? (userMeResult.data?.userMe ?? null) : null;
 
   const isAuthorized = () => Boolean(authRoot.accessToken);
 
