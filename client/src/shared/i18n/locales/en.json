@@ -8,8 +8,6 @@
     "our": "our",
     "terms_of_service": "Terms of Service",
     "privacy_policy": "Privacy Policy",
-    "copy": "Copy",
-    "copied": "Copied",
     "search": "Search"
   },
   "auth": {
@@ -61,14 +59,7 @@
     "title_untitled": "Untitled",
     "title_with_source": "{{source}} meeting",
     "status": {
-      "recording": "Recording",
-      "uploading": "Uploading",
-      "uploaded": "Uploaded",
-      "transcribing": "Transcribing",
-      "transcribed": "Transcribed",
-      "summarizing": "Summarizing",
-      "ready": "Ready",
-      "failed": "Failed"
+      "transcribing": "Transcribing"
     },
     "transcript_empty": "No transcript for this meeting",
     "action_items": "Action items",

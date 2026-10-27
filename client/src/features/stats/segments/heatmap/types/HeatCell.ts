@@ -6,4 +6,5 @@ export interface HeatCell {
   durationSec: number;
   level: HeatLevel;
   isOutside: boolean;
+  isFuture: boolean;
 }

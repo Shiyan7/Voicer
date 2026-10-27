@@ -20,3 +20,5 @@ export const formatClock = (totalSeconds: number) => {
 
   return `${Math.floor(total / 60)}:${seconds}`;
 };
+
+export const formatClockMs = (totalMs: number) => formatClock(totalMs / 1000);

@@ -1,15 +1,11 @@
-import type { StatsSourceOutput } from '@schema';
-
 import { i18n } from '@/shared/i18n';
+import { sumBy } from '@/shared/lib/sumBy';
 import { formatDuration } from '@/shared/lib/time';
 
 import { pluralize } from '../../../lib/pluralize';
 import { MAX_SOURCES } from '../config/MAX_SOURCES';
 import { SourceRow } from '../types/SourceRow';
 import { SourcesProps } from '../types/SourcesProps';
-
-const sumBy = (sources: StatsSourceOutput[], key: 'count' | 'durationSec') =>
-  sources.reduce((sum, source) => sum + source[key], 0);
 
 export const useSources = (props: SourcesProps) => {
   const groups = () => {
@@ -21,8 +17,8 @@ export const useSources = (props: SourcesProps) => {
       ...top,
       {
         source: i18n.t('stats.sources.rest', { count: String(rest.length) }),
-        count: sumBy(rest, 'count'),
-        durationSec: sumBy(rest, 'durationSec'),
+        count: sumBy(rest, (source) => source.count),
+        durationSec: sumBy(rest, (source) => source.durationSec),
       },
     ];
   };

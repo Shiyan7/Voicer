@@ -12,7 +12,7 @@ export const mapDayMeeting = (
   id: meeting.id,
   href: paths.meeting(meeting.id),
   title: getMeetingTitle(meeting),
-  source: meeting.source ?? null,
+  source: meeting.source,
   time: formatTime(meeting.startedAt),
   duration: formatDurationLabel(meeting.durationSec),
 });

@@ -4,7 +4,7 @@ import { useSingletonContext } from '@/shared/singleton';
 
 export type ToastType = 'success' | 'info' | 'warning' | 'error';
 
-export type Toast = { id: number; type: ToastType; title?: string };
+type Toast = { id: number; type: ToastType; title?: string };
 
 const TOAST_DELETE_DELAY = 4_000;
 

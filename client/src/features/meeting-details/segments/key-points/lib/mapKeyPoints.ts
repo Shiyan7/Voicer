@@ -1,6 +1,6 @@
 import type { KeyPointOutput } from '@schema';
 
-import { formatClock } from '@/shared/lib/time';
+import { formatClockMs } from '@/shared/lib/time';
 
 import { KeyPointView } from '../types/KeyPointView';
 
@@ -13,7 +13,7 @@ export function mapKeyPoints(
   return points.map((point) => ({
     id: point.id,
     text: point.text,
-    timeLabel: point.atMs != null ? formatClock(point.atMs / 1000) : null,
+    timeLabel: point.atMs != null ? formatClockMs(point.atMs) : null,
     isFocused: point.id === focusId,
   }));
 }

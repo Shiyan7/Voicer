@@ -128,13 +128,16 @@ export class StatsService {
   }
 
   private getLongestStreak(dates: string[]): number {
-    const indexes = dates.map(toDayIndex);
     let longest = 0;
     let current = 0;
-    indexes.forEach((day, index) => {
-      current = day - indexes[index - 1] === 1 ? current + 1 : 1;
+    let previous: number | null = null;
+
+    for (const day of dates.map(toDayIndex)) {
+      current = previous !== null && day - previous === 1 ? current + 1 : 1;
       longest = Math.max(longest, current);
-    });
+      previous = day;
+    }
+
     return longest;
   }
 }

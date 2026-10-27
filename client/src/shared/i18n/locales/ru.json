@@ -8,8 +8,6 @@
     "our": "с",
     "terms_of_service": "Условиями использования",
     "privacy_policy": "Политикой конфиденциальности",
-    "copy": "Копировать",
-    "copied": "Скопировано",
     "search": "Поиск"
   },
   "auth": {
@@ -61,14 +59,7 @@
     "title_untitled": "Без названия",
     "title_with_source": "Встреча в {{source}}",
     "status": {
-      "recording": "Идёт запись",
-      "uploading": "Загрузка",
-      "uploaded": "Загружено",
-      "transcribing": "Расшифровка",
-      "transcribed": "Расшифровано",
-      "summarizing": "Составление сводки",
-      "ready": "Готово",
-      "failed": "Ошибка"
+      "transcribing": "Расшифровка"
     },
     "transcript_empty": "Для этой встречи нет расшифровки",
     "action_items": "Задачи",

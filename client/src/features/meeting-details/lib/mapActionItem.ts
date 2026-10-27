@@ -2,7 +2,7 @@ import type { ActionItemOutput } from '@schema';
 
 import { ActionItemData } from '@/entities/action-item';
 import { getMeetingTitle } from '@/entities/meeting';
-import { formatClock } from '@/shared/lib/time';
+import { formatClockMs } from '@/shared/lib/time';
 import { getSpeakerLabel, getSpeakerTone } from '@/shared/ui/speaker-avatar';
 
 export function mapActionItem(
@@ -26,7 +26,7 @@ export function mapActionItem(
         : undefined,
     speakerTone:
       item.speakerIndex != null ? getSpeakerTone(item.speakerIndex) : undefined,
-    timeLabel: item.atMs != null ? formatClock(item.atMs / 1000) : undefined,
+    timeLabel: item.atMs != null ? formatClockMs(item.atMs) : undefined,
     isFocused: item.id === focusId,
   };
 }

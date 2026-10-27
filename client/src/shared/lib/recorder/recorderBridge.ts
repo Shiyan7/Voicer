@@ -1,14 +1,14 @@
 import { invoke } from '@tauri-apps/api/core';
 import { listen, type UnlistenFn } from '@tauri-apps/api/event';
 
-export interface StartRecordingResult {
+interface StartRecordingResult {
   localId: string;
   startedAt: number;
   path: string;
   warnings: string[];
 }
 
-export interface StopRecordingResult {
+interface StopRecordingResult {
   localId: string;
   startedAt: number;
   path: string;
@@ -16,17 +16,17 @@ export interface StopRecordingResult {
   source: string;
 }
 
-export type RecorderState =
+type RecorderState =
   | { state: 'idle' }
   | { state: 'recording'; localId: string; startedAt: number; path: string };
 
-export interface CallDetectedPayload {
+interface CallDetectedPayload {
   source: string;
   bundleId: string | null;
   at: number;
 }
 
-export interface CallEndedPayload {
+interface CallEndedPayload {
   at: number;
 }
 

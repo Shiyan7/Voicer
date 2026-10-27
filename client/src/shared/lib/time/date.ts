@@ -11,7 +11,7 @@ dayjs.extend(isoWeek);
 dayjs.extend(localizedFormat);
 dayjs.extend(relativeTime);
 
-export type DateInput = dayjs.ConfigType;
+type DateInput = dayjs.ConfigType;
 
 export const date = (value?: DateInput) => dayjs(value).locale(i18n.locale());
 

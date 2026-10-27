@@ -11,6 +11,7 @@ export const buildHeatmapWeeks = (
   thresholds: number[],
 ): HeatCell[][] => {
   const byDate = new Map(days.map((day) => [day.date, day]));
+  const today = toDateKey();
   const yearStart = date(`${year}-01-01`);
   const yearEnd = yearStart.endOf('year');
   const weeks: HeatCell[][] = [];
@@ -34,6 +35,7 @@ export const buildHeatmapWeeks = (
           durationSec,
           level: getHeatLevel(count, durationSec, thresholds),
           isOutside: day.year() !== year,
+          isFuture: key > today,
         };
       }),
     );

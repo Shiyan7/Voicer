@@ -4,7 +4,7 @@ import { logoStyles } from './Logo.styles';
 
 const styles = logoStyles();
 
-export interface LogoProps {
+interface LogoProps {
   isCompact?: boolean;
 }
 

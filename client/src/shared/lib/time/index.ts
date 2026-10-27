@@ -1,4 +1,3 @@
-export type { DateInput } from './date';
 export {
   date,
   formatDayDate,
@@ -7,4 +6,9 @@ export {
   formatTime,
   toDateKey,
 } from './date';
-export { formatClock, formatDuration, formatDurationLabel } from './duration';
+export {
+  formatClock,
+  formatClockMs,
+  formatDuration,
+  formatDurationLabel,
+} from './duration';
