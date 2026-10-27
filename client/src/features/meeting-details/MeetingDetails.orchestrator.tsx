@@ -63,7 +63,7 @@ export function MeetingDetailsOrchestrator() {
                       <MoreActions
                         meetingId={meeting().id}
                         audioUrl={meeting().audioUrl}
-                        fileName={meeting().title ?? ''}
+                        fileName={meeting().title}
                         isFavorite={meeting().isFavorite}
                       />
                     </div>

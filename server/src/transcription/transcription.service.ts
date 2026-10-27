@@ -1,18 +1,15 @@
 import { readFile } from 'fs/promises';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { DeepgramClient } from '@deepgram/sdk';
+import {
+  Deepgram,
+  DeepgramClient,
+  ListenV1ResponseResultsUtterancesItem,
+} from '@deepgram/sdk';
 import { TranscribedSegment } from './transcription.types';
 
 const TRANSCRIBE_MODEL = 'nova-3';
 const MAX_RETRIES = 3;
-
-interface DeepgramUtterance {
-  speaker?: number;
-  start: number;
-  end: number;
-  transcript: string;
-}
 
 @Injectable()
 export class TranscriptionService {
@@ -48,21 +45,26 @@ export class TranscriptionService {
       },
     );
 
-    const transcription = response as unknown as {
-      results?: { utterances?: DeepgramUtterance[] };
-    };
-
-    return (transcription.results?.utterances ?? []).map((utterance) =>
+    return this.getUtterances(response).map((utterance) =>
       this.toSegment(utterance),
     );
   }
 
-  private toSegment(utterance: DeepgramUtterance): TranscribedSegment {
+  private getUtterances(
+    response: Deepgram.listen.v1.MediaTranscribeResponse,
+  ): ListenV1ResponseResultsUtterancesItem[] {
+    if (!('results' in response)) return [];
+    return response.results.utterances ?? [];
+  }
+
+  private toSegment(
+    utterance: ListenV1ResponseResultsUtterancesItem,
+  ): TranscribedSegment {
     return {
       speakerIndex: utterance.speaker ?? 0,
-      startMs: Math.round(utterance.start * 1000),
-      endMs: Math.round(utterance.end * 1000),
-      text: utterance.transcript.trim(),
+      startMs: Math.round((utterance.start ?? 0) * 1000),
+      endMs: Math.round((utterance.end ?? 0) * 1000),
+      text: (utterance.transcript ?? '').trim(),
     };
   }
 }
