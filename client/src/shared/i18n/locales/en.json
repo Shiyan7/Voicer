@@ -85,7 +85,6 @@
     "remove_favorite": "Remove from favorites",
     "export_text": "Export as text",
     "delete_meeting": "Delete meeting",
-    "summarizing_hint": "Generating summary…",
     "summary_styles": {
       "auto": "Auto",
       "concise": "Concise",

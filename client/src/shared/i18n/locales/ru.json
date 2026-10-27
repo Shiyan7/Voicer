@@ -85,7 +85,6 @@
     "remove_favorite": "Убрать из избранного",
     "export_text": "Экспорт в текст",
     "delete_meeting": "Удалить встречу",
-    "summarizing_hint": "Составляем сводку…",
     "summary_styles": {
       "auto": "Авто",
       "concise": "Кратко",

@@ -27,7 +27,9 @@ export const useMeetingsFilters = () => {
 
   const isCustomSort = () => sort() !== MeetingsSort.DateDesc;
 
-  const hasActiveFilters = () => favoritesOnly() || source() !== ALL_SOURCES;
+  const hasSourceFilter = () => source() !== ALL_SOURCES;
+
+  const hasActiveFilters = () => favoritesOnly() || hasSourceFilter();
 
   const update = (next: Omit<MeetingsSearchParams, 'page'>) =>
     setSearchParams({ ...next, page: undefined });
@@ -49,6 +51,7 @@ export const useMeetingsFilters = () => {
     favoritesOnly,
     source,
     isCustomSort,
+    hasSourceFilter,
     hasActiveFilters,
     setSort,
     toggleFavoritesOnly,

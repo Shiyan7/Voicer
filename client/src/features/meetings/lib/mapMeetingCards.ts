@@ -6,6 +6,7 @@ import {
   formatRelativeTime,
   formatShortDateTime,
 } from '@/shared/lib/time';
+import { paths } from '@/shared/router';
 
 import { MeetingCardData } from '../types/MeetingCardData';
 
@@ -14,6 +15,7 @@ export function mapMeetingCards(meetings?: MeetingOutput[]): MeetingCardData[] {
 
   return meetings.map((meeting) => ({
     id: meeting.id,
+    href: paths.meeting(meeting.id),
     title: getMeetingTitle(meeting.source, meeting.startedAt),
     duration: formatDurationLabel(meeting.durationSec),
     dateLabel: formatRelativeTime(meeting.startedAt),
