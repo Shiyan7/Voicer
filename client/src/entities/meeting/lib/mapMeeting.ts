@@ -16,6 +16,7 @@ export function mapMeeting(meeting?: MeetingOutput): MeetingDetails | null {
     audioUrl: meeting.audioUrl ?? null,
     durationSec: meeting.durationSec ?? null,
     isFavorite: meeting.isFavorite,
+    summarizationFailed: meeting.summarizationFailed,
     startedAt: meeting.startedAt,
   };
 }

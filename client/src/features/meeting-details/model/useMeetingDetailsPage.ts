@@ -49,15 +49,13 @@ export const useMeetingDetailsPage = () => {
 
   const hasContent = () => isTranscribed() || isSummarizing() || isReady();
 
+  const summarizationFailed = () => meeting()?.summarizationFailed;
+
   const toasts = useToasts();
 
   createEffect(
-    on(status, (current, previous) => {
-      const summarizationFailed =
-        previous === MeetingStatus.Summarizing &&
-        current !== MeetingStatus.Summarizing &&
-        current !== MeetingStatus.Ready;
-      if (summarizationFailed) {
+    on(summarizationFailed, (failed) => {
+      if (failed) {
         toasts.show('error', i18n.t('meetings.summarize_error'));
       }
     }),

@@ -45,6 +45,7 @@ type MeetingOutput {
   source: String
   startedAt: DateTime!
   status: MeetingStatus!
+  summarizationFailed: Boolean!
   title: String
   updatedAt: DateTime!
 }

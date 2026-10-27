@@ -37,7 +37,7 @@ export class SummarizationService {
     const parsed = await this.generateJson<Partial<MeetingSummary>>(
       buildSummarizeMeetingPrompt(segments),
       SUMMARY_RESPONSE_SCHEMA,
-      (summary) => Boolean(summary.keyPoints?.length || summary.title),
+      (summary) => Boolean(summary.keyPoints?.length),
     );
 
     return {

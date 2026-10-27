@@ -59,6 +59,7 @@ export type MeetingOutput = {
   source?: Maybe<Scalars['String']['output']>;
   startedAt: Scalars['DateTime']['output'];
   status: MeetingStatus;
+  summarizationFailed: Scalars['Boolean']['output'];
   title?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['DateTime']['output'];
 };

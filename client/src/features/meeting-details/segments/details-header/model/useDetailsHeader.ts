@@ -20,6 +20,8 @@ export const useDetailsHeader = (props: DetailsHeaderDeps) => {
 
   const title = () => props.meeting.title;
 
+  const customTitle = () => props.meeting.customTitle ?? '';
+
   const [isTitleRevealing, setIsTitleRevealing] = createSignal(false);
 
   createEffect(
@@ -56,7 +58,7 @@ export const useDetailsHeader = (props: DetailsHeaderDeps) => {
     });
 
   const startEditing = () => {
-    setDraft(title());
+    setDraft(customTitle());
     setIsEditing(true);
     focusInput();
   };
@@ -68,7 +70,7 @@ export const useDetailsHeader = (props: DetailsHeaderDeps) => {
     setIsEditing(false);
 
     const next = draft().trim();
-    if (next === title()) return;
+    if (next === customTitle()) return;
 
     const result = await renameMeeting({
       id: props.meeting.id,

@@ -9,5 +9,6 @@ export interface MeetingDetails {
   audioUrl: string | null;
   durationSec: number | null;
   isFavorite: boolean;
+  summarizationFailed: boolean;
   startedAt: string;
 }
