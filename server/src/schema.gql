@@ -111,12 +111,13 @@ type Query {
   meetingTranscript(meetingId: ID!): [TranscriptSegmentOutput!]!
   meetingsPage(input: MeetingsPageInput!): MeetingsPageOutput!
   meetingsStats: MeetingsStatsOutput!
-  search(input: SearchInput!): [SearchResultOutput!]!
+  search(input: SearchInput!): SearchPageOutput!
   userMe: UserMeOutput!
 }
 
 input SearchInput {
   limit: Int! = 30
+  offset: Int! = 0
   query: String!
   sort: SearchSort! = RELEVANCE
 }
@@ -126,6 +127,11 @@ enum SearchMatchKind {
   KEY_POINT
   SOURCE
   TRANSCRIPT
+}
+
+type SearchPageOutput {
+  items: [SearchResultOutput!]!
+  total: Int!
 }
 
 type SearchResultOutput {

@@ -8,18 +8,16 @@ import { buildSnippet } from './buildSnippet';
 import { getMatchHref } from './getMatchHref';
 import { getMatchIcon } from './getMatchIcon';
 
-export function mapSearchResults(
-  results: SearchResultOutput[],
+export function mapSearchResult(
+  result: SearchResultOutput,
   words: string[],
-  activeIndex: number,
-): SearchResultView[] {
-  return results.map((result, index) => ({
+): SearchResultView {
+  return {
     meetingId: result.meetingId,
     href: getMatchHref(result),
     title: getMeetingTitle(result),
     icon: getMatchIcon(result.kind),
     snippet: buildSnippet(result.text, words),
     dateLabel: formatRelativeTime(result.startedAt),
-    isActive: index === activeIndex,
-  }));
+  };
 }

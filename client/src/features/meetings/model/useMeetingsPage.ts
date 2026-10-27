@@ -57,10 +57,7 @@ export const useMeetingsPage = () => {
 
   const showSourceFilter = () => sourceOptions().length > 1;
 
-  const totalLabel = () =>
-    i18n.t('meetings.total', {
-      count: String(meetingsPage()?.meta.total ?? 0),
-    });
+  const totalCount = () => String(meetingsPage()?.meta.total ?? 0);
 
   return {
     ...useMeetingCapture(),
@@ -75,7 +72,7 @@ export const useMeetingsPage = () => {
     favoritesIcon,
     sourceOptions,
     showSourceFilter,
-    totalLabel,
+    totalCount,
     sortOptions: getSortOptions,
     currentPage: pagination.currentPage,
     hasPrevPage: pagination.hasPrevPage,

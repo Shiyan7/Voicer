@@ -1,6 +1,7 @@
-import { For, Match, Switch } from 'solid-js';
+import { For, Match, Show, Switch } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
+import { onVisible } from '@/shared/lib/dom';
 import { Dropdown } from '@/shared/ui/dropdown';
 import { Icon } from '@/shared/ui/icon';
 
@@ -29,7 +30,10 @@ export function SearchResults(props: SearchResultsProps) {
         </Match>
         <Match when={true}>
           <div class={styles.header()}>
-            <span class={styles.label()}>{i18n.t('search.results')}</span>
+            <span class={styles.label()}>
+              {i18n.t('search.results')}
+              <Show when={!props.isLoading}> ({props.total})</Show>
+            </span>
             <Dropdown
               options={props.sortOptions}
               selected={props.sort}
@@ -63,11 +67,13 @@ export function SearchResults(props: SearchResultsProps) {
                   {(result, index) => (
                     <SearchResultItem
                       result={result}
+                      isActive={index() === props.activeIndex}
                       onSelect={props.onSelect}
                       onHover={() => props.onHover(index())}
                     />
                   )}
                 </For>
+                <div ref={onVisible(() => props.onLoadMore())} class={styles.sentinel()} />
               </Match>
             </Switch>
           </div>

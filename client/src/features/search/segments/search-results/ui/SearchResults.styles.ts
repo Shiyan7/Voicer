@@ -15,6 +15,7 @@ export const searchResultsStyles = tv({
       flex flex-col items-center gap-2 px-6 py-14 text-center
       text-sm text-gray-500
     `,
+    sentinel: 'h-px shrink-0',
     stateIcon: 'mb-1 text-gray-400',
     skeleton: 'flex items-start gap-4 rounded-xl px-3 py-3',
     skeletonIcon: 'mt-0.5 size-5 shrink-0 animate-pulse rounded-md bg-gray-100',

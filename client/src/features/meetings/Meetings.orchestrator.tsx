@@ -35,7 +35,7 @@ export function MeetingsOrchestrator() {
         </Show>
         <section class={styles.section()}>
           <ListHeader
-            title={vm.totalLabel()}
+            count={vm.totalCount()}
             favoritesOnly={vm.filters.favoritesOnly()}
             sort={vm.filters.sort()}
             source={vm.filters.source()}

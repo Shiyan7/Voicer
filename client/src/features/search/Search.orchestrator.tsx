@@ -22,6 +22,8 @@ export function SearchOrchestrator() {
       />
       <SearchResults
         results={vm.results()}
+        total={vm.total()}
+        activeIndex={vm.activeIndex()}
         isLoading={vm.isLoading()}
         isEmpty={vm.isEmpty()}
         isIdle={vm.isIdle()}
@@ -32,6 +34,7 @@ export function SearchOrchestrator() {
         onSortChange={vm.setSort}
         onSelect={vm.openResult}
         onHover={vm.setActiveIndex}
+        onLoadMore={vm.loadMore}
       />
     </Modal>
   );

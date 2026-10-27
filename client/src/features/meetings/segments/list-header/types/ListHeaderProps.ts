@@ -4,7 +4,7 @@ import { DropdownOption } from '@/shared/ui/dropdown';
 import type { IconName } from '@/shared/ui/icon';
 
 export interface ListHeaderProps {
-  title: string;
+  count: string;
   favoritesOnly: boolean;
   sort: MeetingsSort;
   source: string;

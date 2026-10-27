@@ -4,6 +4,7 @@ export const listHeaderStyles = tv({
   slots: {
     root: 'flex items-center justify-between gap-4 px-1',
     title: 'text-[15px] font-medium text-gray-500',
+    count: 'font-bold text-gray-900',
     actions: 'flex items-center gap-1',
     iconBtn: `
       relative flex size-9 cursor-pointer items-center justify-center rounded-lg

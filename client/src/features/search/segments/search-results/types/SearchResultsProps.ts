@@ -5,6 +5,8 @@ import { DropdownOption } from '@/shared/ui/dropdown';
 
 export interface SearchResultsProps {
   results: SearchResultView[];
+  total: number;
+  activeIndex: number;
   isLoading: boolean;
   isEmpty: boolean;
   isIdle: boolean;
@@ -15,4 +17,5 @@ export interface SearchResultsProps {
   onSortChange: (value: SearchSort) => void;
   onSelect: (href: string) => void;
   onHover: (index: number) => void;
+  onLoadMore: () => void;
 }

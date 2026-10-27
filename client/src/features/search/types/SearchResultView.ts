@@ -9,5 +9,4 @@ export interface SearchResultView {
   icon: IconName;
   snippet: SnippetPart[];
   dateLabel: string;
-  isActive: boolean;
 }

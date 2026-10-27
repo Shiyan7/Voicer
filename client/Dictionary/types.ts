@@ -172,7 +172,7 @@ export type Query = {
   meetingTranscript: Array<TranscriptSegmentOutput>;
   meetingsPage: MeetingsPageOutput;
   meetingsStats: MeetingsStatsOutput;
-  search: Array<SearchResultOutput>;
+  search: SearchPageOutput;
   userMe: UserMeOutput;
 };
 
@@ -202,6 +202,7 @@ export type QuerySearchArgs = {
 
 export type SearchInput = {
   limit?: Scalars['Int']['input'];
+  offset?: Scalars['Int']['input'];
   query: Scalars['String']['input'];
   sort?: SearchSort;
 };
@@ -212,6 +213,12 @@ export enum SearchMatchKind {
   Source = 'SOURCE',
   Transcript = 'TRANSCRIPT',
 }
+
+export type SearchPageOutput = {
+  __typename?: 'SearchPageOutput';
+  items: Array<SearchResultOutput>;
+  total: Scalars['Int']['output'];
+};
 
 export type SearchResultOutput = {
   __typename?: 'SearchResultOutput';

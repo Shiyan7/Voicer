@@ -10,7 +10,7 @@ const styles = searchResultItemStyles();
 export function SearchResultItem(props: SearchResultItemProps) {
   return (
     <button
-      class={styles.root({ active: props.result.isActive })}
+      class={styles.root({ active: props.isActive })}
       type="button"
       onClick={() => props.onSelect(props.result.href)}
       onMouseMove={props.onHover}

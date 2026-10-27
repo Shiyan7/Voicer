@@ -11,4 +11,7 @@ export class SearchInput {
 
   @Field(() => Int, { defaultValue: 30 })
   limit: number = 30;
+
+  @Field(() => Int, { defaultValue: 0 })
+  offset: number = 0;
 }

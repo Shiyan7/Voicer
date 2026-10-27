@@ -135,7 +135,7 @@
       "week_duration": "recorded",
       "open_actions": "open action items"
     },
-    "total": "Total recordings: {{count}}",
+    "total": "Total recordings:",
     "rename": "Rename",
     "rename_placeholder": "Meeting title",
     "rename_error": "Could not rename the meeting",

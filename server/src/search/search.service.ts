@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { SearchMatchKind } from './search-match-kind.enum';
-import { SearchResultOutput } from './search-result.output';
+import { SearchPageOutput } from './search-page.output';
 import { SearchSort } from './search-sort.enum';
 import { SearchInput } from './search.input';
 
@@ -20,6 +20,7 @@ interface SearchRow {
   text: string;
   atMs: number | null;
   matchCount: number;
+  total: number;
 }
 
 const SEARCH_SQL = (orderBy: string) => `
@@ -62,12 +63,13 @@ const SEARCH_SQL = (orderBy: string) => `
   )
   SELECT
     r."meetingId", r."matchId", r.kind, r.text, r."atMs", r."matchCount",
+    COUNT(*) OVER ()::int AS total,
     m.title, m.source, m."startedAt", m."durationSec"
   FROM ranked r
   JOIN meetings m ON m.id = r."meetingId"
   WHERE r.rank = 1
   ORDER BY ${orderBy}
-  LIMIT $3
+  LIMIT $3 OFFSET $4
 `;
 
 const ORDER_BY: Record<SearchSort, string> = {
@@ -79,19 +81,19 @@ const ORDER_BY: Record<SearchSort, string> = {
 export class SearchService {
   constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
 
-  async search(
-    userId: string,
-    input: SearchInput,
-  ): Promise<SearchResultOutput[]> {
+  async search(userId: string, input: SearchInput): Promise<SearchPageOutput> {
     const patterns = this.toPatterns(input.query);
-    if (!patterns.length) return [];
+    if (!patterns.length) return { items: [], total: 0 };
 
     const limit = Math.min(Math.max(1, input.limit), MAX_LIMIT);
+    const offset = Math.max(0, input.offset);
 
-    return this.dataSource.query<SearchRow[]>(
+    const rows = await this.dataSource.query<SearchRow[]>(
       SEARCH_SQL(ORDER_BY[input.sort]),
-      [userId, patterns, limit],
+      [userId, patterns, limit, offset],
     );
+
+    return { items: rows, total: rows[0]?.total ?? 0 };
   }
 
   private toPatterns(query: string): string[] {

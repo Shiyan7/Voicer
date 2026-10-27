@@ -1,10 +1,10 @@
-import type { QuerySearchArgs, SearchResultOutput } from '@schema';
+import type { QuerySearchArgs, SearchPageOutput } from '@schema';
 import { createQuery, CreateQueryArgs } from '@urql/solid';
 
 import { SEARCH_QUERY } from './gql/SEARCH_QUERY';
 
 interface SearchQueryResult {
-  search: SearchResultOutput[];
+  search: SearchPageOutput;
 }
 
 type SearchQueryOptions = Omit<
