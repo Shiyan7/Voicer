@@ -2,7 +2,7 @@ import { tv } from 'tailwind-variants';
 
 export const heatmapStyles = tv({
   slots: {
-    root: 'rounded-2xl bg-white px-6 py-5',
+    root: 'rounded-2xl border border-black/5 bg-white px-6 py-5',
     header: 'flex flex-wrap items-center justify-between gap-3',
     title: 'text-[15px] font-semibold text-gray-900',
     body: 'mt-4 flex gap-2',

@@ -2,7 +2,7 @@ import { tv } from 'tailwind-variants';
 
 export const dayPanelStyles = tv({
   slots: {
-    root: 'rounded-2xl bg-white px-6 py-5',
+    root: 'rounded-2xl border border-black/5 bg-white px-6 py-5',
     hint: 'py-4 text-center text-sm text-gray-400',
     header: 'flex items-baseline justify-between gap-3',
     title: 'text-[15px] font-semibold text-gray-900',

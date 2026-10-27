@@ -2,7 +2,7 @@ import { tv } from 'tailwind-variants';
 
 export const sourcesStyles = tv({
   slots: {
-    root: 'rounded-2xl bg-white px-6 py-5',
+    root: 'rounded-2xl border border-black/5 bg-white px-6 py-5',
     title: 'text-[15px] font-semibold text-gray-900',
     list: 'mt-4 flex flex-col gap-3',
     row: 'flex flex-col gap-1.5',
