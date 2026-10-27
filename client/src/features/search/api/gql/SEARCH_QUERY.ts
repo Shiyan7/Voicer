@@ -5,6 +5,7 @@ export const SEARCH_QUERY = gql`
     search(input: $input) {
       meetingId
       matchId
+      title
       source
       startedAt
       durationSec

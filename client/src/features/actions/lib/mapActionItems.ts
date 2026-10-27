@@ -12,7 +12,11 @@ export function mapActionItems(items?: ActionItemOutput[]): ActionItemData[] {
     text: item.text,
     isDone: item.isDone,
     createdAt: item.createdAt,
-    meetingTitle: getMeetingTitle(item.meetingSource, item.meetingStartedAt),
+    meetingTitle: getMeetingTitle({
+      title: item.meetingTitle,
+      source: item.meetingSource,
+      startedAt: item.meetingStartedAt,
+    }),
     isFocused: false,
   }));
 }

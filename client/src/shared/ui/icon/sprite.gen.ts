@@ -297,6 +297,7 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['logout'], [24]),
         defineSpriteSymbol(['microphone'], [24]),
         defineSpriteSymbol(['pause'], [16]),
+        defineSpriteSymbol(['pencil'], [24]),
         defineSpriteSymbol(['play'], [16]),
         defineSpriteSymbol(['search'], [24]),
         defineSpriteSymbol(['skip-back'], [24]),
@@ -308,7 +309,7 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['trash'], [24]),
         defineSpriteSymbol(['upload'], [24]),
       ],
-      defineExternalAssetMeta('common.c1021354.svg'),
+      defineExternalAssetMeta('common.17d913bc.svg'),
     ),
   ]),
   defineSprite('navigation', [
@@ -362,6 +363,7 @@ export type SpritesMeta = {
     | 'logout'
     | 'microphone'
     | 'pause'
+    | 'pencil'
     | 'play'
     | 'search'
     | 'skip-back'

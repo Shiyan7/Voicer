@@ -29,6 +29,8 @@ import {
   toSegmentOutput,
 } from './meeting.serializer';
 
+const MAX_TITLE_LENGTH = 120;
+
 @Injectable()
 export class MeetingsService {
   constructor(
@@ -208,6 +210,25 @@ export class MeetingsService {
     await this.processing.updateAndPublish(meeting.id, { isFavorite });
 
     return toMeetingOutput({ ...meeting, isFavorite });
+  }
+
+  async renameMeeting(
+    userId: string,
+    id: string,
+    title: string | null,
+  ): Promise<MeetingOutput> {
+    const meeting = await this.findOwnedMeeting(userId, id);
+    const normalized = title?.trim().slice(0, MAX_TITLE_LENGTH) || null;
+
+    await this.processing.updateAndPublish(meeting.id, { title: normalized });
+
+    return toMeetingOutput({ ...meeting, title: normalized });
+  }
+
+  async suggestMeetingTitle(userId: string, id: string): Promise<string> {
+    const meeting = await this.findOwnedMeeting(userId, id);
+
+    return this.processing.suggestTitle(meeting.id);
   }
 
   async summarizeMeeting(userId: string, id: string): Promise<MeetingOutput> {

@@ -10,6 +10,9 @@ export class SearchResultOutput {
   matchId: string;
 
   @Field(() => String, { nullable: true })
+  title: string | null;
+
+  @Field(() => String, { nullable: true })
   source: string | null;
 
   @Field()

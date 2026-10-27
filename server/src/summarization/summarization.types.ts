@@ -10,6 +10,7 @@ export interface SummarizedActionItem {
 }
 
 export interface MeetingSummary {
+  title: string;
   keyPoints: SummarizedKeyPoint[];
   actionItems: SummarizedActionItem[];
 }

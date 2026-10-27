@@ -11,6 +11,7 @@ type ActionItemOutput {
   meetingId: ID!
   meetingSource: String
   meetingStartedAt: DateTime!
+  meetingTitle: String
   speakerIndex: Int
   text: String!
 }
@@ -84,7 +85,9 @@ type MeetingsStatsOutput {
 
 type Mutation {
   meetingDelete(id: ID!): MeetingOutput!
+  meetingRename(id: ID!, title: String): MeetingOutput!
   meetingSetFavorite(id: ID!, isFavorite: Boolean!): MeetingOutput!
+  meetingSuggestTitle(id: ID!): String!
   meetingSummarize(id: ID!): MeetingOutput!
   meetingUploadAudio(file: Upload!, source: String, startedAt: DateTime): MeetingOutput!
   signIn(input: SignInInput!): AuthPayload!
@@ -134,6 +137,7 @@ type SearchResultOutput {
   source: String
   startedAt: DateTime!
   text: String!
+  title: String
 }
 
 enum SearchSort {

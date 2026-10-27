@@ -15,7 +15,11 @@ export function mapActionItem(
     text: item.text,
     isDone: item.isDone,
     createdAt: item.createdAt,
-    meetingTitle: getMeetingTitle(item.meetingSource, item.meetingStartedAt),
+    meetingTitle: getMeetingTitle({
+      title: item.meetingTitle,
+      source: item.meetingSource,
+      startedAt: item.meetingStartedAt,
+    }),
     speakerLabel:
       item.speakerIndex != null
         ? getSpeakerLabel(item.speakerIndex)

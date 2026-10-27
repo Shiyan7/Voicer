@@ -1,6 +1,7 @@
 import type { MeetingOutput } from '@schema';
 
 import { MeetingDetails } from '../types/MeetingDetails';
+import { getMeetingSourceLabel } from './getMeetingSourceLabel';
 import { getMeetingTitle } from './getMeetingTitle';
 
 export function mapMeeting(meeting?: MeetingOutput): MeetingDetails | null {
@@ -8,7 +9,9 @@ export function mapMeeting(meeting?: MeetingOutput): MeetingDetails | null {
 
   return {
     id: meeting.id,
-    title: getMeetingTitle(meeting.source, meeting.startedAt),
+    title: getMeetingTitle(meeting),
+    customTitle: meeting.title ?? null,
+    sourceLabel: getMeetingSourceLabel(meeting),
     status: meeting.status,
     audioUrl: meeting.audioUrl ?? null,
     durationSec: meeting.durationSec ?? null,

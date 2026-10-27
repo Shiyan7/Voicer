@@ -135,7 +135,13 @@
       "week_duration": "записано",
       "open_actions": "открытых задач"
     },
-    "total": "Всего записей: {{count}}"
+    "total": "Всего записей: {{count}}",
+    "rename": "Переименовать",
+    "rename_placeholder": "Название встречи",
+    "rename_error": "Не удалось переименовать встречу",
+    "suggest_title": "Придумать название с ИИ",
+    "suggest_title_error": "ИИ не смог придумать название",
+    "summarize_error": "ИИ не смог составить заметки. Попробуйте позже"
   },
   "recorder": {
     "recording": "Идёт запись",

@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PubSub } from 'graphql-subscriptions';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { ActionItemEntity } from '../actions/action-item.entity';
 import { FileStorageService } from '../file/file-storage.service';
 import { PUB_SUB } from '../pubsub/pubsub.module';
@@ -94,16 +94,36 @@ export class MeetingProcessingService {
     });
   }
 
+  async suggestTitle(meetingId: string): Promise<string> {
+    const segments = await this.getTranscribedSegments(meetingId);
+    if (!segments.length) return '';
+
+    return this.summarizationService.generateTitle(segments);
+  }
+
+  private async saveTitleIfEmpty(
+    meetingId: string,
+    title: string,
+  ): Promise<void> {
+    if (!title) return;
+
+    await this.meetingsRepository.update(
+      { id: meetingId, title: IsNull() },
+      { title },
+    );
+  }
+
   private async runSummarization(meeting: MeetingEntity): Promise<void> {
     try {
       const segments = await this.getTranscribedSegments(meeting.id);
       const summary = await this.summarizationService.summarize(segments);
+      await this.saveTitleIfEmpty(meeting.id, summary.title);
       await this.saveKeyPoints(meeting.id, summary.keyPoints);
       await this.saveActionItems(meeting, summary.actionItems);
+      await this.updateAndPublish(meeting.id, { status: MeetingStatus.READY });
     } catch (error) {
       this.logFailure(`Failed to summarize meeting ${meeting.id}`, error);
-    } finally {
-      await this.updateAndPublish(meeting.id, { status: MeetingStatus.READY });
+      await this.updateAndPublish(meeting.id, { status: meeting.status });
     }
   }
 

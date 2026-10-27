@@ -12,6 +12,7 @@ const MIN_WORD_LENGTH = 2;
 interface SearchRow {
   meetingId: string;
   matchId: string;
+  title: string | null;
   source: string | null;
   startedAt: Date;
   durationSec: number | null;
@@ -60,7 +61,7 @@ const SEARCH_SQL = (orderBy: string) => `
   )
   SELECT
     r."meetingId", r."matchId", r.kind, r.text, r."atMs", r."matchCount",
-    m.source, m."startedAt", m."durationSec"
+    m.title, m.source, m."startedAt", m."durationSec"
   FROM ranked r
   JOIN meetings m ON m.id = r."meetingId"
   WHERE r.rank = 1

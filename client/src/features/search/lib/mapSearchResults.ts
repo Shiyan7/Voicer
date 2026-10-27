@@ -16,7 +16,7 @@ export function mapSearchResults(
   return results.map((result, index) => ({
     meetingId: result.meetingId,
     href: getMatchHref(result),
-    title: getMeetingTitle(result.source, result.startedAt),
+    title: getMeetingTitle(result),
     icon: getMatchIcon(result.kind),
     snippet: buildSnippet(result.text, words),
     dateLabel: formatRelativeTime(result.startedAt),

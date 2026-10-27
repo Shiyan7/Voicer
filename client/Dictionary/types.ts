@@ -29,6 +29,7 @@ export type ActionItemOutput = {
   meetingId: Scalars['ID']['output'];
   meetingSource?: Maybe<Scalars['String']['output']>;
   meetingStartedAt: Scalars['DateTime']['output'];
+  meetingTitle?: Maybe<Scalars['String']['output']>;
   speakerIndex?: Maybe<Scalars['Int']['output']>;
   text: Scalars['String']['output'];
 };
@@ -103,7 +104,9 @@ export type MeetingsStatsOutput = {
 export type Mutation = {
   __typename?: 'Mutation';
   meetingDelete: MeetingOutput;
+  meetingRename: MeetingOutput;
   meetingSetFavorite: MeetingOutput;
+  meetingSuggestTitle: Scalars['String']['output'];
   meetingSummarize: MeetingOutput;
   meetingUploadAudio: MeetingOutput;
   signIn: AuthPayload;
@@ -115,9 +118,18 @@ export type MutationMeetingDeleteArgs = {
   id: Scalars['ID']['input'];
 };
 
+export type MutationMeetingRenameArgs = {
+  id: Scalars['ID']['input'];
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type MutationMeetingSetFavoriteArgs = {
   id: Scalars['ID']['input'];
   isFavorite: Scalars['Boolean']['input'];
+};
+
+export type MutationMeetingSuggestTitleArgs = {
+  id: Scalars['ID']['input'];
 };
 
 export type MutationMeetingSummarizeArgs = {
@@ -211,6 +223,7 @@ export type SearchResultOutput = {
   source?: Maybe<Scalars['String']['output']>;
   startedAt: Scalars['DateTime']['output'];
   text: Scalars['String']['output'];
+  title?: Maybe<Scalars['String']['output']>;
 };
 
 export enum SearchSort {

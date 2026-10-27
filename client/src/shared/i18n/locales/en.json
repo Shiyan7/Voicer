@@ -135,7 +135,13 @@
       "week_duration": "recorded",
       "open_actions": "open action items"
     },
-    "total": "Total recordings: {{count}}"
+    "total": "Total recordings: {{count}}",
+    "rename": "Rename",
+    "rename_placeholder": "Meeting title",
+    "rename_error": "Could not rename the meeting",
+    "suggest_title": "Suggest a title with AI",
+    "suggest_title_error": "AI could not suggest a title",
+    "summarize_error": "AI could not create notes. Try again later"
   },
   "recorder": {
     "recording": "Recording",
