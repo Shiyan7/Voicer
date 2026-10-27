@@ -27,6 +27,9 @@ export class ActionItemOutput {
   createdAt: Date;
 
   @Field(() => String, { nullable: true })
+  meetingTitle: string | null;
+
+  @Field(() => String, { nullable: true })
   meetingSource: string | null;
 
   @Field(() => Date)

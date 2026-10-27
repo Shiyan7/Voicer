@@ -50,7 +50,7 @@ export function AuthModal() {
                 />
               )}
             </Field>
-            <Button class="mt-1" size="lg" type="submit">
+            <Button class="mt-1" variant="primary" size="lg" type="submit">
               {vm.buttonText()}
             </Button>
           </Form>

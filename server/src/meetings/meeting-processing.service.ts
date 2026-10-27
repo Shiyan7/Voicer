@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PubSub } from 'graphql-subscriptions';
-import { Repository } from 'typeorm';
+import { EntityManager, IsNull, Repository } from 'typeorm';
 import { ActionItemEntity } from '../actions/action-item.entity';
 import { FileStorageService } from '../file/file-storage.service';
 import { PUB_SUB } from '../pubsub/pubsub.module';
@@ -14,6 +14,7 @@ import { TranscriptionService } from '../transcription/transcription.service';
 import { TranscribedSegment } from '../transcription/transcription.types';
 import { KeyPointEntity } from './key-point.entity';
 import { MeetingEntity, MeetingStatus } from './meeting.entity';
+import { MeetingOutput } from './meeting.output';
 import { toMeetingOutput } from './meeting.serializer';
 import { TranscriptSegmentEntity } from './transcript-segment.entity';
 
@@ -29,10 +30,6 @@ export class MeetingProcessingService {
     private readonly meetingsRepository: Repository<MeetingEntity>,
     @InjectRepository(TranscriptSegmentEntity)
     private readonly transcriptSegmentsRepository: Repository<TranscriptSegmentEntity>,
-    @InjectRepository(KeyPointEntity)
-    private readonly keyPointsRepository: Repository<KeyPointEntity>,
-    @InjectRepository(ActionItemEntity)
-    private readonly actionItemsRepository: Repository<ActionItemEntity>,
     private readonly fileStorageService: FileStorageService,
     private readonly transcriptionService: TranscriptionService,
     private readonly summarizationService: SummarizationService,
@@ -42,6 +39,7 @@ export class MeetingProcessingService {
   async updateAndPublish(
     meetingId: string,
     updates: Partial<MeetingEntity>,
+    events: Partial<MeetingOutput> = {},
   ): Promise<void> {
     await this.meetingsRepository.update(meetingId, updates);
 
@@ -49,7 +47,7 @@ export class MeetingProcessingService {
     if (!meeting) return;
 
     await this.pubSub.publish(meetingUpdatedTopic(meetingId), {
-      meetingUpdated: toMeetingOutput(meeting),
+      meetingUpdated: { ...toMeetingOutput(meeting), ...events },
     });
   }
 
@@ -94,16 +92,44 @@ export class MeetingProcessingService {
     });
   }
 
+  async suggestTitle(meetingId: string): Promise<string> {
+    const segments = await this.getTranscribedSegments(meetingId);
+    if (!segments.length) return '';
+
+    return this.summarizationService.generateTitle(segments);
+  }
+
+  private async saveTitleIfEmpty(
+    manager: EntityManager,
+    meetingId: string,
+    title: string,
+  ): Promise<void> {
+    if (!title) return;
+
+    await manager.update(
+      MeetingEntity,
+      { id: meetingId, title: IsNull() },
+      { title },
+    );
+  }
+
   private async runSummarization(meeting: MeetingEntity): Promise<void> {
     try {
       const segments = await this.getTranscribedSegments(meeting.id);
       const summary = await this.summarizationService.summarize(segments);
-      await this.saveKeyPoints(meeting.id, summary.keyPoints);
-      await this.saveActionItems(meeting, summary.actionItems);
+      await this.meetingsRepository.manager.transaction(async (manager) => {
+        await this.saveTitleIfEmpty(manager, meeting.id, summary.title);
+        await this.saveKeyPoints(manager, meeting.id, summary.keyPoints);
+        await this.saveActionItems(manager, meeting, summary.actionItems);
+      });
+      await this.updateAndPublish(meeting.id, { status: MeetingStatus.READY });
     } catch (error) {
       this.logFailure(`Failed to summarize meeting ${meeting.id}`, error);
-    } finally {
-      await this.updateAndPublish(meeting.id, { status: MeetingStatus.READY });
+      await this.updateAndPublish(
+        meeting.id,
+        { status: meeting.status },
+        { summarizationFailed: true },
+      );
     }
   }
 
@@ -124,13 +150,14 @@ export class MeetingProcessingService {
   }
 
   private async saveKeyPoints(
+    manager: EntityManager,
     meetingId: string,
     keyPoints: SummarizedKeyPoint[],
   ): Promise<void> {
-    await this.keyPointsRepository.delete({ meetingId });
-    await this.keyPointsRepository.save(
+    await manager.delete(KeyPointEntity, { meetingId });
+    await manager.save(
       keyPoints.map((keyPoint, index) =>
-        this.keyPointsRepository.create({
+        manager.create(KeyPointEntity, {
           meetingId,
           text: keyPoint.text,
           atMs: keyPoint.atMs,
@@ -141,13 +168,14 @@ export class MeetingProcessingService {
   }
 
   private async saveActionItems(
+    manager: EntityManager,
     meeting: MeetingEntity,
     actionItems: SummarizedActionItem[],
   ): Promise<void> {
-    await this.actionItemsRepository.delete({ meetingId: meeting.id });
-    await this.actionItemsRepository.save(
+    await manager.delete(ActionItemEntity, { meetingId: meeting.id });
+    await manager.save(
       actionItems.map((actionItem) =>
-        this.actionItemsRepository.create({
+        manager.create(ActionItemEntity, {
           meetingId: meeting.id,
           userId: meeting.userId,
           text: actionItem.text,

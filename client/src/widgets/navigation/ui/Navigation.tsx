@@ -1,6 +1,6 @@
 import { Show } from 'solid-js';
 
-import { TeamSelect } from '@/entities/team-select';
+import { AccountCard } from '@/entities/account-card';
 import { i18n } from '@/shared/i18n';
 import { Icon } from '@/shared/ui/icon';
 import { Logo } from '@/shared/ui/logo';
@@ -48,7 +48,7 @@ export function Navigation() {
         </button>
         <NavList items={vm.navItems()} isCollapsed={vm.isCollapsed()} />
         <div class={styles.account({ collapsed: vm.isCollapsed() })}>
-          <TeamSelect isCollapsed={vm.isCollapsed()} />
+          <AccountCard isCollapsed={vm.isCollapsed()} />
           <ProButton isCollapsed={vm.isCollapsed()} />
         </div>
       </div>

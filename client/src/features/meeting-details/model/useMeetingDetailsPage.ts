@@ -1,9 +1,11 @@
 import { MeetingStatus } from '@schema';
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
-import { createSignal } from 'solid-js';
+import { createEffect, createSignal, on } from 'solid-js';
 
 import { mapMeeting } from '@/entities/meeting';
 import { usePlayback } from '@/entities/meeting-player';
+import { useToasts } from '@/entities/toasts';
+import { i18n } from '@/shared/i18n';
 import { paths } from '@/shared/router';
 import { getSpeakerTone } from '@/shared/ui/speaker-avatar';
 
@@ -46,6 +48,18 @@ export const useMeetingDetailsPage = () => {
   const isFailed = () => status() === MeetingStatus.Failed;
 
   const hasContent = () => isTranscribed() || isSummarizing() || isReady();
+
+  const summarizationFailed = () => meeting()?.summarizationFailed;
+
+  const toasts = useToasts();
+
+  createEffect(
+    on(summarizationFailed, (failed) => {
+      if (failed) {
+        toasts.show('error', i18n.t('meetings.summarize_error'));
+      }
+    }),
+  );
 
   const [transcriptResult] = meetingTranscriptQuery(
     () => ({ meetingId: params.id }),

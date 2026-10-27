@@ -3,6 +3,7 @@ import { TranscribedSegment } from '../../transcription/transcription.types';
 export const SUMMARY_RESPONSE_SCHEMA = {
   type: 'object',
   properties: {
+    title: { type: 'string' },
     keyPoints: {
       type: 'array',
       items: {
@@ -29,26 +30,57 @@ export const SUMMARY_RESPONSE_SCHEMA = {
       },
     },
   },
-  required: ['keyPoints', 'actionItems'],
+  required: ['title', 'keyPoints', 'actionItems'],
   additionalProperties: false,
 };
 
-export function buildSummarizeMeetingPrompt(
-  segments: TranscribedSegment[],
-): string {
-  const transcript = segments
+const TITLE_RULE =
+  'title — a short meeting title of 2–6 words in the transcript language that names the main topic (e.g. «Обсуждение релиза приложения», «Сборка персонажа в игре»). No date, no app name, no quotes, no trailing period.';
+
+export const TITLE_RESPONSE_SCHEMA = {
+  type: 'object',
+  properties: { title: { type: 'string' } },
+  required: ['title'],
+  additionalProperties: false,
+};
+
+const TITLE_TRANSCRIPT_CHARS = 12000;
+
+const formatTranscript = (segments: TranscribedSegment[]): string =>
+  segments
     .map(
       (segment) =>
         `[${segment.startMs}] Speaker ${segment.speakerIndex}: ${segment.text}`,
     )
     .join('\n');
 
+export function buildMeetingTitlePrompt(
+  segments: TranscribedSegment[],
+): string {
+  return [
+    'You name meetings. Read the transcript and return only a title.',
+    '',
+    'LANGUAGE: write the title in the language actually spoken in the transcript.',
+    TITLE_RULE,
+    '',
+    'Transcript:',
+    formatTranscript(segments).slice(0, TITLE_TRANSCRIPT_CHARS),
+  ].join('\n');
+}
+
+export function buildSummarizeMeetingPrompt(
+  segments: TranscribedSegment[],
+): string {
+  const transcript = formatTranscript(segments);
+
   return [
     'You are a meeting-notes writer. Below is a transcript where each line is prefixed with [startMs] (milliseconds from the start) and the speaker.',
     '',
-    'LANGUAGE (most important rule): detect the language actually spoken in the transcript sentences and write EVERY text field — keyPoints and actionItems — ONLY in that language. If the participants speak Russian, write in Russian. Ignore any English words in the meeting title or borrowed jargon: match the language of the sentences, not of individual game/product terms. Do NOT translate to English.',
+    'LANGUAGE (most important rule): detect the language actually spoken in the transcript sentences and write EVERY text field — title, keyPoints and actionItems — ONLY in that language. If the participants speak Russian, write in Russian. Ignore any English words in the meeting title or borrowed jargon: match the language of the sentences, not of individual game/product terms. Do NOT translate to English.',
     '',
     'SPEAKER NAMES: the "Speaker 0" / "Speaker 1" prefixes are internal IDs. NEVER put any speaker number in the output — not "Speaker 1", not «Участник 1», not «участник 0», not «первый участник». If the transcript reveals a person\'s name (someone is addressed or introduced by name), use that name. Otherwise refer to people without numbering them: «один из участников», «другой участник», «собеседник», «команда». Example: NOT «Участник 1 купил шпагу», but «Один из участников купил шпагу».',
+    '',
+    TITLE_RULE,
     '',
     'FIRST key point: open with one sentence that sets the scene — what the meeting/session is about overall (infer it from the content).',
     '',

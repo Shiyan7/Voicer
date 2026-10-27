@@ -65,6 +65,23 @@ export class MeetingsResolver {
   }
 
   @Mutation(() => MeetingOutput)
+  meetingRename(
+    @CurrentUser() user: UserEntity,
+    @Args('id', { type: () => ID }) id: string,
+    @Args('title', { type: () => String, nullable: true }) title: string | null,
+  ): Promise<MeetingOutput> {
+    return this.meetingsService.renameMeeting(user.id, id, title);
+  }
+
+  @Mutation(() => String)
+  meetingSuggestTitle(
+    @CurrentUser() user: UserEntity,
+    @Args('id', { type: () => ID }) id: string,
+  ): Promise<string> {
+    return this.meetingsService.suggestMeetingTitle(user.id, id);
+  }
+
+  @Mutation(() => MeetingOutput)
   meetingDelete(
     @CurrentUser() user: UserEntity,
     @Args('id', { type: () => ID }) id: string,

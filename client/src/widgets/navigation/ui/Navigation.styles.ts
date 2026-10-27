@@ -12,8 +12,7 @@ export const navigationStyles = tv({
     `,
     toggleIcon: 'size-3.5',
     search: `
-      flex h-11 w-full cursor-pointer items-center gap-2.5 rounded-xl border-[0.5px]
-      border-gray-200 bg-white px-2.5
+      flex h-11 w-full cursor-pointer items-center gap-2.5 rounded-xl bg-white px-2.5
       text-[15px] font-medium text-gray-900
       shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-colors
       active:bg-gray-50
@@ -25,7 +24,7 @@ export const navigationStyles = tv({
       font-sans text-[11px] font-medium text-gray-500
     `,
     logo: 'mb-4 flex h-9 items-center px-1',
-    account: 'mt-auto flex flex-col',
+    account: 'mt-auto flex flex-col gap-4',
   },
   variants: {
     collapsed: {

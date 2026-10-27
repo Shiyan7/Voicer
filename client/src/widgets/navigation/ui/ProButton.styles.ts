@@ -3,7 +3,7 @@ import { tv } from 'tailwind-variants';
 export const proButtonStyles = tv({
   slots: {
     root: `
-      group relative mt-2 flex w-full cursor-pointer items-center gap-2.5
+      group relative flex w-full cursor-pointer items-center gap-2.5
       overflow-hidden rounded-xl px-3 py-2.5 text-left
       bg-[linear-gradient(110deg,#f59e0b,#fde68a,#fbbf24,#f59e0b)]
       bg-size-[250%_100%] animate-ai-flow

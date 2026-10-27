@@ -33,6 +33,9 @@ export class MeetingOutput {
   isFavorite: boolean;
 
   @Field()
+  summarizationFailed: boolean;
+
+  @Field()
   createdAt: Date;
 
   @Field()

@@ -13,7 +13,7 @@ export const meetingCardStyles = tv({
     icon: 'shrink-0 text-gray-500 transition-colors',
     body: 'flex min-w-0 flex-1 items-center gap-2',
     title: 'truncate text-[15px] font-medium text-gray-900',
-    duration: 'shrink-0 text-[13px] text-gray-400',
+    duration: 'shrink-0 text-[13px] font-medium text-gray-500 tabular-nums',
     date: `
       shrink-0 text-[13px] text-gray-500 tabular-nums transition-opacity
       group-hover:opacity-0

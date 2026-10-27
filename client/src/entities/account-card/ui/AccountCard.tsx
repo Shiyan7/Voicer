@@ -3,20 +3,20 @@ import { Show } from 'solid-js';
 
 import { Button } from '@/shared/ui/button';
 
-import { useTeamSelect } from '../model/useTeamSelect';
-import { TeamSelectDeps } from '../types/TeamSelectDeps';
-import { teamSelectStyles } from './TeamSelect.styles';
+import { useAccountCard } from '../model/useAccountCard';
+import { AccountCardDeps } from '../types/AccountCardDeps';
+import { accountCardStyles } from './AccountCard.styles';
 
-const styles = teamSelectStyles();
+const styles = accountCardStyles();
 
-export function TeamSelect(props: TeamSelectDeps) {
-  const vm = useTeamSelect(props);
+export function AccountCard(props: AccountCardDeps) {
+  const vm = useAccountCard(props);
 
   return (
     <Show
       when={vm.isAuthorized()}
       fallback={
-        <Button class={styles.authBtn()} onClick={vm.openAuth} size="md">
+        <Button class={styles.authBtn()} variant="frost" size="lg" onClick={vm.openAuth}>
           {vm.authLabel()}
         </Button>
       }

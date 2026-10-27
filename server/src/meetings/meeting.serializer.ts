@@ -18,6 +18,7 @@ export function toMeetingOutput(meeting: MeetingEntity): MeetingOutput {
     isFavorite: meeting.isFavorite,
     createdAt: meeting.createdAt,
     updatedAt: meeting.updatedAt,
+    summarizationFailed: false,
   };
 }
 

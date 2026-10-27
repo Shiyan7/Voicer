@@ -3,9 +3,9 @@ import { i18n } from '@/shared/i18n';
 import { MODALS, showModal } from '@/shared/lib/modal';
 import { paths } from '@/shared/router';
 
-import { TeamSelectDeps } from '../types/TeamSelectDeps';
+import { AccountCardDeps } from '../types/AccountCardDeps';
 
-export const useTeamSelect = (props: TeamSelectDeps) => {
+export const useAccountCard = (props: AccountCardDeps) => {
   const { isAuthorized, user } = useUserMe();
 
   const firstLetterName = () => user()?.name[0]?.toUpperCase() ?? '';
