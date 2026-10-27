@@ -35,7 +35,7 @@ export function MeetingsOrchestrator() {
             favoritesOnly={vm.filters.favoritesOnly()}
             sort={vm.filters.sort()}
             source={vm.filters.source()}
-            hasSourceFilter={vm.hasSourceFilter()}
+            hasSourceFilter={vm.filters.hasSourceFilter()}
             isCustomSort={vm.filters.isCustomSort()}
             favoritesIcon={vm.favoritesIcon()}
             showSourceFilter={vm.showSourceFilter()}

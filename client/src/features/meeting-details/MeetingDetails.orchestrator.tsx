@@ -89,9 +89,8 @@ export function MeetingDetailsOrchestrator() {
                       activeTab={vm.activeTab()}
                       onSelect={vm.setActiveTab}
                     />
-                    <Show
-                      when={vm.activeTab() === 'notes'}
-                      fallback={
+                    <Switch>
+                      <Match when={vm.activeTab() === 'recording'}>
                         <Recording
                           transcript={vm.transcript()}
                           isLoading={vm.isTranscriptLoading()}
@@ -99,29 +98,26 @@ export function MeetingDetailsOrchestrator() {
                           focusId={vm.focusId()}
                           onSeek={vm.seekToMs}
                         />
-                      }
-                    >
-                      <Show
-                        when={!vm.isSummarizing()}
-                        fallback={<NotesLoading />}
-                      >
-                        <Show
-                          when={!vm.showNotesEmpty()}
-                          fallback={<NotesEmpty />}
-                        >
-                          <div class={styles.tabPanel()}>
-                            <ActionItemsSection
-                              items={vm.actionItems()}
-                              focusId={vm.focusId()}
-                            />
-                            <KeyPoints
-                              points={vm.keyPoints()}
-                              focusId={vm.focusId()}
-                            />
-                          </div>
-                        </Show>
-                      </Show>
-                    </Show>
+                      </Match>
+                      <Match when={vm.notesState() === 'loading'}>
+                        <NotesLoading />
+                      </Match>
+                      <Match when={vm.notesState() === 'empty'}>
+                        <NotesEmpty />
+                      </Match>
+                      <Match when={vm.notesState() === 'content'}>
+                        <div class={styles.tabPanel()}>
+                          <ActionItemsSection
+                            items={vm.actionItems()}
+                            focusId={vm.focusId()}
+                          />
+                          <KeyPoints
+                            points={vm.keyPoints()}
+                            focusId={vm.focusId()}
+                          />
+                        </div>
+                      </Match>
+                    </Switch>
                   </Show>
                 </>
               )}

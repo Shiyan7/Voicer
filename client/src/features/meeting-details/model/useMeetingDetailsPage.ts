@@ -15,6 +15,7 @@ import { getMeetingTabs } from '../config/getMeetingTabs';
 import { toMeetingTab } from '../lib/toMeetingTab';
 import { MeetingDetailsSearchParams } from '../types/MeetingDetailsSearchParams';
 import { MeetingTab } from '../types/MeetingTab';
+import { NotesState } from '../types/NotesState';
 
 export const useMeetingDetailsPage = () => {
   const params = useParams<{ id: string }>();
@@ -80,6 +81,12 @@ export const useMeetingDetailsPage = () => {
   const showNotesEmpty = () =>
     isTranscribed() || (isReady() && !isNotesLoading() && !hasNotes());
 
+  const notesState = (): NotesState => {
+    if (isSummarizing()) return 'loading';
+    if (showNotesEmpty()) return 'empty';
+    return 'content';
+  };
+
   const isTranscriptLoading = () => transcriptResult.fetching;
 
   const playback = usePlayback();
@@ -119,7 +126,7 @@ export const useMeetingDetailsPage = () => {
     speakerTones,
     actionItems,
     keyPoints,
-    showNotesEmpty,
+    notesState,
     isTranscriptLoading,
     playback,
     currentTimeMs,

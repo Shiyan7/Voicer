@@ -2,12 +2,6 @@ import { createSignal } from 'solid-js';
 
 export enum MODALS {
   AUTH = 'AUTH',
-  ROLL_DICE = 'ROLL_DICE',
-  STREET_INFO = 'STREET_INFO',
-  BUY_STREET = 'BUY_STREET',
-  PLAYERS = 'PLAYERS',
-  GIVE_UP = 'GIVE_UP',
-  CREDIT = 'CREDIT',
   DELETE_MEETING = 'DELETE_MEETING',
   SEARCH = 'SEARCH',
 }
