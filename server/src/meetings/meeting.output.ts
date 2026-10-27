@@ -1,4 +1,5 @@
 import { Field, ID, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { SummaryStyle } from '../summarization/summary-style.enum';
 import { MeetingStatus } from './meeting.entity';
 
 registerEnumType(MeetingStatus, { name: 'MeetingStatus' });
@@ -31,6 +32,9 @@ export class MeetingOutput {
 
   @Field()
   isFavorite: boolean;
+
+  @Field(() => SummaryStyle, { nullable: true })
+  summaryStyle: SummaryStyle | null;
 
   @Field()
   summarizationFailed: boolean;

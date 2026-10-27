@@ -12,6 +12,7 @@ interface DropdownProps<T> {
   triggerClass?: string;
   options: DropdownOption<T>[];
   selected?: T;
+  disabled?: boolean;
   onSelect: (value: T) => void;
   trigger: (opened: boolean) => JSX.Element;
 }
@@ -31,6 +32,7 @@ export function Dropdown<T>(props: DropdownProps<T>) {
       <button
         class={props.triggerClass}
         type="button"
+        disabled={props.disabled}
         onClick={dropdown.toggle}
       >
         {props.trigger(dropdown.opened())}

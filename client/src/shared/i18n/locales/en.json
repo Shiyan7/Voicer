@@ -72,6 +72,7 @@
     "recording_transcript": "Recording & Transcript",
     "key_points": "Key Points",
     "summarize": "Summarize",
+    "summarizing": "Writing notes…",
     "show_in_finder": "Show in Finder",
     "add_favorite": "Add to favorites",
     "remove_favorite": "Remove from favorites",
@@ -82,9 +83,10 @@
       "concise": "Concise",
       "detailed": "Detailed",
       "bullets": "Bullet points",
-      "formal": "Formal",
       "casual": "Plain language",
-      "action_items": "Action-focused"
+      "work": "Work call",
+      "interview": "Interview",
+      "advice": "Personal advice"
     },
     "delete": {
       "title": "Delete meeting?",
@@ -133,7 +135,8 @@
     "rename_error": "Could not rename the meeting",
     "suggest_title": "Suggest a title with AI",
     "suggest_title_error": "AI could not suggest a title",
-    "summarize_error": "AI could not create notes. Try again later"
+    "summarize_error": "AI could not create notes. Try again later",
+    "summary_style_badge": "Notes style: {{style}}"
   },
   "recorder": {
     "recording": "Recording",

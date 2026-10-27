@@ -11,17 +11,25 @@ export const summarizeActionStyles = tv({
       flex min-h-11 items-center gap-2 rounded-l-full pl-5 pr-3.5 text-[15px]
       font-medium outline-none transition-colors hover:bg-slate-900/5
       active:bg-slate-900/10 focus-visible:ring-2 focus-visible:ring-sky-400/60
-      disabled:pointer-events-none disabled:opacity-40
+      disabled:cursor-not-allowed disabled:hover:bg-transparent
     `,
     divider: 'h-6 w-px bg-slate-900/15',
     trigger: `
       flex min-h-11 items-center rounded-r-full pl-3 pr-4 outline-none
       transition-colors hover:bg-slate-900/5 active:bg-slate-900/10
       focus-visible:ring-2 focus-visible:ring-sky-400/60
+      disabled:cursor-not-allowed disabled:hover:bg-transparent
     `,
+    sparkles: '',
     chevron: 'rotate-90 transition-transform duration-200',
   },
   variants: {
+    pending: {
+      true: {
+        root: 'opacity-60 active:scale-100',
+        sparkles: 'animate-pulse',
+      },
+    },
     opened: {
       true: {
         chevron: '-rotate-90',

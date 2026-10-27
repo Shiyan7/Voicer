@@ -82,9 +82,9 @@
     var(--color-white)
   );
 
-  --color-shimmer-base: #f1f2f6;
-  --color-shimmer-glow: #e0f2fe;
-  --color-shimmer-tint: #dbeafe;
+  --color-shimmer-base: #eceef3;
+  --color-shimmer-glow: #f8f9fb;
+  --color-shimmer-tint: #f3f4f7;
 
   --animate-ai-flow: ai-flow 8s ease-in-out infinite;
   --animate-ai-shimmer: ai-flow 2.4s ease-in-out infinite;
@@ -189,9 +189,9 @@
   --color-speaker-mauve: #a982ff;
   --color-speaker-slate: #3fc9e0;
 
-  --color-shimmer-base: #141824;
-  --color-shimmer-glow: #132a3f;
-  --color-shimmer-tint: #18264a;
+  --color-shimmer-base: #1a1e29;
+  --color-shimmer-glow: #262b38;
+  --color-shimmer-tint: #20242f;
 
   color-scheme: dark;
 }
@@ -228,7 +228,7 @@ body {
   height: 100%;
 }
 
-button {
+button:not(:disabled) {
   cursor: pointer;
 }
 

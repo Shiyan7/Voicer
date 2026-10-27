@@ -1,3 +1,5 @@
+import { Show } from 'solid-js';
+
 import { i18n } from '@/shared/i18n';
 import { Dropdown } from '@/shared/ui/dropdown';
 import { Icon } from '@/shared/ui/icon';
@@ -12,21 +14,31 @@ export function SummarizeAction(props: SummarizeParams) {
   const vm = useSummarize(props);
 
   return (
-    <div class={styles.root()}>
+    <div class={styles.root({ pending: props.isSummarizing })}>
       <button
         class={styles.summarize()}
         type="button"
         disabled={props.isSummarizing}
         onClick={vm.runSummarize}
       >
-        <Icon size={18} name="common:sparkles" />
-        {i18n.t('meetings.summarize')}
+        <Icon
+          class={styles.sparkles({ pending: props.isSummarizing })}
+          size={18}
+          name="common:sparkles"
+        />
+        <Show
+          when={props.isSummarizing}
+          fallback={i18n.t('meetings.summarize')}
+        >
+          {i18n.t('meetings.summarizing')}
+        </Show>
       </button>
       <span class={styles.divider()} />
       <Dropdown
         options={vm.styleOptions()}
         selected={vm.selectedStyle()}
-        onSelect={vm.selectStyle}
+        disabled={props.isSummarizing}
+        onSelect={vm.summarizeWith}
         triggerClass={styles.trigger()}
         trigger={(opened) => (
           <Icon

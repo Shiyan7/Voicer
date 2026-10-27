@@ -60,6 +60,7 @@ export type MeetingOutput = {
   startedAt: Scalars['DateTime']['output'];
   status: MeetingStatus;
   summarizationFailed: Scalars['Boolean']['output'];
+  summaryStyle?: Maybe<SummaryStyle>;
   title?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['DateTime']['output'];
 };
@@ -135,6 +136,7 @@ export type MutationMeetingSuggestTitleArgs = {
 
 export type MutationMeetingSummarizeArgs = {
   id: Scalars['ID']['input'];
+  style?: SummaryStyle;
 };
 
 export type MutationMeetingUploadAudioArgs = {
@@ -324,6 +326,17 @@ export type Subscription = {
 export type SubscriptionMeetingUpdatedArgs = {
   id: Scalars['ID']['input'];
 };
+
+export enum SummaryStyle {
+  Advice = 'ADVICE',
+  Auto = 'AUTO',
+  Bullets = 'BULLETS',
+  Casual = 'CASUAL',
+  Concise = 'CONCISE',
+  Detailed = 'DETAILED',
+  Interview = 'INTERVIEW',
+  Work = 'WORK',
+}
 
 export type TranscriptSegmentOutput = {
   __typename?: 'TranscriptSegmentOutput';

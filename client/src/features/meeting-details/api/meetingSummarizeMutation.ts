@@ -4,7 +4,7 @@ import { createMutation } from '@urql/solid';
 import { MEETING_SUMMARIZE_MUTATION } from './gql/MEETING_SUMMARIZE_MUTATION';
 
 interface MeetingSummarizeMutation {
-  meetingSummarize: Pick<MeetingOutput, 'id' | 'status'>;
+  meetingSummarize: Pick<MeetingOutput, 'id' | 'status' | 'summaryStyle'>;
 }
 
 export const meetingSummarizeMutation = () =>

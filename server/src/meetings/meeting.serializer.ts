@@ -16,6 +16,7 @@ export function toMeetingOutput(meeting: MeetingEntity): MeetingOutput {
     endedAt: meeting.endedAt,
     durationSec: meeting.durationSec,
     isFavorite: meeting.isFavorite,
+    summaryStyle: meeting.summaryStyle,
     createdAt: meeting.createdAt,
     updatedAt: meeting.updatedAt,
     summarizationFailed: false,

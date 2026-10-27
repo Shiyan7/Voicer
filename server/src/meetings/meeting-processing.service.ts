@@ -11,6 +11,7 @@ import { ActionItemEntity } from '../actions/action-item.entity';
 import { FileStorageService } from '../file/file-storage.service';
 import { PUB_SUB } from '../pubsub/pubsub.module';
 import { SummarizationService } from '../summarization/summarization.service';
+import { SummaryStyle } from '../summarization/summary-style.enum';
 import {
   SummarizedActionItem,
   SummarizedKeyPoint,
@@ -96,12 +97,13 @@ export class MeetingProcessingService implements OnApplicationBootstrap {
     }
   }
 
-  async summarize(meeting: MeetingEntity): Promise<void> {
+  async summarize(meeting: MeetingEntity, style: SummaryStyle): Promise<void> {
     await this.updateAndPublish(meeting.id, {
       status: MeetingStatus.SUMMARIZING,
+      summaryStyle: style,
     });
 
-    void this.runSummarization(meeting);
+    void this.runSummarization({ ...meeting, summaryStyle: style });
   }
 
   private async saveTranscript(meeting: MeetingEntity): Promise<void> {
@@ -152,7 +154,10 @@ export class MeetingProcessingService implements OnApplicationBootstrap {
   private async runSummarization(meeting: MeetingEntity): Promise<void> {
     try {
       const segments = await this.getTranscribedSegments(meeting.id);
-      const summary = await this.summarizationService.summarize(segments);
+      const summary = await this.summarizationService.summarize(
+        segments,
+        meeting.summaryStyle ?? SummaryStyle.AUTO,
+      );
       await this.meetingsRepository.manager.transaction(async (manager) => {
         await this.saveTitleIfEmpty(manager, meeting.id, summary.title);
         await this.saveKeyPoints(manager, meeting.id, summary.keyPoints);

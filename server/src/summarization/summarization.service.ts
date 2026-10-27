@@ -9,6 +9,7 @@ import {
   SUMMARY_RESPONSE_SCHEMA,
   TITLE_RESPONSE_SCHEMA,
 } from './prompts/summarize-meeting.prompt';
+import { SummaryStyle } from './summary-style.enum';
 
 const FREE_TIER_MODELS = [
   'gemini-3.6-flash',
@@ -31,11 +32,14 @@ export class SummarizationService {
     });
   }
 
-  async summarize(segments: TranscribedSegment[]): Promise<MeetingSummary> {
-    this.logger.log(`Summarizing ${segments.length} segments`);
+  async summarize(
+    segments: TranscribedSegment[],
+    style: SummaryStyle,
+  ): Promise<MeetingSummary> {
+    this.logger.log(`Summarizing ${segments.length} segments (${style})`);
 
     const parsed = await this.generateJson<Partial<MeetingSummary>>(
-      buildSummarizeMeetingPrompt(segments),
+      buildSummarizeMeetingPrompt(segments, style),
       SUMMARY_RESPONSE_SCHEMA,
       (summary) => Boolean(summary.keyPoints?.length),
     );

@@ -1,4 +1,6 @@
 import { TranscribedSegment } from '../../transcription/transcription.types';
+import { SummaryStyle } from '../summary-style.enum';
+import { SUMMARY_STYLE_INSTRUCTIONS } from './summary-style-instructions';
 
 export const SUMMARY_RESPONSE_SCHEMA = {
   type: 'object',
@@ -70,6 +72,7 @@ export function buildMeetingTitlePrompt(
 
 export function buildSummarizeMeetingPrompt(
   segments: TranscribedSegment[],
+  style: SummaryStyle,
 ): string {
   const transcript = formatTranscript(segments);
 
@@ -93,6 +96,8 @@ export function buildSummarizeMeetingPrompt(
     '- Set atMs to the startMs of the line where the topic begins.',
     '',
     'actionItems — concrete tasks or follow-ups someone agreed to do. Short and imperative, in the transcript language. Set atMs and speakerIndex from the line where the task was raised; use null when unclear. Empty list if there are none.',
+    '',
+    `STYLE (overrides the length and tone guidance above): ${SUMMARY_STYLE_INSTRUCTIONS[style]}`,
     '',
     'Do not invent facts that are not in the transcript.',
     '',

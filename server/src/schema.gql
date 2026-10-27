@@ -44,6 +44,7 @@ type MeetingOutput {
   startedAt: DateTime!
   status: MeetingStatus!
   summarizationFailed: Boolean!
+  summaryStyle: SummaryStyle
   title: String
   updatedAt: DateTime!
 }
@@ -89,7 +90,7 @@ type Mutation {
   meetingRename(id: ID!, title: String): MeetingOutput!
   meetingSetFavorite(id: ID!, isFavorite: Boolean!): MeetingOutput!
   meetingSuggestTitle(id: ID!): String!
-  meetingSummarize(id: ID!): MeetingOutput!
+  meetingSummarize(id: ID!, style: SummaryStyle! = AUTO): MeetingOutput!
   meetingUploadAudio(file: Upload!, source: String, startedAt: DateTime): MeetingOutput!
   signIn(input: SignInInput!): AuthPayload!
   signUp(input: SignUpInput!): AuthPayload!
@@ -214,6 +215,17 @@ type StatsYearOutput {
 
 type Subscription {
   meetingUpdated(id: ID!): MeetingOutput!
+}
+
+enum SummaryStyle {
+  ADVICE
+  AUTO
+  BULLETS
+  CASUAL
+  CONCISE
+  DETAILED
+  INTERVIEW
+  WORK
 }
 
 type TranscriptSegmentOutput {

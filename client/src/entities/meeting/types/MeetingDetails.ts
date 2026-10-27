@@ -1,4 +1,4 @@
-import { MeetingStatus } from '@schema';
+import { MeetingStatus, SummaryStyle } from '@schema';
 
 export interface MeetingDetails {
   id: string;
@@ -9,6 +9,7 @@ export interface MeetingDetails {
   audioUrl: string | null;
   durationSec: number | null;
   isFavorite: boolean;
+  summaryStyle: SummaryStyle | null;
   summarizationFailed: boolean;
   startedAt: string;
 }

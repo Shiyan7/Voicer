@@ -17,7 +17,7 @@ import { MoreActions } from './segments/more-actions';
 import { NotesEmpty } from './segments/notes-empty';
 import { NotesLoading } from './segments/notes-loading';
 import { Recording } from './segments/recording';
-import { SummarizeAction } from './segments/summarize';
+import { SummarizeAction, SummaryStyleBadge } from './segments/summarize';
 
 const styles = meetingDetailsStyles();
 
@@ -56,6 +56,7 @@ export function MeetingDetailsOrchestrator() {
                       <Show when={vm.hasContent()}>
                         <SummarizeAction
                           meetingId={meeting().id}
+                          summaryStyle={meeting().summaryStyle}
                           isSummarizing={vm.isSummarizing()}
                           onStarted={vm.goToNotesTab}
                         />
@@ -107,6 +108,9 @@ export function MeetingDetailsOrchestrator() {
                       </Match>
                       <Match when={vm.notesState() === 'content'}>
                         <div class={styles.tabPanel()}>
+                          <Show when={meeting().summaryStyle}>
+                            {(style) => <SummaryStyleBadge style={style()} />}
+                          </Show>
                           <ActionItemsSection
                             items={vm.actionItems()}
                             focusId={vm.focusId()}

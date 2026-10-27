@@ -17,6 +17,7 @@ import { FileStorageService } from '../file/file-storage.service';
 import { FileUpload } from '../file/file-upload';
 import { TranscriptSegmentEntity } from './transcript-segment.entity';
 import { TranscriptSegmentOutput } from './transcript-segment.output';
+import { SummaryStyle } from '../summarization/summary-style.enum';
 import { KeyPointEntity } from './key-point.entity';
 import { KeyPointOutput } from './key-point.output';
 import {
@@ -233,16 +234,24 @@ export class MeetingsService {
     return this.processing.suggestTitle(meeting.id);
   }
 
-  async summarizeMeeting(userId: string, id: string): Promise<MeetingOutput> {
+  async summarizeMeeting(
+    userId: string,
+    id: string,
+    style: SummaryStyle,
+  ): Promise<MeetingOutput> {
     const meeting = await this.findOwnedMeeting(userId, id);
 
     if (meeting.status === MeetingStatus.SUMMARIZING) {
       return toMeetingOutput(meeting);
     }
 
-    await this.processing.summarize(meeting);
+    await this.processing.summarize(meeting, style);
 
-    return toMeetingOutput({ ...meeting, status: MeetingStatus.SUMMARIZING });
+    return toMeetingOutput({
+      ...meeting,
+      status: MeetingStatus.SUMMARIZING,
+      summaryStyle: style,
+    });
   }
 
   private async findOwnedMeeting(

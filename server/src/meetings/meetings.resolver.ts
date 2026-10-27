@@ -16,6 +16,7 @@ import { MeetingsPageOutput } from './meetings-page.output';
 import { TranscriptSegmentOutput } from './transcript-segment.output';
 import { KeyPointOutput } from './key-point.output';
 import { MeetingsService } from './meetings.service';
+import { SummaryStyle } from '../summarization/summary-style.enum';
 
 @Resolver(() => MeetingOutput)
 export class MeetingsResolver {
@@ -50,8 +51,13 @@ export class MeetingsResolver {
   meetingSummarize(
     @CurrentUser() user: UserEntity,
     @Args('id', { type: () => ID }) id: string,
+    @Args('style', {
+      type: () => SummaryStyle,
+      defaultValue: SummaryStyle.AUTO,
+    })
+    style: SummaryStyle,
   ): Promise<MeetingOutput> {
-    return this.meetingsService.summarizeMeeting(user.id, id);
+    return this.meetingsService.summarizeMeeting(user.id, id, style);
   }
 
   @Mutation(() => MeetingOutput)

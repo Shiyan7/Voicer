@@ -1,42 +1,47 @@
+import { SummaryStyle } from '@schema';
+
 import { i18n } from '@/shared/i18n';
 import { DropdownOption } from '@/shared/ui/dropdown';
 
-import { SummaryStyle } from '../types/SummaryStyle';
-
 export const getSummaryStyles = (): DropdownOption<SummaryStyle>[] => [
   {
-    value: 'auto',
+    value: SummaryStyle.Auto,
     emoji: '✨',
     label: i18n.t('meetings.summary_styles.auto'),
   },
   {
-    value: 'concise',
+    value: SummaryStyle.Concise,
     emoji: '📝',
     label: i18n.t('meetings.summary_styles.concise'),
   },
   {
-    value: 'detailed',
+    value: SummaryStyle.Detailed,
     emoji: '📋',
     label: i18n.t('meetings.summary_styles.detailed'),
   },
   {
-    value: 'bullets',
+    value: SummaryStyle.Bullets,
     emoji: '🔹',
     label: i18n.t('meetings.summary_styles.bullets'),
   },
   {
-    value: 'formal',
-    emoji: '💼',
-    label: i18n.t('meetings.summary_styles.formal'),
-  },
-  {
-    value: 'casual',
+    value: SummaryStyle.Casual,
     emoji: '😊',
     label: i18n.t('meetings.summary_styles.casual'),
   },
   {
-    value: 'action_items',
-    emoji: '✅',
-    label: i18n.t('meetings.summary_styles.action_items'),
+    value: SummaryStyle.Work,
+    emoji: '🗂️',
+    label: i18n.t('meetings.summary_styles.work'),
+  },
+  {
+    value: SummaryStyle.Interview,
+    emoji: '🎯',
+    label: i18n.t('meetings.summary_styles.interview'),
+  },
+  {
+    value: SummaryStyle.Advice,
+    emoji: '🧭',
+    label: i18n.t('meetings.summary_styles.advice'),
   },
 ];

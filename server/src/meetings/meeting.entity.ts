@@ -9,6 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { UserEntity } from '../users/user.entity';
+import { SummaryStyle } from '../summarization/summary-style.enum';
 
 export enum MeetingStatus {
   RECORDING = 'recording',
@@ -59,6 +60,9 @@ export class MeetingEntity {
 
   @Column({ type: 'boolean', default: false })
   isFavorite: boolean;
+
+  @Column({ type: 'enum', enum: SummaryStyle, nullable: true })
+  summaryStyle: SummaryStyle | null;
 
   @CreateDateColumn()
   createdAt: Date;
