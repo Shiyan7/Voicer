@@ -1,4 +1,5 @@
-import { getMonthLabel } from '../../../lib/getMonthLabel';
+import { date } from '@/shared/lib/time';
+
 import { HeatCell } from '../types/HeatCell';
 import { MonthLabel } from '../types/MonthLabel';
 
@@ -7,7 +8,5 @@ export const buildMonthLabels = (weeks: HeatCell[][]): MonthLabel[] =>
     const first = week.find(
       (cell) => !cell.isOutside && cell.date.endsWith('-01'),
     );
-    return first
-      ? [{ column, label: getMonthLabel(Number(first.date.slice(5, 7))) }]
-      : [];
+    return first ? [{ column, label: date(first.date).format('MMM') }] : [];
   });

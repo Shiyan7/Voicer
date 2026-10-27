@@ -1,6 +1,6 @@
 import type { TranscriptSegmentOutput } from '@schema';
 
-import { formatMs } from '@/shared/lib/time';
+import { formatClock } from '@/shared/lib/time';
 import { getSpeakerLabel, getSpeakerTone } from '@/shared/ui/speaker-avatar';
 
 import { TranscriptSegmentView } from '../types/TranscriptSegmentView';
@@ -31,7 +31,7 @@ export function mapTranscriptSegments(
       speakerIndex: segment.speakerIndex,
       speakerLabel: getSpeakerLabel(segment.speakerIndex),
       tone: getSpeakerTone(segment.speakerIndex),
-      timeLabel: formatMs(segment.startMs),
+      timeLabel: formatClock(segment.startMs / 1000),
       startMs: segment.startMs,
       paragraphs: [paragraph],
     });

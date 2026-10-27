@@ -6,6 +6,7 @@ import { Tabs } from '@/shared/ui/tabs';
 import { HEAT_LEVELS } from '../config/heatmapConfig';
 import { useHeatmap } from '../model/useHeatmap';
 import { HeatmapProps } from '../types/HeatmapProps';
+import { heatLevelStyles } from './HeatLevel.styles';
 import { heatmapStyles } from './Heatmap.styles';
 
 const styles = heatmapStyles();
@@ -53,7 +54,7 @@ export function Heatmap(props: HeatmapProps) {
                     {(cell) => (
                       <button
                         class={styles.cell({
-                          level: cell.level,
+                          class: heatLevelStyles({ level: cell.level }),
                           outside: cell.isOutside,
                           future: vm.isFuture(cell),
                           dimmed: vm.isDimmed(cell),
@@ -90,7 +91,11 @@ export function Heatmap(props: HeatmapProps) {
       <footer class={styles.footer()}>
         {i18n.t('stats.less')}
         <For each={HEAT_LEVELS}>
-          {(level) => <span class={styles.legendCell({ level })} />}
+          {(level) => (
+            <span
+              class={styles.legendCell({ class: heatLevelStyles({ level }) })}
+            />
+          )}
         </For>
         {i18n.t('stats.more')}
       </footer>

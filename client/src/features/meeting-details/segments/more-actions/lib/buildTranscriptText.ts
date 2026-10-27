@@ -1,6 +1,6 @@
 import type { TranscriptSegmentOutput } from '@schema';
 
-import { formatMs } from '@/shared/lib/time';
+import { formatClock } from '@/shared/lib/time';
 
 export function buildTranscriptText(
   title: string,
@@ -8,7 +8,7 @@ export function buildTranscriptText(
 ): string {
   const lines = segments.map(
     (segment) =>
-      `[${formatMs(segment.startMs)}] Speaker ${segment.speakerIndex + 1}: ${segment.text}`,
+      `[${formatClock(segment.startMs / 1000)}] Speaker ${segment.speakerIndex + 1}: ${segment.text}`,
   );
 
   return [title, '', ...lines, ''].join('\n');

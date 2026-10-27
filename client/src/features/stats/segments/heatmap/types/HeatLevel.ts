@@ -1,1 +1,3 @@
-export type HeatLevel = 0 | 1 | 2 | 3 | 4;
+import { HEAT_LEVELS } from '../config/heatmapConfig';
+
+export type HeatLevel = (typeof HEAT_LEVELS)[number];

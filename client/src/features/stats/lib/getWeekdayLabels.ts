@@ -1,13 +1,8 @@
-import { i18n } from '@/shared/i18n';
+import { date } from '@/shared/lib/time';
 
-import { DAY_MS, MONDAY_UTC } from '../config/statsConfig';
-
-export const getWeekdayLabels = () => {
-  const format = new Intl.DateTimeFormat(i18n.locale(), {
-    weekday: 'short',
-    timeZone: 'UTC',
-  });
-  return Array.from({ length: 7 }, (_, index) =>
-    format.format(new Date(MONDAY_UTC + index * DAY_MS)),
+export const getWeekdayLabels = () =>
+  Array.from({ length: 7 }, (_, index) =>
+    date()
+      .isoWeekday(index + 1)
+      .format('dd'),
   );
-};

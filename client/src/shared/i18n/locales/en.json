@@ -224,8 +224,7 @@
       "other": "No platform",
       "rest": "Others ({{count}})"
     },
-    "empty": "No calls this year",
-    "load_error": "Could not load statistics"
+    "empty": "No calls this year"
   },
   "duration": {
     "minutes": "{{minutes}}m",

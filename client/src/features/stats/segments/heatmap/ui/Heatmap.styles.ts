@@ -2,7 +2,7 @@ import { tv } from 'tailwind-variants';
 
 export const heatmapStyles = tv({
   slots: {
-    root: 'rounded-2xl border border-black/5 bg-white px-6 py-5',
+    root: 'rounded-2xl bg-white px-6 py-5',
     header: 'flex flex-wrap items-center justify-between gap-3',
     title: 'text-[15px] font-semibold text-gray-900',
     body: 'mt-4 flex gap-2',
@@ -20,17 +20,11 @@ export const heatmapStyles = tv({
       -mt-2 whitespace-nowrap rounded-lg bg-gray-900 px-2.5 py-1.5
       text-xs font-medium text-white shadow-lg
     `,
-    footer: 'mt-3 flex items-center justify-end gap-1.5 text-[11px] text-gray-400',
+    footer:
+      'mt-3 flex items-center justify-end gap-1.5 text-[11px] text-gray-400',
     legendCell: 'size-[11px] rounded-[3px]',
   },
   variants: {
-    level: {
-      0: { cell: 'bg-gray-100', legendCell: 'bg-gray-100' },
-      1: { cell: 'bg-heat-1', legendCell: 'bg-heat-1' },
-      2: { cell: 'bg-heat-2', legendCell: 'bg-heat-2' },
-      3: { cell: 'bg-heat-3', legendCell: 'bg-heat-3' },
-      4: { cell: 'bg-heat-4', legendCell: 'bg-heat-4' },
-    },
     outside: {
       true: { cell: 'invisible' },
     },

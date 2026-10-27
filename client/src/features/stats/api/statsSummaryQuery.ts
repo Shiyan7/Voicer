@@ -7,9 +7,15 @@ interface Result {
   statsSummary: StatsSummaryOutput;
 }
 
-type Options = Omit<CreateQueryArgs<Result, QueryStatsSummaryArgs>, 'query' | 'variables'>;
+type Options = Omit<
+  CreateQueryArgs<Result, QueryStatsSummaryArgs>,
+  'query' | 'variables'
+>;
 
-export const statsSummaryQuery = (variables: () => QueryStatsSummaryArgs, options?: Options) =>
+export const statsSummaryQuery = (
+  variables: () => QueryStatsSummaryArgs,
+  options?: Options,
+) =>
   createQuery<Result, QueryStatsSummaryArgs>({
     query: STATS_SUMMARY_QUERY,
     variables,

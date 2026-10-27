@@ -1,7 +1,6 @@
-import { formatDuration } from '@/shared/lib/time';
+import { formatDayDate, formatDuration } from '@/shared/lib/time';
 
 import { statsDayMeetingsQuery } from '../../../api/statsDayMeetingsQuery';
-import { formatDayDate } from '../../../lib/formatDayDate';
 import { getTimeZone } from '../../../lib/getTimeZone';
 import { pluralize } from '../../../lib/pluralize';
 import { mapDayMeeting } from '../lib/mapDayMeeting';

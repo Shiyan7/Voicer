@@ -1,6 +1,4 @@
-import { createEffect, createSignal, on } from 'solid-js';
-
-import { authRoot } from '@/shared/roots/authRoot';
+import { createSignal } from 'solid-js';
 
 import { statsSummaryQuery } from '../api/statsSummaryQuery';
 import { statsYearQuery } from '../api/statsYearQuery';
@@ -8,49 +6,30 @@ import { getTimeZone } from '../lib/getTimeZone';
 
 export const useStats = () => {
   const timeZone = getTimeZone();
-  const currentYear = new Date().getFullYear();
 
-  const [year, setYear] = createSignal(currentYear);
+  const [year, setYear] = createSignal(new Date().getFullYear());
   const [selectedDate, setSelectedDate] = createSignal<string | null>(null);
 
-  const pause = () => !authRoot.isAuth;
+  const [summary] = statsSummaryQuery(() => ({ input: { timeZone } }));
+  const [yearStats] = statsYearQuery(() => ({
+    input: { year: year(), timeZone },
+  }));
 
-  const [summaryResult] = statsSummaryQuery(() => ({ input: { timeZone } }), {
-    pause,
-  });
-
-  const [yearResult] = statsYearQuery(
-    () => ({ input: { year: year(), timeZone } }),
-    { pause },
-  );
-
-  const summary = () => summaryResult.data?.statsSummary;
-
-  const yearStats = () => yearResult.data?.statsYear;
-
-  const years = () =>
-    [...new Set([currentYear, ...(summary()?.years ?? [])])].sort(
-      (a, b) => b - a,
-    );
-
-  const isYearLoading = () => yearResult.fetching && !yearStats();
-
-  const hasError = () => Boolean(summaryResult.error || yearResult.error);
+  const selectYear = (value: number) => {
+    setYear(value);
+    setSelectedDate(null);
+  };
 
   const toggleDate = (date: string) =>
     setSelectedDate((current) => (current === date ? null : date));
 
-  createEffect(on(year, () => setSelectedDate(null), { defer: true }));
-
   return {
     year,
-    years,
-    summary,
-    yearStats,
+    summary: () => summary.data?.statsSummary,
+    yearStats: () => yearStats.data?.statsYear,
+    isYearLoading: () => yearStats.fetching,
     selectedDate,
-    isYearLoading,
-    hasError,
-    setYear,
+    selectYear,
     toggleDate,
   };
 };

@@ -1,7 +1,6 @@
 import { i18n } from '@/shared/i18n';
-import { formatDuration } from '@/shared/lib/time';
+import { formatDayDate, formatDuration } from '@/shared/lib/time';
 
-import { formatDayDate } from '../../../lib/formatDayDate';
 import { pluralize } from '../../../lib/pluralize';
 import { HeatCell } from '../types/HeatCell';
 

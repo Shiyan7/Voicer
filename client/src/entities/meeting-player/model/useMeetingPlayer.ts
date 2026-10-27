@@ -1,7 +1,7 @@
 import { createSignal } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
-import { formatSeconds } from '@/shared/lib/time';
+import { formatClock } from '@/shared/lib/time';
 
 import { SKIP_SECONDS } from '../config/playerConfig';
 import { buildSpeakerTracks } from '../lib/buildSpeakerTracks';
@@ -22,9 +22,9 @@ export const useMeetingPlayer = (props: MeetingPlayerDeps) => {
 
   const progressPercent = () => `${progress() * 100}%`;
 
-  const currentLabel = () => formatSeconds(playback().currentTime());
+  const currentLabel = () => formatClock(playback().currentTime());
 
-  const durationLabel = () => formatSeconds(playback().duration());
+  const durationLabel = () => formatClock(playback().duration());
 
   const rateLabel = () => `${playback().rate()}x`;
 

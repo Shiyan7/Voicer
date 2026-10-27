@@ -1,7 +1,7 @@
 import { createMemo, createSignal, onCleanup } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
-import { formatDuration } from '@/shared/lib/time';
+import { formatDuration, toDateKey } from '@/shared/lib/time';
 
 import { getWeekdayLabels } from '../../../lib/getWeekdayLabels';
 import { pluralize } from '../../../lib/pluralize';
@@ -10,30 +10,24 @@ import { buildHeatmapWeeks } from '../lib/buildHeatmapWeeks';
 import { buildMonthLabels } from '../lib/buildMonthLabels';
 import { getCellText } from '../lib/getCellText';
 import { getHeatThresholds } from '../lib/getHeatThresholds';
-import { getTodayDate } from '../lib/getTodayDate';
 import { HeatCell } from '../types/HeatCell';
 import { HeatmapProps } from '../types/HeatmapProps';
 import { HeatTooltip } from '../types/HeatTooltip';
 
 export const useHeatmap = (props: HeatmapProps) => {
   const [tooltip, setTooltip] = createSignal<HeatTooltip | null>(null);
-  const [today, setToday] = createSignal(getTodayDate());
+  const [today, setToday] = createSignal(toDateKey());
 
-  const todayTimer = setInterval(() => setToday(getTodayDate()), TODAY_REFRESH_MS);
+  const todayTimer = setInterval(() => setToday(toDateKey()), TODAY_REFRESH_MS);
   onCleanup(() => clearInterval(todayTimer));
 
   const weeks = createMemo(() =>
-    buildHeatmapWeeks(
-      props.year,
-      props.days,
-      getHeatThresholds(props.days),
-    ),
+    buildHeatmapWeeks(props.year, props.days, getHeatThresholds(props.days)),
   );
 
   const monthLabels = () => buildMonthLabels(weeks());
 
-  const monthOffset = (column: number) =>
-    `${(column / weeks().length) * 100}%`;
+  const monthOffset = (column: number) => `${(column / weeks().length) * 100}%`;
 
   const weekdayLabels = () =>
     getWeekdayLabels().map((label, row) =>

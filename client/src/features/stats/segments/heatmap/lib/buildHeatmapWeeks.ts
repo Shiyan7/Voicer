@@ -1,13 +1,9 @@
 import type { StatsCalendarDayOutput } from '@schema';
 
-import { DAY_MS } from '../../../config/statsConfig';
+import { date, toDateKey } from '@/shared/lib/time';
+
 import { HeatCell } from '../types/HeatCell';
 import { getHeatLevel } from './getHeatLevel';
-
-const toDate = (ms: number) => new Date(ms).toISOString().slice(0, 10);
-
-const getWeekStart = (ms: number) =>
-  ms - ((new Date(ms).getUTCDay() + 6) % 7) * DAY_MS;
 
 export const buildHeatmapWeeks = (
   year: number,
@@ -15,28 +11,29 @@ export const buildHeatmapWeeks = (
   thresholds: number[],
 ): HeatCell[][] => {
   const byDate = new Map(days.map((day) => [day.date, day]));
-  const yearEnd = Date.UTC(year, 11, 31);
+  const yearStart = date(`${year}-01-01`);
+  const yearEnd = yearStart.endOf('year');
   const weeks: HeatCell[][] = [];
 
   for (
-    let weekStart = getWeekStart(Date.UTC(year, 0, 1));
-    weekStart <= yearEnd;
-    weekStart += 7 * DAY_MS
+    let weekStart = yearStart.startOf('isoWeek');
+    !weekStart.isAfter(yearEnd);
+    weekStart = weekStart.add(1, 'week')
   ) {
     weeks.push(
       Array.from({ length: 7 }, (_, weekday) => {
-        const ms = weekStart + weekday * DAY_MS;
-        const date = toDate(ms);
-        const day = byDate.get(date);
-        const count = day?.count ?? 0;
-        const durationSec = day?.durationSec ?? 0;
+        const day = weekStart.add(weekday, 'day');
+        const key = toDateKey(day);
+        const stats = byDate.get(key);
+        const count = stats?.count ?? 0;
+        const durationSec = stats?.durationSec ?? 0;
 
         return {
-          date,
+          date: key,
           count,
           durationSec,
           level: getHeatLevel(count, durationSec, thresholds),
-          isOutside: new Date(ms).getUTCFullYear() !== year,
+          isOutside: day.year() !== year,
         };
       }),
     );

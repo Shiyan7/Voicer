@@ -7,9 +7,15 @@ interface Result {
   statsDayMeetings: StatsDayMeetingOutput[];
 }
 
-type Options = Omit<CreateQueryArgs<Result, QueryStatsDayMeetingsArgs>, 'query' | 'variables'>;
+type Options = Omit<
+  CreateQueryArgs<Result, QueryStatsDayMeetingsArgs>,
+  'query' | 'variables'
+>;
 
-export const statsDayMeetingsQuery = (variables: () => QueryStatsDayMeetingsArgs, options?: Options) =>
+export const statsDayMeetingsQuery = (
+  variables: () => QueryStatsDayMeetingsArgs,
+  options?: Options,
+) =>
   createQuery<Result, QueryStatsDayMeetingsArgs>({
     query: STATS_DAY_MEETINGS_QUERY,
     variables,

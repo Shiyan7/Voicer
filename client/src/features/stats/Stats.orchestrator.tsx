@@ -19,25 +19,20 @@ export function StatsOrchestrator() {
     <PageFade>
       <div class={styles.root()}>
         <h1 class={styles.title()}>{i18n.t('stats.title')}</h1>
-        <Show
-          when={!vm.hasError()}
-          fallback={<p class={styles.error()}>{i18n.t('stats.load_error')}</p>}
-        >
-          <Kpi summary={vm.summary()} />
-          <Heatmap
-            year={vm.year()}
-            years={vm.years()}
-            days={vm.yearStats()?.days ?? []}
-            selectedDate={vm.selectedDate()}
-            isLoading={vm.isYearLoading()}
-            onYearChange={vm.setYear}
-            onSelect={vm.toggleDate}
-          />
-          <Show when={vm.selectedDate()} fallback={<DayPanelHint />}>
-            {(date) => <DayPanel date={date()} />}
-          </Show>
-          <Sources sources={vm.yearStats()?.sources ?? []} />
+        <Kpi summary={vm.summary()} />
+        <Heatmap
+          year={vm.year()}
+          years={vm.summary()?.years ?? [vm.year()]}
+          days={vm.yearStats()?.days ?? []}
+          selectedDate={vm.selectedDate()}
+          isLoading={vm.isYearLoading()}
+          onYearChange={vm.selectYear}
+          onSelect={vm.toggleDate}
+        />
+        <Show when={vm.selectedDate()} fallback={<DayPanelHint />}>
+          {(date) => <DayPanel date={date()} />}
         </Show>
+        <Sources sources={vm.yearStats()?.sources ?? []} />
       </div>
     </PageFade>
   );
