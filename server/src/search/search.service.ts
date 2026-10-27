@@ -38,9 +38,10 @@ const SEARCH_SQL = (orderBy: string) => `
     FROM action_items a
     WHERE a."userId" = $1 AND a.text ILIKE ALL($2)
     UNION ALL
-    SELECT m.id, m.id, '${SearchMatchKind.SOURCE}', m.source, NULL
+    SELECT m.id, m.id, '${SearchMatchKind.SOURCE}', COALESCE(m.title, m.source), NULL
     FROM meetings m
-    WHERE m."userId" = $1 AND m.source ILIKE ALL($2)
+    WHERE m."userId" = $1
+      AND CONCAT_WS(' ', m.title, m.source) ILIKE ALL($2)
   ),
   ranked AS (
     SELECT

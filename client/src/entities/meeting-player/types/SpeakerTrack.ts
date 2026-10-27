@@ -1,6 +1,6 @@
 import type { SpeakerTone } from '@/shared/ui/speaker-avatar';
 
-export interface SpeakerRange {
+interface SpeakerRange {
   startMs: number;
   left: string;
   width: string;

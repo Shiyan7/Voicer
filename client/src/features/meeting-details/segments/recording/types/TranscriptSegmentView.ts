@@ -1,6 +1,6 @@
 import type { SpeakerTone } from '@/shared/ui/speaker-avatar';
 
-export interface TranscriptParagraphView {
+interface TranscriptParagraphView {
   id: string;
   text: string;
   startMs: number;

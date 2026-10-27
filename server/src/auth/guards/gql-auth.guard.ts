@@ -16,7 +16,7 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
       context.getClass(),
     ]);
 
-    if (isPublic) {
+    if (isPublic || this.getRequest(context)?.user) {
       return true;
     }
 

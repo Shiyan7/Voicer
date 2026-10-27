@@ -2,7 +2,6 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
-  NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -54,11 +53,7 @@ export class AuthService {
       where: { email: email.toLowerCase() },
     });
 
-    if (!user) {
-      throw new NotFoundException('Пользователь с таким e-mail не найден');
-    }
-
-    if (!user.password) {
+    if (!user?.password) {
       throw new BadRequestException('Неправильный логин или пароль');
     }
 

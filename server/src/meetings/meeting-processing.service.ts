@@ -1,7 +1,12 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  Logger,
+  OnApplicationBootstrap,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PubSub } from 'graphql-subscriptions';
-import { EntityManager, IsNull, Repository } from 'typeorm';
+import { EntityManager, In, IsNull, Repository } from 'typeorm';
 import { ActionItemEntity } from '../actions/action-item.entity';
 import { FileStorageService } from '../file/file-storage.service';
 import { PUB_SUB } from '../pubsub/pubsub.module';
@@ -22,7 +27,7 @@ export const meetingUpdatedTopic = (meetingId: string): string =>
   `meetingUpdated.${meetingId}`;
 
 @Injectable()
-export class MeetingProcessingService {
+export class MeetingProcessingService implements OnApplicationBootstrap {
   private readonly logger = new Logger(MeetingProcessingService.name);
 
   constructor(
@@ -35,6 +40,36 @@ export class MeetingProcessingService {
     private readonly summarizationService: SummarizationService,
     @Inject(PUB_SUB) private readonly pubSub: PubSub,
   ) {}
+
+  async onApplicationBootstrap(): Promise<void> {
+    const interrupted = await this.meetingsRepository.find({
+      where: {
+        status: In([MeetingStatus.TRANSCRIBING, MeetingStatus.SUMMARIZING]),
+      },
+    });
+
+    for (const meeting of interrupted) {
+      this.logger.warn(`Resuming interrupted meeting ${meeting.id}`);
+      void this.resume(meeting);
+    }
+  }
+
+  private async resume(meeting: MeetingEntity): Promise<void> {
+    if (meeting.status === MeetingStatus.TRANSCRIBING) {
+      await this.transcriptSegmentsRepository.delete({ meetingId: meeting.id });
+      await this.transcribe(meeting);
+      return;
+    }
+
+    const hasNotes = await this.meetingsRepository.manager.exists(
+      KeyPointEntity,
+      { where: { meetingId: meeting.id } },
+    );
+    await this.runSummarization({
+      ...meeting,
+      status: hasNotes ? MeetingStatus.READY : MeetingStatus.TRANSCRIBED,
+    });
+  }
 
   async updateAndPublish(
     meetingId: string,
@@ -55,6 +90,7 @@ export class MeetingProcessingService {
     try {
       await this.saveTranscript(meeting);
     } catch (error) {
+      if (await this.isDeleted(meeting.id)) return;
       this.logFailure(`Failed to process meeting ${meeting.id}`, error);
       await this.updateAndPublish(meeting.id, { status: MeetingStatus.FAILED });
     }
@@ -124,6 +160,7 @@ export class MeetingProcessingService {
       });
       await this.updateAndPublish(meeting.id, { status: MeetingStatus.READY });
     } catch (error) {
+      if (await this.isDeleted(meeting.id)) return;
       this.logFailure(`Failed to summarize meeting ${meeting.id}`, error);
       await this.updateAndPublish(
         meeting.id,
@@ -184,6 +221,10 @@ export class MeetingProcessingService {
         }),
       ),
     );
+  }
+
+  private async isDeleted(meetingId: string): Promise<boolean> {
+    return !(await this.meetingsRepository.existsBy({ id: meetingId }));
   }
 
   private logFailure(message: string, error: unknown): void {

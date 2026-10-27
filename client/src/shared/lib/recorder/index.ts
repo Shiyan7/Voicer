@@ -1,10 +1,3 @@
-export type {
-  CallDetectedPayload,
-  CallEndedPayload,
-  RecorderState,
-  StartRecordingResult,
-  StopRecordingResult,
-} from './recorderBridge';
 export {
   getRecorderState,
   onCallDetected,

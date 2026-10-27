@@ -30,20 +30,14 @@ export class TranscriptionService {
     );
 
     const audio = await readFile(filePath);
-    const response = await this.client.listen.v1.media.transcribeFile(
-      audio,
-      {
-        model: TRANSCRIBE_MODEL,
-        diarize: true,
-        utterances: true,
-        punctuate: true,
-        smart_format: true,
-        detect_language: true,
-      },
-      {
-        timeoutInSeconds: 1800,
-      },
-    );
+    const response = await this.client.listen.v1.media.transcribeFile(audio, {
+      model: TRANSCRIBE_MODEL,
+      diarize: true,
+      utterances: true,
+      punctuate: true,
+      smart_format: true,
+      detect_language: true,
+    });
 
     return this.getUtterances(response).map((utterance) =>
       this.toSegment(utterance),

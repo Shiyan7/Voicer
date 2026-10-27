@@ -30,6 +30,7 @@ import {
 } from './meeting.serializer';
 
 const MAX_TITLE_LENGTH = 120;
+const MAX_PAGE_LIMIT = 100;
 
 @Injectable()
 export class MeetingsService {
@@ -99,13 +100,14 @@ export class MeetingsService {
     input: MeetingsPageInput,
   ): Promise<MeetingsPageOutput> {
     const page = Math.max(1, input.page);
-    const skip = (page - 1) * input.limit;
+    const limit = Math.min(Math.max(1, input.limit), MAX_PAGE_LIMIT);
+    const skip = (page - 1) * limit;
 
     const [meetings, total] = await this.meetingsRepository.findAndCount({
       where: this.buildPageWhere(userId, input),
       order: this.buildPageOrder(input.sort),
       skip,
-      take: input.limit,
+      take: limit,
       comment: this.getFnName(this.getUserMeetingsPage.name),
     });
 
@@ -253,7 +255,7 @@ export class MeetingsService {
     });
 
     if (!meeting) {
-      throw new NotFoundException('Meeting не найден');
+      throw new NotFoundException('Встреча не найдена');
     }
 
     return meeting;

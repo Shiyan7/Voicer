@@ -3,7 +3,6 @@ export { renameMeetingMutation } from './api/renameMeetingMutation';
 export { setMeetingFavoriteMutation } from './api/setMeetingFavoriteMutation';
 export { suggestMeetingTitleMutation } from './api/suggestMeetingTitleMutation';
 export { uploadMeetingAudioMutation } from './api/uploadMeetingAudioMutation';
-export { getMeetingSourceLabel } from './lib/getMeetingSourceLabel';
 export { getMeetingTitle } from './lib/getMeetingTitle';
 export { mapMeeting } from './lib/mapMeeting';
 export type { MeetingDetails } from './types/MeetingDetails';

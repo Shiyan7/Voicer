@@ -9,6 +9,8 @@ import { AuthModule } from '../auth/auth.module';
 import { AuthService } from '../auth/auth.service';
 import { buildWsOnConnect } from './ws-auth';
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 interface GraphqlContextInput {
   req?: { user?: unknown };
   extra?: { user?: unknown };
@@ -27,8 +29,8 @@ interface GraphqlContextInput {
       ) => ({
         autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
         sortSchema: true,
-        playground: true,
-        introspection: true,
+        playground: !isProduction,
+        introspection: !isProduction,
         subscriptions: {
           'graphql-ws': {
             onConnect: buildWsOnConnect(jwtService, configService, authService),

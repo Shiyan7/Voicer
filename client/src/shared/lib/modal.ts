@@ -6,7 +6,9 @@ export enum MODALS {
   SEARCH = 'SEARCH',
 }
 
-export const [activeModals, setActiveModals] = createSignal<MODALS[]>([]);
+const [activeModals, setActiveModals] = createSignal<MODALS[]>([]);
+
+export { activeModals };
 
 export const showModal = (id: MODALS) =>
   setActiveModals((prev) => [...prev, id]);

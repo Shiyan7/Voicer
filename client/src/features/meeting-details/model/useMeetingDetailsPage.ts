@@ -6,7 +6,7 @@ import { mapMeeting } from '@/entities/meeting';
 import { usePlayback } from '@/entities/meeting-player';
 import { useToasts } from '@/entities/toasts';
 import { i18n } from '@/shared/i18n';
-import { paths } from '@/shared/router';
+import { canGoBack, paths } from '@/shared/router';
 import { getSpeakerTone } from '@/shared/ui/speaker-avatar';
 
 import { meetingActionItemsQuery } from '../api/meetingActionItemsQuery';
@@ -112,7 +112,7 @@ export const useMeetingDetailsPage = () => {
   const navigate = useNavigate();
 
   const goBack = () => {
-    if (window.history.length > 1) {
+    if (canGoBack()) {
       navigate(-1);
       return;
     }
@@ -126,9 +126,7 @@ export const useMeetingDetailsPage = () => {
     isLoading,
     isEmpty,
     isTranscribing,
-    isTranscribed,
     isSummarizing,
-    isReady,
     isFailed,
     hasContent,
     activeTab,
