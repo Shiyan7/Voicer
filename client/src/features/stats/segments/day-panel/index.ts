@@ -1,1 +1,1 @@
-export { DayPanel } from './ui/DayPanel';
+export { DayPanel, DayPanelHint } from './ui/DayPanel';

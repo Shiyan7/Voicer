@@ -1,8 +1,10 @@
+import { Show } from 'solid-js';
+
 import { i18n } from '@/shared/i18n';
 import { PageFade } from '@/shared/ui/page-fade';
 
 import { useStats } from './model/useStats';
-import { DayPanel } from './segments/day-panel';
+import { DayPanel, DayPanelHint } from './segments/day-panel';
 import { Heatmap } from './segments/heatmap';
 import { Kpi } from './segments/kpi';
 import { Sources } from './segments/sources';
@@ -17,18 +19,25 @@ export function StatsOrchestrator() {
     <PageFade>
       <div class={styles.root()}>
         <h1 class={styles.title()}>{i18n.t('stats.title')}</h1>
-        <Kpi summary={vm.stats()?.summary} />
-        <Heatmap
-          year={vm.year()}
-          years={vm.years()}
-          days={vm.stats()?.days ?? []}
-          selectedDate={vm.selectedDate()}
-          isLoading={vm.isLoading()}
-          onYearChange={vm.setYear}
-          onSelect={vm.toggleDate}
-        />
-        <DayPanel date={vm.selectedDate()} timeZone={vm.timeZone} />
-        <Sources sources={vm.stats()?.sources ?? []} />
+        <Show
+          when={!vm.hasError()}
+          fallback={<p class={styles.error()}>{i18n.t('stats.load_error')}</p>}
+        >
+          <Kpi summary={vm.summary()} />
+          <Heatmap
+            year={vm.year()}
+            years={vm.years()}
+            days={vm.yearStats()?.days ?? []}
+            selectedDate={vm.selectedDate()}
+            isLoading={vm.isYearLoading()}
+            onYearChange={vm.setYear}
+            onSelect={vm.toggleDate}
+          />
+          <Show when={vm.selectedDate()} fallback={<DayPanelHint />}>
+            {(date) => <DayPanel date={date()} />}
+          </Show>
+          <Sources sources={vm.yearStats()?.sources ?? []} />
+        </Show>
       </div>
     </PageFade>
   );

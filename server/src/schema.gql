@@ -112,8 +112,9 @@ type Query {
   meetingsPage(input: MeetingsPageInput!): MeetingsPageOutput!
   meetingsStats: MeetingsStatsOutput!
   search(input: SearchInput!): SearchPageOutput!
-  stats(input: StatsInput!): StatsOutput!
-  statsDay(input: StatsDayInput!): [StatsDayMeetingOutput!]!
+  statsDayMeetings(input: StatsDayMeetingsInput!): [StatsDayMeetingOutput!]!
+  statsSummary(input: StatsSummaryInput!): StatsSummaryOutput!
+  statsYear(input: StatsYearInput!): StatsYearOutput!
   userMe: UserMeOutput!
 }
 
@@ -164,9 +165,10 @@ input SignUpInput {
   password: String!
 }
 
-input StatsDayInput {
+type StatsCalendarDayOutput {
+  count: Int!
   date: String!
-  timeZone: String!
+  durationSec: Int!
 }
 
 type StatsDayMeetingOutput {
@@ -177,22 +179,9 @@ type StatsDayMeetingOutput {
   title: String
 }
 
-type StatsDayOutput {
-  count: Int!
+input StatsDayMeetingsInput {
   date: String!
-  durationSec: Int!
-}
-
-input StatsInput {
   timeZone: String!
-  year: Int!
-}
-
-type StatsOutput {
-  days: [StatsDayOutput!]!
-  sources: [StatsSourceOutput!]!
-  summary: StatsSummaryOutput!
-  years: [Int!]!
 }
 
 type StatsSourceOutput {
@@ -201,11 +190,26 @@ type StatsSourceOutput {
   source: String
 }
 
+input StatsSummaryInput {
+  timeZone: String!
+}
+
 type StatsSummaryOutput {
   activeDays: Int!
   count: Int!
   durationSec: Int!
   longestStreak: Int!
+  years: [Int!]!
+}
+
+input StatsYearInput {
+  timeZone: String!
+  year: Int!
+}
+
+type StatsYearOutput {
+  days: [StatsCalendarDayOutput!]!
+  sources: [StatsSourceOutput!]!
 }
 
 type Subscription {

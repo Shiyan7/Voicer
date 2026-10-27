@@ -216,13 +216,20 @@
       "calls": "Calls",
       "duration": "Time in calls",
       "active_days": "Days with calls",
-      "avg_day": "Average per day",
+      "avg_day": "Average per active day",
       "longest_streak": "Longest streak"
     },
     "sources": {
       "title": "Platforms",
-      "other": "No platform"
+      "other": "No platform",
+      "rest": "Others ({{count}})"
     },
-    "empty": "No calls this year"
+    "empty": "No calls this year",
+    "load_error": "Could not load statistics"
+  },
+  "duration": {
+    "minutes": "{{minutes}}m",
+    "hours": "{{hours}}h",
+    "hours_minutes": "{{hours}}h {{minutes}}m"
   }
 }

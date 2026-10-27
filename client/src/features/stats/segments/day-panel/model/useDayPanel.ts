@@ -1,28 +1,31 @@
-import { statsDayQuery } from '../../../api/statsDayQuery';
-import { formatCalls } from '../../../lib/formatCalls';
+import { formatDuration } from '@/shared/lib/time';
+
+import { statsDayMeetingsQuery } from '../../../api/statsDayMeetingsQuery';
 import { formatDayDate } from '../../../lib/formatDayDate';
-import { formatDuration } from '../../../lib/formatDuration';
+import { getTimeZone } from '../../../lib/getTimeZone';
+import { pluralize } from '../../../lib/pluralize';
 import { mapDayMeeting } from '../lib/mapDayMeeting';
 import { DayPanelProps } from '../types/DayPanelProps';
 
 export const useDayPanel = (props: DayPanelProps) => {
-  const [result] = statsDayQuery(
-    () => ({ input: { date: props.date ?? '', timeZone: props.timeZone } }),
-    { pause: () => !props.date },
-  );
+  const timeZone = getTimeZone();
 
-  const meetings = () => result.data?.statsDay ?? [];
+  const [result] = statsDayMeetingsQuery(() => ({
+    input: { date: props.date, timeZone },
+  }));
+
+  const meetings = () => result.data?.statsDayMeetings ?? [];
 
   const items = () => meetings().map(mapDayMeeting);
 
-  const title = () => (props.date ? formatDayDate(props.date, true) : '');
+  const title = () => formatDayDate(props.date, true);
 
   const summary = () => {
     const duration = meetings().reduce(
       (sum, meeting) => sum + (meeting.durationSec ?? 0),
       0,
     );
-    return `${formatCalls(meetings().length)} · ${formatDuration(duration)}`;
+    return `${pluralize('stats.calls', meetings().length)} · ${formatDuration(duration)}`;
   };
 
   const isLoading = () => result.fetching && !meetings().length;

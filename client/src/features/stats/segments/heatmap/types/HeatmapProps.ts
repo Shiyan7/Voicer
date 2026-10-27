@@ -1,9 +1,9 @@
-import type { StatsDayOutput } from '@schema';
+import type { StatsCalendarDayOutput } from '@schema';
 
 export interface HeatmapProps {
   year: number;
   years: number[];
-  days: StatsDayOutput[];
+  days: StatsCalendarDayOutput[];
   selectedDate: string | null;
   isLoading: boolean;
   onYearChange: (year: number) => void;

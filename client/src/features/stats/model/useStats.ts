@@ -2,7 +2,8 @@ import { createEffect, createSignal, on } from 'solid-js';
 
 import { authRoot } from '@/shared/roots/authRoot';
 
-import { statsQuery } from '../api/statsQuery';
+import { statsSummaryQuery } from '../api/statsSummaryQuery';
+import { statsYearQuery } from '../api/statsYearQuery';
 import { getTimeZone } from '../lib/getTimeZone';
 
 export const useStats = () => {
@@ -12,19 +13,29 @@ export const useStats = () => {
   const [year, setYear] = createSignal(currentYear);
   const [selectedDate, setSelectedDate] = createSignal<string | null>(null);
 
-  const [result] = statsQuery(
+  const pause = () => !authRoot.isAuth;
+
+  const [summaryResult] = statsSummaryQuery(() => ({ input: { timeZone } }), {
+    pause,
+  });
+
+  const [yearResult] = statsYearQuery(
     () => ({ input: { year: year(), timeZone } }),
-    { pause: () => !authRoot.isAuth },
+    { pause },
   );
 
-  const stats = () => result.data?.stats;
+  const summary = () => summaryResult.data?.statsSummary;
+
+  const yearStats = () => yearResult.data?.statsYear;
 
   const years = () =>
-    [...new Set([currentYear, ...(stats()?.years ?? [])])].sort(
+    [...new Set([currentYear, ...(summary()?.years ?? [])])].sort(
       (a, b) => b - a,
     );
 
-  const isLoading = () => result.fetching && !stats();
+  const isYearLoading = () => yearResult.fetching && !yearStats();
+
+  const hasError = () => Boolean(summaryResult.error || yearResult.error);
 
   const toggleDate = (date: string) =>
     setSelectedDate((current) => (current === date ? null : date));
@@ -32,12 +43,13 @@ export const useStats = () => {
   createEffect(on(year, () => setSelectedDate(null), { defer: true }));
 
   return {
-    timeZone,
     year,
     years,
-    stats,
+    summary,
+    yearStats,
     selectedDate,
-    isLoading,
+    isYearLoading,
+    hasError,
     setYear,
     toggleDate,
   };

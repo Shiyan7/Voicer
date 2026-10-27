@@ -173,8 +173,9 @@ export type Query = {
   meetingsPage: MeetingsPageOutput;
   meetingsStats: MeetingsStatsOutput;
   search: SearchPageOutput;
-  stats: StatsOutput;
-  statsDay: Array<StatsDayMeetingOutput>;
+  statsDayMeetings: Array<StatsDayMeetingOutput>;
+  statsSummary: StatsSummaryOutput;
+  statsYear: StatsYearOutput;
   userMe: UserMeOutput;
 };
 
@@ -202,12 +203,16 @@ export type QuerySearchArgs = {
   input: SearchInput;
 };
 
-export type QueryStatsArgs = {
-  input: StatsInput;
+export type QueryStatsDayMeetingsArgs = {
+  input: StatsDayMeetingsInput;
 };
 
-export type QueryStatsDayArgs = {
-  input: StatsDayInput;
+export type QueryStatsSummaryArgs = {
+  input: StatsSummaryInput;
+};
+
+export type QueryStatsYearArgs = {
+  input: StatsYearInput;
 };
 
 export type SearchInput = {
@@ -259,9 +264,11 @@ export type SignUpInput = {
   password: Scalars['String']['input'];
 };
 
-export type StatsDayInput = {
-  date: Scalars['String']['input'];
-  timeZone: Scalars['String']['input'];
+export type StatsCalendarDayOutput = {
+  __typename?: 'StatsCalendarDayOutput';
+  count: Scalars['Int']['output'];
+  date: Scalars['String']['output'];
+  durationSec: Scalars['Int']['output'];
 };
 
 export type StatsDayMeetingOutput = {
@@ -273,24 +280,9 @@ export type StatsDayMeetingOutput = {
   title?: Maybe<Scalars['String']['output']>;
 };
 
-export type StatsDayOutput = {
-  __typename?: 'StatsDayOutput';
-  count: Scalars['Int']['output'];
-  date: Scalars['String']['output'];
-  durationSec: Scalars['Int']['output'];
-};
-
-export type StatsInput = {
+export type StatsDayMeetingsInput = {
+  date: Scalars['String']['input'];
   timeZone: Scalars['String']['input'];
-  year: Scalars['Int']['input'];
-};
-
-export type StatsOutput = {
-  __typename?: 'StatsOutput';
-  days: Array<StatsDayOutput>;
-  sources: Array<StatsSourceOutput>;
-  summary: StatsSummaryOutput;
-  years: Array<Scalars['Int']['output']>;
 };
 
 export type StatsSourceOutput = {
@@ -300,12 +292,28 @@ export type StatsSourceOutput = {
   source?: Maybe<Scalars['String']['output']>;
 };
 
+export type StatsSummaryInput = {
+  timeZone: Scalars['String']['input'];
+};
+
 export type StatsSummaryOutput = {
   __typename?: 'StatsSummaryOutput';
   activeDays: Scalars['Int']['output'];
   count: Scalars['Int']['output'];
   durationSec: Scalars['Int']['output'];
   longestStreak: Scalars['Int']['output'];
+  years: Array<Scalars['Int']['output']>;
+};
+
+export type StatsYearInput = {
+  timeZone: Scalars['String']['input'];
+  year: Scalars['Int']['input'];
+};
+
+export type StatsYearOutput = {
+  __typename?: 'StatsYearOutput';
+  days: Array<StatsCalendarDayOutput>;
+  sources: Array<StatsSourceOutput>;
 };
 
 export type Subscription = {

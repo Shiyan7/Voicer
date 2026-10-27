@@ -1,11 +1,11 @@
-import { createMemo, createSignal } from 'solid-js';
+import { createMemo, createSignal, onCleanup } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
+import { formatDuration } from '@/shared/lib/time';
 
-import { formatCalls } from '../../../lib/formatCalls';
-import { formatDuration } from '../../../lib/formatDuration';
 import { getWeekdayLabels } from '../../../lib/getWeekdayLabels';
-import { WEEKDAY_LABEL_ROWS } from '../config/heatmapConfig';
+import { pluralize } from '../../../lib/pluralize';
+import { TODAY_REFRESH_MS, WEEKDAY_LABEL_ROWS } from '../config/heatmapConfig';
 import { buildHeatmapWeeks } from '../lib/buildHeatmapWeeks';
 import { buildMonthLabels } from '../lib/buildMonthLabels';
 import { getCellText } from '../lib/getCellText';
@@ -17,13 +17,16 @@ import { HeatTooltip } from '../types/HeatTooltip';
 
 export const useHeatmap = (props: HeatmapProps) => {
   const [tooltip, setTooltip] = createSignal<HeatTooltip | null>(null);
+  const [today, setToday] = createSignal(getTodayDate());
+
+  const todayTimer = setInterval(() => setToday(getTodayDate()), TODAY_REFRESH_MS);
+  onCleanup(() => clearInterval(todayTimer));
 
   const weeks = createMemo(() =>
     buildHeatmapWeeks(
       props.year,
       props.days,
       getHeatThresholds(props.days),
-      getTodayDate(),
     ),
   );
 
@@ -41,7 +44,7 @@ export const useHeatmap = (props: HeatmapProps) => {
     const count = props.days.reduce((sum, day) => sum + day.count, 0);
     const duration = props.days.reduce((sum, day) => sum + day.durationSec, 0);
     return i18n.t('stats.year_total', {
-      count: formatCalls(count),
+      count: pluralize('stats.calls', count),
       duration: formatDuration(duration),
       year: String(props.year),
     });
@@ -62,8 +65,10 @@ export const useHeatmap = (props: HeatmapProps) => {
 
   const hideTooltip = () => setTooltip(null);
 
+  const isFuture = (cell: HeatCell) => cell.date > today();
+
   const select = (cell: HeatCell) => {
-    if (!cell.isOutside && !cell.isFuture) props.onSelect(cell.date);
+    if (!cell.isOutside && !isFuture(cell)) props.onSelect(cell.date);
   };
 
   return {
@@ -77,6 +82,7 @@ export const useHeatmap = (props: HeatmapProps) => {
     isDimmed,
     showTooltip,
     hideTooltip,
+    isFuture,
     select,
   };
 };

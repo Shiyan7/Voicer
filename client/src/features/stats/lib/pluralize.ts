@@ -1,10 +1,14 @@
 import { i18n } from '@/shared/i18n';
-import type { DictKey } from '@/shared/i18n/types';
 
-type PluralForms = Record<'one' | 'few' | 'many' | 'other', DictKey>;
+type PluralSubject = 'stats.calls' | 'stats.days';
+type PluralForm = 'one' | 'few' | 'many' | 'other';
 
-export const pluralize = (forms: PluralForms, count: number) => {
-  const rule = new Intl.PluralRules(i18n.locale()).select(count);
-  const key = forms[rule as keyof PluralForms] ?? forms.other;
-  return i18n.t(key, { count: String(count) });
+const PLURAL_FORMS = new Set<string>(['one', 'few', 'many', 'other']);
+
+const toPluralForm = (rule: string): PluralForm =>
+  PLURAL_FORMS.has(rule) ? (rule as PluralForm) : 'other';
+
+export const pluralize = (subject: PluralSubject, count: number) => {
+  const form = toPluralForm(new Intl.PluralRules(i18n.locale()).select(count));
+  return i18n.t(`${subject}_${form}`, { count: String(count) });
 };

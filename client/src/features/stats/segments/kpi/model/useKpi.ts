@@ -1,7 +1,7 @@
 import { i18n } from '@/shared/i18n';
+import { formatDuration } from '@/shared/lib/time';
 
-import { formatDays } from '../../../lib/formatDays';
-import { formatDuration } from '../../../lib/formatDuration';
+import { pluralize } from '../../../lib/pluralize';
 import { KpiProps } from '../types/KpiProps';
 import { KpiTile } from '../types/KpiTile';
 
@@ -27,7 +27,7 @@ export const useKpi = (props: KpiProps) => {
       { label: i18n.t('stats.kpi.avg_day'), value: formatDuration(avgDay) },
       {
         label: i18n.t('stats.kpi.longest_streak'),
-        value: formatDays(summary.longestStreak),
+        value: pluralize('stats.days', summary.longestStreak),
       },
     ];
   };

@@ -2,7 +2,7 @@ import type { MeetingsStatsOutput } from '@schema';
 
 import { useUserMe } from '@/entities/user-me';
 import { i18n } from '@/shared/i18n';
-import { formatDurationLabel } from '@/shared/lib/time';
+import { formatDuration } from '@/shared/lib/time';
 
 import { StatTile } from '../types/StatTile';
 
@@ -31,7 +31,7 @@ export const useStatsBanner = (
         label: i18n.t('meetings.banner.week_count'),
       },
       {
-        value: formatDurationLabel(value.weekDurationSec) ?? '0m',
+        value: formatDuration(value.weekDurationSec),
         label: i18n.t('meetings.banner.week_duration'),
       },
       {

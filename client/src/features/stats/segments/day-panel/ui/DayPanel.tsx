@@ -14,10 +14,6 @@ export function DayPanel(props: DayPanelProps) {
 
   return (
     <section class={styles.root()}>
-      <Show
-        when={props.date}
-        fallback={<p class={styles.hint()}>{i18n.t('stats.pick_day')}</p>}
-      >
         <header class={styles.header()}>
           <h2 class={styles.title()}>{vm.title()}</h2>
           <Show when={!vm.isLoading() && !vm.isEmpty()}>
@@ -52,7 +48,14 @@ export function DayPanel(props: DayPanelProps) {
             </div>
           </Match>
         </Switch>
-      </Show>
+    </section>
+  );
+}
+
+export function DayPanelHint() {
+  return (
+    <section class={styles.root()}>
+      <p class={styles.hint()}>{i18n.t('stats.pick_day')}</p>
     </section>
   );
 }

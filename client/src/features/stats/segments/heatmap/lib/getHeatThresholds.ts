@@ -1,8 +1,8 @@
-import type { StatsDayOutput } from '@schema';
+import type { StatsCalendarDayOutput } from '@schema';
 
 import { HEAT_QUANTILES } from '../config/heatmapConfig';
 
-export const getHeatThresholds = (days: StatsDayOutput[]) => {
+export const getHeatThresholds = (days: StatsCalendarDayOutput[]) => {
   const durations = days
     .map((day) => day.durationSec)
     .filter((duration) => duration > 0)

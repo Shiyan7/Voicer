@@ -1,6 +1,6 @@
-import type { StatsDayOutput } from '@schema';
+import type { StatsCalendarDayOutput } from '@schema';
 
-import { DAY_MS } from '../config/heatmapConfig';
+import { DAY_MS } from '../../../config/statsConfig';
 import { HeatCell } from '../types/HeatCell';
 import { getHeatLevel } from './getHeatLevel';
 
@@ -11,9 +11,8 @@ const getWeekStart = (ms: number) =>
 
 export const buildHeatmapWeeks = (
   year: number,
-  days: StatsDayOutput[],
+  days: StatsCalendarDayOutput[],
   thresholds: number[],
-  today: string,
 ): HeatCell[][] => {
   const byDate = new Map(days.map((day) => [day.date, day]));
   const yearEnd = Date.UTC(year, 11, 31);
@@ -38,7 +37,6 @@ export const buildHeatmapWeeks = (
           durationSec,
           level: getHeatLevel(count, durationSec, thresholds),
           isOutside: new Date(ms).getUTCFullYear() !== year,
-          isFuture: date > today,
         };
       }),
     );

@@ -55,12 +55,12 @@ export function Heatmap(props: HeatmapProps) {
                         class={styles.cell({
                           level: cell.level,
                           outside: cell.isOutside,
-                          future: cell.isFuture,
+                          future: vm.isFuture(cell),
                           dimmed: vm.isDimmed(cell),
                         })}
                         type="button"
                         aria-label={cell.date}
-                        aria-disabled={cell.isOutside || cell.isFuture}
+                        aria-disabled={cell.isOutside || vm.isFuture(cell)}
                         onMouseEnter={(event) =>
                           vm.showTooltip(cell, event.currentTarget)
                         }

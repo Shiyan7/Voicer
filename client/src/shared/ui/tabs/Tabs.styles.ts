@@ -5,8 +5,7 @@ export const tabsStyles = tv({
     root: 'flex w-full items-center gap-1 rounded-xl bg-gray-100 p-1',
     item: 'relative flex-1',
     btn: `
-      relative flex h-10 w-full items-center justify-center rounded-lg px-4 text-sm
-      font-medium outline-none transition-[background-color,color]
+      relative flex w-full items-center justify-center font-medium outline-none transition-[background-color,color]
       duration-200 focus-visible:ring-2 focus-visible:ring-gray-300
     `,
   },
@@ -17,7 +16,9 @@ export const tabsStyles = tv({
         item: 'flex-none',
         btn: 'h-7 rounded-md px-3 text-[13px] tabular-nums',
       },
-      md: {},
+      md: {
+        btn: 'h-10 rounded-lg px-4 text-sm',
+      },
     },
     active: {
       true: {

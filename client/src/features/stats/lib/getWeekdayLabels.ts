@@ -1,7 +1,6 @@
 import { i18n } from '@/shared/i18n';
 
-const MONDAY_UTC = Date.UTC(2024, 0, 1);
-const DAY_MS = 24 * 60 * 60 * 1000;
+import { DAY_MS, MONDAY_UTC } from '../config/statsConfig';
 
 export const getWeekdayLabels = () => {
   const format = new Intl.DateTimeFormat(i18n.locale(), {
