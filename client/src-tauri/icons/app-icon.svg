@@ -1,35 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
   <defs>
-    <linearGradient id="bg" x1="100" y1="100" x2="924" y2="924" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#6366F1"/>
-      <stop offset="0.45" stop-color="#8B5CF6"/>
-      <stop offset="1" stop-color="#EC4899"/>
+    <linearGradient id="bg" x1="512" y1="100" x2="512" y2="924" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3A3A3C"/>
+      <stop offset="1" stop-color="#000000"/>
     </linearGradient>
-    <radialGradient id="glow" cx="300" cy="220" r="620" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.28"/>
-      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="edge" x1="512" y1="100" x2="512" y2="924" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.45"/>
-      <stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0"/>
+    <linearGradient id="bars" x1="512" y1="290" x2="512" y2="788" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#A1A1A6"/>
     </linearGradient>
     <filter id="shadow" x="0" y="0" width="1024" height="1024" filterUnits="userSpaceOnUse">
-      <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#1E1B4B" flood-opacity="0.35"/>
-    </filter>
-    <filter id="barShadow" x="0" y="0" width="1024" height="1024" filterUnits="userSpaceOnUse">
-      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#3B0764" flood-opacity="0.35"/>
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.3"/>
     </filter>
   </defs>
   <g filter="url(#shadow)">
     <rect x="100" y="100" width="824" height="824" rx="186" fill="url(#bg)"/>
   </g>
-  <rect x="100" y="100" width="824" height="824" rx="186" fill="url(#glow)"/>
-  <rect x="101.5" y="101.5" width="821" height="821" rx="184.5" fill="none" stroke="url(#edge)" stroke-width="3"/>
-  <g filter="url(#barShadow)" fill="#FFFFFF">
-    <rect x="234" y="290" width="76" height="248" rx="38" opacity="0.65"/>
-    <rect x="354" y="368" width="76" height="280" rx="38" opacity="0.85"/>
+  <g fill="url(#bars)">
+    <rect x="234" y="290" width="76" height="248" rx="38"/>
+    <rect x="354" y="368" width="76" height="280" rx="38"/>
     <rect x="474" y="446" width="76" height="342" rx="38"/>
-    <rect x="594" y="368" width="76" height="280" rx="38" opacity="0.85"/>
-    <rect x="714" y="290" width="76" height="248" rx="38" opacity="0.65"/>
+    <rect x="594" y="368" width="76" height="280" rx="38"/>
+    <rect x="714" y="290" width="76" height="248" rx="38"/>
   </g>
 </svg>

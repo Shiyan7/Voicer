@@ -14,7 +14,7 @@ export const navigationStyles = tv({
     search: `
       flex h-11 w-full cursor-pointer items-center gap-2.5 rounded-xl bg-white px-2.5
       text-[15px] font-medium text-gray-900
-      shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-colors
+      transition-colors
       active:bg-gray-50
     `,
     searchIcon: 'size-[18px] shrink-0',

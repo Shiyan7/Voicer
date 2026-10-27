@@ -11,9 +11,8 @@
   --z-toast: 50;
   --z-navigation: 800;
 
-  --font-sans:
-    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
-    'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+  'Helvetica Neue', Helvetica, Arial, sans-serif;
 
   --color-gray-50: #fbfbfd;
   --color-gray-100: #f5f5f7;
@@ -35,6 +34,11 @@
   --color-banner-via: #cfe6fb;
   --color-banner-to: #ddd3fb;
   --color-banner-glow: #c4b5fd;
+
+  --color-logo-from: #3a3a3c;
+  --color-logo-to: #000000;
+  --color-logo-bar-from: #ffffff;
+  --color-logo-bar-to: #a1a1a6;
 
   --color-heat-0: #ebedf0;
   --color-heat-1: #bae6fd;
@@ -121,7 +125,7 @@
     opacity: 1;
     filter: blur(0);
     transform: translateY(0);
-    background-position: 0% 0;
+    background-position: 0 0;
   }
 }
 
@@ -173,6 +177,11 @@
   --color-banner-via: #0f2140;
   --color-banner-to: #2a1d55;
   --color-banner-glow: #5b45b8;
+
+  --color-logo-from: #ffffff;
+  --color-logo-to: #c7c7cc;
+  --color-logo-bar-from: #3a3a3c;
+  --color-logo-bar-to: #000000;
 
   --color-heat-0: #262c38;
   --color-heat-1: #0c3a55;
