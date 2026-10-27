@@ -21,18 +21,12 @@ export const recordingStyles = tv({
   },
   variants: {
     tone: {
-      violet: { time: 'text-violet-500', body: 'border-violet-400' },
-      amber: { time: 'text-amber-500', body: 'border-amber-400' },
-      sky: { time: 'text-sky-500', body: 'border-sky-400' },
-      rose: { time: 'text-rose-500', body: 'border-rose-400' },
-      emerald: { time: 'text-emerald-500', body: 'border-emerald-400' },
-      orange: { time: 'text-orange-500', body: 'border-orange-400' },
-      teal: { time: 'text-teal-500', body: 'border-teal-400' },
-      fuchsia: { time: 'text-fuchsia-500', body: 'border-fuchsia-400' },
-      indigo: { time: 'text-indigo-500', body: 'border-indigo-400' },
-      lime: { time: 'text-lime-500', body: 'border-lime-400' },
-      cyan: { time: 'text-cyan-500', body: 'border-cyan-400' },
-      stone: { time: 'text-stone-500', body: 'border-stone-400' },
+      steel: { time: 'text-speaker-steel', body: 'border-speaker-steel' },
+      sage: { time: 'text-speaker-sage', body: 'border-speaker-sage' },
+      sand: { time: 'text-speaker-sand', body: 'border-speaker-sand' },
+      clay: { time: 'text-speaker-clay', body: 'border-speaker-clay' },
+      mauve: { time: 'text-speaker-mauve', body: 'border-speaker-mauve' },
+      slate: { time: 'text-speaker-slate', body: 'border-speaker-slate' },
     },
     active: {
       true: {

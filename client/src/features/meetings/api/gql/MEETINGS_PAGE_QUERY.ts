@@ -18,6 +18,7 @@ export const MEETINGS_PAGE_QUERY = gql`
         page
         hasNextItems
         hasPrevItems
+        total
       }
     }
   }

@@ -1,16 +1,10 @@
 export type SpeakerTone =
-  | 'violet'
-  | 'amber'
-  | 'sky'
-  | 'rose'
-  | 'emerald'
-  | 'orange'
-  | 'teal'
-  | 'fuchsia'
-  | 'indigo'
-  | 'lime'
-  | 'cyan'
-  | 'stone';
+  | 'steel'
+  | 'sage'
+  | 'sand'
+  | 'clay'
+  | 'mauve'
+  | 'slate';
 
 export interface SpeakerAvatarProps {
   tone: SpeakerTone;

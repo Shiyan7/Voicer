@@ -113,7 +113,6 @@
       "description": "Собираем ключевые моменты и задачи из расшифровки"
     },
     "speakers_count": "Спикеров: {{count}}",
-    "my_meetings": "Мои встречи",
     "only_favorites": "Только избранное",
     "empty_filtered": "По этим фильтрам ничего не нашлось",
     "empty_favorites": "В избранном пока пусто",
@@ -136,7 +135,8 @@
       "week_count": "встреч за неделю",
       "week_duration": "записано",
       "open_actions": "открытых задач"
-    }
+    },
+    "total": "Всего записей: {{count}}"
   },
   "recorder": {
     "recording": "Идёт запись",

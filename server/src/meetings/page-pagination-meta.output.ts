@@ -10,4 +10,7 @@ export class PagePaginationMetaOutput {
 
   @Field(() => Boolean)
   hasPrevItems: boolean;
+
+  @Field(() => Int)
+  total: number;
 }

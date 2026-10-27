@@ -31,6 +31,7 @@ export function MeetingsOrchestrator() {
         />
         <section class={styles.section()}>
           <ListHeader
+            title={vm.totalLabel()}
             favoritesOnly={vm.filters.favoritesOnly()}
             sort={vm.filters.sort()}
             source={vm.filters.source()}

@@ -5,7 +5,7 @@ export const paginationStyles = tv({
     root: 'flex justify-center pt-2',
     group: `
       inline-flex items-center gap-1 rounded-full border-[0.5px]
-      border-gray-200 bg-white p-1 shadow-[0_1px_2px_rgba(0,0,0,0.04)]
+      border-gray-200 bg-white p-1
     `,
     button: `
       flex size-8 items-center justify-center rounded-full text-gray-700

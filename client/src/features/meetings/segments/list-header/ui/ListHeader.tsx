@@ -12,7 +12,7 @@ const styles = listHeaderStyles();
 export function ListHeader(props: ListHeaderProps) {
   return (
     <div class={styles.root()}>
-      <h2 class={styles.title()}>{i18n.t('meetings.my_meetings')}</h2>
+      <h2 class={styles.title()}>{props.title}</h2>
       <div class={styles.actions()}>
         <button
           class={styles.iconBtn({ active: props.favoritesOnly })}

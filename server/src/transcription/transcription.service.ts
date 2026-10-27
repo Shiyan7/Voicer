@@ -1,10 +1,11 @@
-import { createReadStream } from 'fs';
+import { readFile } from 'fs/promises';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DeepgramClient } from '@deepgram/sdk';
 import { TranscribedSegment } from './transcription.types';
 
 const TRANSCRIBE_MODEL = 'nova-3';
+const MAX_RETRIES = 3;
 
 interface DeepgramUtterance {
   speaker?: number;
@@ -22,6 +23,7 @@ export class TranscriptionService {
     this.client = new DeepgramClient({
       apiKey: configService.get<string>('DEEPGRAM_API_KEY'),
       timeoutInSeconds: 1800,
+      maxRetries: MAX_RETRIES,
     });
   }
 
@@ -30,8 +32,9 @@ export class TranscriptionService {
       `Transcribing ${filePath} with Deepgram ${TRANSCRIBE_MODEL}`,
     );
 
+    const audio = await readFile(filePath);
     const response = await this.client.listen.v1.media.transcribeFile(
-      createReadStream(filePath),
+      audio,
       {
         model: TRANSCRIBE_MODEL,
         diarize: true,

@@ -27,9 +27,6 @@ export function MeetingDetailsOrchestrator() {
   return (
     <PageFade>
       <div class={styles.page()}>
-        <div class={styles.glowClip()}>
-          <div class={styles.glow()} />
-        </div>
         <div class={styles.root()}>
           <Switch>
             <Match when={vm.isLoading()}>

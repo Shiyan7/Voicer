@@ -98,6 +98,7 @@ type PagePaginationMetaOutput {
   hasNextItems: Boolean!
   hasPrevItems: Boolean!
   page: Int!
+  total: Int!
 }
 
 type Query {

@@ -147,6 +147,7 @@ export type PagePaginationMetaOutput = {
   hasNextItems: Scalars['Boolean']['output'];
   hasPrevItems: Scalars['Boolean']['output'];
   page: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
 };
 
 export type Query = {

@@ -76,6 +76,11 @@ export const useMeetingsPage = () => {
 
   const showSourceFilter = () => sourceOptions().length > 1;
 
+  const totalLabel = () =>
+    i18n.t('meetings.total', {
+      count: String(meetingsPage()?.meta.total ?? 0),
+    });
+
   const sortOptions = () => getSortOptions();
 
   const sourceOptions = () => getSourceOptions(stats()?.sources ?? []);
@@ -134,6 +139,7 @@ export const useMeetingsPage = () => {
     showSourceFilter,
     filters,
     sortOptions,
+    totalLabel,
     sourceOptions,
     isLoading,
     isEmpty,

@@ -74,7 +74,10 @@ export class MeetingsService {
   async createFromUpload(
     userId: string,
     upload: FileUpload,
-    options: { source?: string; startedAt?: Date } = {},
+    options: {
+      source?: string;
+      startedAt?: Date;
+    } = {},
   ): Promise<MeetingOutput> {
     if (!upload.mimetype.startsWith('audio/')) {
       throw new BadRequestException('Только аудиофайлы');
@@ -105,20 +108,22 @@ export class MeetingsService {
     const page = Math.max(1, input.page);
     const skip = (page - 1) * input.limit;
 
-    const meetings = await this.meetingsRepository.find({
+    const [meetings, total] = await this.meetingsRepository.findAndCount({
       where: this.buildPageWhere(userId, input),
       order: this.buildPageOrder(input.sort),
       skip,
-      take: input.limit + 1,
+      take: input.limit,
       comment: this.getFnName(this.getUserMeetingsPage.name),
     });
 
-    const hasNextItems = meetings.length > input.limit;
-    const items = hasNextItems ? meetings.slice(0, input.limit) : meetings;
-
     return {
-      items: items.map(this.serialize),
-      meta: { page, hasNextItems, hasPrevItems: page > 1 },
+      items: meetings.map(this.serialize),
+      meta: {
+        page,
+        total,
+        hasNextItems: skip + meetings.length < total,
+        hasPrevItems: page > 1,
+      },
     };
   }
 

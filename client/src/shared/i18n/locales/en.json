@@ -113,7 +113,6 @@
       "description": "Pulling key points and action items from the transcript"
     },
     "speakers_count": "Speakers: {{count}}",
-    "my_meetings": "My meetings",
     "only_favorites": "Favorites only",
     "empty_filtered": "Nothing matches these filters",
     "empty_favorites": "No favorite meetings yet",
@@ -136,7 +135,8 @@
       "week_count": "meetings this week",
       "week_duration": "recorded",
       "open_actions": "open action items"
-    }
+    },
+    "total": "Total recordings: {{count}}"
   },
   "recorder": {
     "recording": "Recording",

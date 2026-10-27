@@ -3,7 +3,5 @@ export const revealWhen =
   (element: HTMLElement): void => {
     if (!shouldReveal) return;
 
-    requestAnimationFrame(() =>
-      element.scrollIntoView({ block: 'center', behavior: 'smooth' }),
-    );
+    requestAnimationFrame(() => element.scrollIntoView({ block: 'center' }));
   };

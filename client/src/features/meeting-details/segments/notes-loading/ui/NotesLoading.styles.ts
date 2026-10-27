@@ -2,7 +2,7 @@ import { tv } from 'tailwind-variants';
 
 const shimmer = `
   animate-ai-shimmer bg-[length:300%_100%]
-  bg-[linear-gradient(90deg,#f1f2f6,#e0e7ff,#ede9fe,#f1f2f6,#f1f2f6)]
+  bg-[linear-gradient(90deg,var(--color-shimmer-base),var(--color-shimmer-glow),var(--color-shimmer-tint),var(--color-shimmer-base),var(--color-shimmer-base))]
 `;
 
 export const notesLoadingStyles = tv({
@@ -11,15 +11,14 @@ export const notesLoadingStyles = tv({
     head: 'flex items-center gap-3',
     badge: `
       flex size-10 shrink-0 animate-pulse items-center justify-center
-      rounded-xl text-ai-foreground
-      bg-[linear-gradient(135deg,#6366f1,#8b5cf6)]
-      shadow-[0_8px_24px_-8px_rgba(99,102,241,0.55)]
+      rounded-xl text-slate-900 ring-1 ring-sky-200/80
+      bg-[linear-gradient(135deg,#ffffff,#e0f2fe,#c7d7fe)]
     `,
     titleBox: 'flex flex-col',
     title: `
       animate-ai-shimmer bg-[length:300%_100%] bg-clip-text text-lg
       font-semibold text-transparent
-      bg-[linear-gradient(90deg,#4f46e5,#7c3aed,#4f46e5,#7c3aed,#4f46e5)]
+      bg-[linear-gradient(90deg,#0ea5e9,#6366f1,#0ea5e9,#6366f1,#0ea5e9)]
     `,
     description: 'text-sm text-gray-500',
     block: 'flex flex-col gap-3.5',
