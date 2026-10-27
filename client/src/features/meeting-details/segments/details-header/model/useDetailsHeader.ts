@@ -25,9 +25,9 @@ export const useDetailsHeader = (props: DetailsHeaderDeps) => {
   const [isTitleRevealing, setIsTitleRevealing] = createSignal(false);
 
   createEffect(
-    on(title, (current, previous) => {
-      const isTitleChanged = previous !== undefined && current !== previous;
-      if (isTitleChanged) setIsTitleRevealing(true);
+    on(customTitle, (current, previous) => {
+      const isTitleGenerated = previous === '' && current !== '';
+      if (isTitleGenerated) setIsTitleRevealing(true);
     }),
   );
 

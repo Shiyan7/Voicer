@@ -101,7 +101,8 @@ export const useMeetingDetailsPage = () => {
     return 'content';
   };
 
-  const isTranscriptLoading = () => transcriptResult.fetching;
+  const isTranscriptLoading = () =>
+    transcriptResult.fetching || !transcriptResult.data;
 
   const playback = usePlayback();
 
