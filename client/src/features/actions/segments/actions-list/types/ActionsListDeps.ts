@@ -1,4 +1,4 @@
-import { ActionItemGroup } from '@/features/actions/types/ActionItemGroup';
+import { ActionItemGroup } from '../../../types/ActionItemGroup';
 
 export interface ActionsListDeps {
   groups: ActionItemGroup[];

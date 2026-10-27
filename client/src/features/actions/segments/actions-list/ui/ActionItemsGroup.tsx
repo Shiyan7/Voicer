@@ -1,9 +1,9 @@
 import { For } from 'solid-js';
 
 import { ActionItem } from '@/entities/action-item';
-import { ActionItemGroup } from '@/features/actions/types/ActionItemGroup';
 import { i18n } from '@/shared/i18n';
 
+import { ActionItemGroup } from '../../../types/ActionItemGroup';
 import { actionItemsGroupStyles } from './ActionItemsGroup.styles';
 
 interface ActionItemsGroupProps {

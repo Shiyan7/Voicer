@@ -1,7 +1,6 @@
 import { createSignal } from 'solid-js';
 
-import { meetingSummarizeMutation } from '@/features/meeting-details/api/meetingSummarizeMutation';
-
+import { meetingSummarizeMutation } from '../../../api/meetingSummarizeMutation';
 import { getSummaryStyles } from '../config/summaryStyles';
 import { SummarizeParams } from '../types/SummarizeParams';
 import { SummaryStyle } from '../types/SummaryStyle';

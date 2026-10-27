@@ -33,7 +33,7 @@ export default tseslint.config(
         'error',
         {
           allowSameFolder: true,
-          allowedDepth: 1,
+          allowedDepth: 3,
           rootDir: 'src',
           prefix: '@',
         },

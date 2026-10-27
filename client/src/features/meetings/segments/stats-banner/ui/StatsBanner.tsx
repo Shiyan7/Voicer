@@ -2,12 +2,11 @@ import { For, Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
 
+import { SKELETON_TILES } from '../config/SKELETON_TILES';
 import { StatsBannerProps } from '../types/StatsBannerProps';
 import { statsBannerStyles } from './StatsBanner.styles';
 
 const styles = statsBannerStyles();
-
-const SKELETON_TILES = [0, 1, 2];
 
 export function StatsBanner(props: StatsBannerProps) {
   return (

@@ -1,4 +1,4 @@
-import { StatTile } from '@/features/meetings/types/StatTile';
+import { StatTile } from '../../../types/StatTile';
 
 export interface StatsBannerProps {
   greeting: string;

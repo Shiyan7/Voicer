@@ -7,11 +7,11 @@ import {
   setMeetingFavoriteMutation,
 } from '@/entities/meeting';
 import { useToasts } from '@/entities/toasts';
-import { fetchMeetingTranscript } from '@/features/meeting-details/api/fetchMeetingTranscript';
 import { i18n } from '@/shared/i18n';
 import { closeModal, MODALS, showModal } from '@/shared/lib/modal';
 import { paths } from '@/shared/router';
 
+import { fetchMeetingTranscript } from '../../../api/fetchMeetingTranscript';
 import { buildTranscriptText } from '../lib/buildTranscriptText';
 import { getMoreActionOptions } from '../lib/getMoreActionOptions';
 import {

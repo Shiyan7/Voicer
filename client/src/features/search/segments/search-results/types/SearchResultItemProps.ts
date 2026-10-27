@@ -1,4 +1,4 @@
-import { SearchResultView } from '@/features/search/types/SearchResultView';
+import { SearchResultView } from '../../../types/SearchResultView';
 
 export interface SearchResultItemProps {
   result: SearchResultView;

@@ -1,4 +1,4 @@
-const MIN_WORD_LENGTH = 2;
+import { MIN_WORD_LENGTH } from '../config/searchConfig';
 
 export function splitQueryWords(query: string): string[] {
   return query

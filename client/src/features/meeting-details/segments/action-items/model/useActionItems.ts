@@ -1,5 +1,4 @@
-import { mapActionItem } from '@/features/meeting-details/lib/mapActionItem';
-
+import { mapActionItem } from '../../../lib/mapActionItem';
 import { ActionItemsParams } from '../types/ActionItemsParams';
 
 export const useActionItems = (props: ActionItemsParams) => {

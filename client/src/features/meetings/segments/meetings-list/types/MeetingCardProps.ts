@@ -1,4 +1,4 @@
-import { MeetingCardData } from '@/features/meetings/types/MeetingCardData';
+import { MeetingCardData } from '../../../types/MeetingCardData';
 
 export interface MeetingCardProps {
   card: MeetingCardData;

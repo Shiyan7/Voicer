@@ -15,26 +15,13 @@ export function SearchOrchestrator() {
     <Modal class={styles.modal()} modalId={MODALS.SEARCH}>
       <SearchInput
         query={vm.query()}
-        hasQueryText={vm.hasQueryText()}
-        setRef={vm.setInputRef}
-        onInput={vm.onInput}
+        onQueryChange={vm.setQuery}
         onClear={vm.clear}
       />
       <SearchResults
-        results={vm.results()}
-        total={vm.total()}
-        activeIndex={vm.activeIndex()}
-        isLoading={vm.isLoading()}
-        isEmpty={vm.isEmpty()}
-        isIdle={vm.isIdle()}
-        emptyLabel={vm.emptyLabel()}
-        sort={vm.sort()}
-        sortLabel={vm.sortLabel()}
-        sortOptions={vm.sortOptions()}
-        onSortChange={vm.setSort}
+        query={vm.debouncedQuery()}
+        words={vm.words()}
         onSelect={vm.openResult}
-        onHover={vm.setActiveIndex}
-        onLoadMore={vm.loadMore}
       />
     </Modal>
   );
