@@ -36,6 +36,11 @@
   --color-banner-to: #ddd3fb;
   --color-banner-glow: #c4b5fd;
 
+  --color-heat-1: #bae6fd;
+  --color-heat-2: #7dd3fc;
+  --color-heat-3: #0ea5e9;
+  --color-heat-4: #0369a1;
+
   --color-overlay: rgb(29 29 31 / 0.3);
 
   --color-speaker-steel: #2f66e0;
@@ -167,6 +172,11 @@
   --color-banner-via: #0f2140;
   --color-banner-to: #2a1d55;
   --color-banner-glow: #5b45b8;
+
+  --color-heat-1: #0c3a55;
+  --color-heat-2: #075985;
+  --color-heat-3: #0284c7;
+  --color-heat-4: #38bdf8;
 
   --color-overlay: rgb(3 4 8 / 0.7);
 

@@ -45,7 +45,8 @@
     "actions": "Задачи",
     "collapse": "Свернуть панель",
     "expand": "Развернуть панель",
-    "shared": "Доступные мне"
+    "shared": "Доступные мне",
+    "stats": "Статистика"
   },
   "pagination": {
     "prev": "Назад",
@@ -194,5 +195,34 @@
       "relevance": "Самые релевантные",
       "recent": "Сначала новые"
     }
+  },
+  "stats": {
+    "title": "Статистика",
+    "year_total": "{{count}} · {{duration}} за {{year}}",
+    "less": "Меньше",
+    "more": "Больше",
+    "no_calls": "Нет звонков",
+    "pick_day": "Выбери день на карте, чтобы увидеть звонки",
+    "day_empty": "В этот день звонков не было",
+    "calls_one": "{{count}} звонок",
+    "calls_few": "{{count}} звонка",
+    "calls_many": "{{count}} звонков",
+    "calls_other": "{{count}} звонка",
+    "days_one": "{{count}} день",
+    "days_few": "{{count}} дня",
+    "days_many": "{{count}} дней",
+    "days_other": "{{count}} дня",
+    "kpi": {
+      "calls": "Звонков",
+      "duration": "Время в звонках",
+      "active_days": "Дней со звонками",
+      "avg_day": "В среднем за день",
+      "longest_streak": "Лучшая серия"
+    },
+    "sources": {
+      "title": "Платформы",
+      "other": "Без платформы"
+    },
+    "empty": "За этот год звонков нет"
   }
 }

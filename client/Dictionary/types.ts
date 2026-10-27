@@ -173,6 +173,8 @@ export type Query = {
   meetingsPage: MeetingsPageOutput;
   meetingsStats: MeetingsStatsOutput;
   search: SearchPageOutput;
+  stats: StatsOutput;
+  statsDay: Array<StatsDayMeetingOutput>;
   userMe: UserMeOutput;
 };
 
@@ -198,6 +200,14 @@ export type QueryMeetingsPageArgs = {
 
 export type QuerySearchArgs = {
   input: SearchInput;
+};
+
+export type QueryStatsArgs = {
+  input: StatsInput;
+};
+
+export type QueryStatsDayArgs = {
+  input: StatsDayInput;
 };
 
 export type SearchInput = {
@@ -247,6 +257,55 @@ export type SignInInput = {
 export type SignUpInput = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
+};
+
+export type StatsDayInput = {
+  date: Scalars['String']['input'];
+  timeZone: Scalars['String']['input'];
+};
+
+export type StatsDayMeetingOutput = {
+  __typename?: 'StatsDayMeetingOutput';
+  durationSec?: Maybe<Scalars['Int']['output']>;
+  id: Scalars['ID']['output'];
+  source?: Maybe<Scalars['String']['output']>;
+  startedAt: Scalars['DateTime']['output'];
+  title?: Maybe<Scalars['String']['output']>;
+};
+
+export type StatsDayOutput = {
+  __typename?: 'StatsDayOutput';
+  count: Scalars['Int']['output'];
+  date: Scalars['String']['output'];
+  durationSec: Scalars['Int']['output'];
+};
+
+export type StatsInput = {
+  timeZone: Scalars['String']['input'];
+  year: Scalars['Int']['input'];
+};
+
+export type StatsOutput = {
+  __typename?: 'StatsOutput';
+  days: Array<StatsDayOutput>;
+  sources: Array<StatsSourceOutput>;
+  summary: StatsSummaryOutput;
+  years: Array<Scalars['Int']['output']>;
+};
+
+export type StatsSourceOutput = {
+  __typename?: 'StatsSourceOutput';
+  count: Scalars['Int']['output'];
+  durationSec: Scalars['Int']['output'];
+  source?: Maybe<Scalars['String']['output']>;
+};
+
+export type StatsSummaryOutput = {
+  __typename?: 'StatsSummaryOutput';
+  activeDays: Scalars['Int']['output'];
+  count: Scalars['Int']['output'];
+  durationSec: Scalars['Int']['output'];
+  longestStreak: Scalars['Int']['output'];
 };
 
 export type Subscription = {

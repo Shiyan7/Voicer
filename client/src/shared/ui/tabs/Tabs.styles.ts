@@ -11,6 +11,14 @@ export const tabsStyles = tv({
     `,
   },
   variants: {
+    size: {
+      sm: {
+        root: 'w-auto gap-0.5 rounded-lg p-0.5',
+        item: 'flex-none',
+        btn: 'h-7 rounded-md px-3 text-[13px] tabular-nums',
+      },
+      md: {},
+    },
     active: {
       true: {
         btn: 'bg-white text-gray-900',
@@ -19,5 +27,8 @@ export const tabsStyles = tv({
         btn: 'text-gray-500 hover:text-gray-900',
       },
     },
+  },
+  defaultVariants: {
+    size: 'md',
   },
 });

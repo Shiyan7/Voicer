@@ -1,0 +1,35 @@
+import { i18n } from '@/shared/i18n';
+import { PageFade } from '@/shared/ui/page-fade';
+
+import { useStats } from './model/useStats';
+import { DayPanel } from './segments/day-panel';
+import { Heatmap } from './segments/heatmap';
+import { Kpi } from './segments/kpi';
+import { Sources } from './segments/sources';
+import { statsStyles } from './Stats.styles';
+
+const styles = statsStyles();
+
+export function StatsOrchestrator() {
+  const vm = useStats();
+
+  return (
+    <PageFade>
+      <div class={styles.root()}>
+        <h1 class={styles.title()}>{i18n.t('stats.title')}</h1>
+        <Kpi summary={vm.stats()?.summary} />
+        <Heatmap
+          year={vm.year()}
+          years={vm.years()}
+          days={vm.stats()?.days ?? []}
+          selectedDate={vm.selectedDate()}
+          isLoading={vm.isLoading()}
+          onYearChange={vm.setYear}
+          onSelect={vm.toggleDate}
+        />
+        <DayPanel date={vm.selectedDate()} timeZone={vm.timeZone} />
+        <Sources sources={vm.stats()?.sources ?? []} />
+      </div>
+    </PageFade>
+  );
+}

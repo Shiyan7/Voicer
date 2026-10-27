@@ -114,6 +114,8 @@ type Query {
   meetingsPage(input: MeetingsPageInput!): MeetingsPageOutput!
   meetingsStats: MeetingsStatsOutput!
   search(input: SearchInput!): SearchPageOutput!
+  stats(input: StatsInput!): StatsOutput!
+  statsDay(input: StatsDayInput!): [StatsDayMeetingOutput!]!
   userMe: UserMeOutput!
 }
 
@@ -162,6 +164,50 @@ input SignInInput {
 input SignUpInput {
   email: String!
   password: String!
+}
+
+input StatsDayInput {
+  date: String!
+  timeZone: String!
+}
+
+type StatsDayMeetingOutput {
+  durationSec: Int
+  id: ID!
+  source: String
+  startedAt: DateTime!
+  title: String
+}
+
+type StatsDayOutput {
+  count: Int!
+  date: String!
+  durationSec: Int!
+}
+
+input StatsInput {
+  timeZone: String!
+  year: Int!
+}
+
+type StatsOutput {
+  days: [StatsDayOutput!]!
+  sources: [StatsSourceOutput!]!
+  summary: StatsSummaryOutput!
+  years: [Int!]!
+}
+
+type StatsSourceOutput {
+  count: Int!
+  durationSec: Int!
+  source: String
+}
+
+type StatsSummaryOutput {
+  activeDays: Int!
+  count: Int!
+  durationSec: Int!
+  longestStreak: Int!
 }
 
 type Subscription {

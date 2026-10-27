@@ -23,6 +23,12 @@ export const getNavItems = (): NavItem[] => [
     activeIcon: 'navigation:check-solid',
   },
   {
+    href: paths.stats,
+    label: i18n.t('nav.stats'),
+    icon: 'navigation:chart',
+    activeIcon: 'navigation:chart-solid',
+  },
+  {
     href: paths.settings,
     label: i18n.t('labels.settings'),
     icon: 'navigation:settings',
