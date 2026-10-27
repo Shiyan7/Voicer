@@ -16,4 +16,4 @@ import { StatsService } from './stats.service';
     StatsResolver,
   ],
 })
-export class MeetingsStatsModule {}
+export class StatsModule {}

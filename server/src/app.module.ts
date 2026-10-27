@@ -7,7 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { GqlAuthGuard } from './auth/guards/gql-auth.guard';
 import { UsersModule } from './users/users.module';
 import { MeetingsModule } from './meetings/meetings.module';
-import { MeetingsStatsModule } from './meetings-stats/meetings-stats.module';
+import { StatsModule } from './stats/stats.module';
 import { SearchModule } from './search/search.module';
 import { ActionsModule } from './actions/actions.module';
 import { PubSubModule } from './pubsub/pubsub.module';
@@ -21,7 +21,7 @@ import { PubSubModule } from './pubsub/pubsub.module';
     AuthModule,
     UsersModule,
     MeetingsModule,
-    MeetingsStatsModule,
+    StatsModule,
     SearchModule,
     ActionsModule,
   ],

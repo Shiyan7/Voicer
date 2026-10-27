@@ -51,11 +51,3 @@ export function DayPanel(props: DayPanelProps) {
     </section>
   );
 }
-
-export function DayPanelHint() {
-  return (
-    <section class={styles.root()}>
-      <p class={styles.hint()}>{i18n.t('stats.pick_day')}</p>
-    </section>
-  );
-}
