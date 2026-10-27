@@ -24,7 +24,7 @@ export const navigationStyles = tv({
       font-sans text-[11px] font-medium text-gray-500
     `,
     logo: 'mb-4 flex h-9 items-center px-1',
-    account: 'mt-auto flex flex-col',
+    account: 'mt-auto flex flex-col gap-4',
   },
   variants: {
     collapsed: {

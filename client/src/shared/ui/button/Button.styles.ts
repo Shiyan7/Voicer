@@ -18,6 +18,7 @@ export const buttonStyles = tv({
       danger: 'bg-red-500 text-white hover:bg-red-600 active:bg-red-700',
       ghost:
         'bg-transparent text-gray-900 hover:bg-gray-900/5 active:bg-gray-900/10',
+      frost: 'frost-surface focus-visible:ring-sky-400/60',
     },
     size: {
       md: 'min-h-9 px-4 text-sm',

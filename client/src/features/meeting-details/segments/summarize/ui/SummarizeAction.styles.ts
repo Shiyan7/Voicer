@@ -3,12 +3,8 @@ import { tv } from 'tailwind-variants';
 export const summarizeActionStyles = tv({
   slots: {
     root: `
-      relative z-50 inline-flex animate-ai-flow items-center rounded-full
-      bg-[linear-gradient(110deg,#ffffff,#e0f2fe,#c7d7fe,#e0f2fe,#ffffff,#dbeafe,#ffffff)]
-      bg-[length:400%_100%] text-slate-900
-      ring-1 ring-sky-200/80
+      relative z-50 inline-flex frost-surface items-center rounded-full
       transition-transform duration-300
-      hover:
       active:scale-[0.98]
     `,
     summarize: `

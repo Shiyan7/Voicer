@@ -1,6 +1,6 @@
 import { tv } from 'tailwind-variants';
 
-export const teamSelectStyles = tv({
+export const accountCardStyles = tv({
   slots: {
     card: `
       flex w-full items-center gap-3 rounded-xl p-2
@@ -16,7 +16,7 @@ export const teamSelectStyles = tv({
     info: 'flex min-w-0 flex-col',
     name: 'truncate text-[15px] font-semibold leading-5 text-gray-900',
     email: 'truncate text-[13px] leading-4 text-gray-500',
-    authBtn: 'w-full',
+    authBtn: 'w-full px-4 text-sm',
   },
   variants: {
     collapsed: {
