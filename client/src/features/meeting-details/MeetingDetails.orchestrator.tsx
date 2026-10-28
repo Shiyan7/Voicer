@@ -2,6 +2,7 @@ import { A } from '@solidjs/router';
 import { Match, Show, Switch } from 'solid-js';
 
 import { MeetingPlayer } from '@/entities/meeting-player';
+import { MeetingChat } from '@/features/meeting-chat';
 import { i18n } from '@/shared/i18n';
 import { paths } from '@/shared/router';
 import { Button } from '@/shared/ui/button';
@@ -123,6 +124,7 @@ export function MeetingDetailsOrchestrator() {
                           <KeyPoints
                             points={vm.keyPoints()}
                             focusId={vm.focusId()}
+                            onSeek={vm.jumpToMoment}
                           />
                         </div>
                       </Match>
@@ -133,12 +135,22 @@ export function MeetingDetailsOrchestrator() {
             </Match>
           </Switch>
         </div>
+        <Show when={vm.hasContent() && vm.meeting()?.id}>
+          {(meetingId) => (
+            <MeetingChat
+              meetingId={meetingId()}
+              obstacle={vm.playerElement()}
+              onSeek={vm.jumpToMoment}
+            />
+          )}
+        </Show>
         <Show when={vm.meeting()?.audioUrl}>
           {(audioUrl) => (
             <MeetingPlayer
               audioUrl={audioUrl()}
               transcript={vm.transcript()}
               playback={vm.playback}
+              rootRef={vm.setPlayerElement}
             />
           )}
         </Show>

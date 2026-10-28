@@ -1,6 +1,6 @@
 export interface KeyPointView {
   id: string;
   text: string;
-  timeLabel: string | null;
+  atMs: number | null;
   isFocused: boolean;
 }

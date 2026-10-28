@@ -2,6 +2,7 @@ import { For, Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
 import { revealWhen } from '@/shared/lib/dom';
+import { Timecode } from '@/shared/ui/timecode';
 
 import { useKeyPoints } from '../model/useKeyPoints';
 import { KeyPointsParams } from '../types/KeyPointsParams';
@@ -26,8 +27,8 @@ export function KeyPoints(props: KeyPointsParams) {
                 <span class={styles.bullet()} />
                 <p class={styles.text()}>
                   {point.text}
-                  <Show when={point.timeLabel}>
-                    <span class={styles.time()}>{point.timeLabel}</span>
+                  <Show when={point.atMs !== null}>
+                    <Timecode ms={point.atMs ?? 0} onSeek={props.onSeek} />
                   </Show>
                 </p>
               </div>

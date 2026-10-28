@@ -1,3 +1,4 @@
+import { formatTranscript } from '../../transcription/format-transcript';
 import { TranscribedSegment } from '../../transcription/transcription.types';
 import { SummaryStyle } from '../summary-style.enum';
 import { SUMMARY_STYLE_INSTRUCTIONS } from './summary-style-instructions';
@@ -47,14 +48,6 @@ export const TITLE_RESPONSE_SCHEMA = {
 };
 
 const TITLE_TRANSCRIPT_CHARS = 12000;
-
-const formatTranscript = (segments: TranscribedSegment[]): string =>
-  segments
-    .map(
-      (segment) =>
-        `[${segment.startMs}] Speaker ${segment.speakerIndex}: ${segment.text}`,
-    )
-    .join('\n');
 
 export function buildMeetingTitlePrompt(
   segments: TranscribedSegment[],

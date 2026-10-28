@@ -143,7 +143,23 @@
     "suggest_title_error": "AI could not suggest a title",
     "summarize_error": "AI could not create notes. Try again later",
     "summary_style_badge": "Notes style: {{style}}",
-    "upload_error": "Couldn't upload the recording"
+    "upload_error": "Couldn't upload the recording",
+    "seek_to": "Jump to {{time}}",
+    "chat": {
+      "open": "Ask AI about the meeting",
+      "title": "Ask about this meeting",
+      "greeting": "Want to dig into this meeting? I've read the whole transcript and I'm happy to help.",
+      "hint": "Not sure what to ask? Here are a few ideas:",
+      "placeholder": "Ask a question",
+      "disclaimer": "AI can make mistakes. Check answers against the timestamps.",
+      "clear": "Clear chat",
+      "close": "Close",
+      "send": "Send",
+      "thinking": "Thinking…",
+      "failed": "Couldn't answer. Please try again",
+      "error": "Couldn't send the question",
+      "clear_error": "Couldn't clear the chat"
+    }
   },
   "recorder": {
     "recording": "Recording",

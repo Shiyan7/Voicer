@@ -10,6 +10,7 @@ import { MeetingsModule } from './meetings/meetings.module';
 import { StatsModule } from './stats/stats.module';
 import { SearchModule } from './search/search.module';
 import { ActionsModule } from './actions/actions.module';
+import { MeetingChatModule } from './meeting-chat/meeting-chat.module';
 import { PubSubModule } from './pubsub/pubsub.module';
 
 @Module({
@@ -24,6 +25,7 @@ import { PubSubModule } from './pubsub/pubsub.module';
     StatsModule,
     SearchModule,
     ActionsModule,
+    MeetingChatModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: GqlAuthGuard }],
 })
