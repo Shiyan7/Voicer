@@ -50,6 +50,9 @@ export function AuthModal() {
                 />
               )}
             </Field>
+            <Show when={vm.submitError()}>
+              {(message) => <span class={styles.error()}>{message()}</span>}
+            </Show>
             <Button class="mt-1" variant="primary" size="lg" type="submit">
               {vm.buttonText()}
             </Button>

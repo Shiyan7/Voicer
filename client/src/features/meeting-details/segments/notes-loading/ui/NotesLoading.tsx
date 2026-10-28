@@ -1,11 +1,11 @@
-import { i18n } from '@/shared/i18n';
 import { Icon } from '@/shared/ui/icon';
 
+import { NotesLoadingProps } from '../types/NotesLoadingProps';
 import { notesLoadingStyles } from './NotesLoading.styles';
 
 const styles = notesLoadingStyles();
 
-export function NotesLoading() {
+export function NotesLoading(props: NotesLoadingProps) {
   return (
     <section class={styles.root()}>
       <div class={styles.head()}>
@@ -13,12 +13,8 @@ export function NotesLoading() {
           <Icon size={20} name="common:sparkles" />
         </span>
         <div class={styles.titleBox()}>
-          <span class={styles.title()}>
-            {i18n.t('meetings.notes_loading.title')}
-          </span>
-          <span class={styles.description()}>
-            {i18n.t('meetings.notes_loading.description')}
-          </span>
+          <span class={styles.title()}>{props.title}</span>
+          <span class={styles.description()}>{props.description}</span>
         </div>
       </div>
       <div class={styles.block()}>

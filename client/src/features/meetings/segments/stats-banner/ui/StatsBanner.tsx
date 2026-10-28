@@ -16,7 +16,7 @@ export function StatsBanner(props: StatsBannerProps) {
       <p class={styles.subtitle()}>{i18n.t('meetings.banner.subtitle')}</p>
       <div class={styles.tiles()}>
         <Show
-          when={props.tiles.length}
+          when={!props.isLoading}
           fallback={
             <For each={SKELETON_TILES}>
               {() => <div class={styles.tileSkeleton()} />}

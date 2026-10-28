@@ -12,7 +12,6 @@ export const accountCardStyles = tv({
       text-ai-foreground
       bg-[#0ea5e9]
     `,
-    avatarImage: 'size-full object-cover',
     info: 'flex min-w-0 flex-col',
     name: 'truncate text-[15px] font-semibold leading-5 text-gray-900',
     email: 'truncate text-[13px] leading-4 text-gray-500',

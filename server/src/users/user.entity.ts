@@ -20,12 +20,6 @@ export class UserEntity {
   @Column({ type: 'varchar', nullable: true })
   password: string | null;
 
-  @Column({ type: 'varchar', nullable: true })
-  googleId: string | null;
-
-  @Column({ type: 'varchar', nullable: true })
-  avatar: string | null;
-
   @CreateDateColumn()
   createdAt: Date;
 

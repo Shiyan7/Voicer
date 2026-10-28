@@ -1,7 +1,10 @@
 import { uploadMeetingAudioMutation } from '@/entities/meeting';
+import { useToasts } from '@/entities/toasts';
+import { i18n } from '@/shared/i18n';
 import { startRecording as startRecorderCommand } from '@/shared/lib/recorder';
 
 export const useMeetingCapture = () => {
+  const toasts = useToasts();
   const [uploadResult, uploadAudio] = uploadMeetingAudioMutation();
 
   const isUploading = () => uploadResult.fetching;
@@ -24,7 +27,8 @@ export const useMeetingCapture = () => {
 
     if (!file) return;
 
-    await uploadAudio({ file });
+    const result = await uploadAudio({ file });
+    if (result.error) toasts.show('error', i18n.t('meetings.upload_error'));
   };
 
   return { isUploading, startRecording, onFileSelected };

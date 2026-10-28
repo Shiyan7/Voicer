@@ -12,7 +12,6 @@ import { UserEntity } from '../users/user.entity';
 import { SummaryStyle } from '../summarization/summary-style.enum';
 
 export enum MeetingStatus {
-  RECORDING = 'recording',
   TRANSCRIBING = 'transcribing',
   TRANSCRIBED = 'transcribed',
   SUMMARIZING = 'summarizing',
@@ -42,11 +41,7 @@ export class MeetingEntity {
   @Column({ type: 'varchar', nullable: true })
   audioUrl: string | null;
 
-  @Column({
-    type: 'enum',
-    enum: MeetingStatus,
-    default: MeetingStatus.RECORDING,
-  })
+  @Column({ type: 'enum', enum: MeetingStatus })
   status: MeetingStatus;
 
   @Column({ type: 'timestamptz' })

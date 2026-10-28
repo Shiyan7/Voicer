@@ -9,7 +9,6 @@ export const MEETING_UPDATED_SUBSCRIPTION = gql`
       source
       audioUrl
       startedAt
-      endedAt
       durationSec
       isFavorite
       summaryStyle

@@ -23,7 +23,6 @@ export type ActionItemOutput = {
   __typename?: 'ActionItemOutput';
   atMs?: Maybe<Scalars['Int']['output']>;
   createdAt: Scalars['DateTime']['output'];
-  dueDate?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['ID']['output'];
   isDone: Scalars['Boolean']['output'];
   meetingId: Scalars['ID']['output'];
@@ -68,7 +67,6 @@ export type MeetingOutput = {
 export enum MeetingStatus {
   Failed = 'FAILED',
   Ready = 'READY',
-  Recording = 'RECORDING',
   Summarizing = 'SUMMARIZING',
   Transcribed = 'TRANSCRIBED',
   Transcribing = 'TRANSCRIBING',
@@ -168,7 +166,6 @@ export type PagePaginationMetaOutput = {
 export type Query = {
   __typename?: 'Query';
   actionItems: Array<ActionItemOutput>;
-  meeting: MeetingOutput;
   meetingActionItems: Array<ActionItemOutput>;
   meetingKeyPoints: Array<KeyPointOutput>;
   meetingTranscript: Array<TranscriptSegmentOutput>;
@@ -179,10 +176,6 @@ export type Query = {
   statsSummary: StatsSummaryOutput;
   statsYear: StatsYearOutput;
   userMe: UserMeOutput;
-};
-
-export type QueryMeetingArgs = {
-  id: Scalars['ID']['input'];
 };
 
 export type QueryMeetingActionItemsArgs = {
@@ -350,7 +343,6 @@ export type TranscriptSegmentOutput = {
 
 export type UserMeOutput = {
   __typename?: 'UserMeOutput';
-  avatar?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['DateTime']['output'];
   email: Scalars['String']['output'];
   id: Scalars['ID']['output'];

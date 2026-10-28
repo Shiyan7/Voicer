@@ -11,9 +11,6 @@ export class UserMeOutput {
   @Field()
   name: string;
 
-  @Field({ nullable: true })
-  avatar?: string;
-
   @Field()
   createdAt: Date;
 

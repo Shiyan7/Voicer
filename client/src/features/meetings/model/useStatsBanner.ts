@@ -8,6 +8,7 @@ import { StatTile } from '../types/StatTile';
 
 export const useStatsBanner = (
   stats: () => MeetingsStatsOutput | undefined,
+  isLoading: () => boolean,
 ) => {
   const userMe = useUserMe();
 
@@ -41,5 +42,5 @@ export const useStatsBanner = (
     ];
   };
 
-  return { greeting, tiles };
+  return { greeting, tiles, isLoading };
 };

@@ -15,13 +15,6 @@ const config: CodegenConfig = {
         },
       },
     },
-    './Dictionary/schema.generated.gql': {
-      plugins: ['schema-ast'],
-      config: {
-        includeDirectives: true,
-        commentDescriptions: true,
-      },
-    },
   },
 };
 

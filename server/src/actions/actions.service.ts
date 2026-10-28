@@ -77,7 +77,6 @@ export class ActionsService {
       isDone: actionItem.isDone,
       speakerIndex: actionItem.speakerIndex,
       atMs: actionItem.atMs,
-      dueDate: actionItem.dueDate,
       createdAt: actionItem.createdAt,
       meetingTitle: actionItem.meeting.title,
       meetingSource: actionItem.meeting.source,

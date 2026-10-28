@@ -20,9 +20,6 @@ export class ActionItemOutput {
   @Field(() => Int, { nullable: true })
   atMs: number | null;
 
-  @Field(() => Date, { nullable: true })
-  dueDate: Date | null;
-
   @Field()
   createdAt: Date;
 

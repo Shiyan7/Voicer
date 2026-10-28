@@ -70,12 +70,12 @@ export function MeetingDetailsOrchestrator() {
                     </div>
                   </div>
                   <Show when={vm.isTranscribing()}>
-                    <div class={styles.processing()}>
-                      <span class={styles.processingSpinner()} />
-                      <span class={styles.processingLabel()}>
-                        {i18n.t('meetings.status.transcribing')}…
-                      </span>
-                    </div>
+                    <NotesLoading
+                      title={i18n.t('meetings.transcript_loading.title')}
+                      description={i18n.t(
+                        'meetings.transcript_loading.description',
+                      )}
+                    />
                   </Show>
                   <Show when={vm.isFailed()}>
                     <div class={styles.processing()}>
@@ -101,7 +101,12 @@ export function MeetingDetailsOrchestrator() {
                         />
                       </Match>
                       <Match when={vm.notesState() === 'loading'}>
-                        <NotesLoading />
+                        <NotesLoading
+                          title={i18n.t('meetings.notes_loading.title')}
+                          description={i18n.t(
+                            'meetings.notes_loading.description',
+                          )}
+                        />
                       </Match>
                       <Match when={vm.notesState() === 'empty'}>
                         <NotesEmpty />

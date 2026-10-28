@@ -45,9 +45,6 @@ export class ActionItemEntity {
   @Column({ type: 'int', nullable: true })
   atMs: number | null;
 
-  @Column({ type: 'timestamptz', nullable: true })
-  dueDate: Date | null;
-
   @CreateDateColumn()
   createdAt: Date;
 

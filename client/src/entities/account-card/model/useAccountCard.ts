@@ -10,8 +10,6 @@ export const useAccountCard = (props: AccountCardDeps) => {
 
   const firstLetterName = () => user()?.name[0]?.toUpperCase() ?? '';
 
-  const avatarUrl = () => user()?.avatar ?? null;
-
   const name = () => user()?.name ?? '';
 
   const email = () => user()?.email ?? '';
@@ -26,7 +24,6 @@ export const useAccountCard = (props: AccountCardDeps) => {
   return {
     isAuthorized,
     firstLetterName,
-    avatarUrl,
     name,
     email,
     accountHref,

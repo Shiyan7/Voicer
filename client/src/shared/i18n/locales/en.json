@@ -21,6 +21,11 @@
     "hint": {
       "log_in": "Already have an account?",
       "sign_up": "New to Voicer?"
+    },
+    "error": {
+      "email_taken": "This email is already registered",
+      "invalid_credentials": "Wrong email or password",
+      "unknown": "Couldn't sign in. Please try again"
     }
   },
   "common": {
@@ -58,9 +63,6 @@
     "upload_audio": "Upload audio",
     "title_untitled": "Untitled",
     "title_with_source": "{{source}} meeting",
-    "status": {
-      "transcribing": "Transcribing"
-    },
     "transcript_empty": "No transcript for this meeting",
     "action_items": "Action items",
     "back": "All meetings",
@@ -105,6 +107,10 @@
       "title": "AI is writing notes",
       "description": "Pulling key points and action items from the transcript"
     },
+    "transcript_loading": {
+      "title": "Transcribing the recording",
+      "description": "Recognizing speech and separating speakers"
+    },
     "speakers_count": "Speakers: {{count}}",
     "only_favorites": "Favorites only",
     "empty_filtered": "Nothing matches these filters",
@@ -136,7 +142,8 @@
     "suggest_title": "Suggest a title with AI",
     "suggest_title_error": "AI could not suggest a title",
     "summarize_error": "AI could not create notes. Try again later",
-    "summary_style_badge": "Notes style: {{style}}"
+    "summary_style_badge": "Notes style: {{style}}",
+    "upload_error": "Couldn't upload the recording"
   },
   "recorder": {
     "recording": "Recording",

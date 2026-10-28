@@ -6,13 +6,9 @@ export const MEETINGS_PAGE_QUERY = gql`
       items {
         id
         title
-        status
         source
         startedAt
-        endedAt
         durationSec
-        createdAt
-        updatedAt
       }
       meta {
         page

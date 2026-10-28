@@ -9,7 +9,6 @@ export const MEETING_ACTION_ITEMS_QUERY = gql`
       isDone
       speakerIndex
       atMs
-      dueDate
       createdAt
       meetingTitle
       meetingSource

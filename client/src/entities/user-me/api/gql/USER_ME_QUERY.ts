@@ -6,9 +6,6 @@ export const USER_ME_QUERY = gql`
       id
       email
       name
-      avatar
-      createdAt
-      updatedAt
     }
   }
 `;

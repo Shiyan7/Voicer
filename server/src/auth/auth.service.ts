@@ -10,10 +10,7 @@ import { PasswordService } from './password.service';
 import { SignUpInput } from './dto/sign-up.input';
 import { UserEntity } from '../users/user.entity';
 import { isUniqueConstraintError } from '../common/is-unique-constraint-error';
-
-export type AuthTokens = {
-  accessToken: string;
-};
+import { AuthPayload } from './models/auth-payload.model';
 
 @Injectable()
 export class AuthService {
@@ -24,7 +21,7 @@ export class AuthService {
     private readonly passwordService: PasswordService,
   ) {}
 
-  async signUp({ email, password }: SignUpInput): Promise<AuthTokens> {
+  async signUp({ email, password }: SignUpInput): Promise<AuthPayload> {
     const normalizedEmail = email.toLowerCase();
     const hashedPassword = await this.passwordService.hashPassword(password);
     const [name] = normalizedEmail.split('@');
@@ -48,7 +45,7 @@ export class AuthService {
     }
   }
 
-  async signIn(email: string, password: string): Promise<AuthTokens> {
+  async signIn(email: string, password: string): Promise<AuthPayload> {
     const user = await this.usersRepository.findOne({
       where: { email: email.toLowerCase() },
     });
@@ -75,7 +72,7 @@ export class AuthService {
     return this.usersRepository.findOne({ where: { id: userId } });
   }
 
-  generateTokens(payload: { userId: string }): AuthTokens {
+  generateTokens(payload: { userId: string }): AuthPayload {
     return {
       accessToken: this.jwtService.sign(payload),
     };

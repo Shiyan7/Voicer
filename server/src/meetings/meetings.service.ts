@@ -47,17 +47,23 @@ export class MeetingsService {
     @Inject(PUB_SUB) private readonly pubSub: PubSub,
   ) {}
 
-  async *subscribeToMeetingUpdated(
+  async subscribeToMeetingUpdated(
     userId: string,
     meetingId: string,
-  ): AsyncGenerator<{ meetingUpdated: MeetingOutput }> {
+  ): Promise<AsyncGenerator<{ meetingUpdated: MeetingOutput }>> {
     const meeting = await this.findOwnedMeeting(userId, meetingId);
 
+    return this.streamMeetingUpdates(meeting);
+  }
+
+  private async *streamMeetingUpdates(
+    meeting: MeetingEntity,
+  ): AsyncGenerator<{ meetingUpdated: MeetingOutput }> {
     yield { meetingUpdated: toMeetingOutput(meeting) };
 
     const updates = this.pubSub.asyncIterableIterator<{
       meetingUpdated: MeetingOutput;
-    }>(meetingUpdatedTopic(meetingId)) as AsyncIterable<{
+    }>(meetingUpdatedTopic(meeting.id)) as AsyncIterable<{
       meetingUpdated: MeetingOutput;
     }>;
 
@@ -152,12 +158,6 @@ export class MeetingsService {
       default:
         return { startedAt: 'DESC', id: 'DESC' };
     }
-  }
-
-  async getMeetingById(userId: string, id: string): Promise<MeetingOutput> {
-    const meeting = await this.findOwnedMeeting(userId, id);
-
-    return toMeetingOutput(meeting);
   }
 
   async getMeetingTranscript(

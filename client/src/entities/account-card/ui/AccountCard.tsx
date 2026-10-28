@@ -33,9 +33,7 @@ export function AccountCard(props: AccountCardDeps) {
         href={vm.accountHref}
       >
         <span class={styles.avatar({ collapsed: props.isCollapsed })}>
-          <Show when={vm.avatarUrl()} fallback={vm.firstLetterName()}>
-            {(url) => <img class={styles.avatarImage()} src={url()} alt="" />}
-          </Show>
+          {vm.firstLetterName()}
         </span>
         <Show when={!props.isCollapsed}>
           <span class={styles.info()}>

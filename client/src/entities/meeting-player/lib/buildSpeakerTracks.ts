@@ -42,7 +42,10 @@ export function buildSpeakerTracks(
       ranges: list.map((segment) => ({
         startMs: segment.startMs,
         left: toPercent(segment.startMs, totalMs),
-        width: toPercent(segment.endMs - segment.startMs, totalMs),
+        width: toPercent(
+          Math.min(segment.endMs, totalMs) - segment.startMs,
+          totalMs,
+        ),
       })),
     }));
 }

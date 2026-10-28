@@ -31,6 +31,7 @@ export function MeetingsOrchestrator() {
           <StatsBanner
             greeting={vm.banner.greeting()}
             tiles={vm.banner.tiles()}
+            isLoading={vm.banner.isLoading()}
           />
         </Show>
         <section class={styles.section()}>

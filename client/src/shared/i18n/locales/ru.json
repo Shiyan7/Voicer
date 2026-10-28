@@ -21,6 +21,11 @@
     "hint": {
       "log_in": "Уже есть аккаунт?",
       "sign_up": "Впервые в Voicer?"
+    },
+    "error": {
+      "email_taken": "Такой e-mail уже зарегистрирован",
+      "invalid_credentials": "Неверный e-mail или пароль",
+      "unknown": "Не удалось войти. Попробуйте ещё раз"
     }
   },
   "common": {
@@ -58,9 +63,6 @@
     "upload_audio": "Загрузить аудио",
     "title_untitled": "Без названия",
     "title_with_source": "Встреча в {{source}}",
-    "status": {
-      "transcribing": "Расшифровка"
-    },
     "transcript_empty": "Для этой встречи нет расшифровки",
     "action_items": "Задачи",
     "back": "Все встречи",
@@ -105,6 +107,10 @@
       "title": "ИИ составляет заметки",
       "description": "Собираем ключевые моменты и задачи из расшифровки"
     },
+    "transcript_loading": {
+      "title": "Расшифровываем запись",
+      "description": "Распознаём речь и разделяем собеседников"
+    },
     "speakers_count": "Спикеров: {{count}}",
     "only_favorites": "Только избранное",
     "empty_filtered": "По этим фильтрам ничего не нашлось",
@@ -136,7 +142,8 @@
     "suggest_title": "Придумать название с ИИ",
     "suggest_title_error": "ИИ не смог придумать название",
     "summarize_error": "ИИ не смог составить заметки. Попробуйте позже",
-    "summary_style_badge": "Стиль заметок: {{style}}"
+    "summary_style_badge": "Стиль заметок: {{style}}",
+    "upload_error": "Не удалось загрузить запись"
   },
   "recorder": {
     "recording": "Идёт запись",

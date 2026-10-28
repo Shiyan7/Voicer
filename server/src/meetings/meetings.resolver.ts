@@ -94,14 +94,6 @@ export class MeetingsResolver {
     return this.meetingsService.deleteMeeting(user.id, id);
   }
 
-  @Query(() => MeetingOutput)
-  meeting(
-    @CurrentUser() user: UserEntity,
-    @Args('id', { type: () => ID }) id: string,
-  ): Promise<MeetingOutput> {
-    return this.meetingsService.getMeetingById(user.id, id);
-  }
-
   @Query(() => [TranscriptSegmentOutput])
   meetingTranscript(
     @CurrentUser() user: UserEntity,
@@ -116,7 +108,7 @@ export class MeetingsResolver {
   meetingUpdated(
     @CurrentUser() user: UserEntity,
     @Args('id', { type: () => ID }) id: string,
-  ): AsyncIterator<{ meetingUpdated: MeetingOutput }> {
+  ): Promise<AsyncIterator<{ meetingUpdated: MeetingOutput }>> {
     return this.meetingsService.subscribeToMeetingUpdated(user.id, id);
   }
 

@@ -8,6 +8,7 @@ import { authRoot } from '@/shared/roots/authRoot';
 import { createSignInMutation } from '../api/createSignInMutation';
 import { createSignUpMutation } from '../api/createSignUpMutation';
 import { AuthForm, createAuthSchema } from '../config/createAuthSchema';
+import { getAuthErrorMessage } from '../lib/getAuthErrorMessage';
 import { AuthMode } from '../types';
 
 export const useAuth = () => {
@@ -15,6 +16,7 @@ export const useAuth = () => {
   const [, signUp] = createSignUpMutation();
 
   const [mode, setMode] = createSignal(AuthMode.LogIn);
+  const [submitError, setSubmitError] = createSignal<string | null>(null);
 
   const authForm = createFormStore<AuthForm>({
     validate: (values) => valiForm(createAuthSchema())(values),
@@ -33,6 +35,7 @@ export const useAuth = () => {
 
   const toggleAuthMode = () => {
     reset(authForm);
+    setSubmitError(null);
     setMode((current) =>
       current === AuthMode.LogIn ? AuthMode.SignUp : AuthMode.LogIn,
     );
@@ -40,6 +43,7 @@ export const useAuth = () => {
 
   const onSubmit = async (formValues: AuthForm) => {
     const input = { email: formValues.email, password: formValues.password };
+    setSubmitError(null);
 
     const result =
       mode() === AuthMode.LogIn
@@ -51,7 +55,10 @@ export const useAuth = () => {
         ? result.data.signIn
         : result.data?.signUp;
 
-    if (!tokens) return;
+    if (!tokens) {
+      if (result.error) setSubmitError(getAuthErrorMessage(result.error));
+      return;
+    }
 
     authRoot.saveToken(tokens);
     closeModal(MODALS.AUTH);
@@ -62,6 +69,7 @@ export const useAuth = () => {
     authForm,
     modalTitle,
     buttonText,
+    submitError,
     toggleAuthMode,
     onSubmit,
   };

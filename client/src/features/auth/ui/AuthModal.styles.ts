@@ -7,6 +7,7 @@ export const authModalStyles = tv({
       leading-snug text-gray-900 mb-6
     `,
     form: 'flex flex-col gap-3 mb-4',
+    error: 'text-xs text-red-500',
     row: 'flex items-center justify-between gap-2 text-[13px]',
     hint: 'text-gray-500',
     switch: `

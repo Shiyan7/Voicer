@@ -29,6 +29,14 @@ export const useMeetingDetailsPage = () => {
 
   const focusId = () => searchParams.focus ?? null;
 
+  createEffect(
+    on(
+      () => params.id,
+      () => setActiveTab(toMeetingTab(searchParams.tab)),
+      { defer: true },
+    ),
+  );
+
   const meeting = () => mapMeeting(meetingResult.data?.meetingUpdated);
 
   const isLoading = () => meetingResult.fetching && !meeting();

@@ -12,10 +12,6 @@ export const meetingDetailsStyles = tv({
       flex flex-col items-center justify-center gap-3 rounded-2xl
       bg-gray-100 py-16
     `,
-    processingSpinner: `
-      size-6 animate-spin rounded-full border-2 border-gray-300
-      border-t-gray-900
-    `,
     processingLabel: 'text-[13px] font-medium text-gray-500',
     notFound: 'flex flex-col items-start gap-4 py-10',
     notFoundTitle: 'text-xl font-semibold tracking-title text-gray-900',

@@ -1,11 +1,8 @@
+import type { AuthPayload } from '@schema';
 import { makePersisted } from '@solid-primitives/storage';
 import { createRoot, createSignal } from 'solid-js';
 
 import { storage } from '../storage';
-
-export type AuthPayload = {
-  accessToken?: string;
-};
 
 export const authRoot = createRoot(() => {
   const [accessToken, setAccessToken] = makePersisted(createSignal<string>(), {
@@ -21,7 +18,7 @@ export const authRoot = createRoot(() => {
       return accessToken();
     },
     saveToken(payload: AuthPayload) {
-      if (payload.accessToken) setAccessToken(payload.accessToken);
+      setAccessToken(payload.accessToken);
     },
     clear() {
       setAccessToken('');

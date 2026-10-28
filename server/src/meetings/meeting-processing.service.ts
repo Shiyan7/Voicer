@@ -123,11 +123,20 @@ export class MeetingProcessingService implements OnApplicationBootstrap {
     );
 
     const lastSegment = segments[segments.length - 1];
+    const durationSec = lastSegment
+      ? Math.round(lastSegment.endMs / 1000)
+      : null;
     await this.updateAndPublish(meeting.id, {
       status: MeetingStatus.TRANSCRIBED,
-      endedAt: new Date(),
-      durationSec: lastSegment ? Math.round(lastSegment.endMs / 1000) : null,
+      endedAt: this.getEndedAt(meeting.startedAt, durationSec),
+      durationSec,
     });
+  }
+
+  private getEndedAt(startedAt: Date, durationSec: number | null): Date | null {
+    if (durationSec === null) return null;
+
+    return new Date(startedAt.getTime() + durationSec * 1000);
   }
 
   async suggestTitle(meetingId: string): Promise<string> {

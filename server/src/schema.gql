@@ -5,7 +5,6 @@
 type ActionItemOutput {
   atMs: Int
   createdAt: DateTime!
-  dueDate: DateTime
   id: ID!
   isDone: Boolean!
   meetingId: ID!
@@ -52,7 +51,6 @@ type MeetingOutput {
 enum MeetingStatus {
   FAILED
   READY
-  RECORDING
   SUMMARIZING
   TRANSCRIBED
   TRANSCRIBING
@@ -106,7 +104,6 @@ type PagePaginationMetaOutput {
 
 type Query {
   actionItems: [ActionItemOutput!]!
-  meeting(id: ID!): MeetingOutput!
   meetingActionItems(meetingId: ID!): [ActionItemOutput!]!
   meetingKeyPoints(meetingId: ID!): [KeyPointOutput!]!
   meetingTranscript(meetingId: ID!): [TranscriptSegmentOutput!]!
@@ -241,7 +238,6 @@ type TranscriptSegmentOutput {
 scalar Upload
 
 type UserMeOutput {
-  avatar: String
   createdAt: DateTime!
   email: String!
   id: ID!
