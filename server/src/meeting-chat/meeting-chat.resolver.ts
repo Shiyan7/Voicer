@@ -9,19 +9,26 @@ import {
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { UserEntity } from '../users/user.entity';
 import { ChatMessageOutput } from './chat-message.output';
-import { MeetingChatOutput } from './meeting-chat.output';
 import { MeetingChatService } from './meeting-chat.service';
 
 @Resolver(() => ChatMessageOutput)
 export class MeetingChatResolver {
   constructor(private readonly meetingChatService: MeetingChatService) {}
 
-  @Query(() => MeetingChatOutput)
-  meetingChat(
+  @Query(() => [ChatMessageOutput])
+  meetingChatMessages(
     @CurrentUser() user: UserEntity,
     @Args('meetingId', { type: () => ID }) meetingId: string,
-  ): Promise<MeetingChatOutput> {
-    return this.meetingChatService.getChat(user.id, meetingId);
+  ): Promise<ChatMessageOutput[]> {
+    return this.meetingChatService.getMessages(user.id, meetingId);
+  }
+
+  @Query(() => [String])
+  meetingChatSuggestions(
+    @CurrentUser() user: UserEntity,
+    @Args('meetingId', { type: () => ID }) meetingId: string,
+  ): Promise<string[]> {
+    return this.meetingChatService.getSuggestions(user.id, meetingId);
   }
 
   @Mutation(() => ChatMessageOutput)

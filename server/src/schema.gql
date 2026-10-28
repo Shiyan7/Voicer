@@ -48,11 +48,6 @@ type KeyPointOutput {
   text: String!
 }
 
-type MeetingChatOutput {
-  messages: [ChatMessageOutput!]!
-  suggestedQuestions: [String!]!
-}
-
 type MeetingOutput {
   audioUrl: String
   createdAt: DateTime!
@@ -128,7 +123,8 @@ type PagePaginationMetaOutput {
 type Query {
   actionItems: [ActionItemOutput!]!
   meetingActionItems(meetingId: ID!): [ActionItemOutput!]!
-  meetingChat(meetingId: ID!): MeetingChatOutput!
+  meetingChatMessages(meetingId: ID!): [ChatMessageOutput!]!
+  meetingChatSuggestions(meetingId: ID!): [String!]!
   meetingKeyPoints(meetingId: ID!): [KeyPointOutput!]!
   meetingTranscript(meetingId: ID!): [TranscriptSegmentOutput!]!
   meetingsPage(input: MeetingsPageInput!): MeetingsPageOutput!

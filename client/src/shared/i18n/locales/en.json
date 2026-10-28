@@ -157,6 +157,7 @@
       "thinking": "Thinking…",
       "failed": "Couldn't answer. Please try again",
       "error": "Couldn't send the question",
+      "clear_error": "Couldn't clear the chat",
       "seek": "Jump to {{time}}"
     }
   },

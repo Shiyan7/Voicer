@@ -3,9 +3,7 @@ import { GeminiService } from '../gemini/gemini.service';
 import { TranscribedSegment } from '../transcription/transcription.types';
 import { MeetingSummary } from './summarization.types';
 import {
-  buildMeetingQuestionsPrompt,
   buildMeetingTitlePrompt,
-  QUESTIONS_RESPONSE_SCHEMA,
   buildSummarizeMeetingPrompt,
   SUMMARY_RESPONSE_SCHEMA,
   TITLE_RESPONSE_SCHEMA,
@@ -35,16 +33,6 @@ export class SummarizationService {
       keyPoints: parsed.keyPoints ?? [],
       actionItems: parsed.actionItems ?? [],
     };
-  }
-
-  async generateQuestions(segments: TranscribedSegment[]): Promise<string[]> {
-    const parsed = await this.gemini.generateJson<{ questions?: string[] }>(
-      buildMeetingQuestionsPrompt(segments),
-      QUESTIONS_RESPONSE_SCHEMA,
-      (result) => Boolean(result.questions?.length),
-    );
-
-    return parsed.questions ?? [];
   }
 
   async generateTitle(segments: TranscribedSegment[]): Promise<string> {

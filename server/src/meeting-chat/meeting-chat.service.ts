@@ -15,21 +15,21 @@ import { KeyPointEntity } from '../meetings/key-point.entity';
 import { MeetingEntity } from '../meetings/meeting.entity';
 import { TranscriptSegmentEntity } from '../meetings/transcript-segment.entity';
 import { PUB_SUB } from '../pubsub/pubsub.module';
-import { SummarizationService } from '../summarization/summarization.service';
 import { TranscribedSegment } from '../transcription/transcription.types';
 import { ChatMessageEntity } from './chat-message.entity';
 import { ChatMessageOutput } from './chat-message.output';
 import { ChatRole } from './chat-role.enum';
-import { toChatMessageOutput } from './chat.serializer';
-import { MeetingChatOutput } from './meeting-chat.output';
+import { toChatMessageOutput } from './meeting-chat.serializer';
+import { MeetingQuestionsService } from './meeting-questions.service';
 import {
   buildMeetingChatInstruction,
   MeetingChatContext,
   parseAnswer,
-  ParsedAnswer,
+  snapCitations,
 } from './prompts/meeting-chat.prompt';
 
 const MAX_QUESTION_LENGTH = 2000;
+const MAX_HISTORY_MESSAGES = 20;
 
 const chatMessageTopic = (meetingId: string): string =>
   `meetingChatMessage.${meetingId}`;
@@ -55,23 +55,31 @@ export class MeetingChatService {
     @InjectRepository(ActionItemEntity)
     private readonly actionItemsRepository: Repository<ActionItemEntity>,
     private readonly gemini: GeminiService,
-    private readonly summarization: SummarizationService,
+    private readonly questions: MeetingQuestionsService,
     @Inject(PUB_SUB) private readonly pubSub: PubSub,
   ) {}
 
-  async getChat(userId: string, meetingId: string): Promise<MeetingChatOutput> {
-    const meeting = await this.findOwnedMeeting(userId, meetingId);
+  async getMessages(
+    userId: string,
+    meetingId: string,
+  ): Promise<ChatMessageOutput[]> {
+    await this.findOwnedMeeting(userId, meetingId);
     const messages = await this.messagesRepository.find({
       where: { meetingId },
       order: { createdAt: 'ASC' },
     });
 
-    return {
-      messages: messages.map((message) =>
-        toChatMessageOutput(message, this.isStreaming(message)),
-      ),
-      suggestedQuestions: await this.ensureSuggestedQuestions(meeting),
-    };
+    return messages.map((message) =>
+      toChatMessageOutput(message, this.isStreaming(message)),
+    );
+  }
+
+  async getSuggestions(userId: string, meetingId: string): Promise<string[]> {
+    const meeting = await this.findOwnedMeeting(userId, meetingId);
+    return this.questions.getQuestions(
+      meeting,
+      await this.getSegments(meetingId),
+    );
   }
 
   async ask(
@@ -98,7 +106,7 @@ export class MeetingChatService {
       meeting,
       [...history, { role: 'user', text }],
       assistantMessage,
-    );
+    ).catch((error: unknown) => this.logFailure(meeting.id, error));
 
     return toChatMessageOutput(userMessage);
   }
@@ -130,20 +138,9 @@ export class MeetingChatService {
     message: ChatMessageEntity,
   ): Promise<void> {
     try {
-      const instruction = buildMeetingChatInstruction(
-        await this.buildContext(meeting),
-      );
-      const parsed = await this.generateAnswer(instruction, turns, message);
-      Object.assign(message, {
-        content: parsed.answer,
-        followUps: parsed.followUps,
-        isFailed: !parsed.answer,
-      });
+      Object.assign(message, await this.generateReply(meeting, turns, message));
     } catch (error) {
-      this.logger.error(
-        `Failed to answer in meeting ${meeting.id}`,
-        error instanceof Error ? error.stack : String(error),
-      );
+      this.logFailure(meeting.id, error);
       message.isFailed = true;
     }
 
@@ -152,15 +149,32 @@ export class MeetingChatService {
     await this.publish(message, false);
   }
 
-  private async generateAnswer(
-    instruction: string,
+  private async generateReply(
+    meeting: MeetingEntity,
     turns: GeminiTurn[],
     message: ChatMessageEntity,
-  ): Promise<ParsedAnswer> {
-    const text = await this.gemini.streamText(instruction, turns, (partial) =>
-      this.publish({ ...message, content: parseAnswer(partial).answer }, true),
+  ): Promise<Pick<ChatMessageEntity, 'content' | 'followUps' | 'isFailed'>> {
+    const context = await this.buildContext(meeting);
+    const text = await this.gemini.streamText(
+      buildMeetingChatInstruction(context),
+      turns,
+      (partial) =>
+        this.publish(
+          { ...message, content: parseAnswer(partial).answer },
+          true,
+        ),
     );
-    return parseAnswer(text);
+    const parsed = parseAnswer(text);
+    const content = snapCitations(parsed.answer, context.segments);
+
+    return { content, followUps: parsed.followUps, isFailed: !content };
+  }
+
+  private logFailure(meetingId: string, error: unknown): void {
+    this.logger.error(
+      `Failed to answer in meeting ${meetingId}`,
+      error instanceof Error ? error.stack : String(error),
+    );
   }
 
   private async buildContext(
@@ -183,32 +197,15 @@ export class MeetingChatService {
     };
   }
 
-  private async ensureSuggestedQuestions(
-    meeting: MeetingEntity,
-  ): Promise<string[]> {
-    if (meeting.suggestedQuestions?.length) return meeting.suggestedQuestions;
-
-    const segments = await this.getSegments(meeting.id);
-    if (!segments.length) return [];
-
-    try {
-      const suggestedQuestions =
-        await this.summarization.generateQuestions(segments);
-      await this.meetingsRepository.update(meeting.id, { suggestedQuestions });
-      return suggestedQuestions;
-    } catch {
-      this.logger.warn(`Failed to suggest questions for ${meeting.id}`);
-      return [];
-    }
-  }
-
   private async getHistory(meetingId: string): Promise<GeminiTurn[]> {
     const messages = await this.messagesRepository.find({
       where: { meetingId, isFailed: false },
-      order: { createdAt: 'ASC' },
+      order: { createdAt: 'DESC' },
+      take: MAX_HISTORY_MESSAGES,
     });
 
     return messages
+      .reverse()
       .filter((message) => message.content)
       .map((message) => ({
         role: message.role === ChatRole.USER ? 'user' : 'model',

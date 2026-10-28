@@ -64,12 +64,6 @@ export type KeyPointOutput = {
   text: Scalars['String']['output'];
 };
 
-export type MeetingChatOutput = {
-  __typename?: 'MeetingChatOutput';
-  messages: Array<ChatMessageOutput>;
-  suggestedQuestions: Array<Scalars['String']['output']>;
-};
-
 export type MeetingOutput = {
   __typename?: 'MeetingOutput';
   audioUrl?: Maybe<Scalars['String']['output']>;
@@ -201,7 +195,8 @@ export type Query = {
   __typename?: 'Query';
   actionItems: Array<ActionItemOutput>;
   meetingActionItems: Array<ActionItemOutput>;
-  meetingChat: MeetingChatOutput;
+  meetingChatMessages: Array<ChatMessageOutput>;
+  meetingChatSuggestions: Array<Scalars['String']['output']>;
   meetingKeyPoints: Array<KeyPointOutput>;
   meetingTranscript: Array<TranscriptSegmentOutput>;
   meetingsPage: MeetingsPageOutput;
@@ -217,7 +212,11 @@ export type QueryMeetingActionItemsArgs = {
   meetingId: Scalars['ID']['input'];
 };
 
-export type QueryMeetingChatArgs = {
+export type QueryMeetingChatMessagesArgs = {
+  meetingId: Scalars['ID']['input'];
+};
+
+export type QueryMeetingChatSuggestionsArgs = {
   meetingId: Scalars['ID']['input'];
 };
 

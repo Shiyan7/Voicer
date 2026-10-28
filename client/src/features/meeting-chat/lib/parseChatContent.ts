@@ -2,19 +2,16 @@ import { formatClockMs } from '@/shared/lib/time';
 
 import { ChatBlock, ChatInline } from '../types/ChatBlock';
 
-const INLINE_PATTERN = /(\*\*[^*]+\*\*|`[^`]+`|\[\[[\d\s,[\]]+\]\])/g;
+const INLINE_PATTERN = /(\*\*[^*]+\*\*|`[^`]+`|\[\[\d+\]\])/g;
 const BULLET_PREFIX = /^\s*[-*•]\s+/;
-const NUMBER_PATTERN = /\d+/g;
 
-const toTimes = (token: string): ChatInline[] =>
-  (token.match(NUMBER_PATTERN) ?? []).map((value) => ({
-    kind: 'time',
-    ms: Number(value),
-    label: formatClockMs(Number(value)),
-  }));
+const toTime = (token: string): ChatInline => {
+  const ms = Number(token.slice(2, -2));
+  return { kind: 'time', ms, label: formatClockMs(ms) };
+};
 
 const toInlines = (token: string): ChatInline[] => {
-  if (token.startsWith('[[')) return toTimes(token);
+  if (token.startsWith('[[')) return [toTime(token)];
   if (token.startsWith('**')) {
     return [{ kind: 'bold', text: token.slice(2, -2) }];
   }

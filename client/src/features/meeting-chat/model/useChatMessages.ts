@@ -6,8 +6,9 @@ import { i18n } from '@/shared/i18n';
 
 import { meetingChatAskMutation } from '../api/meetingChatAskMutation';
 import { meetingChatClearMutation } from '../api/meetingChatClearMutation';
+import { meetingChatMessagesQuery } from '../api/meetingChatMessagesQuery';
 import { meetingChatMessageSubscription } from '../api/meetingChatMessageSubscription';
-import { meetingChatQuery } from '../api/meetingChatQuery';
+import { meetingChatSuggestionsQuery } from '../api/meetingChatSuggestionsQuery';
 import { toChatMessageView } from '../lib/toChatMessageView';
 import { ChatMessagesParams } from '../types/ChatMessagesParams';
 
@@ -20,7 +21,11 @@ export const useChatMessages = (params: ChatMessagesParams) => {
   const [draft, setDraft] = createSignal('');
   const toasts = useToasts();
 
-  const [chatResult] = meetingChatQuery(
+  const [messagesResult] = meetingChatMessagesQuery(
+    () => ({ meetingId: params.meetingId() }),
+    { pause: () => !params.isActive() },
+  );
+  const [suggestionsResult] = meetingChatSuggestionsQuery(
     () => ({ meetingId: params.meetingId() }),
     { pause: () => !params.isActive() },
   );
@@ -46,7 +51,7 @@ export const useChatMessages = (params: ChatMessagesParams) => {
 
   createEffect(
     on(
-      () => chatResult.data?.meetingChat.messages,
+      () => messagesResult.data?.meetingChatMessages,
       (loaded) => loaded && setMessages([...loaded].sort(byCreatedAt)),
     ),
   );
@@ -86,7 +91,11 @@ export const useChatMessages = (params: ChatMessagesParams) => {
 
   const clear = async () => {
     if (isAnswering()) return;
-    await clearMutation({ meetingId: params.meetingId() });
+    const response = await clearMutation({ meetingId: params.meetingId() });
+    if (response.error) {
+      toasts.show('error', i18n.t('meetings.chat.clear_error'));
+      return;
+    }
     setMessages([]);
   };
 
@@ -119,8 +128,9 @@ export const useChatMessages = (params: ChatMessagesParams) => {
       messages().filter((message) => message.role === ChatRole.User).length,
     hasMessages: () => messages().length > 0,
     suggestedQuestions: () =>
-      chatResult.data?.meetingChat.suggestedQuestions ?? [],
-    isLoading: () => chatResult.fetching && !chatResult.data,
+      suggestionsResult.data?.meetingChatSuggestions ?? [],
+    isSuggestionsLoading: () =>
+      suggestionsResult.fetching && !suggestionsResult.data,
     followUps,
     isThinking,
     isAnswering,

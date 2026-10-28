@@ -1,4 +1,4 @@
-import { formatTranscript } from '../../summarization/prompts/summarize-meeting.prompt';
+import { formatTranscript } from '../../transcription/format-transcript';
 import { TranscribedSegment } from '../../transcription/transcription.types';
 
 const FOLLOW_UPS_MARKER = '---';
@@ -8,6 +8,8 @@ const MARKER_LINE = /(?:^|\n)\s*-{3,}\s*(?:\n|$)/;
 const PARTIAL_MARKER_TAIL = /\n\s*-{1,2}\s*$/;
 
 const MAX_FOLLOW_UPS = 3;
+
+const CITATION = /\[\[([\d\s,[\]]+)\]\]/g;
 
 export interface MeetingChatContext {
   title: string | null;
@@ -68,4 +70,24 @@ export function parseAnswer(text: string): ParsedAnswer {
       .filter(Boolean)
       .slice(0, MAX_FOLLOW_UPS),
   };
+}
+
+const nearestStartMs = (ms: number, segments: TranscribedSegment[]): number =>
+  segments.reduce(
+    (nearest, segment) =>
+      Math.abs(segment.startMs - ms) < Math.abs(nearest - ms)
+        ? segment.startMs
+        : nearest,
+    segments[0]?.startMs ?? ms,
+  );
+
+export function snapCitations(
+  answer: string,
+  segments: TranscribedSegment[],
+): string {
+  return answer.replace(CITATION, (_, inner: string) =>
+    (inner.match(/\d+/g) ?? [])
+      .map((ms) => `[[${nearestStartMs(Number(ms), segments)}]]`)
+      .join(' '),
+  );
 }
