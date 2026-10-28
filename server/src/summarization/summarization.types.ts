@@ -13,4 +13,5 @@ export interface MeetingSummary {
   title: string;
   keyPoints: SummarizedKeyPoint[];
   actionItems: SummarizedActionItem[];
+  suggestedQuestions: string[];
 }

@@ -18,10 +18,11 @@ import { NotesEmpty } from './segments/notes-empty';
 import { NotesLoading } from './segments/notes-loading';
 import { Recording } from './segments/recording';
 import { SummarizeAction, SummaryStyleBadge } from './segments/summarize';
+import { MeetingDetailsProps } from './types/MeetingDetailsProps';
 
 const styles = meetingDetailsStyles();
 
-export function MeetingDetailsOrchestrator() {
+export function MeetingDetailsOrchestrator(props: MeetingDetailsProps) {
   const vm = useMeetingDetailsPage();
 
   return (
@@ -133,12 +134,26 @@ export function MeetingDetailsOrchestrator() {
             </Match>
           </Switch>
         </div>
+        <Show when={vm.hasContent() && vm.meeting()?.id}>
+          {(meetingId) =>
+            props.renderChat?.({
+              get meetingId() {
+                return meetingId();
+              },
+              get obstacle() {
+                return vm.playerElement();
+              },
+              onSeek: vm.seekFromChat,
+            })
+          }
+        </Show>
         <Show when={vm.meeting()?.audioUrl}>
           {(audioUrl) => (
             <MeetingPlayer
               audioUrl={audioUrl()}
               transcript={vm.transcript()}
               playback={vm.playback}
+              rootRef={vm.setPlayerElement}
             />
           )}
         </Show>

@@ -59,6 +59,9 @@ export class MeetingEntity {
   @Column({ type: 'enum', enum: SummaryStyle, nullable: true })
   summaryStyle: SummaryStyle | null;
 
+  @Column({ type: 'jsonb', nullable: true })
+  suggestedQuestions: string[] | null;
+
   @CreateDateColumn()
   createdAt: Date;
 

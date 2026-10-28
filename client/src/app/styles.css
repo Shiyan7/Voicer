@@ -11,8 +11,9 @@
   --z-toast: 50;
   --z-navigation: 800;
 
-  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
-  'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+    'Helvetica Neue', Helvetica, Arial, sans-serif;
 
   --color-gray-50: #fbfbfd;
   --color-gray-100: #f5f5f7;
@@ -140,6 +141,28 @@
   }
   100% {
     background-color: transparent;
+  }
+}
+
+@keyframes spinner-dash {
+  0% {
+    stroke-dasharray: 1 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90 150;
+    stroke-dashoffset: -124;
+  }
+}
+
+@keyframes chat-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
   }
 }
 

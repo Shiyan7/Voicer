@@ -6,4 +6,5 @@ export interface MeetingPlayerDeps {
   audioUrl: string;
   transcript: TranscriptSegmentOutput[];
   playback: PlaybackController;
+  rootRef?: (element: HTMLElement) => void;
 }

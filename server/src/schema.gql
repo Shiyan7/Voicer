@@ -19,6 +19,22 @@ type AuthPayload {
   accessToken: String!
 }
 
+type ChatMessageOutput {
+  content: String!
+  createdAt: DateTime!
+  followUps: [String!]!
+  id: ID!
+  isFailed: Boolean!
+  isStreaming: Boolean!
+  meetingId: ID!
+  role: ChatRole!
+}
+
+enum ChatRole {
+  ASSISTANT
+  USER
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -30,6 +46,11 @@ type KeyPointOutput {
   meetingId: ID!
   order: Int!
   text: String!
+}
+
+type MeetingChatOutput {
+  messages: [ChatMessageOutput!]!
+  suggestedQuestions: [String!]!
 }
 
 type MeetingOutput {
@@ -84,6 +105,8 @@ type MeetingsStatsOutput {
 }
 
 type Mutation {
+  meetingChatAsk(meetingId: ID!, question: String!): ChatMessageOutput!
+  meetingChatClear(meetingId: ID!): Boolean!
   meetingDelete(id: ID!): MeetingOutput!
   meetingRename(id: ID!, title: String): MeetingOutput!
   meetingSetFavorite(id: ID!, isFavorite: Boolean!): MeetingOutput!
@@ -105,6 +128,7 @@ type PagePaginationMetaOutput {
 type Query {
   actionItems: [ActionItemOutput!]!
   meetingActionItems(meetingId: ID!): [ActionItemOutput!]!
+  meetingChat(meetingId: ID!): MeetingChatOutput!
   meetingKeyPoints(meetingId: ID!): [KeyPointOutput!]!
   meetingTranscript(meetingId: ID!): [TranscriptSegmentOutput!]!
   meetingsPage(input: MeetingsPageInput!): MeetingsPageOutput!
@@ -211,6 +235,7 @@ type StatsYearOutput {
 }
 
 type Subscription {
+  meetingChatMessage(meetingId: ID!): ChatMessageOutput!
   meetingUpdated(id: ID!): MeetingOutput!
 }
 

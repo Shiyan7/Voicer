@@ -38,6 +38,23 @@ export type AuthPayload = {
   accessToken: Scalars['String']['output'];
 };
 
+export type ChatMessageOutput = {
+  __typename?: 'ChatMessageOutput';
+  content: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  followUps: Array<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  isFailed: Scalars['Boolean']['output'];
+  isStreaming: Scalars['Boolean']['output'];
+  meetingId: Scalars['ID']['output'];
+  role: ChatRole;
+};
+
+export enum ChatRole {
+  Assistant = 'ASSISTANT',
+  User = 'USER',
+}
+
 export type KeyPointOutput = {
   __typename?: 'KeyPointOutput';
   atMs?: Maybe<Scalars['Int']['output']>;
@@ -45,6 +62,12 @@ export type KeyPointOutput = {
   meetingId: Scalars['ID']['output'];
   order: Scalars['Int']['output'];
   text: Scalars['String']['output'];
+};
+
+export type MeetingChatOutput = {
+  __typename?: 'MeetingChatOutput';
+  messages: Array<ChatMessageOutput>;
+  suggestedQuestions: Array<Scalars['String']['output']>;
 };
 
 export type MeetingOutput = {
@@ -103,6 +126,8 @@ export type MeetingsStatsOutput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  meetingChatAsk: ChatMessageOutput;
+  meetingChatClear: Scalars['Boolean']['output'];
   meetingDelete: MeetingOutput;
   meetingRename: MeetingOutput;
   meetingSetFavorite: MeetingOutput;
@@ -112,6 +137,15 @@ export type Mutation = {
   signIn: AuthPayload;
   signUp: AuthPayload;
   toggleActionItem: Scalars['Boolean']['output'];
+};
+
+export type MutationMeetingChatAskArgs = {
+  meetingId: Scalars['ID']['input'];
+  question: Scalars['String']['input'];
+};
+
+export type MutationMeetingChatClearArgs = {
+  meetingId: Scalars['ID']['input'];
 };
 
 export type MutationMeetingDeleteArgs = {
@@ -167,6 +201,7 @@ export type Query = {
   __typename?: 'Query';
   actionItems: Array<ActionItemOutput>;
   meetingActionItems: Array<ActionItemOutput>;
+  meetingChat: MeetingChatOutput;
   meetingKeyPoints: Array<KeyPointOutput>;
   meetingTranscript: Array<TranscriptSegmentOutput>;
   meetingsPage: MeetingsPageOutput;
@@ -179,6 +214,10 @@ export type Query = {
 };
 
 export type QueryMeetingActionItemsArgs = {
+  meetingId: Scalars['ID']['input'];
+};
+
+export type QueryMeetingChatArgs = {
   meetingId: Scalars['ID']['input'];
 };
 
@@ -313,7 +352,12 @@ export type StatsYearOutput = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  meetingChatMessage: ChatMessageOutput;
   meetingUpdated: MeetingOutput;
+};
+
+export type SubscriptionMeetingChatMessageArgs = {
+  meetingId: Scalars['ID']['input'];
 };
 
 export type SubscriptionMeetingUpdatedArgs = {

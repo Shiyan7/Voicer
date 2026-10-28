@@ -114,9 +114,16 @@ export const useMeetingDetailsPage = () => {
 
   const playback = usePlayback();
 
+  const [playerElement, setPlayerElement] = createSignal<HTMLElement>();
+
   const currentTimeMs = () => playback.currentTime() * 1000;
 
   const seekToMs = (ms: number) => playback.seek(ms / 1000, { play: true });
+
+  const seekFromChat = (ms: number) => {
+    setActiveTab('recording');
+    seekToMs(ms);
+  };
 
   const navigate = useNavigate();
 
@@ -152,6 +159,9 @@ export const useMeetingDetailsPage = () => {
     playback,
     currentTimeMs,
     seekToMs,
+    seekFromChat,
+    playerElement,
+    setPlayerElement,
     focusId,
   };
 };

@@ -15,7 +15,7 @@ export function MeetingPlayer(props: MeetingPlayerDeps) {
   const vm = useMeetingPlayer(props);
 
   return (
-    <section class={styles.root()}>
+    <section class={styles.root()} ref={props.rootRef}>
       <audio
         ref={props.playback.setAudioRef}
         preload="metadata"
