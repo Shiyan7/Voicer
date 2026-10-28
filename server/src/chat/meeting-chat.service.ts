@@ -30,7 +30,6 @@ import {
 } from './prompts/meeting-chat.prompt';
 
 const MAX_QUESTION_LENGTH = 2000;
-const ANSWER_ATTEMPTS = 2;
 
 const chatMessageTopic = (meetingId: string): string =>
   `meetingChatMessage.${meetingId}`;
@@ -158,21 +157,10 @@ export class MeetingChatService {
     turns: GeminiTurn[],
     message: ChatMessageEntity,
   ): Promise<ParsedAnswer> {
-    for (let attempt = 0; attempt < ANSWER_ATTEMPTS; attempt++) {
-      const text = await this.gemini.streamText(instruction, turns, (partial) =>
-        this.publish(
-          { ...message, content: parseAnswer(partial).answer },
-          true,
-        ),
-      );
-      const parsed = parseAnswer(text);
-      if (parsed.answer) return parsed;
-      this.logger.warn(
-        `Empty answer in meeting ${message.meetingId}, retrying`,
-      );
-    }
-
-    return { answer: '', followUps: [] };
+    const text = await this.gemini.streamText(instruction, turns, (partial) =>
+      this.publish({ ...message, content: parseAnswer(partial).answer }, true),
+    );
+    return parseAnswer(text);
   }
 
   private async buildContext(

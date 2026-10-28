@@ -171,11 +171,6 @@ export class MeetingProcessingService implements OnApplicationBootstrap {
         await this.saveTitleIfEmpty(manager, meeting.id, summary.title);
         await this.saveKeyPoints(manager, meeting.id, summary.keyPoints);
         await this.saveActionItems(manager, meeting, summary.actionItems);
-        await this.saveSuggestedQuestions(
-          manager,
-          meeting.id,
-          summary.suggestedQuestions,
-        );
       });
       await this.updateAndPublish(meeting.id, { status: MeetingStatus.READY });
     } catch (error) {
@@ -240,16 +235,6 @@ export class MeetingProcessingService implements OnApplicationBootstrap {
         }),
       ),
     );
-  }
-
-  private async saveSuggestedQuestions(
-    manager: EntityManager,
-    meetingId: string,
-    suggestedQuestions: string[],
-  ): Promise<void> {
-    if (!suggestedQuestions.length) return;
-
-    await manager.update(MeetingEntity, meetingId, { suggestedQuestions });
   }
 
   private async isDeleted(meetingId: string): Promise<boolean> {

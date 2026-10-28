@@ -16,7 +16,7 @@ export function ChatFab(props: ChatFabProps) {
       style={{ left: `${props.point.x}px`, top: `${props.point.y}px` }}
       aria-label={i18n.t('meetings.chat.open')}
       aria-expanded={props.isOpen}
-      title={`${i18n.t('meetings.chat.open')} · ⌘J`}
+      title={i18n.t('meetings.chat.open')}
       onPointerDown={props.onPointerDown}
       onPointerMove={props.onPointerMove}
       onPointerUp={props.onPointerUp}

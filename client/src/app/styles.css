@@ -11,9 +11,8 @@
   --z-toast: 50;
   --z-navigation: 800;
 
-  --font-sans:
-    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
-    'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+  'Helvetica Neue', Helvetica, Arial, sans-serif;
 
   --color-gray-50: #fbfbfd;
   --color-gray-100: #f5f5f7;

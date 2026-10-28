@@ -34,7 +34,6 @@ export class SummarizationService {
       title: (parsed.title ?? '').trim(),
       keyPoints: parsed.keyPoints ?? [],
       actionItems: parsed.actionItems ?? [],
-      suggestedQuestions: parsed.suggestedQuestions ?? [],
     };
   }
 

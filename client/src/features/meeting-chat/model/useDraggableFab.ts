@@ -1,15 +1,10 @@
 import { createEffect, createSignal, onCleanup, onMount } from 'solid-js';
 
-import {
-  DEFAULT_FAB_POSITION,
-  DRAG_THRESHOLD,
-} from '../config/meetingChatConfig';
-import { clampToBounds, toFabPoint, toFabPosition } from '../lib/fabPosition';
-import { loadFabPosition, saveFabPosition } from '../lib/fabPositionStorage';
+import { DRAG_THRESHOLD } from '../config/meetingChatConfig';
+import { clampToBounds } from '../lib/clampToBounds';
 import { getFabBounds } from '../lib/getFabBounds';
 import { DraggableFabParams } from '../types/DraggableFabParams';
 import { FabBounds } from '../types/FabBounds';
-import { FabPosition } from '../types/FabPosition';
 import { Point } from '../types/Point';
 
 interface DragSession {
@@ -19,11 +14,11 @@ interface DragSession {
 }
 
 export const useDraggableFab = (params: DraggableFabParams) => {
-  const [position, setPosition] =
-    createSignal<FabPosition>(DEFAULT_FAB_POSITION);
+  const [position, setPosition] = createSignal<Point | null>(null);
   const [bounds, setBounds] = createSignal<FabBounds | null>(null);
-  const [dragPoint, setDragPoint] = createSignal<Point | null>(null);
+  const [isDragging, setIsDragging] = createSignal(false);
   let session: DragSession | null = null;
+  let wasDragged = false;
 
   const measure = () => {
     const boundary = params.boundary();
@@ -31,13 +26,8 @@ export const useDraggableFab = (params: DraggableFabParams) => {
   };
 
   onMount(() => {
-    void loadFabPosition().then(setPosition);
     window.addEventListener('resize', measure);
-    window.addEventListener('scroll', measure, true);
-    onCleanup(() => {
-      window.removeEventListener('resize', measure);
-      window.removeEventListener('scroll', measure, true);
-    });
+    onCleanup(() => window.removeEventListener('resize', measure));
   });
 
   createEffect(() => {
@@ -54,7 +44,8 @@ export const useDraggableFab = (params: DraggableFabParams) => {
   const point = (): Point | null => {
     const currentBounds = bounds();
     if (!currentBounds) return null;
-    return dragPoint() ?? toFabPoint(position(), currentBounds);
+    const corner = { x: currentBounds.right, y: currentBounds.bottom };
+    return clampToBounds(position() ?? corner, currentBounds);
   };
 
   const onPointerDown = (event: PointerEvent) => {
@@ -70,57 +61,46 @@ export const useDraggableFab = (params: DraggableFabParams) => {
   };
 
   const onPointerMove = (event: PointerEvent) => {
-    const currentBounds = bounds();
-    if (!session || !currentBounds) return;
+    if (!session) return;
 
     const dx = event.clientX - session.pointer.x;
     const dy = event.clientY - session.pointer.y;
     if (!session.moved && Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
 
     session.moved = true;
-    setDragPoint(
-      clampToBounds(
-        { x: session.origin.x + dx, y: session.origin.y + dy },
-        currentBounds,
-      ),
-    );
-  };
-
-  const settle = (dropped: Point, currentBounds: FabBounds) => {
-    const next = toFabPosition(dropped, currentBounds);
-    setPosition(next);
-    setDragPoint(null);
-    void saveFabPosition(next);
+    setIsDragging(true);
+    setPosition({ x: session.origin.x + dx, y: session.origin.y + dy });
   };
 
   const onPointerUp = () => {
-    const finished = session;
+    wasDragged = Boolean(session?.moved);
     session = null;
-    if (!finished) return;
-
-    const dropped = dragPoint();
-    const currentBounds = bounds();
-    if (!finished.moved || !dropped || !currentBounds) {
-      params.onTap();
-      return;
-    }
-    settle(dropped, currentBounds);
+    setIsDragging(false);
   };
 
-  const onKeyboardClick = (event: MouseEvent) => {
-    if (event.detail === 0) params.onTap();
+  const onPointerCancel = () => {
+    session = null;
+    setIsDragging(false);
+  };
+
+  const onClick = () => {
+    if (wasDragged) {
+      wasDragged = false;
+      return;
+    }
+    params.onTap();
   };
 
   return {
     point,
     bounds,
-    isDragging: () => dragPoint() !== null,
+    isDragging,
     handlers: {
       onPointerDown,
       onPointerMove,
       onPointerUp,
-      onPointerCancel: onPointerUp,
-      onClick: onKeyboardClick,
+      onPointerCancel,
+      onClick,
     },
   };
 };

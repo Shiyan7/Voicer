@@ -5,49 +5,22 @@
       "name": "client-preview",
       "cwd": "client",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": [
-        "serve",
-        "--port",
-        "4173",
-        "--strictPort"
-      ],
+      "runtimeArgs": ["serve", "--port", "4173", "--strictPort"],
       "port": 4173
     },
     {
       "name": "client-dev",
       "cwd": "client",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": [
-        "dev",
-        "--port",
-        "5173",
-        "--strictPort"
-      ],
+      "runtimeArgs": ["dev", "--port", "5173", "--strictPort"],
       "port": 5173
     },
     {
       "name": "voicer-server",
       "cwd": "server",
       "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "run",
-        "start"
-      ],
+      "runtimeArgs": ["run", "start"],
       "port": 1488
-    },
-    {
-      "name": "client-chat-verify",
-      "cwd": "client",
-      "runtimeExecutable": "env",
-      "runtimeArgs": [
-        "VITE_GRAPHQL_API_URL=http://localhost:1489/graphql",
-        "npx",
-        "vite",
-        "--port",
-        "5173",
-        "--strictPort"
-      ],
-      "port": 5173
     }
   ]
 }

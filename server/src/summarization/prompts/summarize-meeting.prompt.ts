@@ -31,9 +31,8 @@ export const SUMMARY_RESPONSE_SCHEMA = {
         additionalProperties: false,
       },
     },
-    suggestedQuestions: { type: 'array', items: { type: 'string' } },
   },
-  required: ['title', 'keyPoints', 'actionItems', 'suggestedQuestions'],
+  required: ['title', 'keyPoints', 'actionItems'],
   additionalProperties: false,
 };
 
@@ -41,7 +40,7 @@ const TITLE_RULE =
   'title — a short meeting title of 2–6 words in the transcript language that names the main topic (e.g. «Обсуждение релиза приложения», «Сборка персонажа в игре»). No date, no app name, no quotes, no trailing period.';
 
 const QUESTIONS_RULE =
-  'suggestedQuestions — 4 or 5 short questions (max 7 words each) a participant would want to ask an assistant about THIS meeting, in the transcript language. Make them specific to the topics, decisions and people in the transcript (e.g. «Почему решили отложить релиз?», «Сколько стоит подписка в итоге?»), never generic ones like «Кратко перескажи встречу». The person asking took part in the meeting, so phrase them in first person where natural (e.g. «Как я ответил про Tree Shaking?», «Какие у меня шансы на оффер?»). Mix factual questions with ones asking for assessment or advice.';
+  'questions — 4 or 5 short questions (max 7 words each) a participant would want to ask an assistant about THIS meeting, in the transcript language. Make them specific to the topics, decisions and people in the transcript (e.g. «Почему решили отложить релиз?», «Сколько стоит подписка в итоге?»), never generic ones like «Кратко перескажи встречу». The person asking took part in the meeting, so phrase them in first person where natural (e.g. «Как я ответил про Tree Shaking?», «Какие у меня шансы на оффер?»). Mix factual questions with ones asking for assessment or advice.';
 
 export const QUESTIONS_RESPONSE_SCHEMA = {
   type: 'object',
@@ -91,7 +90,7 @@ export function buildMeetingQuestionsPrompt(
     '',
     'LANGUAGE: write the questions in the language actually spoken in the transcript.',
     'Never mention speaker numbers like "Speaker 1".',
-    QUESTIONS_RULE.replace('suggestedQuestions', 'questions'),
+    QUESTIONS_RULE,
     '',
     'Transcript:',
     formatTranscript(segments).slice(0, QUESTIONS_TRANSCRIPT_CHARS),
@@ -124,8 +123,6 @@ export function buildSummarizeMeetingPrompt(
     '- Set atMs to the startMs of the line where the topic begins.',
     '',
     'actionItems — concrete tasks or follow-ups someone agreed to do. Short and imperative, in the transcript language. Set atMs and speakerIndex from the line where the task was raised; use null when unclear. Empty list if there are none.',
-    '',
-    QUESTIONS_RULE,
     '',
     `STYLE (overrides the length and tone guidance above): ${SUMMARY_STYLE_INSTRUCTIONS[style]}`,
     '',

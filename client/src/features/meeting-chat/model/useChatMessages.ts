@@ -115,7 +115,8 @@ export const useChatMessages = (params: ChatMessagesParams) => {
     ask,
     clear,
     messages: () => visibleMessages().map(toChatMessageView),
-    lastContent: () => lastMessage()?.content,
+    questionCount: () =>
+      messages().filter((message) => message.role === ChatRole.User).length,
     hasMessages: () => messages().length > 0,
     suggestedQuestions: () =>
       chatResult.data?.meetingChat.suggestedQuestions ?? [],

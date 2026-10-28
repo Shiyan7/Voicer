@@ -38,20 +38,12 @@ export const useMeetingChat = (props: MeetingChatProps) => {
   const scroll = useChatScroll({
     isOpen,
     draft: chat.draft,
-    scrollTrigger: () => [
-      chat.lastContent(),
-      chat.isThinking(),
-      chat.followUps(),
-    ],
+    scrollTrigger: chat.questionCount,
     onSubmit: submit,
   });
 
   useKeydown((event) => {
     if (event.key === 'Escape' && isOpen()) close();
-    if (event.key === 'j' && (event.metaKey || event.ctrlKey)) {
-      event.preventDefault();
-      toggle();
-    }
   });
 
   const panelPlacement = () => {
