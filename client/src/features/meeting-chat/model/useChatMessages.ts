@@ -118,19 +118,29 @@ export const useChatMessages = (params: ChatMessagesParams) => {
   const visibleMessages = () =>
     messages().filter((message) => message.content || message.isFailed);
 
+  const chatMessages = () => visibleMessages().map(toChatMessageView);
+
+  const questionCount = () =>
+    messages().filter((message) => message.role === ChatRole.User).length;
+
+  const hasMessages = () => messages().length > 0;
+
+  const suggestedQuestions = () =>
+    suggestionsResult.data?.meetingChatSuggestions ?? [];
+
+  const isSuggestionsLoading = () =>
+    suggestionsResult.fetching && !suggestionsResult.data;
+
   return {
     draft,
     setDraft,
     ask,
     clear,
-    messages: () => visibleMessages().map(toChatMessageView),
-    questionCount: () =>
-      messages().filter((message) => message.role === ChatRole.User).length,
-    hasMessages: () => messages().length > 0,
-    suggestedQuestions: () =>
-      suggestionsResult.data?.meetingChatSuggestions ?? [],
-    isSuggestionsLoading: () =>
-      suggestionsResult.fetching && !suggestionsResult.data,
+    messages: chatMessages,
+    questionCount,
+    hasMessages,
+    suggestedQuestions,
+    isSuggestionsLoading,
     followUps,
     isThinking,
     isAnswering,

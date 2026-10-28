@@ -144,6 +144,7 @@
     "summarize_error": "AI could not create notes. Try again later",
     "summary_style_badge": "Notes style: {{style}}",
     "upload_error": "Couldn't upload the recording",
+    "seek_to": "Jump to {{time}}",
     "chat": {
       "open": "Ask AI about the meeting",
       "title": "Ask about this meeting",
@@ -157,8 +158,7 @@
       "thinking": "Thinking…",
       "failed": "Couldn't answer. Please try again",
       "error": "Couldn't send the question",
-      "clear_error": "Couldn't clear the chat",
-      "seek": "Jump to {{time}}"
+      "clear_error": "Couldn't clear the chat"
     }
   },
   "recorder": {

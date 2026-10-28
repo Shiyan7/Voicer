@@ -8,7 +8,6 @@ export const keyPointsStyles = tv({
     item: '-mx-2 flex gap-3 rounded-lg px-2 text-[15px] leading-7 text-gray-800',
     bullet: 'mt-[11px] size-1.5 shrink-0 rounded-full bg-gray-800',
     text: 'min-w-0 flex-1',
-    time: 'ml-1.5 text-[13px] tabular-nums text-gray-400',
   },
   variants: {
     focused: {

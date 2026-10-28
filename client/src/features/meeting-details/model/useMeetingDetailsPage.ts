@@ -120,7 +120,7 @@ export const useMeetingDetailsPage = () => {
 
   const seekToMs = (ms: number) => playback.seek(ms / 1000, { play: true });
 
-  const seekFromChat = (ms: number) => {
+  const jumpToMoment = (ms: number) => {
     setActiveTab('recording');
     seekToMs(ms);
   };
@@ -159,7 +159,7 @@ export const useMeetingDetailsPage = () => {
     playback,
     currentTimeMs,
     seekToMs,
-    seekFromChat,
+    jumpToMoment,
     playerElement,
     setPlayerElement,
     focusId,

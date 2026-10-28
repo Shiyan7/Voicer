@@ -53,6 +53,12 @@ export const useMeetingChat = (props: MeetingChatProps) => {
     return getPanelPlacement(point, bounds);
   };
 
+  const showSuggestions = () => !chat.hasMessages();
+
+  const showAnsweringBadge = () => chat.isAnswering() && !isOpen();
+
+  const canSend = () => Boolean(chat.draft().trim()) && !chat.isAnswering();
+
   return {
     setBoundary,
     fabPoint: fab.point,
@@ -65,14 +71,14 @@ export const useMeetingChat = (props: MeetingChatProps) => {
     hasMessages: chat.hasMessages,
     suggestedQuestions: chat.suggestedQuestions,
     isSuggestionsLoading: chat.isSuggestionsLoading,
-    showSuggestions: () => !chat.hasMessages(),
+    showSuggestions,
     followUps: chat.followUps,
     isThinking: chat.isThinking,
     isAnswering: chat.isAnswering,
-    showAnsweringBadge: () => chat.isAnswering() && !isOpen(),
+    showAnsweringBadge,
     draft: chat.draft,
     setDraft: chat.setDraft,
-    canSend: () => Boolean(chat.draft().trim()) && !chat.isAnswering(),
+    canSend,
     ask: chat.ask,
     submit,
     clear: chat.clear,

@@ -2,6 +2,7 @@ import { A } from '@solidjs/router';
 import { Match, Show, Switch } from 'solid-js';
 
 import { MeetingPlayer } from '@/entities/meeting-player';
+import { MeetingChat } from '@/features/meeting-chat';
 import { i18n } from '@/shared/i18n';
 import { paths } from '@/shared/router';
 import { Button } from '@/shared/ui/button';
@@ -18,11 +19,10 @@ import { NotesEmpty } from './segments/notes-empty';
 import { NotesLoading } from './segments/notes-loading';
 import { Recording } from './segments/recording';
 import { SummarizeAction, SummaryStyleBadge } from './segments/summarize';
-import { MeetingDetailsProps } from './types/MeetingDetailsProps';
 
 const styles = meetingDetailsStyles();
 
-export function MeetingDetailsOrchestrator(props: MeetingDetailsProps) {
+export function MeetingDetailsOrchestrator() {
   const vm = useMeetingDetailsPage();
 
   return (
@@ -124,6 +124,7 @@ export function MeetingDetailsOrchestrator(props: MeetingDetailsProps) {
                           <KeyPoints
                             points={vm.keyPoints()}
                             focusId={vm.focusId()}
+                            onSeek={vm.jumpToMoment}
                           />
                         </div>
                       </Match>
@@ -135,17 +136,13 @@ export function MeetingDetailsOrchestrator(props: MeetingDetailsProps) {
           </Switch>
         </div>
         <Show when={vm.hasContent() && vm.meeting()?.id}>
-          {(meetingId) =>
-            props.renderChat?.({
-              get meetingId() {
-                return meetingId();
-              },
-              get obstacle() {
-                return vm.playerElement();
-              },
-              onSeek: vm.seekFromChat,
-            })
-          }
+          {(meetingId) => (
+            <MeetingChat
+              meetingId={meetingId()}
+              obstacle={vm.playerElement()}
+              onSeek={vm.jumpToMoment}
+            />
+          )}
         </Show>
         <Show when={vm.meeting()?.audioUrl}>
           {(audioUrl) => (

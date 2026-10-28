@@ -1,7 +1,7 @@
 import { For, Match, Show, Switch } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
-import { Icon } from '@/shared/ui/icon';
+import { Timecode } from '@/shared/ui/timecode';
 
 import { ChatInline } from '../../../types/ChatBlock';
 import { ChatMessageProps } from '../types/ChatMessageProps';
@@ -13,17 +13,7 @@ export function ChatMessage(props: ChatMessageProps) {
   const renderInline = (inline: ChatInline) => (
     <Switch>
       <Match when={inline.kind === 'time' && inline}>
-        {(time) => (
-          <button
-            class={styles.time()}
-            type="button"
-            aria-label={i18n.t('meetings.chat.seek', { time: time().label })}
-            onClick={() => props.onSeek(time().ms)}
-          >
-            <Icon size={8} name="common:play" />
-            {time().label}
-          </button>
-        )}
+        {(time) => <Timecode ms={time().ms} onSeek={props.onSeek} />}
       </Match>
       <Match when={inline.kind === 'bold' && inline}>
         {(bold) => <strong class={styles.bold()}>{bold().text}</strong>}
