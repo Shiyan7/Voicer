@@ -12,6 +12,8 @@ import { SearchModule } from './search/search.module';
 import { ActionsModule } from './actions/actions.module';
 import { MeetingChatModule } from './meeting-chat/meeting-chat.module';
 import { PubSubModule } from './pubsub/pubsub.module';
+import { ApiTokensModule } from './api-tokens/api-tokens.module';
+import { McpModule } from './mcp/mcp.module';
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import { PubSubModule } from './pubsub/pubsub.module';
     SearchModule,
     ActionsModule,
     MeetingChatModule,
+    ApiTokensModule,
+    McpModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: GqlAuthGuard }],
 })

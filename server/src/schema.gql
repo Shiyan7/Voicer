@@ -15,6 +15,18 @@ type ActionItemOutput {
   text: String!
 }
 
+type ApiTokenCreatedOutput {
+  apiToken: ApiTokenOutput!
+  secret: String!
+}
+
+type ApiTokenOutput {
+  createdAt: DateTime!
+  id: ID!
+  lastUsedAt: DateTime
+  name: String!
+}
+
 type AuthPayload {
   accessToken: String!
 }
@@ -102,6 +114,8 @@ type MeetingsStatsOutput {
 }
 
 type Mutation {
+  apiTokenCreate(name: String!): ApiTokenCreatedOutput!
+  apiTokenRevoke(id: ID!): Boolean!
   meetingChatAsk(meetingId: ID!, question: String!): ChatMessageOutput!
   meetingChatClear(meetingId: ID!): Boolean!
   meetingDelete(id: ID!): MeetingOutput!
@@ -124,6 +138,7 @@ type PagePaginationMetaOutput {
 
 type Query {
   actionItems: [ActionItemOutput!]!
+  apiTokens: [ApiTokenOutput!]!
   meetingActionItems(meetingId: ID!): [ActionItemOutput!]!
   meetingChatMessages(meetingId: ID!): [ChatMessageOutput!]!
   meetingChatSuggestions(meetingId: ID!): [String!]!

@@ -33,6 +33,20 @@ export type ActionItemOutput = {
   text: Scalars['String']['output'];
 };
 
+export type ApiTokenCreatedOutput = {
+  __typename?: 'ApiTokenCreatedOutput';
+  apiToken: ApiTokenOutput;
+  secret: Scalars['String']['output'];
+};
+
+export type ApiTokenOutput = {
+  __typename?: 'ApiTokenOutput';
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  lastUsedAt?: Maybe<Scalars['DateTime']['output']>;
+  name: Scalars['String']['output'];
+};
+
 export type AuthPayload = {
   __typename?: 'AuthPayload';
   accessToken: Scalars['String']['output'];
@@ -122,6 +136,8 @@ export type MeetingsStatsOutput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  apiTokenCreate: ApiTokenCreatedOutput;
+  apiTokenRevoke: Scalars['Boolean']['output'];
   meetingChatAsk: ChatMessageOutput;
   meetingChatClear: Scalars['Boolean']['output'];
   meetingDelete: MeetingOutput;
@@ -133,6 +149,14 @@ export type Mutation = {
   signIn: AuthPayload;
   signUp: AuthPayload;
   toggleActionItem: Scalars['Boolean']['output'];
+};
+
+export type MutationApiTokenCreateArgs = {
+  name: Scalars['String']['input'];
+};
+
+export type MutationApiTokenRevokeArgs = {
+  id: Scalars['ID']['input'];
 };
 
 export type MutationMeetingChatAskArgs = {
@@ -196,6 +220,7 @@ export type PagePaginationMetaOutput = {
 export type Query = {
   __typename?: 'Query';
   actionItems: Array<ActionItemOutput>;
+  apiTokens: Array<ApiTokenOutput>;
   meetingActionItems: Array<ActionItemOutput>;
   meetingChatMessages: Array<ChatMessageOutput>;
   meetingChatSuggestions: Array<Scalars['String']['output']>;
