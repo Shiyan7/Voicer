@@ -7,5 +7,6 @@ import { ActionsService } from './actions.service';
 @Module({
   imports: [TypeOrmModule.forFeature([ActionItemEntity])],
   providers: [ActionsService, ActionsResolver],
+  exports: [ActionsService],
 })
 export class ActionsModule {}

@@ -15,9 +15,12 @@ export class ActionsService {
     private readonly actionItemsRepository: Repository<ActionItemEntity>,
   ) {}
 
-  async getUserActionItems(userId: string): Promise<ActionItemOutput[]> {
+  async getUserActionItems(
+    userId: string,
+    isDone?: boolean,
+  ): Promise<ActionItemOutput[]> {
     const actionItems = await this.actionItemsRepository.find({
-      where: { userId },
+      where: isDone === undefined ? { userId } : { userId, isDone },
       order: { createdAt: 'DESC' },
       relations: { meeting: true },
       comment: this.getFnName(this.getUserActionItems.name),

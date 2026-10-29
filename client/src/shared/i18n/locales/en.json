@@ -201,6 +201,20 @@
       "title": "Recording",
       "auto": "Record calls automatically",
       "auto_hint": "Start recording without asking when a call is detected"
+    },
+    "mcp": {
+      "title": "Agents (MCP)",
+      "url": "MCP server address",
+      "copy": "Copy",
+      "name_placeholder": "Token name, e.g. Claude Code",
+      "create": "Create token",
+      "created_hint": "Run this command to connect Claude Code. The token is shown only once.",
+      "revoke": "Revoke",
+      "created": "Created {{ date }}",
+      "last_used": "used {{ date }}",
+      "copied": "Copied",
+      "create_error": "Couldn't create the token",
+      "revoke_error": "Couldn't revoke the token"
     }
   },
   "shared": {

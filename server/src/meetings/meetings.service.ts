@@ -180,6 +180,10 @@ export class MeetingsService {
     }
   }
 
+  async getMeeting(userId: string, id: string): Promise<MeetingOutput> {
+    return toMeetingOutput(await this.findOwnedMeeting(userId, id));
+  }
+
   async getMeetingTranscript(
     userId: string,
     meetingId: string,

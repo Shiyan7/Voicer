@@ -24,5 +24,6 @@ import { MeetingProcessingService } from './meeting-processing.service';
     SummarizationModule,
   ],
   providers: [MeetingsService, MeetingProcessingService, MeetingsResolver],
+  exports: [MeetingsService],
 })
 export class MeetingsModule {}
