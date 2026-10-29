@@ -80,8 +80,7 @@ const defineSpriteMap = <const Sprites extends readonly [...SvgSprite[]]>(
       config?: SpritePrepareConfig,
     ) {
       const sprite = map.byName[spriteName as keyof typeof map.byName] as
-        | Sprites[number]
-        | null;
+        Sprites[number] | null;
       const symbol = sprite?.symbols.byName[
         symbolName
       ] as SvgSpriteSymbol | null;
@@ -284,6 +283,7 @@ export const sprites = defineSpriteMap([
       [
         defineSpriteSymbol(['arrow-up'], [16]),
         defineSpriteSymbol(['audio'], [24]),
+        defineSpriteSymbol(['calendar'], [16]),
         defineSpriteSymbol(['chat'], [24]),
         defineSpriteSymbol(['check'], [24]),
         defineSpriteSymbol(['chevron-left'], [24]),
@@ -312,7 +312,7 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['trash'], [24]),
         defineSpriteSymbol(['upload'], [24]),
       ],
-      defineExternalAssetMeta('common.53e00316.svg'),
+      defineExternalAssetMeta('common.9320f0c1.svg'),
     ),
   ]),
   defineSprite('navigation', [
@@ -355,6 +355,7 @@ export type SpritesMeta = {
   common:
     | 'arrow-up'
     | 'audio'
+    | 'calendar'
     | 'chat'
     | 'check'
     | 'chevron-left'

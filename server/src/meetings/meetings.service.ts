@@ -6,7 +6,15 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PubSub } from 'graphql-subscriptions';
-import { FindOptionsOrder, In, Repository } from 'typeorm';
+import {
+  And,
+  FindOperator,
+  FindOptionsOrder,
+  In,
+  LessThan,
+  MoreThanOrEqual,
+  Repository,
+} from 'typeorm';
 import { PUB_SUB } from '../pubsub/pubsub.module';
 import { MeetingOutput } from './meeting.output';
 import { MeetingsPageInput } from './meetings-page.input';
@@ -133,10 +141,22 @@ export class MeetingsService {
     const base = input.favoritesOnly
       ? { userId, isFavorite: true }
       : { userId };
+    const startedAt = this.buildStartedAtRange(input.from, input.to);
+    const ranged = startedAt ? { ...base, startedAt } : base;
 
-    if (!input.sources?.length) return base;
+    if (!input.sources?.length) return ranged;
 
-    return { ...base, source: In(input.sources) };
+    return { ...ranged, source: In(input.sources) };
+  }
+
+  private buildStartedAtRange(
+    from?: Date | null,
+    to?: Date | null,
+  ): FindOperator<Date> | null {
+    if (from && to) return And(MoreThanOrEqual(from), LessThan(to));
+    if (from) return MoreThanOrEqual(from);
+    if (to) return LessThan(to);
+    return null;
   }
 
   private buildPageOrder(sort: MeetingsSort): FindOptionsOrder<MeetingEntity> {

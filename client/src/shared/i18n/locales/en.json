@@ -127,6 +127,16 @@
       "title": "Source",
       "all": "All sources"
     },
+    "date_filter": {
+      "title": "Date",
+      "clear": "Clear dates",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "last_7_days": "Last 7 days",
+      "last_30_days": "Last 30 days",
+      "this_month": "This month",
+      "last_month": "Last month"
+    },
     "banner": {
       "greeting": "Hi",
       "greeting_name": "Hi, {{name}}",
@@ -247,5 +257,12 @@
     "minutes": "{{minutes}}m",
     "hours": "{{hours}}h",
     "hours_minutes": "{{hours}}h {{minutes}}m"
+  },
+  "date_range": {
+    "prev_month": "Previous month",
+    "next_month": "Next month",
+    "hint_start": "Pick a start date",
+    "hint_end": "Pick an end date",
+    "clear": "Clear"
   }
 }

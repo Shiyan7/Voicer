@@ -17,4 +17,10 @@ export class MeetingsPageInput {
 
   @Field(() => [String], { nullable: true })
   sources?: string[] | null;
+
+  @Field(() => Date, { nullable: true })
+  from?: Date | null;
+
+  @Field(() => Date, { nullable: true })
+  to?: Date | null;
 }

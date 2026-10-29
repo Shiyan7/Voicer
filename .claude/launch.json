@@ -20,7 +20,7 @@
       "cwd": "server",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "start"],
-      "port": 4000
+      "port": 1488
     }
   ]
 }
