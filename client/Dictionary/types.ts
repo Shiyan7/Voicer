@@ -91,10 +91,12 @@ export enum MeetingStatus {
 
 export type MeetingsPageInput = {
   favoritesOnly?: Scalars['Boolean']['input'];
+  from?: InputMaybe<Scalars['DateTime']['input']>;
   limit?: Scalars['Int']['input'];
   page?: Scalars['Int']['input'];
   sort?: MeetingsSort;
   sources?: InputMaybe<Array<Scalars['String']['input']>>;
+  to?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type MeetingsPageOutput = {

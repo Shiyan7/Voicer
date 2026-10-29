@@ -74,10 +74,12 @@ enum MeetingStatus {
 
 input MeetingsPageInput {
   favoritesOnly: Boolean! = false
+  from: DateTime
   limit: Int! = 10
   page: Int! = 1
   sort: MeetingsSort! = DATE_DESC
   sources: [String!]
+  to: DateTime
 }
 
 type MeetingsPageOutput {

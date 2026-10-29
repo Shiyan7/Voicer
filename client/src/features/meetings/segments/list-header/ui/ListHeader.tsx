@@ -1,6 +1,7 @@
 import { Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
+import { DateRangePicker } from '@/shared/ui/date-range-picker';
 import { Dropdown } from '@/shared/ui/dropdown';
 import { Icon } from '@/shared/ui/icon';
 
@@ -13,9 +14,39 @@ export function ListHeader(props: ListHeaderProps) {
   return (
     <div class={styles.root()}>
       <h2 class={styles.title()}>
-        {i18n.t('meetings.total')} <span class={styles.count()}>{props.count}</span>
+        {i18n.t('meetings.total')}{' '}
+        <span class={styles.count()}>{props.count}</span>
       </h2>
       <div class={styles.actions()}>
+        <Show when={props.hasDateFilter}>
+          <span class={styles.chip()}>
+            {props.dateRangeLabel}
+            <button
+              class={styles.chipClear()}
+              type="button"
+              title={i18n.t('meetings.date_filter.clear')}
+              aria-label={i18n.t('meetings.date_filter.clear')}
+              onClick={props.onDateRangeClear}
+            >
+              <Icon size={12} name="common:cross" />
+            </button>
+          </span>
+        </Show>
+        <DateRangePicker
+          value={props.dateRange}
+          presets={props.dateRangePresets}
+          triggerClass={styles.iconBtn({ active: props.hasDateFilter })}
+          triggerTitle={i18n.t('meetings.date_filter.title')}
+          onChange={props.onDateRangeChange}
+          trigger={() => (
+            <>
+              <Icon size={20} name="common:calendar" />
+              <Show when={props.hasDateFilter}>
+                <span class={styles.dot()} />
+              </Show>
+            </>
+          )}
+        />
         <button
           class={styles.iconBtn({ active: props.favoritesOnly })}
           type="button"

@@ -127,6 +127,16 @@
       "title": "Источник",
       "all": "Все источники"
     },
+    "date_filter": {
+      "title": "Дата",
+      "clear": "Сбросить даты",
+      "today": "Сегодня",
+      "yesterday": "Вчера",
+      "last_7_days": "Последние 7 дней",
+      "last_30_days": "Последние 30 дней",
+      "this_month": "Этот месяц",
+      "last_month": "Прошлый месяц"
+    },
     "banner": {
       "greeting": "Привет",
       "greeting_name": "Привет, {{name}}",
@@ -247,5 +257,12 @@
     "minutes": "{{minutes}} мин",
     "hours": "{{hours}} ч",
     "hours_minutes": "{{hours}} ч {{minutes}} мин"
+  },
+  "date_range": {
+    "prev_month": "Предыдущий месяц",
+    "next_month": "Следующий месяц",
+    "hint_start": "Выберите начало",
+    "hint_end": "Выберите конец",
+    "clear": "Сбросить"
   }
 }

@@ -41,6 +41,10 @@ export function MeetingsOrchestrator() {
             sort={vm.filters.sort()}
             source={vm.filters.source()}
             hasSourceFilter={vm.filters.hasSourceFilter()}
+            dateRange={vm.filters.dateRange()}
+            dateRangeLabel={vm.dateRangeLabel()}
+            dateRangePresets={vm.dateRangePresets()}
+            hasDateFilter={vm.filters.hasDateFilter()}
             isCustomSort={vm.filters.isCustomSort()}
             favoritesIcon={vm.favoritesIcon()}
             showSourceFilter={vm.showSourceFilter()}
@@ -49,6 +53,8 @@ export function MeetingsOrchestrator() {
             onToggleFavorites={vm.filters.toggleFavoritesOnly}
             onSortChange={vm.filters.setSort}
             onSourceChange={vm.filters.setSource}
+            onDateRangeChange={vm.filters.setDateRange}
+            onDateRangeClear={vm.filters.clearDateRange}
           />
           <MeetingsList
             items={vm.items()}
