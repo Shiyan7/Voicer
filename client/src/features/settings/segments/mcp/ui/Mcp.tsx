@@ -2,10 +2,12 @@ import { For, Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
 import { Button } from '@/shared/ui/button';
+import { Input } from '@/shared/ui/input';
 import { SettingsRow, SettingsSection } from '@/shared/ui/settings-section';
 
 import { useMcp } from '../model/useMcp';
 import { mcpStyles } from './Mcp.styles';
+import { RevokeTokenModal } from './RevokeTokenModal';
 
 const styles = mcpStyles();
 
@@ -20,8 +22,8 @@ export function Mcp() {
         </Button>
       </SettingsRow>
       <form class={styles.form()} onSubmit={vm.submit}>
-        <input
-          class={styles.nameInput()}
+        <Input
+          rootClass={styles.nameInput()}
           placeholder={i18n.t('settings.mcp.name_placeholder')}
           value={vm.tokenName()}
           onInput={(event) => vm.setTokenName(event.currentTarget.value)}
@@ -48,16 +50,21 @@ export function Mcp() {
       <For each={vm.tokens()}>
         {(token) => (
           <SettingsRow label={token.name} hint={token.hint}>
-            <button
+            <Button
               class={styles.revoke()}
-              type="button"
-              onClick={() => vm.revoke(token.id)}
+              variant="ghost"
+              onClick={() => vm.requestRevoke(token.id)}
             >
               {i18n.t('settings.mcp.revoke')}
-            </button>
+            </Button>
           </SettingsRow>
         )}
       </For>
+      <RevokeTokenModal
+        isRevoking={vm.isRevoking()}
+        onCancel={vm.cancelRevoke}
+        onConfirm={vm.confirmRevoke}
+      />
     </SettingsSection>
   );
 }

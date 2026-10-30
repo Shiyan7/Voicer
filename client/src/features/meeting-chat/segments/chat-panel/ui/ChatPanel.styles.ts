@@ -23,16 +23,25 @@ export const chatPanelStyles = tv({
     hint: 'text-[15px] text-gray-600',
     footer: 'flex flex-col gap-2 px-4 pb-4 pt-2',
     disclaimer: 'text-center text-[12px] text-gray-400',
-    form: 'flex items-end gap-2',
+    form: 'flex',
+    inputBeam: `
+      flex min-w-0 flex-1 items-end gap-2 bg-gray-100 p-2
+      shadow-[inset_0_0_0_1px_rgb(0_0_0/0.04)]
+    `,
     input: `
-      max-h-32 min-h-11 flex-1 resize-none rounded-[22px] bg-gray-100 px-4
-      py-2.5 text-[15px] leading-6 text-gray-900 outline-none
-      placeholder:text-gray-500 focus:ring-2 focus:ring-sky-400/40
+      block max-h-32 min-h-9 flex-1 resize-none bg-transparent py-1.5 pl-3.5
+      text-[15px] leading-6 text-gray-900 outline-none
+      placeholder:text-gray-500
     `,
     send: `
-      flex size-11 shrink-0 items-center justify-center rounded-full
-      bg-gray-900 text-white transition-[opacity,transform] active:scale-95
-      disabled:opacity-25
+      relative z-[4] flex size-9 shrink-0 items-center justify-center
+      rounded-full border border-transparent text-gray-900
+      [background:linear-gradient(180deg,rgb(255_255_255/0.9),rgb(255_255_255/0.25))_padding-box,linear-gradient(180deg,rgb(0_0_0/0.09),transparent_65%)_border-box]
+      isolate transition-[color,transform] duration-200 active:scale-95
+      before:absolute before:-inset-px before:-z-10 before:rounded-full
+      before:bg-gray-900 before:opacity-0 before:transition-opacity
+      before:duration-200 enabled:hover:text-white
+      enabled:hover:before:opacity-100 disabled:text-gray-400
     `,
   },
 });

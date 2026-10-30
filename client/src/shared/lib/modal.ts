@@ -3,6 +3,7 @@ import { createSignal } from 'solid-js';
 export enum MODALS {
   AUTH = 'AUTH',
   DELETE_MEETING = 'DELETE_MEETING',
+  REVOKE_API_TOKEN = 'REVOKE_API_TOKEN',
   SEARCH = 'SEARCH',
 }
 

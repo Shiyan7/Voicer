@@ -80,7 +80,8 @@ const defineSpriteMap = <const Sprites extends readonly [...SvgSprite[]]>(
       config?: SpritePrepareConfig,
     ) {
       const sprite = map.byName[spriteName as keyof typeof map.byName] as
-        Sprites[number] | null;
+        | Sprites[number]
+        | null;
       const symbol = sprite?.symbols.byName[
         symbolName
       ] as SvgSpriteSymbol | null;

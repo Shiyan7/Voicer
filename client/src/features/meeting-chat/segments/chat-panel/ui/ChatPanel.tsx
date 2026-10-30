@@ -1,6 +1,7 @@
 import { Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
+import { BorderBeam } from '@/shared/ui/border-beam';
 import { Icon } from '@/shared/ui/icon';
 
 import { ChatPanelProps } from '../types/ChatPanelProps';
@@ -68,24 +69,26 @@ export function ChatPanel(props: ChatPanelProps) {
             props.onSubmit();
           }}
         >
-          <textarea
-            class={styles.input()}
-            ref={props.inputRef}
-            rows={1}
-            maxLength={2000}
-            value={props.draft}
-            placeholder={i18n.t('meetings.chat.placeholder')}
-            onInput={(event) => props.onDraft(event.currentTarget.value)}
-            onKeyDown={props.onInputKeyDown}
-          />
-          <button
-            class={styles.send()}
-            type="submit"
-            disabled={!props.canSend}
-            aria-label={i18n.t('meetings.chat.send')}
-          >
-            <Icon size={18} name="common:arrow-up" />
-          </button>
+          <BorderBeam class={styles.inputBeam()} radius={26}>
+            <textarea
+              class={styles.input()}
+              ref={props.inputRef}
+              rows={1}
+              maxLength={2000}
+              value={props.draft}
+              placeholder={i18n.t('meetings.chat.placeholder')}
+              onInput={(event) => props.onDraft(event.currentTarget.value)}
+              onKeyDown={props.onInputKeyDown}
+            />
+            <button
+              class={styles.send()}
+              type="submit"
+              disabled={!props.canSend}
+              aria-label={i18n.t('meetings.chat.send')}
+            >
+              <Icon size={18} name="common:arrow-up" />
+            </button>
+          </BorderBeam>
         </form>
         <p class={styles.disclaimer()}>{i18n.t('meetings.chat.disclaimer')}</p>
       </footer>

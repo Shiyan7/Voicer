@@ -5,22 +5,35 @@
       "name": "client-preview",
       "cwd": "client",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["serve", "--port", "4173", "--strictPort"],
+      "runtimeArgs": [
+        "serve",
+        "--port",
+        "4173",
+        "--strictPort"
+      ],
       "port": 4173
     },
     {
       "name": "client-dev",
       "cwd": "client",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["dev", "--port", "5173", "--strictPort"],
+      "runtimeArgs": [
+        "dev",
+        "--port",
+        "5173",
+        "--strictPort"
+      ],
       "port": 5173
     },
     {
       "name": "voicer-server",
       "cwd": "server",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "start"],
-      "port": 1488
+      "runtimeArgs": [
+        "run",
+        "start"
+      ],
+      "port": 5742
     }
   ]
 }

@@ -18,11 +18,13 @@ export class ActionsService {
   async getUserActionItems(
     userId: string,
     isDone?: boolean,
+    limit?: number,
   ): Promise<ActionItemOutput[]> {
     const actionItems = await this.actionItemsRepository.find({
       where: isDone === undefined ? { userId } : { userId, isDone },
       order: { createdAt: 'DESC' },
       relations: { meeting: true },
+      take: limit,
       comment: this.getFnName(this.getUserActionItems.name),
     });
 

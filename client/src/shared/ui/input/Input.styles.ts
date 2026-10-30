@@ -7,7 +7,7 @@ export const inputStyles = tv({
       w-full h-11 rounded-lg border bg-white px-3.5
       text-[15px] text-gray-900 placeholder:text-gray-500 outline-none
       transition-[border-color,box-shadow] duration-150
-      focus:border-gray-500 focus:ring-[3px] focus:ring-gray-900/10
+      focus:border-gray-500
     `,
     label: 'block text-[13px] font-medium text-gray-600',
     error: 'text-red-500 text-xs',

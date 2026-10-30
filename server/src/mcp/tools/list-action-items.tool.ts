@@ -28,15 +28,13 @@ export class ListActionItemsTool implements McpTool {
         annotations: READ_ONLY_ANNOTATIONS,
       },
       async ({ status, limit }) => {
-        const actionItems = await this.actionsService.getUserActionItems(
+        const items = await this.actionsService.getUserActionItems(
           userId,
           IS_DONE_BY_STATUS[status],
+          limit,
         );
 
-        return toToolResult({
-          total: actionItems.length,
-          items: actionItems.slice(0, limit),
-        });
+        return toToolResult({ items });
       },
     );
   }

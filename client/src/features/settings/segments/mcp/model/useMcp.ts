@@ -2,6 +2,7 @@ import { createSignal } from 'solid-js';
 
 import { useToasts } from '@/entities/toasts';
 import { i18n } from '@/shared/i18n';
+import { closeModal, MODALS, showModal } from '@/shared/lib/modal';
 
 import { apiTokenCreateMutation } from '../../../api/apiTokenCreateMutation';
 import { apiTokenRevokeMutation } from '../../../api/apiTokenRevokeMutation';
@@ -13,12 +14,18 @@ import { toApiTokenView } from '../lib/toApiTokenView';
 export const useMcp = () => {
   const toasts = useToasts();
   const [tokenName, setTokenName] = createSignal('');
-  const [secret, setSecret] = createSignal<string | null>(null);
+  const [created, setCreated] = createSignal<{
+    id: string;
+    secret: string;
+  } | null>(null);
   const [isCreating, setIsCreating] = createSignal(false);
+  const [pendingRevokeId, setPendingRevokeId] = createSignal<string | null>(
+    null,
+  );
 
   const [apiTokensResult, refetchApiTokens] = apiTokensQuery();
   const [, createApiToken] = apiTokenCreateMutation();
-  const [, revokeApiToken] = apiTokenRevokeMutation();
+  const [revokeResult, revokeApiToken] = apiTokenRevokeMutation();
 
   const mcpUrl = () => MCP_URL;
 
@@ -26,8 +33,8 @@ export const useMcp = () => {
     (apiTokensResult.data?.apiTokens ?? []).map(toApiTokenView);
 
   const connectCommand = () => {
-    const createdSecret = secret();
-    return createdSecret ? buildConnectCommand(createdSecret) : null;
+    const createdToken = created();
+    return createdToken ? buildConnectCommand(createdToken.secret) : null;
   };
 
   const refetch = () => refetchApiTokens({ requestPolicy: 'network-only' });
@@ -42,7 +49,8 @@ export const useMcp = () => {
       return;
     }
 
-    setSecret(result.data.apiTokenCreate.secret);
+    const { apiToken, secret } = result.data.apiTokenCreate;
+    setCreated({ id: apiToken.id, secret });
     setTokenName('');
     refetch();
   };
@@ -52,7 +60,19 @@ export const useMcp = () => {
     void create();
   };
 
-  const revoke = async (id: string) => {
+  const isRevoking = () => revokeResult.fetching;
+
+  const requestRevoke = (id: string) => {
+    setPendingRevokeId(id);
+    showModal(MODALS.REVOKE_API_TOKEN);
+  };
+
+  const cancelRevoke = () => setPendingRevokeId(null);
+
+  const confirmRevoke = async () => {
+    const id = pendingRevokeId();
+    if (!id) return;
+
     const result = await revokeApiToken({ id });
 
     if (result.error) {
@@ -60,7 +80,9 @@ export const useMcp = () => {
       return;
     }
 
-    setSecret(null);
+    closeModal(MODALS.REVOKE_API_TOKEN);
+    setPendingRevokeId(null);
+    if (created()?.id === id) setCreated(null);
     refetch();
   };
 
@@ -77,7 +99,10 @@ export const useMcp = () => {
     isCreating,
     connectCommand,
     submit,
-    revoke,
+    isRevoking,
+    requestRevoke,
+    cancelRevoke,
+    confirmRevoke,
     copy,
   };
 };
