@@ -56,15 +56,9 @@ export class GetTranscriptTool implements McpTool {
     const footer =
       nextFromMs === null ? [] : [`[truncated, nextFromMs=${nextFromMs}]`];
 
-    const transcript = [...lines, ...footer].join('\n');
-
     return {
-      content: [{ type: 'text', text: transcript }],
-      structuredContent: {
-        transcript,
-        segmentCount: lines.length,
-        nextFromMs,
-      },
+      content: [{ type: 'text', text: [...lines, ...footer].join('\n') }],
+      structuredContent: { segmentCount: lines.length, nextFromMs },
     };
   }
 

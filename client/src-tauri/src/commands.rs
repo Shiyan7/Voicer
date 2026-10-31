@@ -138,22 +138,22 @@ pub fn do_stop_recording(app: &AppHandle) -> Result<StopRecordingResult, String>
 }
 
 #[tauri::command]
-pub fn pause_recording(app: AppHandle) -> Result<PauseStateDto, String> {
+pub fn pause_recording(app: AppHandle) -> Result<(), String> {
     change_pause(&app, true)
 }
 
 #[tauri::command]
-pub fn resume_recording(app: AppHandle) -> Result<PauseStateDto, String> {
+pub fn resume_recording(app: AppHandle) -> Result<(), String> {
     change_pause(&app, false)
 }
 
 #[cfg(not(target_os = "macos"))]
-fn change_pause(_app: &AppHandle, _pause: bool) -> Result<PauseStateDto, String> {
+fn change_pause(_app: &AppHandle, _pause: bool) -> Result<(), String> {
     Err("recording is only supported on macOS".into())
 }
 
 #[cfg(target_os = "macos")]
-fn change_pause(app: &AppHandle, pause: bool) -> Result<PauseStateDto, String> {
+fn change_pause(app: &AppHandle, pause: bool) -> Result<(), String> {
     let state = app.state::<RecorderHandle>();
     let info = {
         let mut recorder = state
@@ -166,12 +166,14 @@ fn change_pause(app: &AppHandle, pause: bool) -> Result<PauseStateDto, String> {
             recorder.resume()?
         }
     };
-    let result = PauseStateDto {
-        paused_ms: info.paused_ms,
-        paused_at: info.paused_at_ms,
-    };
-    let _ = app.emit("recording-pause-changed", result.clone());
-    Ok(result)
+    let _ = app.emit(
+        "recording-pause-changed",
+        PauseStateDto {
+            paused_ms: info.paused_ms,
+            paused_at: info.paused_at_ms,
+        },
+    );
+    Ok(())
 }
 
 #[tauri::command]

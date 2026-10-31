@@ -8,7 +8,7 @@ export const ATTACK_SEC = 0.06;
 
 export const RELEASE_SEC = 0.28;
 
-export const LEVEL_GAIN = 1.2;
+export const SETTLED_LEVEL = 0.001;
 
 export const STROKE_WIDTH = 1;
 

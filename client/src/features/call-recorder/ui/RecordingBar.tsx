@@ -1,7 +1,7 @@
 import { Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
-import { glassIconButtonStyles } from '@/shared/ui/button';
+import { GlassIconButton } from '@/shared/ui/glass-icon-button';
 import { Icon } from '@/shared/ui/icon';
 import { VoiceBlob } from '@/shared/ui/voice-blob';
 
@@ -13,7 +13,11 @@ const styles = recordingBarStyles();
 export function RecordingBar(props: RecordingBarProps) {
   return (
     <div class={styles.root()}>
-      <div class={styles.indicator()}>
+      <div
+        class={styles.indicator()}
+        role="img"
+        aria-label={i18n.t('recorder.recording')}
+      >
         <VoiceBlob
           class={styles.blob()}
           level={props.level}
@@ -24,20 +28,14 @@ export function RecordingBar(props: RecordingBarProps) {
           <Icon size={24} name="common:microphone" />
         </span>
       </div>
-      <span
-        class={styles.time({ paused: props.isPaused })}
-        role="status"
-        aria-label={`${i18n.t('recorder.recording')} ${props.formattedSeconds}`}
-      >
+      <span class={styles.time({ paused: props.isPaused })}>
         {props.formattedSeconds}
       </span>
       <div class={styles.actions()}>
-        <button
-          class={glassIconButtonStyles({ size: 'md' })}
-          type="button"
-          aria-label={props.pauseLabel}
-          title={props.pauseLabel}
-          onClick={() => props.onTogglePause()}
+        <GlassIconButton
+          size="md"
+          label={props.pauseLabel}
+          onClick={props.onTogglePause}
         >
           <Show
             when={props.isPaused}
@@ -45,16 +43,14 @@ export function RecordingBar(props: RecordingBarProps) {
           >
             <Icon size={16} name="common:play" />
           </Show>
-        </button>
-        <button
-          class={glassIconButtonStyles({ size: 'md' })}
-          type="button"
-          aria-label={i18n.t('recorder.stop')}
-          title={i18n.t('recorder.stop')}
-          onClick={() => props.onStop()}
+        </GlassIconButton>
+        <GlassIconButton
+          size="md"
+          label={i18n.t('recorder.stop')}
+          onClick={props.onStop}
         >
           <Icon size={16} name="common:stop" />
-        </button>
+        </GlassIconButton>
       </div>
     </div>
   );

@@ -17,7 +17,4 @@ export const glassIconButtonStyles = tv({
       md: 'size-10',
     },
   },
-  defaultVariants: {
-    size: 'md',
-  },
 });

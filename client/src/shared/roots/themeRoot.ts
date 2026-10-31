@@ -21,10 +21,9 @@ export const themeRoot = createRoot(() => {
   const [systemDark, setSystemDark] = createSignal(darkQuery.matches);
   darkQuery.addEventListener('change', (event) => setSystemDark(event.matches));
 
-  const resolvedTheme = (): 'light' | 'dark' => {
-    const current = theme();
-    if (current === 'system') return systemDark() ? 'dark' : 'light';
-    return current;
+  const resolvedTheme = () => {
+    if (theme() === 'system') return systemDark() ? 'dark' : 'light';
+    return theme();
   };
 
   createEffect(() => {
@@ -35,9 +34,6 @@ export const themeRoot = createRoot(() => {
     themes,
     get theme() {
       return theme();
-    },
-    get resolvedTheme() {
-      return resolvedTheme();
     },
     changeTheme(value: string) {
       if (isTheme(value)) setTheme(value);

@@ -48,9 +48,9 @@ export const startRecording = () =>
 export const stopRecording = () =>
   invoke<StopRecordingResult>('stop_recording');
 
-export const pauseRecording = () => invoke<PauseState>('pause_recording');
+export const pauseRecording = () => invoke<void>('pause_recording');
 
-export const resumeRecording = () => invoke<PauseState>('resume_recording');
+export const resumeRecording = () => invoke<void>('resume_recording');
 
 export const getRecorderState = () =>
   invoke<RecorderState>('get_recorder_state');
