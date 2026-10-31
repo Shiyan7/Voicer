@@ -1,0 +1,1 @@
+export { VoiceBeam } from './VoiceBeam';

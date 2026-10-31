@@ -36,7 +36,7 @@ export const chatPanelStyles = tv({
     send: `
       relative z-[4] flex size-9 shrink-0 items-center justify-center
       rounded-full border border-transparent text-gray-900
-      [background:linear-gradient(180deg,rgb(255_255_255/0.9),rgb(255_255_255/0.25))_padding-box,linear-gradient(180deg,rgb(0_0_0/0.09),transparent_65%)_border-box]
+      [background:linear-gradient(180deg,color-mix(in_srgb,var(--color-white)_90%,transparent),color-mix(in_srgb,var(--color-white)_25%,transparent))_padding-box,linear-gradient(180deg,color-mix(in_srgb,var(--color-black)_9%,transparent),transparent_65%)_border-box]
       isolate transition-[color,transform] duration-200 active:scale-95
       before:absolute before:-inset-px before:-z-10 before:rounded-full
       before:bg-gray-900 before:opacity-0 before:transition-opacity

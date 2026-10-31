@@ -173,7 +173,9 @@
   },
   "recorder": {
     "recording": "Recording",
-    "stop": "Stop"
+    "stop": "Stop",
+    "pause": "Pause",
+    "resume": "Resume"
   },
   "actions": {
     "title": "Action items",

@@ -18,7 +18,19 @@ interface StopRecordingResult {
 
 type RecorderState =
   | { state: 'idle' }
-  | { state: 'recording'; localId: string; startedAt: number; path: string };
+  | {
+      state: 'recording';
+      localId: string;
+      startedAt: number;
+      path: string;
+      pausedMs: number;
+      pausedAt: number | null;
+    };
+
+interface PauseState {
+  pausedMs: number;
+  pausedAt: number | null;
+}
 
 interface CallDetectedPayload {
   source: string;
@@ -35,6 +47,10 @@ export const startRecording = () =>
 
 export const stopRecording = () =>
   invoke<StopRecordingResult>('stop_recording');
+
+export const pauseRecording = () => invoke<PauseState>('pause_recording');
+
+export const resumeRecording = () => invoke<PauseState>('resume_recording');
 
 export const getRecorderState = () =>
   invoke<RecorderState>('get_recorder_state');
@@ -64,3 +80,15 @@ export const onCallEnded = (
   handler: (payload: CallEndedPayload) => void,
 ): Promise<UnlistenFn> =>
   listen<CallEndedPayload>('call-ended', (event) => handler(event.payload));
+
+export const onRecordingLevel = (
+  handler: (level: number) => void,
+): Promise<UnlistenFn> =>
+  listen<number>('recording-level', (event) => handler(event.payload));
+
+export const onRecordingPauseChanged = (
+  handler: (payload: PauseState) => void,
+): Promise<UnlistenFn> =>
+  listen<PauseState>('recording-pause-changed', (event) =>
+    handler(event.payload),
+  );

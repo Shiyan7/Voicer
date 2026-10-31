@@ -44,7 +44,16 @@ pub enum RecorderStateDto {
         local_id: String,
         started_at: i64,
         path: String,
+        paused_ms: i64,
+        paused_at: Option<i64>,
     },
+}
+
+#[derive(Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct PauseStateDto {
+    pub paused_ms: i64,
+    pub paused_at: Option<i64>,
 }
 
 pub fn recordings_dir(app: &AppHandle) -> Result<PathBuf, String> {
@@ -66,7 +75,13 @@ pub fn start_recording(app: AppHandle) -> Result<StartRecordingResult, String> {
                 .recorder
                 .lock()
                 .map_err(|_| "recorder lock poisoned".to_string())?;
-            recorder.start(&dir)?
+            let level_app = app.clone();
+            recorder.start(
+                &dir,
+                Box::new(move |level| {
+                    let _ = level_app.emit("recording-level", level);
+                }),
+            )?
         };
         let result = StartRecordingResult {
             local_id: info.local_id,
@@ -123,6 +138,54 @@ pub fn do_stop_recording(app: &AppHandle) -> Result<StopRecordingResult, String>
 }
 
 #[tauri::command]
+pub fn pause_recording(app: AppHandle) -> Result<PauseStateDto, String> {
+    #[cfg(target_os = "macos")]
+    {
+        change_pause(&app, true)
+    }
+    #[cfg(not(target_os = "macos"))]
+    {
+        let _ = app;
+        Err("recording is only supported on macOS".into())
+    }
+}
+
+#[tauri::command]
+pub fn resume_recording(app: AppHandle) -> Result<PauseStateDto, String> {
+    #[cfg(target_os = "macos")]
+    {
+        change_pause(&app, false)
+    }
+    #[cfg(not(target_os = "macos"))]
+    {
+        let _ = app;
+        Err("recording is only supported on macOS".into())
+    }
+}
+
+#[cfg(target_os = "macos")]
+fn change_pause(app: &AppHandle, pause: bool) -> Result<PauseStateDto, String> {
+    let state = app.state::<RecorderHandle>();
+    let info = {
+        let mut recorder = state
+            .recorder
+            .lock()
+            .map_err(|_| "recorder lock poisoned".to_string())?;
+        if pause {
+            recorder.pause()?
+        } else {
+            recorder.resume()?
+        }
+    };
+    let result = PauseStateDto {
+        paused_ms: info.paused_ms,
+        paused_at: info.paused_at_ms,
+    };
+    let _ = app.emit("recording-pause-changed", result.clone());
+    Ok(result)
+}
+
+#[tauri::command]
 pub fn get_recorder_state(app: AppHandle) -> Result<RecorderStateDto, String> {
     #[cfg(target_os = "macos")]
     {
@@ -138,10 +201,14 @@ pub fn get_recorder_state(app: AppHandle) -> Result<RecorderStateDto, String> {
                 local_id,
                 started_at_ms,
                 path,
+                paused_ms,
+                paused_at_ms,
             } => RecorderStateDto::Recording {
                 local_id,
                 started_at: started_at_ms,
                 path: path.to_string_lossy().into_owned(),
+                paused_ms,
+                paused_at: paused_at_ms,
             },
         })
     }

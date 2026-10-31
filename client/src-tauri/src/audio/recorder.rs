@@ -1,5 +1,7 @@
 use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::mpsc::{self, Receiver, RecvTimeoutError, Sender};
+use std::sync::Arc;
 use std::thread::JoinHandle;
 use std::time::Duration;
 
@@ -8,7 +10,10 @@ use super::system::SystemSource;
 use super::{SampleQueue, RECORDING_ACTIVE, TARGET_SAMPLE_RATE};
 
 const STALL_MS: u64 = 2_000;
-const FLUSH_INTERVAL: Duration = Duration::from_millis(250);
+const FLUSH_INTERVAL: Duration = Duration::from_millis(40);
+const LEVEL_WINDOW: usize = (TARGET_SAMPLE_RATE / 100) as usize;
+
+pub type LevelSink = Box<dyn Fn(f32) + Send>;
 
 pub struct StartInfo {
     pub local_id: String,
@@ -31,7 +36,14 @@ pub enum RecorderState {
         local_id: String,
         started_at_ms: i64,
         path: PathBuf,
+        paused_ms: i64,
+        paused_at_ms: Option<i64>,
     },
+}
+
+pub struct PauseInfo {
+    pub paused_ms: i64,
+    pub paused_at_ms: Option<i64>,
 }
 
 struct Active {
@@ -44,6 +56,9 @@ struct Active {
     system: Option<SystemSource>,
     writer_stop: Sender<()>,
     writer: Option<JoinHandle<Result<u64, String>>>,
+    paused: Arc<AtomicBool>,
+    paused_ms: i64,
+    paused_at_ms: Option<i64>,
 }
 
 #[derive(Default)]
@@ -59,11 +74,13 @@ impl Recorder {
                 local_id: a.local_id.clone(),
                 started_at_ms: a.started_at_ms,
                 path: a.flac_path.clone(),
+                paused_ms: a.paused_ms,
+                paused_at_ms: a.paused_at_ms,
             },
         }
     }
 
-    pub fn start(&mut self, recordings_dir: &Path) -> Result<StartInfo, String> {
+    pub fn start(&mut self, recordings_dir: &Path, on_level: LevelSink) -> Result<StartInfo, String> {
         if self.active.is_some() {
             return Err("already recording".into());
         }
@@ -121,9 +138,20 @@ impl Recorder {
         let wav_for_writer = wav_path.clone();
         let mic_q = mic_queue.clone();
         let sys_q = sys_queue.clone();
+        let paused = Arc::new(AtomicBool::new(false));
+        let paused_for_writer = paused.clone();
         let writer = std::thread::Builder::new()
             .name("voicer-recorder-writer".into())
-            .spawn(move || writer_loop(&wav_for_writer, &mic_q, &sys_q, &stop_rx))
+            .spawn(move || {
+                writer_loop(
+                    &wav_for_writer,
+                    &mic_q,
+                    &sys_q,
+                    &stop_rx,
+                    &paused_for_writer,
+                    &on_level,
+                )
+            })
             .map_err(|e| {
                 RECORDING_ACTIVE.store(false, std::sync::atomic::Ordering::Relaxed);
                 format!("failed to spawn writer thread: {e}")
@@ -140,6 +168,9 @@ impl Recorder {
             system,
             writer_stop,
             writer: Some(writer),
+            paused,
+            paused_ms: 0,
+            paused_at_ms: None,
         });
 
         Ok(StartInfo {
@@ -147,6 +178,30 @@ impl Recorder {
             started_at_ms,
             path: flac_path,
             warnings,
+        })
+    }
+
+    pub fn pause(&mut self) -> Result<PauseInfo, String> {
+        let active = self.active.as_mut().ok_or("not recording")?;
+        if active.paused_at_ms.is_none() {
+            active.paused.store(true, Ordering::Relaxed);
+            active.paused_at_ms = Some(now_ms());
+        }
+        Ok(PauseInfo {
+            paused_ms: active.paused_ms,
+            paused_at_ms: active.paused_at_ms,
+        })
+    }
+
+    pub fn resume(&mut self) -> Result<PauseInfo, String> {
+        let active = self.active.as_mut().ok_or("not recording")?;
+        if let Some(paused_at) = active.paused_at_ms.take() {
+            active.paused_ms += now_ms() - paused_at;
+            active.paused.store(false, Ordering::Relaxed);
+        }
+        Ok(PauseInfo {
+            paused_ms: active.paused_ms,
+            paused_at_ms: None,
         })
     }
 
@@ -204,6 +259,8 @@ fn writer_loop(
     mic_q: &SampleQueue,
     sys_q: &SampleQueue,
     stop_rx: &Receiver<()>,
+    paused: &AtomicBool,
+    on_level: &LevelSink,
 ) -> Result<u64, String> {
     let spec = hound::WavSpec {
         channels: 2,
@@ -224,8 +281,19 @@ fn writer_loop(
             Ok(()) | Err(RecvTimeoutError::Disconnected)
         );
 
-        pending_mic.append(&mut mic_q.take());
-        pending_sys.append(&mut sys_q.take());
+        let mut mic_chunk = mic_q.take();
+        let mut sys_chunk = sys_q.take();
+
+        if paused.load(Ordering::Relaxed) && !stop {
+            pending_mic.clear();
+            pending_sys.clear();
+            on_level(0.0);
+            continue;
+        }
+
+        on_level(peak_level(&mic_chunk).max(peak_level(&sys_chunk)));
+        pending_mic.append(&mut mic_chunk);
+        pending_sys.append(&mut sys_chunk);
 
         let mic_healthy = !mic_q.is_failed() && mic_q.millis_since_last_push() < STALL_MS;
         let sys_healthy = !sys_q.is_failed() && sys_q.millis_since_last_push() < STALL_MS;
@@ -263,6 +331,22 @@ fn writer_loop(
         .finalize()
         .map_err(|e| format!("wav finalize: {e}"))?;
     Ok(frames)
+}
+
+fn peak_level(samples: &[i16]) -> f32 {
+    samples
+        .chunks(LEVEL_WINDOW)
+        .map(|window| {
+            let sum: f64 = window
+                .iter()
+                .map(|&s| {
+                    let v = s as f64 / i16::MAX as f64;
+                    v * v
+                })
+                .sum();
+            (sum / window.len() as f64).sqrt() as f32
+        })
+        .fold(0.0, f32::max)
 }
 
 fn transcode_wav_to_flac(wav_path: &Path, flac_path: &Path) -> Result<(), String> {
