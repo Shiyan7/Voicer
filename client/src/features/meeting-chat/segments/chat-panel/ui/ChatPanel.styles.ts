@@ -5,7 +5,7 @@ export const chatPanelStyles = tv({
     root: `
       fixed z-[60] flex flex-col overflow-hidden rounded-3xl border
       border-gray-200 bg-white shadow-2xl shadow-black/10
-      animate-[chat-panel-in_220ms_cubic-bezier(0.22,1,0.36,1)]
+      animate-chat-panel-in
     `,
     header: 'flex items-center justify-between gap-3 px-5 pb-2 pt-4',
     title: 'text-[17px] font-semibold tracking-title text-gray-900',

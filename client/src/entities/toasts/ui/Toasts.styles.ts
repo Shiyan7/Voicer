@@ -13,7 +13,7 @@ export const toastsStyles = tv({
       rounded-2xl border border-black/5
       bg-white/90 backdrop-blur-xl text-gray-900
       shadow-[0_12px_32px_-12px_rgba(15,15,30,0.3)]
-      animate-[toast-in_220ms_ease-out]
+      animate-toast-in
     `,
     badge: `
       flex size-8 shrink-0 items-center justify-center rounded-xl text-white

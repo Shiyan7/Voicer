@@ -1,3 +1,5 @@
+import './BorderBeam.css';
+
 import { JSX } from 'solid-js';
 
 import { borderBeamStyles } from './BorderBeam.styles';
