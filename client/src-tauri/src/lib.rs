@@ -26,6 +26,8 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             commands::start_recording,
             commands::stop_recording,
+            commands::pause_recording,
+            commands::resume_recording,
             commands::get_recorder_state,
             commands::delete_recording,
         ])

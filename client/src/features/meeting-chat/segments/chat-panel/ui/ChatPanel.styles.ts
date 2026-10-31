@@ -5,7 +5,7 @@ export const chatPanelStyles = tv({
     root: `
       fixed z-[60] flex flex-col overflow-hidden rounded-3xl border
       border-gray-200 bg-white shadow-2xl shadow-black/10
-      animate-[chat-panel-in_220ms_cubic-bezier(0.22,1,0.36,1)]
+      animate-chat-panel-in
     `,
     header: 'flex items-center justify-between gap-3 px-5 pb-2 pt-4',
     title: 'text-[17px] font-semibold tracking-title text-gray-900',
@@ -33,15 +33,6 @@ export const chatPanelStyles = tv({
       text-[15px] leading-6 text-gray-900 outline-none
       placeholder:text-gray-500
     `,
-    send: `
-      relative z-[4] flex size-9 shrink-0 items-center justify-center
-      rounded-full border border-transparent text-gray-900
-      [background:linear-gradient(180deg,rgb(255_255_255/0.9),rgb(255_255_255/0.25))_padding-box,linear-gradient(180deg,rgb(0_0_0/0.09),transparent_65%)_border-box]
-      isolate transition-[color,transform] duration-200 active:scale-95
-      before:absolute before:-inset-px before:-z-10 before:rounded-full
-      before:bg-gray-900 before:opacity-0 before:transition-opacity
-      before:duration-200 enabled:hover:text-white
-      enabled:hover:before:opacity-100 disabled:text-gray-400
-    `,
+    send: 'z-[4]',
   },
 });

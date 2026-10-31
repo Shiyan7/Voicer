@@ -1,18 +1,16 @@
 @import 'tailwindcss';
 
 @theme {
-  --breakpoint-xs: 321px;
   --breakpoint-sm: 577px;
   --breakpoint-md: 769px;
-  --breakpoint-laptop: 1025px;
-  --breakpoint-desktop: 1441px;
 
   --z-modal: 1000;
   --z-toast: 50;
   --z-navigation: 800;
 
-  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
-  'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+    'Helvetica Neue', Helvetica, Arial, sans-serif;
 
   --color-gray-50: #fbfbfd;
   --color-gray-100: #f5f5f7;
@@ -94,84 +92,97 @@
   --animate-ai-shimmer: ai-flow 2.4s ease-in-out infinite;
   --animate-title-reveal: title-reveal 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-focus-flash: focus-flash 2.4s ease-out 0.3s both;
+  --animate-page-fade: page-fade-in 0.5s ease-out;
+  --animate-toast-in: toast-in 220ms ease-out;
+  --animate-chat-panel-in: chat-panel-in 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-spinner-dash: spinner-dash 1.4s ease-in-out infinite;
 
   --radius-lg: 0.625rem;
   --radius-xl: 0.875rem;
   --radius-2xl: 1.25rem;
 
   --tracking-title: -0.014em;
-}
 
-@keyframes toast-in {
-  from {
-    opacity: 0;
-    transform: translateY(12px) scale(0.98);
+  @keyframes page-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
-}
 
-@keyframes title-reveal {
-  0% {
-    opacity: 0;
-    filter: blur(10px);
-    transform: translateY(6px);
-    background-position: 100% 0;
+  @keyframes toast-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px) scale(0.98);
+    }
   }
-  45% {
-    opacity: 1;
-    filter: blur(0);
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 1;
-    filter: blur(0);
-    transform: translateY(0);
-    background-position: 0 0;
-  }
-}
 
-@keyframes focus-flash {
-  0%,
-  40% {
-    background-color: color-mix(
-      in srgb,
-      var(--color-amber-300) 45%,
-      transparent
-    );
+  @keyframes title-reveal {
+    0% {
+      opacity: 0;
+      filter: blur(10px);
+      transform: translateY(6px);
+      background-position: 100% 0;
+    }
+    45% {
+      opacity: 1;
+      filter: blur(0);
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 1;
+      filter: blur(0);
+      transform: translateY(0);
+      background-position: 0 0;
+    }
   }
-  100% {
-    background-color: transparent;
-  }
-}
 
-@keyframes spinner-dash {
-  0% {
-    stroke-dasharray: 1 150;
-    stroke-dashoffset: 0;
+  @keyframes focus-flash {
+    0%,
+    40% {
+      background-color: color-mix(
+        in srgb,
+        var(--color-amber-300) 45%,
+        transparent
+      );
+    }
+    100% {
+      background-color: transparent;
+    }
   }
-  50% {
-    stroke-dasharray: 90 150;
-    stroke-dashoffset: -35;
-  }
-  100% {
-    stroke-dasharray: 90 150;
-    stroke-dashoffset: -124;
-  }
-}
 
-@keyframes chat-panel-in {
-  from {
-    opacity: 0;
-    transform: translateY(8px) scale(0.96);
+  @keyframes spinner-dash {
+    0% {
+      stroke-dasharray: 1 150;
+      stroke-dashoffset: 0;
+    }
+    50% {
+      stroke-dasharray: 90 150;
+      stroke-dashoffset: -35;
+    }
+    100% {
+      stroke-dasharray: 90 150;
+      stroke-dashoffset: -124;
+    }
   }
-}
 
-@keyframes ai-flow {
-  0%,
-  100% {
-    background-position: 0 50%;
+  @keyframes chat-panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.96);
+    }
   }
-  50% {
-    background-position: 100% 50%;
+
+  @keyframes ai-flow {
+    0%,
+    100% {
+      background-position: 0 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
   }
 }
 
@@ -227,31 +238,6 @@
   color-scheme: dark;
 }
 
-@layer components {
-  .icon,
-  .icon-x,
-  .icon-y {
-    @apply select-none fill-current inline-block text-inherit box-content;
-    vertical-align: -0.125em;
-  }
-
-  .icon,
-  .icon-x {
-    @apply w-[1em];
-  }
-
-  .icon,
-  .icon-y {
-    @apply h-[1em];
-  }
-
-  .loader {
-    width: 50px;
-    height: 50px;
-    background-color: var(--color-gray-200);
-  }
-}
-
 body {
   -webkit-font-smoothing: antialiased;
   color: var(--color-gray-900);
@@ -261,19 +247,6 @@ body {
 
 button:not(:disabled) {
   cursor: pointer;
-}
-
-@keyframes page-fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.page-fade {
-  animation: page-fade-in 0.5s ease-out;
 }
 
 @utility frost-surface {
@@ -291,237 +264,4 @@ button:not(:disabled) {
   animation: var(--animate-ai-flow);
   color: var(--color-slate-900);
   box-shadow: inset 0 0 0 1px rgb(186 230 253 / 0.8);
-}
-
-@property --beam-angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: true;
-}
-
-@property --beam-opacity {
-  syntax: '<number>';
-  initial-value: 0;
-  inherits: true;
-}
-
-@keyframes beam-spin {
-  to {
-    --beam-angle: 360deg;
-  }
-}
-
-@keyframes beam-hue-shift {
-  0% {
-    filter: hue-rotate(-30deg) brightness(1.3) saturate(var(--beam-saturation));
-  }
-  50% {
-    filter: hue-rotate(30deg) brightness(1.3) saturate(var(--beam-saturation));
-  }
-  100% {
-    filter: hue-rotate(-30deg) brightness(1.3) saturate(var(--beam-saturation));
-  }
-}
-
-.beam-root {
-  --beam-stroke: 0.12;
-  --beam-inner: 0.26;
-  --beam-bloom: 0.34;
-  --beam-shadow: rgba(0, 0, 0, 0.14);
-  --beam-saturation: 1.5;
-  --beam-ink: 0, 0, 0;
-  --beam-mask: conic-gradient(
-    from var(--beam-angle),
-    transparent 0%,
-    transparent 30%,
-    rgba(255, 255, 255, 0.1) 36%,
-    rgba(255, 255, 255, 0.35) 44%,
-    white 52%,
-    white 80%,
-    rgba(255, 255, 255, 0.35) 86%,
-    rgba(255, 255, 255, 0.1) 92%,
-    transparent 95%,
-    transparent 100%
-  );
-  position: relative;
-  overflow: hidden;
-  border-radius: var(--beam-radius);
-  --beam-opacity: 1;
-  animation: beam-spin 1.96s linear infinite;
-}
-
-:root[data-theme='dark'] .beam-root {
-  --beam-stroke: 0.26;
-  --beam-inner: 0.42;
-  --beam-bloom: 0.24;
-  --beam-shadow: rgba(255, 255, 255, 0.27);
-  --beam-saturation: 1.2;
-}
-
-
-
-.beam-root::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: calc(var(--beam-radius) - 1px);
-  padding: 1px;
-  clip-path: inset(0 round var(--beam-radius));
-  background:
-    conic-gradient(
-      from var(--beam-angle),
-      transparent 0%,
-      transparent 54%,
-      rgba(0, 0, 0, 0.08) 57%,
-      rgba(0, 0, 0, 0.2) 60%,
-      rgba(0, 0, 0, 0.4) 63%,
-      rgba(0, 0, 0, 0.55) 66%,
-      rgba(0, 0, 0, 0.4) 69%,
-      rgba(0, 0, 0, 0.2) 72%,
-      rgba(0, 0, 0, 0.08) 75%,
-      transparent 78%,
-      transparent 100%
-    ),
-    radial-gradient(ellipse 70px 40px at 33% -7.4%, rgb(255, 50, 100), transparent),
-    radial-gradient(ellipse 60px 35px at 12% -5%, rgb(40, 140, 255), transparent),
-    radial-gradient(ellipse 40px 70px at 2.1% 68.3%, rgb(50, 200, 80), transparent),
-    radial-gradient(ellipse 20px 35px at 2.1% 68.3%, rgb(30, 185, 170), transparent),
-    radial-gradient(ellipse 180px 32px at 74.4% 100%, rgb(100, 70, 255), transparent),
-    radial-gradient(ellipse 85px 26px at 55% 100%, rgb(40, 140, 255), transparent),
-    radial-gradient(ellipse 74px 32px at 93.9% 0%, rgb(255, 120, 40), transparent),
-    radial-gradient(ellipse 26px 42px at 100% 27.1%, rgb(240, 50, 180), transparent),
-    radial-gradient(ellipse 52px 48px at 100% 27.1%, rgb(180, 40, 240), transparent);
-  -webkit-mask:
-    var(--beam-mask),
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: source-in, xor;
-  mask:
-    var(--beam-mask),
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask-composite: intersect, exclude;
-  pointer-events: none;
-  z-index: 2;
-  opacity: calc(var(--beam-opacity) * var(--beam-stroke));
-  animation: beam-hue-shift 12s ease-in-out infinite;
-}
-
-:root[data-theme='dark'] .beam-root::after {
-  background:
-    conic-gradient(
-      from var(--beam-angle),
-      transparent 0%,
-      transparent 54%,
-      rgba(255, 255, 255, 0.1) 57%,
-      rgba(255, 255, 255, 0.3) 60%,
-      rgba(255, 255, 255, 0.6) 63%,
-      rgba(255, 255, 255, 0.75) 66%,
-      rgba(255, 255, 255, 0.6) 69%,
-      rgba(255, 255, 255, 0.3) 72%,
-      rgba(255, 255, 255, 0.1) 75%,
-      transparent 78%,
-      transparent 100%
-    ),
-    radial-gradient(ellipse 70px 40px at 33% -7.4%, rgb(255, 50, 100), transparent),
-    radial-gradient(ellipse 60px 35px at 12% -5%, rgb(40, 140, 255), transparent),
-    radial-gradient(ellipse 40px 70px at 2.1% 68.3%, rgb(50, 200, 80), transparent),
-    radial-gradient(ellipse 20px 35px at 2.1% 68.3%, rgb(30, 185, 170), transparent),
-    radial-gradient(ellipse 180px 32px at 74.4% 100%, rgb(100, 70, 255), transparent),
-    radial-gradient(ellipse 85px 26px at 55% 100%, rgb(40, 140, 255), transparent),
-    radial-gradient(ellipse 74px 32px at 93.9% 0%, rgb(255, 120, 40), transparent),
-    radial-gradient(ellipse 26px 42px at 100% 27.1%, rgb(240, 50, 180), transparent),
-    radial-gradient(ellipse 52px 48px at 100% 27.1%, rgb(180, 40, 240), transparent);
-}
-
-.beam-root::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: var(--beam-radius);
-  background:
-    radial-gradient(ellipse 63px 36px at 33% -7.4%, rgba(255, 50, 100, 0.45), transparent),
-    radial-gradient(ellipse 54px 32px at 12% -5%, rgba(40, 140, 255, 0.45), transparent),
-    radial-gradient(ellipse 36px 63px at 2.1% 68.3%, rgba(50, 200, 80, 0.45), transparent),
-    radial-gradient(ellipse 18px 32px at 2.1% 68.3%, rgba(30, 185, 170, 0.45), transparent),
-    radial-gradient(ellipse 162px 29px at 74.4% 100%, rgba(100, 70, 255, 0.45), transparent),
-    radial-gradient(ellipse 77px 23px at 55% 100%, rgba(40, 140, 255, 0.45), transparent),
-    radial-gradient(ellipse 67px 29px at 93.9% 0%, rgba(255, 120, 40, 0.45), transparent),
-    radial-gradient(ellipse 23px 38px at 100% 27.1%, rgba(240, 50, 180, 0.45), transparent),
-    radial-gradient(ellipse 47px 43px at 100% 27.1%, rgba(180, 40, 240, 0.45), transparent);
-  box-shadow: inset 0 0 9px 1px var(--beam-shadow);
-  -webkit-mask-image:
-    var(--beam-mask),
-    linear-gradient(white, transparent 28px, transparent calc(100% - 28px), white),
-    linear-gradient(to right, white, transparent 28px, transparent calc(100% - 28px), white);
-  -webkit-mask-composite: source-in, source-over;
-  mask-image:
-    var(--beam-mask),
-    linear-gradient(white, transparent 28px, transparent calc(100% - 28px), white),
-    linear-gradient(to right, white, transparent 28px, transparent calc(100% - 28px), white);
-  mask-composite: intersect, add;
-  pointer-events: none;
-  z-index: 1;
-  opacity: calc(var(--beam-opacity) * var(--beam-inner));
-  clip-path: inset(0 round var(--beam-radius));
-  animation: beam-hue-shift 12s ease-in-out infinite;
-}
-
-.beam-bloom {
-  position: absolute;
-  inset: 0;
-  border-radius: calc(var(--beam-radius) - 1px);
-  clip-path: inset(0 round var(--beam-radius));
-  background: conic-gradient(
-    from var(--beam-angle),
-    transparent 0%,
-    transparent 58%,
-    rgba(var(--beam-ink), 0.02) 62%,
-    rgba(var(--beam-ink), 0.08) 65%,
-    rgba(var(--beam-ink), 0.2) 67%,
-    rgba(var(--beam-ink), 0.4) 69%,
-    rgba(var(--beam-ink), 0.6) 70%,
-    rgba(var(--beam-ink), 0.6) 70.5%,
-    rgba(var(--beam-ink), 0.4) 71.5%,
-    rgba(var(--beam-ink), 0.2) 73%,
-    rgba(var(--beam-ink), 0.08) 75%,
-    rgba(var(--beam-ink), 0.02) 78%,
-    transparent 82%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  padding: 1px;
-  filter: blur(8px) brightness(1.3) saturate(var(--beam-saturation));
-  pointer-events: none;
-  z-index: 3;
-  opacity: calc(var(--beam-opacity) * var(--beam-bloom));
-}
-
-:root[data-theme='dark'] .beam-bloom {
-  background: conic-gradient(
-    from var(--beam-angle),
-    transparent 0%,
-    transparent 58%,
-    rgba(255, 255, 255, 0.03) 62%,
-    rgba(255, 255, 255, 0.08) 65%,
-    rgba(255, 255, 255, 0.2) 67%,
-    rgba(255, 255, 255, 0.45) 69%,
-    rgba(255, 255, 255, 0.85) 70%,
-    rgba(255, 255, 255, 0.85) 70.5%,
-    rgba(255, 255, 255, 0.45) 71.5%,
-    rgba(255, 255, 255, 0.2) 73%,
-    rgba(255, 255, 255, 0.08) 75%,
-    rgba(255, 255, 255, 0.03) 78%,
-    transparent 82%
-  );
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .beam-root,
-  .beam-root::before,
-  .beam-root::after {
-    animation: none;
-  }
 }

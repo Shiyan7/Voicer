@@ -309,11 +309,12 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['smiley'], [16]),
         defineSpriteSymbol(['sort'], [24]),
         defineSpriteSymbol(['sparkles'], [16]),
+        defineSpriteSymbol(['stop'], [16]),
         defineSpriteSymbol(['timeline'], [16]),
         defineSpriteSymbol(['trash'], [24]),
         defineSpriteSymbol(['upload'], [24]),
       ],
-      defineExternalAssetMeta('common.9320f0c1.svg'),
+      defineExternalAssetMeta('common.a369b7e4.svg'),
     ),
   ]),
   defineSprite('navigation', [
@@ -381,6 +382,7 @@ export type SpritesMeta = {
     | 'smiley'
     | 'sort'
     | 'sparkles'
+    | 'stop'
     | 'timeline'
     | 'trash'
     | 'upload';
