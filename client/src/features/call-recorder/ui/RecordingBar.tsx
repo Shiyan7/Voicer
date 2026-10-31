@@ -24,7 +24,7 @@ export function RecordingBar(props: RecordingBarProps) {
           paused={props.isPaused}
           size={112}
         />
-        <span class={styles.mic({ paused: props.isPaused })}>
+        <span class={styles.mic()}>
           <Icon size={24} name="common:microphone" />
         </span>
       </div>

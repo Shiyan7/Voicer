@@ -10,6 +10,8 @@ export const RELEASE_SEC = 0.28;
 
 export const SETTLED_LEVEL = 0.001;
 
+export const HIDDEN_SCALE = 0.8;
+
 export const STROKE_WIDTH = 1;
 
 export const BLOB_LAYERS = [

@@ -5,6 +5,7 @@ import {
   BASE_RADIUS_RATIO,
   BLOB_LAYERS,
   BLOB_POINTS,
+  HIDDEN_SCALE,
   MAX_DPR,
   RELEASE_SEC,
   SETTLED_LEVEL,
@@ -81,6 +82,7 @@ export const useVoiceBlob = (props: VoiceBlobProps) => {
     const center = size / 2;
     const baseRadius = size * BASE_RADIUS_RATIO;
     let level = 0;
+    let presence = 1;
     let time = 0;
     let last = performance.now();
     let frame = 0;
@@ -89,19 +91,22 @@ export const useVoiceBlob = (props: VoiceBlobProps) => {
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       level = follow(level, props.paused ? 0 : props.level, dt);
+      presence = follow(presence, props.paused ? 0 : 1, dt);
       if (!props.paused && !reducedMotion) time += dt * (0.6 + level * 1.4);
 
       ctx.clearRect(0, 0, size, size);
       for (const layer of BLOB_LAYERS) {
-        ctx.globalAlpha = layer.alpha;
-        const radius = baseRadius * (layer.scale + layer.growth * level);
+        ctx.globalAlpha = layer.alpha * presence;
+        const shrink = HIDDEN_SCALE + (1 - HIDDEN_SCALE) * presence;
+        const radius =
+          baseRadius * (layer.scale + layer.growth * level) * shrink;
         const wobble = reducedMotion ? 0 : layer.wobble * (0.6 + level);
         traceBlob(ctx, center, radius, wobble, time * layer.speed);
         ctx.fill();
-        ctx.globalAlpha = layer.stroke;
+        ctx.globalAlpha = layer.stroke * presence;
         ctx.stroke();
       }
-      const settled = props.paused && level < SETTLED_LEVEL;
+      const settled = props.paused && presence < SETTLED_LEVEL;
       frame = settled ? 0 : requestAnimationFrame(draw);
     };
 

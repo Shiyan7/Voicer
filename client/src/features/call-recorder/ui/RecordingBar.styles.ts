@@ -14,7 +14,7 @@ export const recordingBarStyles = tv({
     `,
     mic: `
       relative flex size-12 items-center justify-center rounded-full
-      bg-red-500 text-[#fff] transition-colors duration-200
+      bg-red-500 text-[#fff]
     `,
     time: `
       min-w-16 text-[19px] tabular-nums text-gray-600
@@ -24,7 +24,7 @@ export const recordingBarStyles = tv({
   },
   variants: {
     paused: {
-      true: { time: 'opacity-50', mic: 'bg-gray-400' },
+      true: { time: 'opacity-50' },
     },
   },
 });
