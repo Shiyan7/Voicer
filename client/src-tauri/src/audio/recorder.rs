@@ -3,14 +3,15 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::mpsc::{self, Receiver, RecvTimeoutError, Sender};
 use std::sync::Arc;
 use std::thread::JoinHandle;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use super::mic::MicSource;
 use super::system::SystemSource;
 use super::{SampleQueue, RECORDING_ACTIVE, TARGET_SAMPLE_RATE};
 
 const STALL_MS: u64 = 2_000;
-const FLUSH_INTERVAL: Duration = Duration::from_millis(40);
+const LEVEL_INTERVAL: Duration = Duration::from_millis(40);
+const FLUSH_INTERVAL: Duration = Duration::from_millis(250);
 const LEVEL_WINDOW: usize = (TARGET_SAMPLE_RATE / 100) as usize;
 
 pub type LevelSink = Box<dyn Fn(f32) + Send>;
@@ -274,26 +275,38 @@ fn writer_loop(
     let mut pending_mic: Vec<i16> = Vec::new();
     let mut pending_sys: Vec<i16> = Vec::new();
     let mut frames: u64 = 0;
+    let mut last_flush = Instant::now();
+    let mut was_paused = false;
 
     loop {
         let stop = matches!(
-            stop_rx.recv_timeout(FLUSH_INTERVAL),
+            stop_rx.recv_timeout(LEVEL_INTERVAL),
             Ok(()) | Err(RecvTimeoutError::Disconnected)
         );
 
         let mut mic_chunk = mic_q.take();
         let mut sys_chunk = sys_q.take();
 
-        if paused.load(Ordering::Relaxed) && !stop {
+        let is_paused = paused.load(Ordering::Relaxed);
+        if is_paused && !stop {
             pending_mic.clear();
             pending_sys.clear();
-            on_level(0.0);
+            if !was_paused {
+                on_level(0.0);
+            }
+            was_paused = true;
             continue;
         }
+        was_paused = is_paused;
 
-        on_level(peak_level(&mic_chunk).max(peak_level(&sys_chunk)));
+        on_level(max_window_rms(&mic_chunk).max(max_window_rms(&sys_chunk)));
         pending_mic.append(&mut mic_chunk);
         pending_sys.append(&mut sys_chunk);
+
+        if !stop && last_flush.elapsed() < FLUSH_INTERVAL {
+            continue;
+        }
+        last_flush = Instant::now();
 
         let mic_healthy = !mic_q.is_failed() && mic_q.millis_since_last_push() < STALL_MS;
         let sys_healthy = !sys_q.is_failed() && sys_q.millis_since_last_push() < STALL_MS;
@@ -333,7 +346,7 @@ fn writer_loop(
     Ok(frames)
 }
 
-fn peak_level(samples: &[i16]) -> f32 {
+fn max_window_rms(samples: &[i16]) -> f32 {
     samples
         .chunks(LEVEL_WINDOW)
         .map(|window| {

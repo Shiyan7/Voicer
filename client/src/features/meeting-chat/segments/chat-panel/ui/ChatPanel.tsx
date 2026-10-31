@@ -2,6 +2,7 @@ import { Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
 import { BorderBeam } from '@/shared/ui/border-beam';
+import { glassIconButtonStyles } from '@/shared/ui/button';
 import { Icon } from '@/shared/ui/icon';
 
 import { ChatPanelProps } from '../types/ChatPanelProps';
@@ -81,7 +82,7 @@ export function ChatPanel(props: ChatPanelProps) {
               onKeyDown={props.onInputKeyDown}
             />
             <button
-              class={styles.send()}
+              class={glassIconButtonStyles({ size: 'sm', class: styles.send() })}
               type="submit"
               disabled={!props.canSend}
               aria-label={i18n.t('meetings.chat.send')}

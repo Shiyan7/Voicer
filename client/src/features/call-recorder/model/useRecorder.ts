@@ -71,10 +71,8 @@ export const useRecorder = () => {
 
   const togglePause = async () => {
     try {
-      const state = isPaused()
-        ? await resumeRecording()
-        : await pauseRecording();
-      timer.setPause(state.pausedMs, state.pausedAt);
+      if (isPaused()) await resumeRecording();
+      else await pauseRecording();
     } catch (error) {
       console.error('[recorder] failed to toggle pause:', error);
     }

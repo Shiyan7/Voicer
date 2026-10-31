@@ -27,7 +27,7 @@ export const useElapsedTimer = () => {
     return Math.max(0, (end - start - pausedMs()) / 1000);
   };
 
-  const start = (startedAtMs: number, pausedTotalMs = 0, pausedAtMs = null as number | null) => {
+  const start = (startedAtMs: number, pausedTotalMs = 0, pausedAtMs: number | null = null) => {
     setPausedMs(pausedTotalMs);
     setPausedAt(pausedAtMs);
     setStartedAt(startedAtMs);

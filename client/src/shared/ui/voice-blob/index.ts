@@ -1,0 +1,1 @@
+export { VoiceBlob } from './VoiceBlob';

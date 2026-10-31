@@ -139,28 +139,17 @@ pub fn do_stop_recording(app: &AppHandle) -> Result<StopRecordingResult, String>
 
 #[tauri::command]
 pub fn pause_recording(app: AppHandle) -> Result<PauseStateDto, String> {
-    #[cfg(target_os = "macos")]
-    {
-        change_pause(&app, true)
-    }
-    #[cfg(not(target_os = "macos"))]
-    {
-        let _ = app;
-        Err("recording is only supported on macOS".into())
-    }
+    change_pause(&app, true)
 }
 
 #[tauri::command]
 pub fn resume_recording(app: AppHandle) -> Result<PauseStateDto, String> {
-    #[cfg(target_os = "macos")]
-    {
-        change_pause(&app, false)
-    }
-    #[cfg(not(target_os = "macos"))]
-    {
-        let _ = app;
-        Err("recording is only supported on macOS".into())
-    }
+    change_pause(&app, false)
+}
+
+#[cfg(not(target_os = "macos"))]
+fn change_pause(_app: &AppHandle, _pause: bool) -> Result<PauseStateDto, String> {
+    Err("recording is only supported on macOS".into())
 }
 
 #[cfg(target_os = "macos")]
