@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { MeetingEntity } from '../meetings/meeting.entity';
 import { FileUpload } from '../file/file-upload';
-import { GroqService } from '../groq/groq.service';
+import { ClaudeService } from '../claude/claude.service';
 import { InterviewLanguage } from './interview-language.enum';
 import { InterviewSessionEntity } from './interview-session.entity';
 import { InterviewSessionOutput } from './interview-session.output';
@@ -37,7 +37,7 @@ export class InterviewSessionsService {
     private readonly turnsRepository: Repository<InterviewTurnEntity>,
     @InjectRepository(MeetingEntity)
     private readonly meetingsRepository: Repository<MeetingEntity>,
-    private readonly groq: GroqService,
+    private readonly claude: ClaudeService,
   ) {}
 
   async create(
@@ -149,7 +149,7 @@ export class InterviewSessionsService {
     resumeText: string,
     vacancyText: string,
   ): Promise<InterviewPreparation> {
-    return this.groq.generateJson<InterviewPreparation>(
+    return this.claude.generateJson<InterviewPreparation>(
       buildInterviewPreparationPrompt(resumeText, vacancyText),
       INTERVIEW_PREPARATION_SCHEMA,
     );

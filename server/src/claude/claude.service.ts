@@ -4,9 +4,10 @@ import { spawn } from 'child_process';
 import { tmpdir } from 'os';
 import { createInterface } from 'readline';
 import { LlmTurn } from '../llm/llm-turn';
-import { ClaudeStreamLine } from './claude.types';
+import { ClaudeJsonResult, ClaudeStreamLine } from './claude.types';
 
 const DEFAULT_CLAUDE_MODEL = 'haiku';
+const JSON_SYSTEM_PROMPT = 'Верни только данные по заданной JSON-схеме.';
 
 @Injectable()
 export class ClaudeService {
@@ -23,11 +24,16 @@ export class ClaudeService {
     onText: (text: string) => Promise<void>,
     signal?: AbortSignal,
   ): Promise<string> {
-    const child = spawn('claude', this.buildArgs(systemInstruction), {
-      cwd: tmpdir(),
-      stdio: ['pipe', 'pipe', 'ignore'],
+    const child = this.run(
+      [
+        ...this.buildArgs(systemInstruction),
+        '--output-format',
+        'stream-json',
+        '--verbose',
+        '--include-partial-messages',
+      ],
       signal,
-    });
+    );
     const failure = new Promise<never>((_, reject) => {
       child.once('error', reject);
     });
@@ -35,6 +41,38 @@ export class ClaudeService {
 
     const read = this.readStream(child.stdout, onText);
     return Promise.race([read, failure]);
+  }
+
+  async generateJson<T>(prompt: string, schema: object): Promise<T> {
+    const child = this.run([
+      ...this.buildArgs(JSON_SYSTEM_PROMPT),
+      '--output-format',
+      'json',
+      '--json-schema',
+      JSON.stringify(schema),
+    ]);
+    const failure = new Promise<never>((_, reject) => {
+      child.once('error', reject);
+    });
+    child.stdin.end(prompt);
+
+    const output = Promise.resolve(child.stdout.toArray());
+    const chunks = await Promise.race([output, failure]);
+    const result = JSON.parse(
+      Buffer.concat(chunks as Buffer[]).toString('utf8'),
+    ) as ClaudeJsonResult;
+    if (result.is_error || !result.structured_output) {
+      throw new Error(`Claude failed: ${result.result}`);
+    }
+    return result.structured_output as T;
+  }
+
+  private run(args: string[], signal?: AbortSignal) {
+    return spawn('claude', args, {
+      cwd: tmpdir(),
+      stdio: ['pipe', 'pipe', 'ignore'],
+      signal,
+    });
   }
 
   private buildArgs(systemInstruction: string): string[] {
@@ -52,10 +90,6 @@ export class ClaudeService {
       '--strict-mcp-config',
       '--effort',
       'low',
-      '--output-format',
-      'stream-json',
-      '--verbose',
-      '--include-partial-messages',
     ];
   }
 

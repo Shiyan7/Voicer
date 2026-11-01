@@ -1,4 +1,4 @@
-export interface LlmInlineImage {
+interface LlmInlineImage {
   mimeType: string;
   data: string;
 }

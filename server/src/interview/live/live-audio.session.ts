@@ -11,7 +11,7 @@ import {
 } from './live-audio.config';
 import { LiveClientMessage, LiveServerMessage } from './live-audio.types';
 
-export type DeepgramSocket = Awaited<
+type DeepgramSocket = Awaited<
   ReturnType<DeepgramClient['listen']['v1']['connect']>
 >;
 
@@ -21,7 +21,7 @@ type DeepgramMessage =
   | listen.ListenV1UtteranceEnd
   | listen.ListenV1SpeechStarted;
 
-export interface LiveAudioSessionDeps {
+interface LiveAudioSessionDeps {
   client: WebSocket;
   userId: string;
   sessionId: string;

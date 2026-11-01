@@ -1,7 +1,7 @@
 import { InterviewLanguage } from '../interview-language.enum';
 import { InterviewTurnEntity } from '../interview-turn.entity';
 
-export interface InterviewAnswerContext {
+interface InterviewAnswerContext {
   language: InterviewLanguage;
   cheatSheet: string;
   vacancyText: string;
