@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { MoreThanOrEqual, Repository } from 'typeorm';
 import { MeetingEntity } from '../meetings/meeting.entity';
 import { FileUpload } from '../file/file-upload';
 import { GroqService } from '../groq/groq.service';
@@ -18,6 +18,7 @@ import {
   toInterviewTurnOutput,
 } from './interview.serializer';
 import { extractPdfText } from './extract-pdf-text';
+import { findRecording } from './find-recording';
 import { readUpload } from '../file/read-upload';
 import {
   buildInterviewPreparationPrompt,
@@ -76,11 +77,9 @@ export class InterviewSessionsService {
   async update(
     userId: string,
     id: string,
-    recordingStartedAt: Date | undefined,
     finished: boolean | undefined,
   ): Promise<InterviewSessionOutput> {
     const session = await this.findOwned(userId, id);
-    if (recordingStartedAt) session.recordingStartedAt = recordingStartedAt;
     if (finished) session.finishedAt ??= new Date();
     await this.sessionsRepository.save(session);
     return this.get(userId, id);
@@ -128,24 +127,15 @@ export class InterviewSessionsService {
     userId: string,
     sessions: InterviewSessionEntity[],
   ): Promise<InterviewSessionOutput[]> {
-    const recordingStarts = sessions
-      .map((session) => session.recordingStartedAt)
-      .filter((startedAt): startedAt is Date => startedAt !== null);
-    const meetings = recordingStarts.length
-      ? await this.meetingsRepository.find({
-          select: { id: true, startedAt: true },
-          where: { userId, startedAt: In(recordingStarts) },
-        })
-      : [];
-    const meetingIdByStart = new Map(
-      meetings.map((meeting) => [meeting.startedAt.getTime(), meeting.id]),
-    );
+    if (!sessions.length) return [];
+    const earliest = sessions[sessions.length - 1].createdAt;
+    const meetings = await this.meetingsRepository.find({
+      select: { id: true, startedAt: true, durationSec: true },
+      where: { userId, startedAt: MoreThanOrEqual(earliest) },
+      order: { durationSec: { direction: 'DESC', nulls: 'LAST' } },
+    });
     return sessions.map((session) =>
-      toInterviewSessionOutput(
-        session,
-        meetingIdByStart.get(session.recordingStartedAt?.getTime() ?? 0) ??
-          null,
-      ),
+      toInterviewSessionOutput(session, findRecording(session, meetings)),
     );
   }
 

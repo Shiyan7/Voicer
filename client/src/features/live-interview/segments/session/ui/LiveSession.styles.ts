@@ -13,8 +13,11 @@ export const liveSessionStyles = tv({
     status: 'flex items-center gap-2 text-[15px] text-gray-600',
     dot: 'size-2.5 rounded-full',
     spacer: 'flex-1',
-    scroller: 'flex min-h-0 flex-1 flex-col-reverse overflow-y-auto',
-    list: 'flex flex-col gap-8 pb-4',
+    scroller: `
+      flex min-h-0 flex-1 flex-col-reverse overflow-x-hidden overflow-y-auto
+      overscroll-contain [scrollbar-width:none]
+    `,
+    list: 'flex min-w-0 flex-col gap-8 pb-4',
     toBottom: `
       absolute bottom-10 left-1/2 flex size-10 -translate-x-1/2 items-center
       justify-center rounded-full border border-gray-300 bg-white

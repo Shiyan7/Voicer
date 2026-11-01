@@ -2,12 +2,12 @@ import { tv } from 'tailwind-variants';
 
 export const liveTurnCardStyles = tv({
   slots: {
-    root: 'flex flex-col gap-4',
+    root: 'flex min-w-0 flex-col gap-4',
     question: `
       max-w-[90%] self-start rounded-2xl rounded-bl-md bg-gray-100 px-5 py-3.5
       text-[22px] leading-snug text-gray-900
     `,
-    answer: 'flex flex-col gap-4',
+    answer: 'flex min-w-0 flex-col gap-4',
     short: 'text-[26px] font-medium leading-snug text-gray-900',
     toggle: 'self-start',
     details: 'text-[20px] leading-relaxed text-gray-700',

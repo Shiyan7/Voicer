@@ -1,6 +1,5 @@
 import {
   Args,
-  GraphQLISODateTime,
   ID,
   Mutation,
   Query,
@@ -60,14 +59,9 @@ export class InterviewResolver {
   updateInterviewSession(
     @CurrentUser() user: UserEntity,
     @Args('id', { type: () => ID }) id: string,
-    @Args('recordingStartedAt', {
-      type: () => GraphQLISODateTime,
-      nullable: true,
-    })
-    recordingStartedAt?: Date,
     @Args('finished', { nullable: true }) finished?: boolean,
   ): Promise<InterviewSessionOutput> {
-    return this.sessions.update(user.id, id, recordingStartedAt, finished);
+    return this.sessions.update(user.id, id, finished);
   }
 
   @Mutation(() => ID)

@@ -9,7 +9,10 @@ export const codeBlockStyles = tv({
       flex size-8 items-center justify-center rounded-lg text-[#a1a1aa]
       transition-colors hover:bg-[#ffffff1a] hover:text-[#fff]
     `,
-    pre: 'overflow-x-auto px-5 pt-2 pb-5 font-mono text-[16px] leading-relaxed',
+    pre: `
+      whitespace-pre-wrap break-words px-5 pt-2 pb-5 font-mono text-[16px]
+      leading-relaxed
+    `,
   },
 });
 

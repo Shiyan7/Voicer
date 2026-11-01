@@ -26,21 +26,17 @@ export function useLiveInterview() {
 
   const isReview = () => phase() === 'review';
 
-  const startRecording = async (sessionId: string) => {
+  const startRecording = async () => {
     const recording = await ensureRecording();
     isRecordingOwned = recording.isOwned;
     session.startTimer(recording.startedAt);
-    await updateInterviewSession({
-      id: sessionId,
-      recordingStartedAt: new Date(recording.startedAt).toISOString(),
-    });
   };
 
   const beginSession = (sessionId: string, initialTurns: LiveTurn[]) => {
     activeSessionId = sessionId;
     setPhase('session');
     session.start(sessionId, initialTurns);
-    startRecording(sessionId).catch(session.fail);
+    startRecording().catch(session.fail);
   };
 
   const startInterview = () => {

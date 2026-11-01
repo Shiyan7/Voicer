@@ -11,9 +11,6 @@ export class InterviewTurns1793509501183 implements MigrationInterface {
       `CREATE INDEX "IDX_e7828fcb8808b5d2c2c748008a" ON "interview_turns" ("sessionId", "createdAt") `,
     );
     await queryRunner.query(
-      `ALTER TABLE "interview_sessions" ADD "recordingStartedAt" TIMESTAMP WITH TIME ZONE`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "interview_sessions" ADD "finishedAt" TIMESTAMP WITH TIME ZONE`,
     );
     await queryRunner.query(
@@ -27,9 +24,6 @@ export class InterviewTurns1793509501183 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "interview_sessions" DROP COLUMN "finishedAt"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "interview_sessions" DROP COLUMN "recordingStartedAt"`,
     );
     await queryRunner.query(
       `DROP INDEX "public"."IDX_e7828fcb8808b5d2c2c748008a"`,

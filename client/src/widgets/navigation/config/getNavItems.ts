@@ -25,8 +25,8 @@ export const getNavItems = (): NavItem[] => [
   {
     href: paths.live,
     label: i18n.t('nav.live'),
-    icon: 'common:microphone',
-    activeIcon: 'common:microphone',
+    icon: 'navigation:microphone',
+    activeIcon: 'navigation:microphone-solid',
   },
   {
     href: paths.stats,

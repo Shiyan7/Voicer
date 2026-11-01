@@ -36,9 +36,6 @@ export class InterviewSessionEntity {
   recommendations: InterviewRecommendations;
 
   @Column({ type: 'timestamptz', nullable: true })
-  recordingStartedAt: Date | null;
-
-  @Column({ type: 'timestamptz', nullable: true })
   finishedAt: Date | null;
 
   @CreateDateColumn({ type: 'timestamptz' })

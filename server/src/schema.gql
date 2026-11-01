@@ -160,7 +160,7 @@ type Mutation {
   signIn(input: SignInInput!): AuthPayload!
   signUp(input: SignUpInput!): AuthPayload!
   toggleActionItem(id: ID!): Boolean!
-  updateInterviewSession(finished: Boolean, id: ID!, recordingStartedAt: DateTime): InterviewSessionOutput!
+  updateInterviewSession(finished: Boolean, id: ID!): InterviewSessionOutput!
 }
 
 type PagePaginationMetaOutput {

@@ -1,7 +1,7 @@
 import { SHORT_ANSWER_MIN_LENGTH } from '../config/liveInterviewConfig';
 
 const CODE_FENCE = /```([\w+#-]*)[^\n]*\n?([\s\S]*?)(?:```|$)/g;
-const SENTENCE = /[^.!?…]+(?:[.!?…]+|$)/g;
+const SENTENCE = /(?:`[^`]*`|[^`])+?(?:[.!?…]+(?=\s|$)|$)/g;
 
 const extractCode = (text: string) => {
   const blocks = [...text.matchAll(CODE_FENCE)];

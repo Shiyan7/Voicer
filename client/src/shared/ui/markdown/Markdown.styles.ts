@@ -7,6 +7,7 @@ export const markdownStyles = tv({
     bold: 'font-semibold',
     code: `
       rounded-md bg-gray-100 px-1.5 py-0.5 font-mono text-[0.87em] text-gray-800
+      break-words [box-decoration-break:clone]
     `,
   },
   variants: {
