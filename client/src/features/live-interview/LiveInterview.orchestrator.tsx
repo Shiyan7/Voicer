@@ -27,10 +27,12 @@ export function LiveInterviewOrchestrator() {
               isReady={vm.prep.isReady()}
               errorMessage={vm.prep.errorMessage()}
               sections={vm.prep.sections()}
+              pastSessions={vm.history.pastSessions()}
               onResumeSelected={vm.prep.onResumeSelected}
               onVacancyInput={vm.prep.onVacancyInput}
               onPrepare={vm.prep.prepare}
               onStart={vm.startInterview}
+              onOpenPastSession={vm.openPastSession}
             />
           }
         >
@@ -44,6 +46,9 @@ export function LiveInterviewOrchestrator() {
             onAnswerNow={vm.session.answerNow}
             onCaptureCode={vm.session.captureCode}
             onStop={vm.finishInterview}
+            isReadOnly={vm.isReview()}
+            recordingHref={vm.recordingHref()}
+            onBack={vm.closeReview}
           />
         </Show>
       </div>

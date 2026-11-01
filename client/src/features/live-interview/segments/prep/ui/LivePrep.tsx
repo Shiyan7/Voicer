@@ -16,6 +16,36 @@ export function LivePrep(props: LivePrepProps) {
         <h1 class={styles.title()}>{i18n.t('live.prep.title')}</h1>
         <p class={styles.subtitle()}>{i18n.t('live.prep.subtitle')}</p>
       </header>
+      <Show when={props.pastSessions.length > 0}>
+        <section class={styles.history()}>
+          <h2 class={styles.historyTitle()}>{i18n.t('live.prep.history')}</h2>
+          <For each={props.pastSessions}>
+            {(pastSession) => (
+              <button
+                class={styles.historyItem()}
+                type="button"
+                onClick={() => props.onOpenPastSession(pastSession.id)}
+              >
+                <span class={styles.historyDate()}>
+                  {pastSession.dateLabel}
+                </span>
+                <span class={styles.historyVacancy()}>
+                  {pastSession.vacancyLabel}
+                </span>
+                <span
+                  class={styles.badge({ finished: pastSession.isFinished })}
+                >
+                  {i18n.t(
+                    pastSession.isFinished
+                      ? 'live.prep.status_finished'
+                      : 'live.prep.status_unfinished',
+                  )}
+                </span>
+              </button>
+            )}
+          </For>
+        </section>
+      </Show>
       <section class={styles.card()}>
         <span class={styles.label()}>{i18n.t('live.prep.resume')}</span>
         <label class={styles.file({ filled: props.hasResume })}>

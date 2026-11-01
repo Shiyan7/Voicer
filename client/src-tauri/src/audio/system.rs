@@ -106,10 +106,8 @@ fn build_and_start(queue: Arc<SampleQueue>) -> Result<StartedTap, String> {
     let kind = sample_kind(&asbd)?;
 
     let uid = tap.uid().map_err(|e| format!("tap uid: {e:?}"))?;
-    let sub_tap = cf::DictionaryOf::with_keys_values(
-        &[ca::sub_device_keys::uid()],
-        &[uid.as_type_ref()],
-    );
+    let sub_tap =
+        cf::DictionaryOf::with_keys_values(&[ca::sub_device_keys::uid()], &[uid.as_type_ref()]);
 
     use ca::aggregate_device_keys as agg_keys;
     let agg_desc = cf::DictionaryOf::with_keys_values(
@@ -137,13 +135,13 @@ fn build_and_start(queue: Arc<SampleQueue>) -> Result<StartedTap, String> {
         out: Vec::new(),
     });
 
-    let agg_device =
-        ca::AggregateDevice::with_desc(&agg_desc).map_err(|e| format!("aggregate device: {e:?}"))?;
+    let agg_device = ca::AggregateDevice::with_desc(&agg_desc)
+        .map_err(|e| format!("aggregate device: {e:?}"))?;
     let proc_id = agg_device
         .create_io_proc_id(proc, Some(&mut ctx))
         .map_err(|e| format!("create io proc: {e:?}"))?;
-    let started = ca::device_start(agg_device, Some(proc_id))
-        .map_err(|e| format!("device start: {e:?}"))?;
+    let started =
+        ca::device_start(agg_device, Some(proc_id)).map_err(|e| format!("device start: {e:?}"))?;
 
     Ok((started, tap, ctx))
 }

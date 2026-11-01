@@ -1,7 +1,6 @@
 export interface InterviewAnswerContext {
   cheatSheet: string;
   vacancyText: string;
-  styleSamples: string | null;
   history: string[];
 }
 
@@ -22,11 +21,6 @@ export function buildInterviewAnswerInstruction(
     `Шпаргалка кандидата:\n${context.cheatSheet}`,
     `Вакансия:\n${context.vacancyText}`,
   ];
-  if (context.styleSamples) {
-    sections.push(
-      `Примеры моей живой речи, подстраивайся под этот стиль:\n${context.styleSamples}`,
-    );
-  }
   if (context.history.length) {
     sections.push(`Недавний ход разговора:\n${context.history.join('\n')}`);
   }

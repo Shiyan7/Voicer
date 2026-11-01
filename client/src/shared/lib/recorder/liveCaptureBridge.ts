@@ -1,28 +1,14 @@
 import { Channel, invoke } from '@tauri-apps/api/core';
 
-export interface LiveCaptureHandlers {
-  onSystemChunk: (pcm: Int16Array) => void;
-  onMicChunk?: (pcm: Int16Array) => void;
-}
-
 const toPcm = (data: ArrayBuffer | number[]) =>
   data instanceof ArrayBuffer
     ? new Int16Array(data)
     : new Int16Array(Uint8Array.from(data).buffer);
 
-export const startLiveCapture = ({
-  onSystemChunk,
-  onMicChunk,
-}: LiveCaptureHandlers) => {
+export const startLiveCapture = (onChunk: (pcm: Int16Array) => void) => {
   const onSystem = new Channel<ArrayBuffer>();
-  onSystem.onmessage = (data) => onSystemChunk(toPcm(data));
-  const onMic = new Channel<ArrayBuffer>();
-  onMic.onmessage = (data) => onMicChunk?.(toPcm(data));
-  return invoke<void>('start_live_capture', {
-    onSystem,
-    onMic,
-    includeMic: Boolean(onMicChunk),
-  });
+  onSystem.onmessage = (data) => onChunk(toPcm(data));
+  return invoke<void>('start_live_capture', { onSystem });
 };
 
 export const stopLiveCapture = () => invoke<void>('stop_live_capture');

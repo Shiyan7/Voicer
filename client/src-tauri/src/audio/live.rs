@@ -4,65 +4,29 @@ use std::sync::Arc;
 use std::thread::JoinHandle;
 use std::time::{Duration, Instant};
 
-use super::mic::MicSource;
 use super::system::SystemSource;
-use super::{SampleQueue, TeeSlot, LIVE_MIC_TEE, LIVE_SYSTEM_TEE, RECORDING_ACTIVE};
+use super::{SampleQueue, LIVE_SYSTEM_TEE, RECORDING_ACTIVE};
 
 const CHUNK_INTERVAL: Duration = Duration::from_millis(100);
 const RETRY_INTERVAL: Duration = Duration::from_secs(2);
 
 pub type ChunkSink = Box<dyn Fn(Vec<u8>) + Send>;
 
-#[derive(Clone, Copy, PartialEq, Eq)]
-enum FeedKind {
-    System,
-    Mic,
-}
-
-enum OwnSource {
-    System(SystemSource),
-    Mic(MicSource),
-}
-
-impl OwnSource {
-    fn start(kind: FeedKind, queue: Arc<SampleQueue>) -> Result<Self, String> {
-        match kind {
-            FeedKind::System => SystemSource::start(queue).map(OwnSource::System),
-            FeedKind::Mic => MicSource::start(queue).map(OwnSource::Mic),
-        }
-    }
-
-    fn stop(self) {
-        match self {
-            OwnSource::System(s) => s.stop(),
-            OwnSource::Mic(s) => s.stop(),
-        }
-    }
-}
-
 struct Feed {
-    kind: FeedKind,
     queue: Arc<SampleQueue>,
-    slot: &'static TeeSlot,
-    own: Option<OwnSource>,
+    own: Option<SystemSource>,
     last_attempt: Option<Instant>,
     sink: ChunkSink,
 }
 
 impl Feed {
-    fn new(kind: FeedKind, sink: ChunkSink) -> Self {
-        let slot = match kind {
-            FeedKind::System => &LIVE_SYSTEM_TEE,
-            FeedKind::Mic => &LIVE_MIC_TEE,
-        };
+    fn new(sink: ChunkSink) -> Self {
         let queue = SampleQueue::new();
-        if let Ok(mut guard) = slot.lock() {
+        if let Ok(mut guard) = LIVE_SYSTEM_TEE.lock() {
             *guard = Some(queue.clone());
         }
         Self {
-            kind,
             queue,
-            slot,
             own: None,
             last_attempt: None,
             sink,
@@ -70,8 +34,7 @@ impl Feed {
     }
 
     fn reconcile(&mut self) -> Result<(), String> {
-        let recording = RECORDING_ACTIVE.load(Ordering::Relaxed);
-        if recording {
+        if RECORDING_ACTIVE.load(Ordering::Relaxed) {
             if let Some(own) = self.own.take() {
                 own.stop();
             }
@@ -87,8 +50,7 @@ impl Feed {
             return Ok(());
         }
         self.last_attempt = Some(Instant::now());
-        let own = OwnSource::start(self.kind, self.queue.clone())?;
-        self.own = Some(own);
+        self.own = Some(SystemSource::start(self.queue.clone())?);
         Ok(())
     }
 
@@ -100,7 +62,7 @@ impl Feed {
     }
 
     fn shutdown(mut self) {
-        if let Ok(mut guard) = self.slot.lock() {
+        if let Ok(mut guard) = LIVE_SYSTEM_TEE.lock() {
             *guard = None;
         }
         if let Some(own) = self.own.take() {
@@ -116,29 +78,17 @@ pub struct LiveCapture {
 }
 
 impl LiveCapture {
-    pub fn start(on_system: ChunkSink, on_mic: Option<ChunkSink>) -> Result<Self, String> {
-        let mut feeds = vec![Feed::new(FeedKind::System, on_system)];
-        if let Some(sink) = on_mic {
-            feeds.push(Feed::new(FeedKind::Mic, sink));
-        }
-
-        for feed in feeds.iter_mut() {
-            if let Err(e) = feed.reconcile() {
-                let label = match feed.kind {
-                    FeedKind::System => "system audio",
-                    FeedKind::Mic => "microphone",
-                };
-                for f in feeds {
-                    f.shutdown();
-                }
-                return Err(format!("{label} unavailable: {e}"));
-            }
+    pub fn start(on_system: ChunkSink) -> Result<Self, String> {
+        let mut feed = Feed::new(on_system);
+        if let Err(e) = feed.reconcile() {
+            feed.shutdown();
+            return Err(format!("system audio unavailable: {e}"));
         }
 
         let (stop_tx, stop_rx) = mpsc::channel::<()>();
         let join = std::thread::Builder::new()
             .name("voicer-live-capture".into())
-            .spawn(move || live_loop(feeds, &stop_rx))
+            .spawn(move || live_loop(feed, &stop_rx))
             .map_err(|e| format!("failed to spawn live thread: {e}"))?;
 
         Ok(Self {
@@ -165,7 +115,7 @@ impl Drop for LiveCapture {
     }
 }
 
-fn live_loop(mut feeds: Vec<Feed>, stop_rx: &Receiver<()>) {
+fn live_loop(mut feed: Feed, stop_rx: &Receiver<()>) {
     loop {
         let stop = matches!(
             stop_rx.recv_timeout(CHUNK_INTERVAL),
@@ -174,16 +124,12 @@ fn live_loop(mut feeds: Vec<Feed>, stop_rx: &Receiver<()>) {
         if stop {
             break;
         }
-        for feed in feeds.iter_mut() {
-            if let Err(e) = feed.reconcile() {
-                eprintln!("[voicer] live capture source restart failed: {e}");
-            }
-            feed.flush();
+        if let Err(e) = feed.reconcile() {
+            eprintln!("[voicer] live capture source restart failed: {e}");
         }
+        feed.flush();
     }
-    for feed in feeds {
-        feed.shutdown();
-    }
+    feed.shutdown();
 }
 
 pub fn pcm_to_le_bytes(samples: &[i16]) -> Vec<u8> {
@@ -208,7 +154,7 @@ mod tests {
 
     #[test]
     fn tee_forwards_samples() {
-        static SLOT: TeeSlot = std::sync::Mutex::new(None);
+        static SLOT: crate::audio::TeeSlot = std::sync::Mutex::new(None);
         let target = SampleQueue::new();
         *SLOT.lock().unwrap() = Some(target.clone());
         let source = SampleQueue::with_tee(&SLOT);

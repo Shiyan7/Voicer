@@ -46,13 +46,12 @@ export const buildWsOnConnect =
     const token = readToken(context.connectionParams);
     if (!token) throw new UnauthorizedException();
 
-    const user = await authenticateAccessToken(
-      jwtService,
-      configService,
-      authService,
-      token,
-    );
-
-    (context.extra as Record<string, unknown>).user = user;
+    (context.extra as Record<string, unknown>).user =
+      await authenticateAccessToken(
+        jwtService,
+        configService,
+        authService,
+        token,
+      );
     return true;
   };

@@ -3,7 +3,7 @@ import { createStore, produce } from 'solid-js/store';
 
 import { i18n } from '@/shared/i18n';
 
-import { createLiveSource } from '../api/createLiveSource';
+import { createServerLiveSource } from '../api/createServerLiveSource';
 import { TIMER_INTERVAL_MS } from '../config/liveInterviewConfig';
 import { formatElapsed } from '../lib/formatElapsed';
 import { toLiveTurnView } from '../lib/toLiveTurnView';
@@ -67,7 +67,7 @@ export function useLiveSession() {
   };
 
   const attachSource = (sessionId: string) => {
-    const next = createLiveSource(sessionId);
+    const next = createServerLiveSource(sessionId);
     unsubscribers = [
       next.onTranscript(applyTranscript),
       next.onAnswer(applyAnswer),
@@ -79,9 +79,9 @@ export function useLiveSession() {
 
   const stopTimer = () => clearInterval(timer);
 
-  const start = (sessionId: string) => {
+  const start = (sessionId: string, initialTurns: LiveTurn[]) => {
     detachSource();
-    setTurns([]);
+    setTurns(initialTurns);
     setElapsed(0);
     stopTimer();
     timer = setInterval(
@@ -94,6 +94,11 @@ export function useLiveSession() {
   const stop = () => {
     stopTimer();
     detachSource();
+  };
+
+  const show = (savedTurns: LiveTurn[]) => {
+    stop();
+    setTurns(savedTurns);
   };
 
   const timerLabel = () => formatElapsed(elapsed());
@@ -124,6 +129,7 @@ export function useLiveSession() {
   return {
     start,
     stop,
+    show,
     timerLabel,
     statusLabel,
     isAnswering,

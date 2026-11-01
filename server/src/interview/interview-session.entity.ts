@@ -35,8 +35,11 @@ export class InterviewSessionEntity {
   @Column({ type: 'jsonb' })
   recommendations: InterviewRecommendations;
 
-  @Column({ type: 'text', nullable: true })
-  styleSamples: string | null;
+  @Column({ type: 'timestamptz', nullable: true })
+  recordingStartedAt: Date | null;
+
+  @Column({ type: 'timestamptz', nullable: true })
+  finishedAt: Date | null;
 
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;

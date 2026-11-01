@@ -243,19 +243,13 @@ pub struct LiveCaptureHandle {
 pub async fn start_live_capture(
     app: AppHandle,
     on_system: tauri::ipc::Channel<tauri::ipc::InvokeResponseBody>,
-    on_mic: tauri::ipc::Channel<tauri::ipc::InvokeResponseBody>,
-    include_mic: bool,
 ) -> Result<(), String> {
     #[cfg(target_os = "macos")]
     {
         use crate::audio::live::{ChunkSink, LiveCapture};
-        let to_sink = |channel: tauri::ipc::Channel<tauri::ipc::InvokeResponseBody>| -> ChunkSink {
-            Box::new(move |bytes| {
-                let _ = channel.send(tauri::ipc::InvokeResponseBody::Raw(bytes));
-            })
-        };
-        let system_sink = to_sink(on_system);
-        let mic_sink = include_mic.then(|| to_sink(on_mic));
+        let system_sink: ChunkSink = Box::new(move |bytes| {
+            let _ = on_system.send(tauri::ipc::InvokeResponseBody::Raw(bytes));
+        });
         tauri::async_runtime::spawn_blocking(move || {
             let state = app.state::<LiveCaptureHandle>();
             let mut slot = state
@@ -265,7 +259,7 @@ pub async fn start_live_capture(
             if let Some(previous) = slot.take() {
                 previous.stop();
             }
-            *slot = Some(LiveCapture::start(system_sink, mic_sink)?);
+            *slot = Some(LiveCapture::start(system_sink)?);
             Ok(())
         })
         .await
@@ -273,7 +267,7 @@ pub async fn start_live_capture(
     }
     #[cfg(not(target_os = "macos"))]
     {
-        let _ = (app, on_system, on_mic, include_mic);
+        let _ = (app, on_system);
         Err("live capture is only supported on macOS".into())
     }
 }

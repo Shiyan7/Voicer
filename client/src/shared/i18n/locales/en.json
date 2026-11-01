@@ -301,7 +301,10 @@
         "questions": "Likely questions",
         "emphasis": "What to emphasize"
       },
-      "error": "Could not prepare. Check the resume and try again."
+      "error": "Could not prepare. Check the resume and try again.",
+      "history": "Past interviews",
+      "status_finished": "Finished",
+      "status_unfinished": "Not finished"
     },
     "session": {
       "status": {
@@ -315,7 +318,9 @@
       "waiting": "Waiting for the interviewer’s question…",
       "show_details": "Show details",
       "hide_details": "Hide details",
-      "screenshot_question": "Coding task from screenshot"
+      "screenshot_question": "Coding task from screenshot",
+      "listen_recording": "Listen to recording",
+      "back": "Back"
     }
   }
 }

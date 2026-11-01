@@ -100,11 +100,12 @@ export const createServerLiveSource = (sessionId: string): LiveSource => {
   const start = () => {
     isActive = true;
     socket = openSocket();
-    unsubscribeAnswers = subscribeInterviewAnswer({ sessionId }, onAnswerOutput);
-    status.emit('listening');
-    startLiveCapture({ onSystemChunk: sendAudio }).catch(() =>
-      status.emit('idle'),
+    unsubscribeAnswers = subscribeInterviewAnswer(
+      { sessionId },
+      onAnswerOutput,
     );
+    status.emit('listening');
+    startLiveCapture(sendAudio).catch(() => status.emit('idle'));
   };
 
   const stop = () => {

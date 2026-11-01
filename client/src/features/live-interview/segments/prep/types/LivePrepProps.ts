@@ -1,3 +1,4 @@
+import { LivePastSessionView } from '../../../types/LivePastSessionView';
 import { LivePrepSectionView } from '../../../types/LivePrepSectionView';
 
 export interface LivePrepProps {
@@ -9,8 +10,10 @@ export interface LivePrepProps {
   isReady: boolean;
   errorMessage: string;
   sections: LivePrepSectionView[];
+  pastSessions: LivePastSessionView[];
   onResumeSelected: (event: Event) => void;
   onVacancyInput: (value: string) => void;
   onPrepare: () => void;
   onStart: () => void;
+  onOpenPastSession: (id: string) => void;
 }

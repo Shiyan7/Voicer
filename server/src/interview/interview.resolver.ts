@@ -1,5 +1,6 @@
 import {
   Args,
+  GraphQLISODateTime,
   ID,
   Mutation,
   Query,
@@ -13,6 +14,7 @@ import { UserEntity } from '../users/user.entity';
 import { InterviewAnswerOutput } from './interview-answer.output';
 import { InterviewAnswersService } from './interview-answers.service';
 import { InterviewSessionOutput } from './interview-session.output';
+import { InterviewTurnOutput } from './interview-turn.output';
 import { InterviewHistoryService } from './interview-history.service';
 import { InterviewSessionsService } from './interview-sessions.service';
 import { readUpload } from './read-upload';
@@ -44,15 +46,33 @@ export class InterviewResolver {
     return this.sessions.get(user.id, id);
   }
 
-  @Mutation(() => ID)
-  interviewAsk(
+  @Query(() => [InterviewSessionOutput])
+  interviewSessions(
+    @CurrentUser() user: UserEntity,
+  ): Promise<InterviewSessionOutput[]> {
+    return this.sessions.list(user.id);
+  }
+
+  @Query(() => [InterviewTurnOutput])
+  interviewTurns(
     @CurrentUser() user: UserEntity,
     @Args('sessionId', { type: () => ID }) sessionId: string,
-    @Args('question') question: string,
-    @Args('history', { type: () => [String], defaultValue: [] })
-    history: string[],
-  ): Promise<string> {
-    return this.answers.ask(user.id, sessionId, question, history);
+  ): Promise<InterviewTurnOutput[]> {
+    return this.sessions.turns(user.id, sessionId);
+  }
+
+  @Mutation(() => InterviewSessionOutput)
+  updateInterviewSession(
+    @CurrentUser() user: UserEntity,
+    @Args('id', { type: () => ID }) id: string,
+    @Args('recordingStartedAt', {
+      type: () => GraphQLISODateTime,
+      nullable: true,
+    })
+    recordingStartedAt?: Date,
+    @Args('finished', { nullable: true }) finished?: boolean,
+  ): Promise<InterviewSessionOutput> {
+    return this.sessions.update(user.id, id, recordingStartedAt, finished);
   }
 
   @Mutation(() => ID)

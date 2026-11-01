@@ -88,11 +88,20 @@ export type InterviewSessionOutput = {
   __typename?: 'InterviewSessionOutput';
   cheatSheet: Scalars['String']['output'];
   createdAt: Scalars['DateTime']['output'];
+  finishedAt?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['ID']['output'];
+  meetingId?: Maybe<Scalars['ID']['output']>;
   recommendations: InterviewRecommendationsOutput;
   resumeText: Scalars['String']['output'];
-  styleSamples?: Maybe<Scalars['String']['output']>;
   vacancyText: Scalars['String']['output'];
+};
+
+export type InterviewTurnOutput = {
+  __typename?: 'InterviewTurnOutput';
+  answer: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  question: Scalars['String']['output'];
 };
 
 export type KeyPointOutput = {
@@ -165,7 +174,6 @@ export type Mutation = {
   apiTokenCreate: ApiTokenCreatedOutput;
   apiTokenRevoke: Scalars['Boolean']['output'];
   createInterviewSession: InterviewSessionOutput;
-  interviewAsk: Scalars['ID']['output'];
   interviewAskScreenshot: Scalars['ID']['output'];
   meetingChatAsk: ChatMessageOutput;
   meetingChatClear: Scalars['Boolean']['output'];
@@ -178,6 +186,7 @@ export type Mutation = {
   signIn: AuthPayload;
   signUp: AuthPayload;
   toggleActionItem: Scalars['Boolean']['output'];
+  updateInterviewSession: InterviewSessionOutput;
 };
 
 export type MutationApiTokenCreateArgs = {
@@ -191,12 +200,6 @@ export type MutationApiTokenRevokeArgs = {
 export type MutationCreateInterviewSessionArgs = {
   resume: Scalars['Upload']['input'];
   vacancy: Scalars['String']['input'];
-};
-
-export type MutationInterviewAskArgs = {
-  history?: Array<Scalars['String']['input']>;
-  question: Scalars['String']['input'];
-  sessionId: Scalars['ID']['input'];
 };
 
 export type MutationInterviewAskScreenshotArgs = {
@@ -254,6 +257,12 @@ export type MutationToggleActionItemArgs = {
   id: Scalars['ID']['input'];
 };
 
+export type MutationUpdateInterviewSessionArgs = {
+  finished?: InputMaybe<Scalars['Boolean']['input']>;
+  id: Scalars['ID']['input'];
+  recordingStartedAt?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
 export type PagePaginationMetaOutput = {
   __typename?: 'PagePaginationMetaOutput';
   hasNextItems: Scalars['Boolean']['output'];
@@ -267,6 +276,8 @@ export type Query = {
   actionItems: Array<ActionItemOutput>;
   apiTokens: Array<ApiTokenOutput>;
   interviewSession: InterviewSessionOutput;
+  interviewSessions: Array<InterviewSessionOutput>;
+  interviewTurns: Array<InterviewTurnOutput>;
   meetingActionItems: Array<ActionItemOutput>;
   meetingChatMessages: Array<ChatMessageOutput>;
   meetingChatSuggestions: Array<Scalars['String']['output']>;
@@ -283,6 +294,10 @@ export type Query = {
 
 export type QueryInterviewSessionArgs = {
   id: Scalars['ID']['input'];
+};
+
+export type QueryInterviewTurnsArgs = {
+  sessionId: Scalars['ID']['input'];
 };
 
 export type QueryMeetingActionItemsArgs = {

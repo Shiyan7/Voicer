@@ -10,4 +10,7 @@ export interface LiveSessionProps {
   onAnswerNow: () => void;
   onCaptureCode: () => void;
   onStop: () => void;
+  isReadOnly: boolean;
+  recordingHref: string;
+  onBack: () => void;
 }

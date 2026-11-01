@@ -1,6 +1,5 @@
 export {
   captureScreenshot,
-  type LiveCaptureHandlers,
   startLiveCapture,
   stopLiveCapture,
 } from './liveCaptureBridge';

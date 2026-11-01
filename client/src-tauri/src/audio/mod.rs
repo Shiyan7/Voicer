@@ -15,7 +15,6 @@ pub static RECORDING_ACTIVE: AtomicBool = AtomicBool::new(false);
 pub type TeeSlot = Mutex<Option<Arc<SampleQueue>>>;
 
 pub static LIVE_SYSTEM_TEE: TeeSlot = Mutex::new(None);
-pub static LIVE_MIC_TEE: TeeSlot = Mutex::new(None);
 
 pub struct SampleQueue {
     samples: Mutex<Vec<i16>>,

@@ -1,1 +1,1 @@
-export type LivePhase = 'prep' | 'session';
+export type LivePhase = 'prep' | 'session' | 'review';

@@ -68,11 +68,19 @@ type InterviewRecommendationsOutput {
 type InterviewSessionOutput {
   cheatSheet: String!
   createdAt: DateTime!
+  finishedAt: DateTime
   id: ID!
+  meetingId: ID
   recommendations: InterviewRecommendationsOutput!
   resumeText: String!
-  styleSamples: String
   vacancyText: String!
+}
+
+type InterviewTurnOutput {
+  answer: String!
+  createdAt: DateTime!
+  id: ID!
+  question: String!
 }
 
 type KeyPointOutput {
@@ -140,7 +148,6 @@ type Mutation {
   apiTokenCreate(name: String!): ApiTokenCreatedOutput!
   apiTokenRevoke(id: ID!): Boolean!
   createInterviewSession(resume: Upload!, vacancy: String!): InterviewSessionOutput!
-  interviewAsk(history: [String!]! = [], question: String!, sessionId: ID!): ID!
   interviewAskScreenshot(image: Upload!, sessionId: ID!): ID!
   meetingChatAsk(meetingId: ID!, question: String!): ChatMessageOutput!
   meetingChatClear(meetingId: ID!): Boolean!
@@ -153,6 +160,7 @@ type Mutation {
   signIn(input: SignInInput!): AuthPayload!
   signUp(input: SignUpInput!): AuthPayload!
   toggleActionItem(id: ID!): Boolean!
+  updateInterviewSession(finished: Boolean, id: ID!, recordingStartedAt: DateTime): InterviewSessionOutput!
 }
 
 type PagePaginationMetaOutput {
@@ -166,6 +174,8 @@ type Query {
   actionItems: [ActionItemOutput!]!
   apiTokens: [ApiTokenOutput!]!
   interviewSession(id: ID!): InterviewSessionOutput!
+  interviewSessions: [InterviewSessionOutput!]!
+  interviewTurns(sessionId: ID!): [InterviewTurnOutput!]!
   meetingActionItems(meetingId: ID!): [ActionItemOutput!]!
   meetingChatMessages(meetingId: ID!): [ChatMessageOutput!]!
   meetingChatSuggestions(meetingId: ID!): [String!]!

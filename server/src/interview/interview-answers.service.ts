@@ -142,6 +142,9 @@ export class InterviewAnswersService {
       this.inFlight.delete(session.id);
     }
     await this.publish(session.id, { ...answer, text, done: true });
+    if (!controller.signal.aborted && text.trim()) {
+      await this.sessions.addTurn(session.id, answer.question, text);
+    }
   }
 
   private buildInstruction(
@@ -151,7 +154,6 @@ export class InterviewAnswersService {
     return buildInterviewAnswerInstruction({
       cheatSheet: session.cheatSheet,
       vacancyText: session.vacancyText,
-      styleSamples: session.styleSamples,
       history: history.slice(-MAX_HISTORY_LINES),
     });
   }

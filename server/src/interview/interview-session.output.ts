@@ -18,8 +18,11 @@ export class InterviewSessionOutput {
   @Field(() => InterviewRecommendationsOutput)
   recommendations: InterviewRecommendationsOutput;
 
-  @Field(() => String, { nullable: true })
-  styleSamples: string | null;
+  @Field(() => Date, { nullable: true })
+  finishedAt: Date | null;
+
+  @Field(() => ID, { nullable: true })
+  meetingId: string | null;
 
   @Field()
   createdAt: Date;
