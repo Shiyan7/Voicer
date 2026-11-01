@@ -14,6 +14,7 @@ export interface LiveSessionProps {
   onStop: () => void;
   isReadOnly: boolean;
   player?: JSX.Element;
+  reviewActions?: JSX.Element;
   reviewTitle?: string;
   onBack: () => void;
 }

@@ -6,16 +6,9 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PubSub } from 'graphql-subscriptions';
-import {
-  And,
-  FindOperator,
-  FindOptionsOrder,
-  In,
-  IsNull,
-  LessThan,
-  MoreThanOrEqual,
-  Repository,
-} from 'typeorm';
+import { FindOptionsOrder, In, IsNull, Repository } from 'typeorm';
+import { buildDateRangeCondition } from '../common/listing/build-date-range-condition';
+import { findPage } from '../common/listing/find-page';
 import { PUB_SUB } from '../pubsub/pubsub.module';
 import { MeetingOutput } from './meeting.output';
 import { MeetingsPageInput } from './meetings-page.input';
@@ -43,7 +36,6 @@ import {
 } from './meeting.serializer';
 
 const MAX_TITLE_LENGTH = 120;
-const MAX_PAGE_LIMIT = 100;
 
 @Injectable()
 export class MeetingsService {
@@ -170,47 +162,23 @@ export class MeetingsService {
     userId: string,
     input: MeetingsPageInput,
   ): Promise<MeetingsPageOutput> {
-    const page = Math.max(1, input.page);
-    const limit = Math.min(Math.max(1, input.limit), MAX_PAGE_LIMIT);
-    const skip = (page - 1) * limit;
-
-    const [meetings, total] = await this.meetingsRepository.findAndCount({
+    const { items, meta } = await findPage(this.meetingsRepository, input, {
       where: this.buildPageWhere(userId, input),
       order: this.buildPageOrder(input.sort),
-      skip,
-      take: limit,
     });
 
-    return {
-      items: meetings.map(toMeetingOutput),
-      meta: {
-        page,
-        total,
-        hasNextItems: skip + meetings.length < total,
-        hasPrevItems: page > 1,
-      },
-    };
+    return { items: items.map(toMeetingOutput), meta };
   }
 
   private buildPageWhere(userId: string, input: MeetingsPageInput) {
     const owned = { userId, interviewSessionId: IsNull() };
     const base = input.favoritesOnly ? { ...owned, isFavorite: true } : owned;
-    const startedAt = this.buildStartedAtRange(input.from, input.to);
+    const startedAt = buildDateRangeCondition(input.from, input.to);
     const ranged = startedAt ? { ...base, startedAt } : base;
 
     if (!input.sources?.length) return ranged;
 
     return { ...ranged, source: In(input.sources) };
-  }
-
-  private buildStartedAtRange(
-    from?: Date | null,
-    to?: Date | null,
-  ): FindOperator<Date> | null {
-    if (from && to) return And(MoreThanOrEqual(from), LessThan(to));
-    if (from) return MoreThanOrEqual(from);
-    if (to) return LessThan(to);
-    return null;
   }
 
   private buildPageOrder(sort: MeetingsSort): FindOptionsOrder<MeetingEntity> {
@@ -277,6 +245,19 @@ export class MeetingsService {
     }
 
     return deleted;
+  }
+
+  async deleteInterviewRecordings(
+    userId: string,
+    interviewSessionId: string,
+  ): Promise<void> {
+    const recordings = await this.meetingsRepository.findBy({
+      userId,
+      interviewSessionId,
+    });
+    await Promise.all(
+      recordings.map(({ id }) => this.deleteMeeting(userId, id)),
+    );
   }
 
   async setMeetingFavorite(

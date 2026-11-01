@@ -26,6 +26,8 @@ export function useLiveInterview() {
   let activeSessionId: string | undefined;
   let isRecordingOwned = false;
 
+  const sessionId = () => params.id;
+
   const isLoaded = () => !!details();
 
   const isReview = () => !!details()?.finishedAt;
@@ -109,6 +111,7 @@ export function useLiveInterview() {
 
   return {
     session,
+    sessionId,
     isLoaded,
     isReview,
     reviewTitle,

@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { MeetingOutput } from './meeting.output';
-import { PagePaginationMetaOutput } from './page-pagination-meta.output';
+import { PagePaginationMetaOutput } from '../common/listing/page-pagination-meta.output';
 
 @ObjectType()
 export class MeetingsPageOutput {

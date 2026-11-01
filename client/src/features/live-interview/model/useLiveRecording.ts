@@ -21,5 +21,5 @@ export function useLiveRecording() {
 
   const clear = () => show('', '');
 
-  return { audioUrl, transcript, playback, show, clear };
+  return { meetingId, audioUrl, transcript, playback, show, clear };
 }

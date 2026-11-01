@@ -5,13 +5,19 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, IsNull, Not, Repository } from 'typeorm';
+import { buildDateRangeCondition } from '../common/listing/build-date-range-condition';
+import { findPage } from '../common/listing/find-page';
 import { MeetingsService } from '../meetings/meetings.service';
 import { FileUpload } from '../file/file-upload';
 import { ClaudeService } from '../claude/claude.service';
 import { InterviewLanguage } from './interview-language.enum';
 import { InterviewSessionEntity } from './interview-session.entity';
 import { InterviewSessionOutput } from './interview-session.output';
+import { InterviewSessionStatus } from './interview-session-status.enum';
+import { InterviewSessionsPageInput } from './interview-sessions-page.input';
+import { InterviewSessionsPageOutput } from './interview-sessions-page.output';
+import { InterviewSessionsSort } from './interview-sessions-sort.enum';
 import { InterviewTurnEntity } from './interview-turn.entity';
 import { InterviewTurnOutput } from './interview-turn.output';
 import { InterviewPreparation } from './interview.types';
@@ -28,6 +34,10 @@ import {
 
 const MAX_RESUME_BYTES = 10 * 1024 * 1024;
 const MAX_VACANCY_LENGTH = 20000;
+const STATUS_CONDITIONS = {
+  [InterviewSessionStatus.FINISHED]: Not(IsNull()),
+  [InterviewSessionStatus.UNFINISHED]: IsNull(),
+};
 
 @Injectable()
 export class InterviewSessionsService {
@@ -70,12 +80,30 @@ export class InterviewSessionsService {
     return session;
   }
 
-  async list(userId: string): Promise<InterviewSessionOutput[]> {
-    const sessions = await this.sessionsRepository.find({
-      where: { userId },
-      order: { createdAt: 'DESC' },
+  async page(
+    userId: string,
+    input: InterviewSessionsPageInput,
+  ): Promise<InterviewSessionsPageOutput> {
+    const { items, meta } = await findPage(this.sessionsRepository, input, {
+      where: this.buildPageWhere(userId, input),
+      order: {
+        createdAt:
+          input.sort === InterviewSessionsSort.DATE_ASC ? 'ASC' : 'DESC',
+      },
     });
-    return this.withMeetings(sessions);
+    return { items: await this.withMeetings(items), meta };
+  }
+
+  private buildPageWhere(
+    userId: string,
+    input: InterviewSessionsPageInput,
+  ): FindOptionsWhere<InterviewSessionEntity> {
+    const createdAt = buildDateRangeCondition(input.from, input.to);
+    return {
+      userId,
+      ...(createdAt && { createdAt }),
+      ...(input.status && { finishedAt: STATUS_CONDITIONS[input.status] }),
+    };
   }
 
   async update(
@@ -87,6 +115,14 @@ export class InterviewSessionsService {
     if (finished) session.finishedAt ??= new Date();
     await this.sessionsRepository.save(session);
     return this.get(userId, id);
+  }
+
+  async delete(userId: string, id: string): Promise<InterviewSessionOutput> {
+    const session = await this.findOwned(userId, id);
+    const deleted = toInterviewSessionOutput(session);
+    await this.meetings.deleteInterviewRecordings(userId, id);
+    await this.sessionsRepository.remove(session);
+    return deleted;
   }
 
   async turns(

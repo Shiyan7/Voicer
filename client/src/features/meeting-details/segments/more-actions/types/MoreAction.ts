@@ -1,5 +1,3 @@
-export type MoreAction =
-  | 'show-in-finder'
-  | 'favorite'
-  | 'export-text'
-  | 'delete';
+import type { RecordingExportAction } from '@/entities/meeting';
+
+export type MoreAction = RecordingExportAction | 'favorite' | 'delete';

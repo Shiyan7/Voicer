@@ -24,6 +24,8 @@ export function LiveSession(props: LiveSessionProps) {
             <header class={styles.header()}>
               <BackButton onClick={props.onBack} />
               <h1 class={styles.title()}>{props.reviewTitle}</h1>
+              <span class={styles.spacer()} />
+              {props.reviewActions}
             </header>
           }
         >
@@ -51,7 +53,11 @@ export function LiveSession(props: LiveSessionProps) {
         <Show
           when={!props.isEmpty}
           fallback={
-            <p class={styles.empty()}>{i18n.t('live.session.waiting')}</p>
+            <p class={styles.empty()}>
+              {props.isReadOnly
+                ? i18n.t('live.session.no_turns')
+                : i18n.t('live.session.waiting')}
+            </p>
           }
         >
           <div class={styles.list()}>

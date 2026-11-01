@@ -15,6 +15,8 @@ import { InterviewAnswersService } from './interview-answers.service';
 import { InterviewLanguage } from './interview-language.enum';
 import { InterviewSessionOutput } from './interview-session.output';
 import { InterviewTurnOutput } from './interview-turn.output';
+import { InterviewSessionsPageInput } from './interview-sessions-page.input';
+import { InterviewSessionsPageOutput } from './interview-sessions-page.output';
 import { InterviewSessionsService } from './interview-sessions.service';
 
 @Resolver(() => InterviewSessionOutput)
@@ -46,11 +48,12 @@ export class InterviewResolver {
     return this.sessions.get(user.id, id);
   }
 
-  @Query(() => [InterviewSessionOutput])
-  interviewSessions(
+  @Query(() => InterviewSessionsPageOutput)
+  interviewSessionsPage(
     @CurrentUser() user: UserEntity,
-  ): Promise<InterviewSessionOutput[]> {
-    return this.sessions.list(user.id);
+    @Args('input') input: InterviewSessionsPageInput,
+  ): Promise<InterviewSessionsPageOutput> {
+    return this.sessions.page(user.id, input);
   }
 
   @Query(() => [InterviewTurnOutput])
@@ -59,6 +62,14 @@ export class InterviewResolver {
     @Args('sessionId', { type: () => ID }) sessionId: string,
   ): Promise<InterviewTurnOutput[]> {
     return this.sessions.turns(user.id, sessionId);
+  }
+
+  @Mutation(() => InterviewSessionOutput)
+  deleteInterviewSession(
+    @CurrentUser() user: UserEntity,
+    @Args('id', { type: () => ID }) id: string,
+  ): Promise<InterviewSessionOutput> {
+    return this.sessions.delete(user.id, id);
   }
 
   @Mutation(() => InterviewSessionOutput)

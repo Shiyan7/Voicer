@@ -5,6 +5,7 @@ import { PageFade } from '@/shared/ui/page-fade';
 
 import { liveInterviewStyles } from './LiveInterview.styles';
 import { useLiveInterview } from './model/useLiveInterview';
+import { ReviewActions } from './segments/review-actions';
 import { LiveSession } from './segments/session';
 
 const styles = liveInterviewStyles;
@@ -29,6 +30,16 @@ export function LiveInterviewOrchestrator() {
             isReadOnly={vm.isReview()}
             onBack={vm.closeReview}
             reviewTitle={vm.reviewTitle()}
+            reviewActions={
+              <Show when={vm.isReview()}>
+                <ReviewActions
+                  sessionId={vm.sessionId()}
+                  meetingId={vm.recording.meetingId()}
+                  audioUrl={vm.recording.audioUrl() || null}
+                  fileName={vm.reviewTitle()}
+                />
+              </Show>
+            }
             player={
               <Show when={vm.isReview() && vm.recording.audioUrl()}>
                 {(audioUrl) => (

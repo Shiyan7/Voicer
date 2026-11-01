@@ -54,7 +54,14 @@ export class FileStorageService {
   }
 
   signUrl(fileUrl: string | null): string | null {
-    return fileUrl && signFileUrl(this.signingSecret, fileUrl);
+    return (
+      fileUrl && signFileUrl(this.signingSecret, this.toCurrentOrigin(fileUrl))
+    );
+  }
+
+  private toCurrentOrigin(fileUrl: string): string {
+    const { pathname } = new URL(fileUrl);
+    return new URL(pathname, this.publicBaseUrl).toString();
   }
 
   isSigned(path: string, expires: string, signature: string): boolean {

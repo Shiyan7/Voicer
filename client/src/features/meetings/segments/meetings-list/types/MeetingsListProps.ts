@@ -1,3 +1,5 @@
+import type { QueryPagination } from '@/shared/hooks/useQueryPagination';
+
 import { MeetingCardData } from '../../../types/MeetingCardData';
 
 export interface MeetingsListProps {
@@ -6,11 +8,7 @@ export interface MeetingsListProps {
   isEmpty: boolean;
   emptyLabel: string;
   canResetFilters: boolean;
-  currentPage: number;
-  hasPrevPage: boolean;
-  hasNextPage: boolean;
+  pagination: QueryPagination;
   onDelete: (id: string) => void;
   onResetFilters: () => void;
-  onPrevPage: () => void;
-  onNextPage: () => void;
 }

@@ -104,6 +104,31 @@ export type InterviewSessionOutput = {
   vacancyText: Scalars['String']['output'];
 };
 
+export enum InterviewSessionStatus {
+  Finished = 'FINISHED',
+  Unfinished = 'UNFINISHED',
+}
+
+export type InterviewSessionsPageInput = {
+  from?: InputMaybe<Scalars['DateTime']['input']>;
+  limit?: Scalars['Int']['input'];
+  page?: Scalars['Int']['input'];
+  sort?: InterviewSessionsSort;
+  status?: InputMaybe<InterviewSessionStatus>;
+  to?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
+export type InterviewSessionsPageOutput = {
+  __typename?: 'InterviewSessionsPageOutput';
+  items: Array<InterviewSessionOutput>;
+  meta: PagePaginationMetaOutput;
+};
+
+export enum InterviewSessionsSort {
+  DateAsc = 'DATE_ASC',
+  DateDesc = 'DATE_DESC',
+}
+
 export type InterviewTurnOutput = {
   __typename?: 'InterviewTurnOutput';
   answer: Scalars['String']['output'];
@@ -183,6 +208,7 @@ export type Mutation = {
   apiTokenCreate: ApiTokenCreatedOutput;
   apiTokenRevoke: Scalars['Boolean']['output'];
   createInterviewSession: InterviewSessionOutput;
+  deleteInterviewSession: InterviewSessionOutput;
   interviewAskScreenshot: Scalars['ID']['output'];
   meetingChatAsk: ChatMessageOutput;
   meetingChatClear: Scalars['Boolean']['output'];
@@ -210,6 +236,10 @@ export type MutationCreateInterviewSessionArgs = {
   language?: InterviewLanguage;
   resume: Scalars['Upload']['input'];
   vacancy: Scalars['String']['input'];
+};
+
+export type MutationDeleteInterviewSessionArgs = {
+  id: Scalars['ID']['input'];
 };
 
 export type MutationInterviewAskScreenshotArgs = {
@@ -286,7 +316,7 @@ export type Query = {
   actionItems: Array<ActionItemOutput>;
   apiTokens: Array<ApiTokenOutput>;
   interviewSession: InterviewSessionOutput;
-  interviewSessions: Array<InterviewSessionOutput>;
+  interviewSessionsPage: InterviewSessionsPageOutput;
   interviewTurns: Array<InterviewTurnOutput>;
   meetingActionItems: Array<ActionItemOutput>;
   meetingChatMessages: Array<ChatMessageOutput>;
@@ -304,6 +334,10 @@ export type Query = {
 
 export type QueryInterviewSessionArgs = {
   id: Scalars['ID']['input'];
+};
+
+export type QueryInterviewSessionsPageArgs = {
+  input: InterviewSessionsPageInput;
 };
 
 export type QueryInterviewTurnsArgs = {

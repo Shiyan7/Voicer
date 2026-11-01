@@ -1,17 +1,15 @@
+import { useMeetingDelete } from '@/entities/meeting';
 import { useQueryPagination } from '@/shared/hooks/useQueryPagination';
 import { i18n } from '@/shared/i18n';
+import { toDateRangeInput } from '@/shared/lib/date-range';
 import { authRoot } from '@/shared/roots/authRoot';
 
 import { meetingsPageQuery } from '../api/meetingsPageQuery';
 import { meetingsStatsQuery } from '../api/meetingsStatsQuery';
-import { formatDateRange } from '../lib/formatDateRange';
-import { getDateRangePresets } from '../lib/getDateRangePresets';
 import { getSortOptions } from '../lib/getSortOptions';
 import { getSourceOptions } from '../lib/getSourceOptions';
 import { mapMeetingCards } from '../lib/mapMeetingCards';
-import { toDateRangeInput } from '../lib/toDateRangeInput';
 import { useMeetingCapture } from './useMeetingCapture';
-import { useMeetingDelete } from './useMeetingDelete';
 import { useMeetingsFilters } from './useMeetingsFilters';
 import { useStatsBanner } from './useStatsBanner';
 
@@ -52,7 +50,7 @@ export const useMeetingsPage = () => {
 
   const emptyLabel = () => {
     if (filters.hasSourceFilter() || filters.hasDateFilter()) {
-      return i18n.t('meetings.empty_filtered');
+      return i18n.t('filters.empty');
     }
     if (filters.favoritesOnly()) return i18n.t('meetings.empty_favorites');
     return i18n.t('meetings.empty');
@@ -66,8 +64,6 @@ export const useMeetingsPage = () => {
   const sourceOptions = () => getSourceOptions(stats()?.sources ?? []);
 
   const showSourceFilter = () => sourceOptions().length > 1;
-
-  const dateRangeLabel = () => formatDateRange(filters.dateRange());
 
   const totalCount = () => String(meetingsPage()?.meta.total ?? 0);
 
@@ -85,13 +81,7 @@ export const useMeetingsPage = () => {
     sourceOptions,
     showSourceFilter,
     totalCount,
-    dateRangeLabel,
-    dateRangePresets: getDateRangePresets,
     sortOptions: getSortOptions,
-    currentPage: pagination.currentPage,
-    hasPrevPage: pagination.hasPrevPage,
-    hasNextPage: pagination.hasNextPage,
-    goToPrevPage: pagination.goToPrevPage,
-    goToNextPage: pagination.goToNextPage,
+    pagination,
   };
 };

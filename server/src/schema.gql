@@ -84,6 +84,30 @@ type InterviewSessionOutput {
   vacancyText: String!
 }
 
+enum InterviewSessionStatus {
+  FINISHED
+  UNFINISHED
+}
+
+input InterviewSessionsPageInput {
+  from: DateTime
+  limit: Int! = 10
+  page: Int! = 1
+  sort: InterviewSessionsSort! = DATE_DESC
+  status: InterviewSessionStatus
+  to: DateTime
+}
+
+type InterviewSessionsPageOutput {
+  items: [InterviewSessionOutput!]!
+  meta: PagePaginationMetaOutput!
+}
+
+enum InterviewSessionsSort {
+  DATE_ASC
+  DATE_DESC
+}
+
 type InterviewTurnOutput {
   answer: String!
   createdAt: DateTime!
@@ -157,6 +181,7 @@ type Mutation {
   apiTokenCreate(name: String!): ApiTokenCreatedOutput!
   apiTokenRevoke(id: ID!): Boolean!
   createInterviewSession(language: InterviewLanguage! = RU, resume: Upload!, vacancy: String!): InterviewSessionOutput!
+  deleteInterviewSession(id: ID!): InterviewSessionOutput!
   interviewAskScreenshot(image: Upload!, sessionId: ID!): ID!
   meetingChatAsk(meetingId: ID!, question: String!): ChatMessageOutput!
   meetingChatClear(meetingId: ID!): Boolean!
@@ -183,7 +208,7 @@ type Query {
   actionItems: [ActionItemOutput!]!
   apiTokens: [ApiTokenOutput!]!
   interviewSession(id: ID!): InterviewSessionOutput!
-  interviewSessions: [InterviewSessionOutput!]!
+  interviewSessionsPage(input: InterviewSessionsPageInput!): InterviewSessionsPageOutput!
   interviewTurns(sessionId: ID!): [InterviewTurnOutput!]!
   meetingActionItems(meetingId: ID!): [ActionItemOutput!]!
   meetingChatMessages(meetingId: ID!): [ChatMessageOutput!]!
