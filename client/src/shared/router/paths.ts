@@ -6,6 +6,8 @@ export const paths = {
   shared: '/shared',
   actions: '/actions',
   live: '/live',
+  liveNew: '/live/new',
+  liveSession: (id: string) => `/live/${id}`,
   stats: '/stats',
   settings: '/settings',
   notFound: '*404',

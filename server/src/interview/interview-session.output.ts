@@ -7,6 +7,9 @@ export class InterviewSessionOutput {
   @Field(() => ID)
   id: string;
 
+  @Field(() => String, { nullable: true })
+  title: string | null;
+
   @Field()
   resumeText: string;
 

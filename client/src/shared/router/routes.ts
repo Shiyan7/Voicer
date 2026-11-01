@@ -24,6 +24,14 @@ export const routes = [
     component: lazy(() => import('@/pages/live/LivePage')),
   },
   {
+    path: paths.liveNew,
+    component: lazy(() => import('@/pages/live-new/LiveNewPage')),
+  },
+  {
+    path: paths.liveSession(':id'),
+    component: lazy(() => import('@/pages/live-session/LiveSessionPage')),
+  },
+  {
     path: paths.stats,
     component: lazy(() => import('@/pages/stats/StatsPage')),
   },

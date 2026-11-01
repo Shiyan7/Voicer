@@ -31,7 +31,8 @@
   "common": {
     "or": "or",
     "copy": "Copy",
-    "copied": "Copied"
+    "copied": "Copied",
+    "back": "Back"
   },
   "validation": {
     "common": {
@@ -288,6 +289,11 @@
     "clear": "Clear"
   },
   "live": {
+    "title": "Interviews",
+    "title_untitled": "Interview",
+    "new": "New interview",
+    "empty": "No interviews yet",
+    "unfinished": "Unfinished",
     "prep": {
       "title": "Interview prep",
       "subtitle": "Upload your resume and the job description to get tailored recommendations",
@@ -304,10 +310,7 @@
         "questions": "Likely questions",
         "emphasis": "What to emphasize"
       },
-      "error": "Could not prepare. Check the resume and try again.",
-      "history": "Past interviews",
-      "status_finished": "Finished",
-      "status_unfinished": "Not finished"
+      "error": "Could not prepare. Check the resume and try again."
     },
     "session": {
       "status": {
@@ -322,7 +325,6 @@
       "show_details": "Show details",
       "hide_details": "Hide details",
       "screenshot_question": "Coding task from screenshot",
-      "back": "Back",
       "scroll_down": "Scroll down"
     }
   }

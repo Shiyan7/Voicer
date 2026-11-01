@@ -1,34 +1,39 @@
-import { createSignal } from 'solid-js';
+import { useNavigate, useParams } from '@solidjs/router';
+import { createEffect, createSignal, on } from 'solid-js';
 
-import { toInterviewSessionView } from '@/entities/interview-session';
+import { getInterviewSessionTitle } from '@/entities/interview-session';
 import { uploadMeetingAudioMutation } from '@/entities/meeting';
 import { readRecordingFile, stopRecording } from '@/shared/lib/recorder';
+import { paths } from '@/shared/router';
 
+import { fetchInterviewSession } from '../api/fetchInterviewSession';
 import { fetchInterviewTurns } from '../api/fetchInterviewTurns';
 import { updateInterviewSession } from '../api/updateInterviewSession';
 import { ensureRecording } from '../lib/ensureRecording';
 import { toCompletedTurn } from '../lib/toCompletedTurn';
-import { LivePhase } from '../types/LivePhase';
+import { LiveSessionDetails } from '../types/LiveSessionDetails';
 import { LiveTurn } from '../types/LiveTurn';
-import { useLiveHistory } from './useLiveHistory';
-import { useLivePrep } from './useLivePrep';
 import { useLiveRecording } from './useLiveRecording';
 import { useLiveSession } from './useLiveSession';
 
 export function useLiveInterview() {
-  const prep = useLivePrep();
+  const params = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const session = useLiveSession();
-  const history = useLiveHistory();
   const recording = useLiveRecording();
-  const [phase, setPhase] = createSignal<LivePhase>('prep');
-  const [reviewTitle, setReviewTitle] = createSignal('');
+  const [details, setDetails] = createSignal<LiveSessionDetails>();
   const [, uploadAudio] = uploadMeetingAudioMutation();
   let activeSessionId: string | undefined;
   let isRecordingOwned = false;
 
-  const isSession = () => phase() !== 'prep';
+  const isLoaded = () => !!details();
 
-  const isReview = () => phase() === 'review';
+  const isReview = () => !!details()?.finishedAt;
+
+  const reviewTitle = () => {
+    const current = details();
+    return current ? getInterviewSessionTitle(current) : '';
+  };
 
   const startRecording = async () => {
     const { isOwned, startedAt } = await ensureRecording();
@@ -38,32 +43,28 @@ export function useLiveInterview() {
 
   const beginSession = (sessionId: string, initialTurns: LiveTurn[]) => {
     activeSessionId = sessionId;
-    setPhase('session');
     session.start(sessionId, initialTurns);
     void startRecording();
   };
 
-  const startInterview = () => {
-    const sessionId = prep.sessionId();
-    if (sessionId) beginSession(sessionId, []);
+  const showReview = (found: LiveSessionDetails, savedTurns: LiveTurn[]) => {
+    recording.show(found.meetingId ?? '', found.recordingUrl ?? '');
+    session.show(savedTurns);
   };
 
-  const loadTurns = async (id: string) =>
-    (await fetchInterviewTurns(id)).map(toCompletedTurn);
-
-  const openPastSession = async (id: string) => {
-    const pastSession = history.findSession(id);
-    if (!pastSession) return;
-    const savedTurns = await loadTurns(id);
-    if (!pastSession.finishedAt) {
-      beginSession(id, savedTurns);
+  const open = async (id: string) => {
+    const [found, turns] = await Promise.all([
+      fetchInterviewSession(id),
+      fetchInterviewTurns(id),
+    ]);
+    if (!found) {
+      navigate(paths.live, { replace: true });
       return;
     }
-    const view = toInterviewSessionView(pastSession);
-    setReviewTitle(`${view.dateLabel} · ${view.vacancyLabel}`);
-    recording.show(pastSession.meetingId ?? '', pastSession.recordingUrl ?? '');
-    session.show(savedTurns);
-    setPhase('review');
+    const savedTurns = turns.map(toCompletedTurn);
+    setDetails(found);
+    if (found.finishedAt) showReview(found, savedTurns);
+    else beginSession(id, savedTurns);
   };
 
   const saveRecording = async (interviewSessionId: string) => {
@@ -80,40 +81,36 @@ export function useLiveInterview() {
     }
   };
 
-  const finishSession = async (sessionId: string, isOwned: boolean) => {
-    await Promise.all([
-      updateInterviewSession({ id: sessionId, finished: true }),
-      isOwned && saveRecording(sessionId),
-    ]);
-    history.refetch();
-  };
-
   const finishInterview = async () => {
     const sessionId = activeSessionId;
-    activeSessionId = undefined;
     const isOwned = isRecordingOwned;
+    activeSessionId = undefined;
     isRecordingOwned = false;
     session.stop();
-    prep.reset();
-    if (sessionId) await finishSession(sessionId, isOwned);
-    setPhase('prep');
+    if (sessionId) {
+      await Promise.all([
+        updateInterviewSession({ id: sessionId, finished: true }),
+        isOwned && saveRecording(sessionId),
+      ]);
+    }
+    navigate(paths.live);
   };
 
-  const closeReview = () => {
-    recording.clear();
-    setPhase('prep');
-  };
+  const closeReview = () => navigate(paths.live);
+
+  createEffect(
+    on(
+      () => params.id,
+      (id) => void open(id),
+    ),
+  );
 
   return {
-    prep,
     session,
-    history,
-    isSession,
+    isLoaded,
     isReview,
     reviewTitle,
     recording,
-    startInterview,
-    openPastSession,
     finishInterview,
     closeReview,
   };

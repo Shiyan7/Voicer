@@ -100,6 +100,7 @@ export type InterviewSessionOutput = {
   recommendations: InterviewRecommendationsOutput;
   recordingUrl?: Maybe<Scalars['String']['output']>;
   resumeText: Scalars['String']['output'];
+  title?: Maybe<Scalars['String']['output']>;
   vacancyText: Scalars['String']['output'];
 };
 

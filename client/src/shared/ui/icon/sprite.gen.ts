@@ -315,7 +315,7 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['trash'], [24]),
         defineSpriteSymbol(['upload'], [24]),
       ],
-      defineExternalAssetMeta('common.d7201f89.svg'),
+      defineExternalAssetMeta('common.1f937075.svg'),
     ),
   ]),
   defineSprite('navigation', [

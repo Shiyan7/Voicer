@@ -12,3 +12,4 @@ export {
   formatDuration,
   formatDurationLabel,
 } from './duration';
+export { withDateSuffix } from './withDateSuffix';

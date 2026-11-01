@@ -1,1 +1,1 @@
-export { LiveInterviewOrchestrator as default } from '@/features/live-interview';
+export { InterviewsOrchestrator as default } from '@/features/interviews';

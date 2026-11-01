@@ -5,7 +5,6 @@ import { PageFade } from '@/shared/ui/page-fade';
 
 import { liveInterviewStyles } from './LiveInterview.styles';
 import { useLiveInterview } from './model/useLiveInterview';
-import { LivePrep } from './segments/prep';
 import { LiveSession } from './segments/session';
 
 const styles = liveInterviewStyles;
@@ -16,32 +15,7 @@ export function LiveInterviewOrchestrator() {
   return (
     <PageFade>
       <div class={styles()}>
-        <Show
-          when={vm.isSession()}
-          fallback={
-            <LivePrep
-              resumeLabel={vm.prep.resumeLabel()}
-              hasResume={vm.prep.hasResume()}
-              vacancy={vm.prep.vacancy()}
-              language={vm.prep.language()}
-              onSelectLanguage={vm.prep.setLanguage}
-              isPreparing={vm.prep.isPreparing()}
-              canPrepare={vm.prep.canPrepare()}
-              isReady={vm.prep.isReady()}
-              errorMessage={vm.prep.errorMessage()}
-              sectionTabs={vm.prep.sectionTabs()}
-              activeSection={vm.prep.activeSection()}
-              activeItems={vm.prep.activeItems()}
-              onSelectSection={vm.prep.setActiveSection}
-              pastSessions={vm.history.pastSessions()}
-              onResumeSelected={vm.prep.onResumeSelected}
-              onVacancyInput={vm.prep.onVacancyInput}
-              onPrepare={vm.prep.prepare}
-              onStart={vm.startInterview}
-              onOpenPastSession={vm.openPastSession}
-            />
-          }
-        >
+        <Show when={vm.isLoaded()}>
           <LiveSession
             timerLabel={vm.session.timerLabel()}
             statusLabel={vm.session.statusLabel()}

@@ -17,7 +17,7 @@ export function DetailsHeader(props: DetailsHeaderDeps) {
   return (
     <header class={styles.header()}>
       <div class={styles.titleRow()}>
-        <BackButton label={i18n.t('meetings.back')} onClick={props.onBack} />
+        <BackButton onClick={props.onBack} />
         <Show
           when={vm.isEditing()}
           fallback={

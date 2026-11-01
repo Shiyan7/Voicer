@@ -10,6 +10,7 @@ export function toInterviewSessionOutput(
 ): InterviewSessionOutput {
   return {
     id: session.id,
+    title: session.title,
     resumeText: session.resumeText,
     vacancyText: session.vacancyText,
     cheatSheet: session.cheatSheet,

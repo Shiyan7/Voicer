@@ -24,6 +24,9 @@ export class InterviewSessionEntity {
   @JoinColumn({ name: 'userId' })
   user: UserEntity;
 
+  @Column({ type: 'varchar', nullable: true })
+  title: string | null;
+
   @Column({ type: 'text', default: '' })
   resumeText: string;
 

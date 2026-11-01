@@ -80,6 +80,7 @@ type InterviewSessionOutput {
   recommendations: InterviewRecommendationsOutput!
   recordingUrl: String
   resumeText: String!
+  title: String
   vacancyText: String!
 }
 

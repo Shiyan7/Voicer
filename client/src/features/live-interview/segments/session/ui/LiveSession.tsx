@@ -22,10 +22,7 @@ export function LiveSession(props: LiveSessionProps) {
           when={!props.isReadOnly}
           fallback={
             <header class={styles.header()}>
-              <BackButton
-                label={i18n.t('live.session.back')}
-                onClick={props.onBack}
-              />
+              <BackButton onClick={props.onBack} />
               <h1 class={styles.title()}>{props.reviewTitle}</h1>
             </header>
           }
