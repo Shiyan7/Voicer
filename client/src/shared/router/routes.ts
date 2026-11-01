@@ -20,6 +20,10 @@ export const routes = [
     component: lazy(() => import('@/pages/actions/ActionsPage')),
   },
   {
+    path: paths.live,
+    component: lazy(() => import('@/pages/live/LivePage')),
+  },
+  {
     path: paths.stats,
     component: lazy(() => import('@/pages/stats/StatsPage')),
   },

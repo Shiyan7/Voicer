@@ -5,6 +5,7 @@ export const paths = {
     `/meetings/${id}?${new URLSearchParams({ tab, focus: focusId })}`,
   shared: '/shared',
   actions: '/actions',
+  live: '/live',
   stats: '/stats',
   settings: '/settings',
   notFound: '*404',

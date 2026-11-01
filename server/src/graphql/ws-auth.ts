@@ -21,6 +21,21 @@ const readToken = (
   return extractBearer(key ? connectionParams[key] : undefined);
 };
 
+export const authenticateAccessToken = async (
+  jwtService: JwtService,
+  configService: ConfigService,
+  authService: AuthService,
+  token: string,
+) => {
+  const payload = await jwtService.verifyAsync<JwtDto>(token, {
+    secret: configService.get<string>('JWT_ACCESS_SECRET'),
+  });
+
+  const user = await authService.validateUser(payload.userId);
+  if (!user) throw new UnauthorizedException();
+  return user;
+};
+
 export const buildWsOnConnect =
   (
     jwtService: JwtService,
@@ -31,12 +46,12 @@ export const buildWsOnConnect =
     const token = readToken(context.connectionParams);
     if (!token) throw new UnauthorizedException();
 
-    const payload = await jwtService.verifyAsync<JwtDto>(token, {
-      secret: configService.get<string>('JWT_ACCESS_SECRET'),
-    });
-
-    const user = await authService.validateUser(payload.userId);
-    if (!user) throw new UnauthorizedException();
+    const user = await authenticateAccessToken(
+      jwtService,
+      configService,
+      authService,
+      token,
+    );
 
     (context.extra as Record<string, unknown>).user = user;
     return true;

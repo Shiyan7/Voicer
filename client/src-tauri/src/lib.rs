@@ -23,6 +23,7 @@ pub fn run() {
 
     builder
         .manage(commands::RecorderHandle::default())
+        .manage(commands::LiveCaptureHandle::default())
         .invoke_handler(tauri::generate_handler![
             commands::start_recording,
             commands::stop_recording,
@@ -30,6 +31,9 @@ pub fn run() {
             commands::resume_recording,
             commands::get_recorder_state,
             commands::delete_recording,
+            commands::start_live_capture,
+            commands::stop_live_capture,
+            commands::capture_screenshot,
         ])
         .setup(|app| {
             #[cfg(all(desktop, not(debug_assertions)))]

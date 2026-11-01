@@ -69,6 +69,32 @@ export enum ChatRole {
   User = 'USER',
 }
 
+export type InterviewAnswerOutput = {
+  __typename?: 'InterviewAnswerOutput';
+  answerId: Scalars['ID']['output'];
+  done: Scalars['Boolean']['output'];
+  question: Scalars['String']['output'];
+  text: Scalars['String']['output'];
+};
+
+export type InterviewRecommendationsOutput = {
+  __typename?: 'InterviewRecommendationsOutput';
+  emphasize: Array<Scalars['String']['output']>;
+  likelyQuestions: Array<Scalars['String']['output']>;
+  topics: Array<Scalars['String']['output']>;
+};
+
+export type InterviewSessionOutput = {
+  __typename?: 'InterviewSessionOutput';
+  cheatSheet: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  recommendations: InterviewRecommendationsOutput;
+  resumeText: Scalars['String']['output'];
+  styleSamples?: Maybe<Scalars['String']['output']>;
+  vacancyText: Scalars['String']['output'];
+};
+
 export type KeyPointOutput = {
   __typename?: 'KeyPointOutput';
   atMs?: Maybe<Scalars['Int']['output']>;
@@ -138,6 +164,9 @@ export type Mutation = {
   __typename?: 'Mutation';
   apiTokenCreate: ApiTokenCreatedOutput;
   apiTokenRevoke: Scalars['Boolean']['output'];
+  createInterviewSession: InterviewSessionOutput;
+  interviewAsk: Scalars['ID']['output'];
+  interviewAskScreenshot: Scalars['ID']['output'];
   meetingChatAsk: ChatMessageOutput;
   meetingChatClear: Scalars['Boolean']['output'];
   meetingDelete: MeetingOutput;
@@ -157,6 +186,22 @@ export type MutationApiTokenCreateArgs = {
 
 export type MutationApiTokenRevokeArgs = {
   id: Scalars['ID']['input'];
+};
+
+export type MutationCreateInterviewSessionArgs = {
+  resume: Scalars['Upload']['input'];
+  vacancy: Scalars['String']['input'];
+};
+
+export type MutationInterviewAskArgs = {
+  history?: Array<Scalars['String']['input']>;
+  question: Scalars['String']['input'];
+  sessionId: Scalars['ID']['input'];
+};
+
+export type MutationInterviewAskScreenshotArgs = {
+  image: Scalars['Upload']['input'];
+  sessionId: Scalars['ID']['input'];
 };
 
 export type MutationMeetingChatAskArgs = {
@@ -221,6 +266,7 @@ export type Query = {
   __typename?: 'Query';
   actionItems: Array<ActionItemOutput>;
   apiTokens: Array<ApiTokenOutput>;
+  interviewSession: InterviewSessionOutput;
   meetingActionItems: Array<ActionItemOutput>;
   meetingChatMessages: Array<ChatMessageOutput>;
   meetingChatSuggestions: Array<Scalars['String']['output']>;
@@ -233,6 +279,10 @@ export type Query = {
   statsSummary: StatsSummaryOutput;
   statsYear: StatsYearOutput;
   userMe: UserMeOutput;
+};
+
+export type QueryInterviewSessionArgs = {
+  id: Scalars['ID']['input'];
 };
 
 export type QueryMeetingActionItemsArgs = {
@@ -378,8 +428,13 @@ export type StatsYearOutput = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  interviewAnswer: InterviewAnswerOutput;
   meetingChatMessage: ChatMessageOutput;
   meetingUpdated: MeetingOutput;
+};
+
+export type SubscriptionInterviewAnswerArgs = {
+  sessionId: Scalars['ID']['input'];
 };
 
 export type SubscriptionMeetingChatMessageArgs = {

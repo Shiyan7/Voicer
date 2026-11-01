@@ -7,7 +7,7 @@ use std::time::{Duration, Instant};
 
 use super::mic::MicSource;
 use super::system::SystemSource;
-use super::{SampleQueue, RECORDING_ACTIVE, TARGET_SAMPLE_RATE};
+use super::{SampleQueue, LIVE_MIC_TEE, LIVE_SYSTEM_TEE, RECORDING_ACTIVE, TARGET_SAMPLE_RATE};
 
 const STALL_MS: u64 = 2_000;
 const LEVEL_INTERVAL: Duration = Duration::from_millis(40);
@@ -81,7 +81,11 @@ impl Recorder {
         }
     }
 
-    pub fn start(&mut self, recordings_dir: &Path, on_level: LevelSink) -> Result<StartInfo, String> {
+    pub fn start(
+        &mut self,
+        recordings_dir: &Path,
+        on_level: LevelSink,
+    ) -> Result<StartInfo, String> {
         if self.active.is_some() {
             return Err("already recording".into());
         }
@@ -92,8 +96,8 @@ impl Recorder {
         let wav_path = recordings_dir.join(format!("{local_id}.wav"));
         let flac_path = recordings_dir.join(format!("{local_id}.flac"));
 
-        let mic_queue = SampleQueue::new();
-        let sys_queue = SampleQueue::new();
+        let mic_queue = SampleQueue::with_tee(&LIVE_MIC_TEE);
+        let sys_queue = SampleQueue::with_tee(&LIVE_SYSTEM_TEE);
         let mut warnings = Vec::new();
 
         RECORDING_ACTIVE.store(true, std::sync::atomic::Ordering::Relaxed);

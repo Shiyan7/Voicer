@@ -1,4 +1,10 @@
 export {
+  captureScreenshot,
+  type LiveCaptureHandlers,
+  startLiveCapture,
+  stopLiveCapture,
+} from './liveCaptureBridge';
+export {
   getRecorderState,
   onCallDetected,
   onCallEnded,

@@ -49,7 +49,8 @@
     "collapse": "Collapse sidebar",
     "expand": "Expand sidebar",
     "shared": "Shared with me",
-    "stats": "Statistics"
+    "stats": "Statistics",
+    "live": "Live interview"
   },
   "pagination": {
     "prev": "Prev",
@@ -283,5 +284,38 @@
     "hint_start": "Pick a start date",
     "hint_end": "Pick an end date",
     "clear": "Clear"
+  },
+  "live": {
+    "prep": {
+      "title": "Interview prep",
+      "subtitle": "Upload your resume and the job description to get tailored recommendations",
+      "resume": "Resume",
+      "resume_placeholder": "Choose a PDF file",
+      "vacancy": "Job description",
+      "vacancy_placeholder": "Paste the job description or a link to it",
+      "prepare": "Prepare",
+      "preparing": "Analyzing resume and job description…",
+      "start": "Start interview",
+      "sections": {
+        "topics": "Likely topics",
+        "questions": "Likely questions",
+        "emphasis": "What to emphasize"
+      },
+      "error": "Could not prepare. Check the resume and try again."
+    },
+    "session": {
+      "status": {
+        "idle": "Stopped",
+        "listening": "Listening",
+        "answering": "Answering"
+      },
+      "stop": "Stop",
+      "answer_now": "Answer now",
+      "capture_code": "Code screenshot",
+      "waiting": "Waiting for the interviewer’s question…",
+      "show_details": "Show details",
+      "hide_details": "Hide details",
+      "screenshot_question": "Coding task from screenshot"
+    }
   }
 }

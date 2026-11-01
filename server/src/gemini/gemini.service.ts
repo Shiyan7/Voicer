@@ -1,6 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ApiError, Content, GoogleGenAI } from '@google/genai';
+import {
+  ApiError,
+  Content,
+  ContentListUnion,
+  GoogleGenAI,
+} from '@google/genai';
 import { GeminiTurn } from './gemini.types';
 
 const FREE_TIER_MODELS = [
@@ -25,7 +30,7 @@ export class GeminiService {
   }
 
   async generateJson<T>(
-    contents: string,
+    contents: ContentListUnion,
     schema: object,
     isUsable: (result: T) => boolean,
   ): Promise<T> {
@@ -44,6 +49,7 @@ export class GeminiService {
     systemInstruction: string,
     turns: GeminiTurn[],
     onText: (text: string) => Promise<void>,
+    signal?: AbortSignal,
   ): Promise<string> {
     const contents = turns.map(this.toContent);
 
@@ -53,6 +59,7 @@ export class GeminiService {
         systemInstruction,
         contents,
         onText,
+        signal,
       );
       if (text) {
         this.logger.log(`Streamed with ${model}`);
@@ -65,7 +72,7 @@ export class GeminiService {
 
   private async tryJson<T>(
     model: string,
-    contents: string,
+    contents: ContentListUnion,
     schema: object,
   ): Promise<T | null> {
     try {
@@ -95,6 +102,7 @@ export class GeminiService {
     systemInstruction: string,
     contents: Content[],
     onText: (text: string) => Promise<void>,
+    signal?: AbortSignal,
   ): Promise<string | null> {
     let text = '';
 
@@ -102,9 +110,10 @@ export class GeminiService {
       const stream = await this.ai.models.generateContentStream({
         model,
         contents,
-        config: { systemInstruction },
+        config: { systemInstruction, abortSignal: signal },
       });
       for await (const chunk of stream) {
+        if (signal?.aborted) break;
         if (!chunk.text) continue;
         text += chunk.text;
         await onText(text);
@@ -118,7 +127,10 @@ export class GeminiService {
   }
 
   private toContent(turn: GeminiTurn): Content {
-    return { role: turn.role, parts: [{ text: turn.text }] };
+    const images = (turn.images ?? []).map((image) => ({
+      inlineData: image,
+    }));
+    return { role: turn.role, parts: [...images, { text: turn.text }] };
   }
 
   private isRetryable(error: unknown): boolean {
