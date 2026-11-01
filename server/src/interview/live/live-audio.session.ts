@@ -84,6 +84,7 @@ export class LiveAudioSession {
     this.isClosed = true;
     if (this.keepAlive) clearInterval(this.keepAlive);
     this.cancelSettle();
+    this.deps.answers.release(this.deps.sessionId);
     this.pending.length = 0;
     this.closeDeepgram();
     if (this.deps.client.readyState === WebSocket.OPEN) {

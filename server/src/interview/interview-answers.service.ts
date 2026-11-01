@@ -130,6 +130,10 @@ export class InterviewAnswersService {
     );
   }
 
+  release(sessionId: string): void {
+    this.claimedOrders.delete(sessionId);
+  }
+
   private createAnswer(question: string): InterviewAnswerOutput {
     return { answerId: randomUUID(), question, text: '', done: false };
   }

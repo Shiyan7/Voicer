@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { spawn } from 'child_process';
+import { ChildProcess, spawn } from 'child_process';
 import { tmpdir } from 'os';
 import { createInterface } from 'readline';
 import { LlmTurn } from '../llm/llm-turn';
@@ -34,13 +34,10 @@ export class ClaudeService {
       ],
       signal,
     );
-    const failure = new Promise<never>((_, reject) => {
-      child.once('error', reject);
-    });
     child.stdin.end(turns.map((turn) => turn.text).join('\n\n'));
 
     const read = this.readStream(child.stdout, onText);
-    return Promise.race([read, failure]);
+    return Promise.race([read, this.failureOf(child)]);
   }
 
   async generateJson<T>(prompt: string, schema: object): Promise<T> {
@@ -51,13 +48,10 @@ export class ClaudeService {
       '--json-schema',
       JSON.stringify(schema),
     ]);
-    const failure = new Promise<never>((_, reject) => {
-      child.once('error', reject);
-    });
     child.stdin.end(prompt);
 
     const output = Promise.resolve(child.stdout.toArray());
-    const chunks = await Promise.race([output, failure]);
+    const chunks = await Promise.race([output, this.failureOf(child)]);
     const result = JSON.parse(
       Buffer.concat(chunks as Buffer[]).toString('utf8'),
     ) as ClaudeJsonResult;
@@ -72,6 +66,12 @@ export class ClaudeService {
       cwd: tmpdir(),
       stdio: ['pipe', 'pipe', 'ignore'],
       signal,
+    });
+  }
+
+  private failureOf(child: ChildProcess): Promise<never> {
+    return new Promise((_, reject) => {
+      child.once('error', reject);
     });
   }
 
