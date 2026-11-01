@@ -15,10 +15,11 @@ import { PubSubModule } from './pubsub/pubsub.module';
 import { ApiTokensModule } from './api-tokens/api-tokens.module';
 import { McpModule } from './mcp/mcp.module';
 import { InterviewModule } from './interview/interview.module';
+import { validateEnv } from './config/validate-env';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true, validate: validateEnv }),
     DatabaseModule,
     PubSubModule,
     GraphqlModule,

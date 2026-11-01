@@ -6,6 +6,8 @@ type ListenConnectArgs = Parameters<
 
 export const LIVE_AUDIO_PATH = '/live-audio';
 
+export const LIVE_AUDIO_PROTOCOL = 'voicer.bearer';
+
 export const KEEP_ALIVE_INTERVAL_MS = 5000;
 
 export const REPLY_GAP_MS = 15000;

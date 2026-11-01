@@ -8,6 +8,7 @@ import {
 } from '@/shared/lib/recorder';
 import { authRoot } from '@/shared/roots/authRoot';
 
+import { LIVE_AUDIO_PROTOCOL } from '../config/liveInterviewConfig';
 import { buildLiveAudioUrl } from '../lib/buildLiveAudioUrl';
 import { LiveServerMessage } from '../types/LiveServerMessage';
 import { LiveSourceHandlers } from '../types/LiveSourceHandlers';
@@ -85,10 +86,12 @@ export const createServerLiveSource = (
   const openSocket = () => {
     const url = buildLiveAudioUrl(
       import.meta.env.VITE_GRAPHQL_API_URL,
-      authRoot.accessToken ?? '',
       sessionId,
     );
-    const next = new WebSocket(url);
+    const next = new WebSocket(url, [
+      LIVE_AUDIO_PROTOCOL,
+      authRoot.accessToken ?? '',
+    ]);
     next.binaryType = 'arraybuffer';
     next.onmessage = (event: MessageEvent<string>) =>
       onServerMessage(JSON.parse(event.data) as LiveServerMessage);

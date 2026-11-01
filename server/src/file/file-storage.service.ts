@@ -1,23 +1,30 @@
 import { randomUUID } from 'crypto';
 import { createWriteStream } from 'fs';
 import { mkdir, rm } from 'fs/promises';
-import { basename, extname, join } from 'path';
+import { basename, extname, join, resolve } from 'path';
 import { pipeline } from 'stream/promises';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FileUpload } from './file-upload';
+import { isFileSignatureValid, signFileUrl } from './signed-url';
 import { transcodeToMp3 } from './transcode-to-mp3';
+
+const DEFAULT_STORAGE_DIR = './storage';
 
 @Injectable()
 export class FileStorageService {
   constructor(private readonly configService: ConfigService) {}
 
   private get storageDir(): string {
-    return this.configService.get<string>('STORAGE_DIR');
+    return this.configService.get<string>('STORAGE_DIR') ?? DEFAULT_STORAGE_DIR;
   }
 
   private get publicBaseUrl(): string {
     return this.configService.get<string>('SERVER_URL');
+  }
+
+  private get signingSecret(): string {
+    return this.configService.get<string>('JWT_ACCESS_SECRET');
   }
 
   async save(userId: string, upload: FileUpload): Promise<string> {
@@ -44,6 +51,18 @@ export class FileStorageService {
     await transcodeToMp3(join(userDir, sourceName), join(userDir, mp3Name));
     await rm(join(userDir, sourceName), { force: true });
     return mp3Name;
+  }
+
+  signUrl(fileUrl: string | null): string | null {
+    return fileUrl && signFileUrl(this.signingSecret, fileUrl);
+  }
+
+  isSigned(path: string, expires: string, signature: string): boolean {
+    return isFileSignatureValid(this.signingSecret, path, expires, signature);
+  }
+
+  resolveAbsolutePath(userId: string, fileName: string): string {
+    return resolve(this.storageDir, basename(userId), basename(fileName));
   }
 
   resolveLocalPath(userId: string, fileUrl: string): string {

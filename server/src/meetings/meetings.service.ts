@@ -27,7 +27,9 @@ import { FileUpload } from '../file/file-upload';
 import { TranscriptSegmentEntity } from './transcript-segment.entity';
 import { TranscriptSegmentOutput } from './transcript-segment.output';
 import { SummaryStyle } from '../summarization/summary-style.enum';
-import { InterviewSessionEntity } from '../interview/interview-session.entity';
+import { InterviewAccessService } from '../interview/access/interview-access.service';
+import { MeetingContentService } from './meeting-content.service';
+import { MeetingRecording } from './meeting-recording';
 import { KeyPointEntity } from './key-point.entity';
 import { KeyPointOutput } from './key-point.output';
 import {
@@ -50,10 +52,10 @@ export class MeetingsService {
     private readonly meetingsRepository: Repository<MeetingEntity>,
     @InjectRepository(TranscriptSegmentEntity)
     private readonly transcriptSegmentsRepository: Repository<TranscriptSegmentEntity>,
-    @InjectRepository(InterviewSessionEntity)
-    private readonly interviewSessionsRepository: Repository<InterviewSessionEntity>,
     @InjectRepository(KeyPointEntity)
     private readonly keyPointsRepository: Repository<KeyPointEntity>,
+    private readonly interviewAccess: InterviewAccessService,
+    private readonly content: MeetingContentService,
     private readonly fileStorageService: FileStorageService,
     private readonly processing: MeetingProcessingService,
     @Inject(PUB_SUB) private readonly pubSub: PubSub,
@@ -112,11 +114,46 @@ export class MeetingsService {
       interviewSessionId,
     });
 
-    const saved = await this.meetingsRepository.save(meeting);
+    const saved = await this.saveOrRemoveFile(userId, meeting);
 
     void this.processing.transcribe(saved);
 
     return toMeetingOutput(saved);
+  }
+
+  async findInterviewRecordings(
+    sessionIds: string[],
+  ): Promise<MeetingRecording[]> {
+    const recordings = await this.meetingsRepository
+      .createQueryBuilder('meeting')
+      .distinctOn(['meeting.interviewSessionId'])
+      .select('meeting.id', 'id')
+      .addSelect('meeting.audioUrl', 'audioUrl')
+      .addSelect('meeting.interviewSessionId', 'sessionId')
+      .where({ interviewSessionId: In(sessionIds) })
+      .orderBy('meeting.interviewSessionId')
+      .addOrderBy('meeting.durationSec', 'DESC', 'NULLS LAST')
+      .getRawMany<MeetingRecording>();
+    return recordings.map((recording) => ({
+      ...recording,
+      audioUrl: this.fileStorageService.signUrl(recording.audioUrl),
+    }));
+  }
+
+  signAudioUrl(audioUrl: string | null): string | null {
+    return this.fileStorageService.signUrl(audioUrl);
+  }
+
+  private async saveOrRemoveFile(
+    userId: string,
+    meeting: MeetingEntity,
+  ): Promise<MeetingEntity> {
+    try {
+      return await this.meetingsRepository.save(meeting);
+    } catch (error) {
+      await this.fileStorageService.remove(userId, meeting.audioUrl);
+      throw error;
+    }
   }
 
   private async resolveInterviewSessionId(
@@ -124,11 +161,8 @@ export class MeetingsService {
     id?: string,
   ): Promise<string | null> {
     if (!id) return null;
-    const exists = await this.interviewSessionsRepository.existsBy({
-      id,
-      userId,
-    });
-    if (!exists) throw new NotFoundException('Interview session not found');
+    const isOwned = await this.interviewAccess.isOwned(userId, id);
+    if (!isOwned) throw new NotFoundException('Сессия не найдена');
     return id;
   }
 
@@ -145,7 +179,6 @@ export class MeetingsService {
       order: this.buildPageOrder(input.sort),
       skip,
       take: limit,
-      comment: this.getFnName(this.getUserMeetingsPage.name),
     });
 
     return {
@@ -214,7 +247,6 @@ export class MeetingsService {
     const segments = await this.transcriptSegmentsRepository.find({
       where: { meetingId },
       order: { startMs: 'ASC' },
-      comment: this.getFnName(this.getMeetingTranscript.name),
     });
 
     return segments.map(toSegmentOutput);
@@ -229,7 +261,6 @@ export class MeetingsService {
     const keyPoints = await this.keyPointsRepository.find({
       where: { meetingId },
       order: { order: 'ASC' },
-      comment: this.getFnName(this.getMeetingKeyPoints.name),
     });
 
     return keyPoints.map(toKeyPointOutput);
@@ -299,23 +330,7 @@ export class MeetingsService {
     });
   }
 
-  private async findOwnedMeeting(
-    userId: string,
-    id: string,
-  ): Promise<MeetingEntity> {
-    const meeting = await this.meetingsRepository.findOne({
-      where: { id, userId },
-      comment: this.getFnName(this.findOwnedMeeting.name),
-    });
-
-    if (!meeting) {
-      throw new NotFoundException('Встреча не найдена');
-    }
-
-    return meeting;
-  }
-
-  private getFnName(name: string): string {
-    return `${MeetingsService.name}.${name}`;
+  private findOwnedMeeting(userId: string, id: string): Promise<MeetingEntity> {
+    return this.content.findOwned(userId, id);
   }
 }

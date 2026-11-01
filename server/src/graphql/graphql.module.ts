@@ -1,13 +1,12 @@
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { GraphQLFormattedError } from 'graphql';
 import { join } from 'path';
 import { AuthModule } from '../auth/auth.module';
 import { AuthService } from '../auth/auth.service';
 import { buildWsOnConnect } from './ws-auth';
-
-const isProduction = process.env.NODE_ENV === 'production';
 
 interface GraphqlContextInput {
   req?: { user?: unknown };
@@ -19,12 +18,12 @@ interface GraphqlContextInput {
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
       imports: [AuthModule],
-      inject: [AuthService],
-      useFactory: (authService: AuthService) => ({
+      inject: [AuthService, ConfigService],
+      useFactory: (authService: AuthService, config: ConfigService) => ({
         autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
         sortSchema: true,
-        playground: !isProduction,
-        introspection: !isProduction,
+        playground: config.get('NODE_ENV') !== 'production',
+        introspection: config.get('NODE_ENV') !== 'production',
         subscriptions: {
           'graphql-ws': {
             onConnect: buildWsOnConnect(authService),

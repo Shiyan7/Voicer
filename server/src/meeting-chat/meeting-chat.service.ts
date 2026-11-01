@@ -3,20 +3,17 @@ import {
   Inject,
   Injectable,
   Logger,
-  NotFoundException,
+  OnApplicationBootstrap,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PubSub } from 'graphql-subscriptions';
 import { Repository } from 'typeorm';
-import { ActionItemEntity } from '../actions/action-item.entity';
 import { GeminiService } from '../gemini/gemini.service';
 import { LlmTurn } from '../llm/llm-turn';
-import { KeyPointEntity } from '../meetings/key-point.entity';
+import { MeetingContentService } from '../meetings/meeting-content.service';
 import { MeetingEntity } from '../meetings/meeting.entity';
-import { TranscriptSegmentEntity } from '../meetings/transcript-segment.entity';
 import { PUB_SUB } from '../pubsub/pubsub.module';
 import { topic } from '../pubsub/topic';
-import { TranscribedSegment } from '../transcription/transcription.types';
 import { ChatMessageEntity } from './chat-message.entity';
 import { ChatMessageOutput } from './chat-message.output';
 import { ChatRole } from './chat-role.enum';
@@ -40,31 +37,31 @@ interface ChatMessagePayload {
 }
 
 @Injectable()
-export class MeetingChatService {
+export class MeetingChatService implements OnApplicationBootstrap {
   private readonly logger = new Logger(MeetingChatService.name);
   private readonly answeringMeetings = new Set<string>();
 
   constructor(
-    @InjectRepository(MeetingEntity)
-    private readonly meetingsRepository: Repository<MeetingEntity>,
     @InjectRepository(ChatMessageEntity)
     private readonly messagesRepository: Repository<ChatMessageEntity>,
-    @InjectRepository(TranscriptSegmentEntity)
-    private readonly segmentsRepository: Repository<TranscriptSegmentEntity>,
-    @InjectRepository(KeyPointEntity)
-    private readonly keyPointsRepository: Repository<KeyPointEntity>,
-    @InjectRepository(ActionItemEntity)
-    private readonly actionItemsRepository: Repository<ActionItemEntity>,
+    private readonly content: MeetingContentService,
     private readonly gemini: GeminiService,
     private readonly questions: MeetingQuestionsService,
     @Inject(PUB_SUB) private readonly pubSub: PubSub,
   ) {}
 
+  async onApplicationBootstrap(): Promise<void> {
+    await this.messagesRepository.update(
+      { role: ChatRole.ASSISTANT, content: '', isFailed: false },
+      { isFailed: true },
+    );
+  }
+
   async getMessages(
     userId: string,
     meetingId: string,
   ): Promise<ChatMessageOutput[]> {
-    await this.findOwnedMeeting(userId, meetingId);
+    await this.content.findOwned(userId, meetingId);
     const messages = await this.messagesRepository.find({
       where: { meetingId },
       order: { createdAt: 'ASC' },
@@ -76,10 +73,10 @@ export class MeetingChatService {
   }
 
   async getSuggestions(userId: string, meetingId: string): Promise<string[]> {
-    const meeting = await this.findOwnedMeeting(userId, meetingId);
+    const meeting = await this.content.findOwned(userId, meetingId);
     return this.questions.getQuestions(
       meeting,
-      await this.getSegments(meetingId),
+      await this.content.getSegments(meetingId),
     );
   }
 
@@ -89,7 +86,7 @@ export class MeetingChatService {
     question: string,
   ): Promise<ChatMessageOutput> {
     const text = this.validateQuestion(question);
-    const meeting = await this.findOwnedMeeting(userId, meetingId);
+    const meeting = await this.content.findOwned(userId, meetingId);
     if (this.answeringMeetings.has(meetingId)) {
       throw new BadRequestException('Дождитесь окончания ответа');
     }
@@ -113,7 +110,7 @@ export class MeetingChatService {
   }
 
   async clear(userId: string, meetingId: string): Promise<boolean> {
-    await this.findOwnedMeeting(userId, meetingId);
+    await this.content.findOwned(userId, meetingId);
     if (this.answeringMeetings.has(meetingId)) {
       throw new BadRequestException('Дождитесь окончания ответа');
     }
@@ -126,7 +123,7 @@ export class MeetingChatService {
     userId: string,
     meetingId: string,
   ): Promise<AsyncIterator<ChatMessagePayload>> {
-    await this.findOwnedMeeting(userId, meetingId);
+    await this.content.findOwned(userId, meetingId);
 
     return this.pubSub.asyncIterableIterator<ChatMessagePayload>(
       chatMessageTopic(meetingId),
@@ -182,19 +179,16 @@ export class MeetingChatService {
     meeting: MeetingEntity,
   ): Promise<MeetingChatContext> {
     const [segments, keyPoints, actionItems] = await Promise.all([
-      this.getSegments(meeting.id),
-      this.keyPointsRepository.find({
-        where: { meetingId: meeting.id },
-        order: { order: 'ASC' },
-      }),
-      this.actionItemsRepository.find({ where: { meetingId: meeting.id } }),
+      this.content.getSegments(meeting.id),
+      this.content.getKeyPointTexts(meeting.id),
+      this.content.getActionItemTexts(meeting.id),
     ]);
 
     return {
       title: meeting.title,
       segments,
-      keyPoints: keyPoints.map((keyPoint) => keyPoint.text),
-      actionItems: actionItems.map((actionItem) => actionItem.text),
+      keyPoints,
+      actionItems,
     };
   }
 
@@ -212,20 +206,6 @@ export class MeetingChatService {
         role: message.role === ChatRole.USER ? 'user' : 'model',
         text: message.content,
       }));
-  }
-
-  private async getSegments(meetingId: string): Promise<TranscribedSegment[]> {
-    const segments = await this.segmentsRepository.find({
-      where: { meetingId },
-      order: { startMs: 'ASC' },
-    });
-
-    return segments.map(({ speakerIndex, startMs, endMs, text }) => ({
-      speakerIndex,
-      startMs,
-      endMs,
-      text,
-    }));
   }
 
   private saveMessage(
@@ -262,17 +242,5 @@ export class MeetingChatService {
       throw new BadRequestException('Некорректный вопрос');
     }
     return text;
-  }
-
-  private async findOwnedMeeting(
-    userId: string,
-    meetingId: string,
-  ): Promise<MeetingEntity> {
-    const meeting = await this.meetingsRepository.findOneBy({
-      id: meetingId,
-      userId,
-    });
-    if (!meeting) throw new NotFoundException('Встреча не найдена');
-    return meeting;
   }
 }

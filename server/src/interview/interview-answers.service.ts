@@ -10,6 +10,7 @@ import { ClaudeService } from '../claude/claude.service';
 import { FileUpload } from '../file/file-upload';
 import { readUpload } from '../file/read-upload';
 import { GeminiService } from '../gemini/gemini.service';
+import { LlmTextModel } from '../llm/llm-text-model';
 import { LlmTurn } from '../llm/llm-turn';
 import { PUB_SUB } from '../pubsub/pubsub.module';
 import { topic } from '../pubsub/topic';
@@ -34,12 +35,10 @@ interface InterviewAnswerPayload {
   interviewAnswer: InterviewAnswerOutput;
 }
 
-type AnswerModel = Pick<ClaudeService | GeminiService, 'streamText'>;
-
 interface AnswerRequest {
   question: string;
   turn: LlmTurn;
-  model: AnswerModel;
+  model: LlmTextModel;
 }
 
 interface AnswerGate {
@@ -53,6 +52,7 @@ export class InterviewAnswersService {
   private readonly logger = new Logger(InterviewAnswersService.name);
   private readonly inFlight = new Map<string, AbortController>();
   private readonly claimedOrders = new Map<string, number>();
+  private readonly running = new Map<string, Set<AbortController>>();
   private lastOrder = 0;
 
   constructor(
@@ -131,7 +131,18 @@ export class InterviewAnswersService {
   }
 
   release(sessionId: string): void {
+    this.running.get(sessionId)?.forEach((controller) => controller.abort());
     this.claimedOrders.delete(sessionId);
+  }
+
+  private track(sessionId: string, controller: AbortController): () => void {
+    const controllers = this.running.get(sessionId) ?? new Set();
+    controllers.add(controller);
+    this.running.set(sessionId, controllers);
+    return () => {
+      controllers.delete(controller);
+      if (!controllers.size) this.running.delete(sessionId);
+    };
   }
 
   private createAnswer(question: string): InterviewAnswerOutput {
@@ -189,6 +200,7 @@ export class InterviewAnswersService {
     gate?: AnswerGate,
   ): Promise<void> {
     let text = '';
+    const untrack = this.track(session.id, controller);
     try {
       await request.model.streamText(
         await this.buildInstruction(session, !!gate),
@@ -212,6 +224,7 @@ export class InterviewAnswersService {
         this.logger.error(`Failed to answer in interview ${session.id}`, error);
       }
     }
+    untrack();
     if (gate && !gate.isOpen) {
       gate.settle(null);
       return;

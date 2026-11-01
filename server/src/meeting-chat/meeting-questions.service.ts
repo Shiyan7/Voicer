@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { GeminiService } from '../gemini/gemini.service';
+import { MeetingContentService } from '../meetings/meeting-content.service';
 import { MeetingEntity } from '../meetings/meeting.entity';
 import { TranscribedSegment } from '../transcription/transcription.types';
 import {
@@ -15,8 +14,7 @@ export class MeetingQuestionsService {
   private readonly pending = new Map<string, Promise<string[]>>();
 
   constructor(
-    @InjectRepository(MeetingEntity)
-    private readonly meetingsRepository: Repository<MeetingEntity>,
+    private readonly content: MeetingContentService,
     private readonly gemini: GeminiService,
   ) {}
 
@@ -50,7 +48,7 @@ export class MeetingQuestionsService {
         (generated) => Boolean(generated.questions?.length),
       );
       const suggestedQuestions = parsed.questions ?? [];
-      await this.meetingsRepository.update(meetingId, { suggestedQuestions });
+      await this.content.saveSuggestedQuestions(meetingId, suggestedQuestions);
       return suggestedQuestions;
     } catch {
       this.logger.warn(`Failed to suggest questions for ${meetingId}`);

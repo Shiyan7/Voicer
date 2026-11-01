@@ -1,3 +1,10 @@
+import { InterviewLanguage } from '../interview-language.enum';
+
+const OUTPUT_LANGUAGES: Record<InterviewLanguage, string> = {
+  [InterviewLanguage.RU]: 'Russian',
+  [InterviewLanguage.EN]: 'English',
+};
+
 export const INTERVIEW_PREPARATION_SCHEMA = {
   type: 'object',
   properties: {
@@ -11,29 +18,32 @@ export const INTERVIEW_PREPARATION_SCHEMA = {
         emphasize: { type: 'array', items: { type: 'string' } },
       },
       required: ['topics', 'likelyQuestions', 'emphasize'],
+      additionalProperties: false,
     },
   },
   required: ['title', 'cheatSheet', 'recommendations'],
+  additionalProperties: false,
 };
 
 export function buildInterviewPreparationPrompt(
   resumeText: string,
   vacancyText: string,
+  language: InterviewLanguage,
 ): string {
-  return `Ты готовишь кандидата к собеседованию. Ниже резюме кандидата и текст вакансии.
+  return `You prepare a candidate for a job interview. Below are the candidate's resume and the job description.
 
-Верни JSON:
-- title: короткое название собеседования до 6 слов из вакансии: должность и компания, например «Senior Frontend, Яндекс». Без кавычек и даты.
-- cheatSheet: сжатая шпаргалка примерно на 300 слов. Проекты кандидата, стек, конкретные цифры и достижения, затем ключевые требования вакансии и как опыт кандидата их закрывает. Только факты, без воды.
-- recommendations.topics: 5–8 тем, которые стоит повторить перед собеседованием.
-- recommendations.likelyQuestions: 8–12 вероятных вопросов интервьюера под эту вакансию.
-- recommendations.emphasize: 4–6 сильных сторон кандидата, которые стоит подчеркнуть.
+Return JSON:
+- title: a short interview title of up to 6 words taken from the job description: role and company, e.g. «Senior Frontend, Яндекс». No quotes or date.
+- cheatSheet: a compact cheat sheet of about 300 words. The candidate's projects, stack, concrete numbers and achievements, then the key job requirements and how the candidate's experience covers them. Facts only, no filler.
+- recommendations.topics: 5–8 topics worth reviewing before the interview.
+- recommendations.likelyQuestions: 8–12 likely interviewer questions for this job.
+- recommendations.emphasize: 4–6 candidate strengths worth emphasizing.
 
-Пиши на языке вакансии, по умолчанию на русском.
+Write everything in ${OUTPUT_LANGUAGES[language]}.
 
-Резюме:
+Resume:
 ${resumeText}
 
-Вакансия:
+Job description:
 ${vacancyText}`;
 }

@@ -1,16 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ChildProcess, spawn } from 'child_process';
+import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
 import { tmpdir } from 'os';
 import { createInterface } from 'readline';
+import { LlmTextModel } from '../llm/llm-text-model';
 import { LlmTurn } from '../llm/llm-turn';
 import { ClaudeJsonResult, ClaudeStreamLine } from './claude.types';
 
 const DEFAULT_CLAUDE_MODEL = 'haiku';
-const JSON_SYSTEM_PROMPT = 'Верни только данные по заданной JSON-схеме.';
+const JSON_SYSTEM_PROMPT = 'Return only data matching the given JSON schema.';
+const CLAUDE_TIMEOUT_MS = 180_000;
+
+interface ClaudeRun {
+  child: ChildProcessWithoutNullStreams;
+  finished: Promise<void>;
+}
 
 @Injectable()
-export class ClaudeService {
+export class ClaudeService implements LlmTextModel {
   private readonly model: string;
 
   constructor(configService: ConfigService) {
@@ -24,7 +31,7 @@ export class ClaudeService {
     onText: (text: string) => Promise<void>,
     signal?: AbortSignal,
   ): Promise<string> {
-    const child = this.run(
+    const { child, finished } = this.run(
       [
         ...this.buildArgs(systemInstruction),
         '--output-format',
@@ -34,14 +41,17 @@ export class ClaudeService {
       ],
       signal,
     );
-    child.stdin.end(turns.map((turn) => turn.text).join('\n\n'));
+    child.stdin.end(this.toPrompt(turns));
 
-    const read = this.readStream(child.stdout, onText);
-    return Promise.race([read, this.failureOf(child)]);
+    const [text] = await Promise.all([
+      this.readStream(child.stdout, onText),
+      finished,
+    ]);
+    return text;
   }
 
   async generateJson<T>(prompt: string, schema: object): Promise<T> {
-    const child = this.run([
+    const { child, finished } = this.run([
       ...this.buildArgs(JSON_SYSTEM_PROMPT),
       '--output-format',
       'json',
@@ -50,8 +60,7 @@ export class ClaudeService {
     ]);
     child.stdin.end(prompt);
 
-    const output = Promise.resolve(child.stdout.toArray());
-    const chunks = await Promise.race([output, this.failureOf(child)]);
+    const [chunks] = await Promise.all([child.stdout.toArray(), finished]);
     const result = JSON.parse(
       Buffer.concat(chunks as Buffer[]).toString('utf8'),
     ) as ClaudeJsonResult;
@@ -61,18 +70,35 @@ export class ClaudeService {
     return result.structured_output as T;
   }
 
-  private run(args: string[], signal?: AbortSignal) {
-    return spawn('claude', args, {
+  private run(args: string[], signal?: AbortSignal): ClaudeRun {
+    const timeout = AbortSignal.timeout(CLAUDE_TIMEOUT_MS);
+    const child = spawn('claude', args, {
       cwd: tmpdir(),
-      stdio: ['pipe', 'pipe', 'ignore'],
-      signal,
+      signal: signal ? AbortSignal.any([signal, timeout]) : timeout,
     });
+    child.stdin.on('error', () => undefined);
+
+    let stderr = '';
+    child.stderr.on('data', (chunk: Buffer) => {
+      stderr += chunk.toString('utf8');
+    });
+
+    const finished = new Promise<void>((resolve, reject) => {
+      child.once('error', reject);
+      child.once('close', (code) => {
+        if (code === 0) resolve();
+        else reject(new Error(`Claude exited with ${code}: ${stderr.trim()}`));
+      });
+    });
+    return { child, finished };
   }
 
-  private failureOf(child: ChildProcess): Promise<never> {
-    return new Promise((_, reject) => {
-      child.once('error', reject);
-    });
+  private toPrompt(turns: LlmTurn[]): string {
+    if (turns.some((turn) => turn.images?.length)) {
+      throw new Error('ClaudeService does not support images');
+    }
+    if (turns.length === 1) return turns[0].text;
+    return turns.map((turn) => `${turn.role}: ${turn.text}`).join('\n\n');
   }
 
   private buildArgs(systemInstruction: string): string[] {

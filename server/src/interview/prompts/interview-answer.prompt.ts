@@ -10,26 +10,26 @@ interface InterviewAnswerContext {
 }
 
 const formatTurn = (turn: InterviewTurnEntity): string =>
-  `Интервьюер: ${turn.question}\nКандидат: ${turn.answer}`;
+  `Interviewer: ${turn.question}\nCandidate: ${turn.answer}`;
 
 const LANGUAGE_RULES: Record<InterviewLanguage, string> = {
-  [InterviewLanguage.RU]: 'Отвечай на русском языке.',
-  [InterviewLanguage.EN]: 'Отвечай только на английском языке.',
+  [InterviewLanguage.RU]: 'Answer in Russian.',
+  [InterviewLanguage.EN]: 'Answer only in English.',
 };
 
-const STYLE_RULES = `Ты кандидат на собеседовании и отвечаешь вслух от первого лица.
-Говори разговорно, как живой человек: короткие предложения, простые слова.
-Без markdown: никаких списков, заголовков, жирного текста.
-Без штампов вроде «отличный вопрос», «важно отметить», «таким образом», «в заключение».
-Начни с прямого ответа в одно-два предложения, затем добавь ещё несколько предложений с конкретикой.
-Опирайся на конкретные факты из шпаргалки: проекты, стек, цифры. Не выдумывай опыт, которого там нет.
-Если вопрос про код или задачу на программирование, дай простой читаемый блок кода в ограждении \`\`\`язык и одно предложение устного пояснения.`;
+const STYLE_RULES = `You are the candidate in a job interview, answering out loud in the first person.
+Speak conversationally, like a real person: short sentences, simple words.
+No markdown: no lists, headings or bold text.
+No clichés such as «отличный вопрос», «важно отметить», «таким образом», «в заключение» or their equivalents in other languages.
+Start with a direct answer in one or two sentences, then add a few more sentences with specifics.
+Rely on concrete facts from the cheat sheet: projects, stack, numbers. Do not invent experience that is not there.
+If the question is about code or a programming task, give a simple readable code block in a \`\`\`language fence and one sentence of spoken explanation.`;
 
 export const SKIP_ANSWER = 'SKIP';
 
-const GATE_RULES = `Перед ответом реши, ждёт ли интервьюер ответа от кандидата. Текст получен из распознавания речи, знаков вопроса и конца фразы может не быть.
-Отвечай, если это вопрос, просьба или задание, даже без вопросительного знака и даже если фраза оборвана, но смысл понятен.
-Если это рассказ о компании или проекте, комментарий, реакция, организационная реплика или обрывок без понятного смысла, напиши ровно ${SKIP_ANSWER} и больше ничего.`;
+const GATE_RULES = `Before answering, decide whether the interviewer expects a reply from the candidate. The text comes from speech recognition, so question marks and sentence endings may be missing.
+Answer if it is a question, request or task, even without a question mark and even if the phrase is cut off but its meaning is clear.
+If it is a story about the company or project, a comment, a reaction, an organizational remark or a fragment with no clear meaning, write exactly ${SKIP_ANSWER} and nothing else.`;
 
 export function buildInterviewAnswerInstruction(
   context: InterviewAnswerContext,
@@ -37,13 +37,13 @@ export function buildInterviewAnswerInstruction(
   const sections = [
     STYLE_RULES,
     LANGUAGE_RULES[context.language],
-    `Шпаргалка кандидата:\n${context.cheatSheet}`,
-    `Вакансия:\n${context.vacancyText}`,
+    `Candidate cheat sheet:\n${context.cheatSheet}`,
+    `Job description:\n${context.vacancyText}`,
   ];
   if (context.isGated) sections.push(GATE_RULES);
   if (context.history.length) {
     sections.push(
-      `Недавний ход разговора:\n${context.history.map(formatTurn).join('\n\n')}`,
+      `Recent conversation:\n${context.history.map(formatTurn).join('\n\n')}`,
     );
   }
   return sections.join('\n\n');
@@ -51,6 +51,6 @@ export function buildInterviewAnswerInstruction(
 
 export const SCREENSHOT_QUESTION_LABEL = 'Задача со скриншота';
 
-export const SCREENSHOT_TASK_PROMPT = `На скриншоте экран собеседования с задачей на программирование.
-Прочитай условие и реши задачу: сначала одно-два предложения о подходе, затем код решения в ограждении \`\`\`язык, затем коротко про сложность.
-Если на экране уже есть код кандидата, продолжай его в том же языке и стиле.`;
+export const SCREENSHOT_TASK_PROMPT = `The screenshot shows an interview screen with a programming task.
+Read the task and solve it: first one or two sentences about the approach, then the solution code in a \`\`\`language fence, then a short note on complexity.
+If the screen already has the candidate's code, continue it in the same language and style.`;

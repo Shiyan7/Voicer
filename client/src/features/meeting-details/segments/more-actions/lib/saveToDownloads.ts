@@ -11,7 +11,7 @@ export async function revealAudioInDownloads(
   audioUrl: string,
   fileName: string,
 ): Promise<void> {
-  const path = await downloadPath(fileName, audioUrl.split('.').pop() ?? 'mp3');
+  const path = await downloadPath(fileName, new URL(audioUrl).pathname.split('.').pop() ?? 'mp3');
 
   if (!(await exists(path))) {
     const response = await fetch(audioUrl);

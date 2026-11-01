@@ -2,7 +2,9 @@ import {
   Args,
   ID,
   Mutation,
+  Parent,
   Query,
+  ResolveField,
   Resolver,
   Subscription,
 } from '@nestjs/graphql';
@@ -21,6 +23,11 @@ import { SummaryStyle } from '../summarization/summary-style.enum';
 @Resolver(() => MeetingOutput)
 export class MeetingsResolver {
   constructor(private readonly meetingsService: MeetingsService) {}
+
+  @ResolveField(() => String, { nullable: true })
+  audioUrl(@Parent() meeting: MeetingOutput): string | null {
+    return this.meetingsService.signAudioUrl(meeting.audioUrl);
+  }
 
   @Query(() => MeetingsPageOutput)
   meetingsPage(

@@ -14,7 +14,11 @@ import { AuthService } from '../../auth/auth.service';
 import { InterviewAnswersService } from '../interview-answers.service';
 import { InterviewLanguage } from '../interview-language.enum';
 import { InterviewSessionsService } from '../interview-sessions.service';
-import { DEEPGRAM_LIVE_OPTIONS, LIVE_AUDIO_PATH } from './live-audio.config';
+import {
+  DEEPGRAM_LIVE_OPTIONS,
+  LIVE_AUDIO_PATH,
+  LIVE_AUDIO_PROTOCOL,
+} from './live-audio.config';
 import { LiveAudioSession } from './live-audio.session';
 
 interface LiveAudioIdentity {
@@ -33,7 +37,10 @@ export class LiveAudioGateway
   implements OnApplicationBootstrap, OnApplicationShutdown
 {
   private readonly logger = new Logger(LiveAudioGateway.name);
-  private readonly server = new WebSocketServer({ noServer: true });
+  private readonly server = new WebSocketServer({
+    noServer: true,
+    handleProtocols: () => LIVE_AUDIO_PROTOCOL,
+  });
   private readonly sessions = new Set<LiveAudioSession>();
 
   constructor(
@@ -70,7 +77,7 @@ export class LiveAudioGateway
     head: Buffer,
     url: URL,
   ): Promise<void> {
-    const identity = await this.identify(url);
+    const identity = await this.identify(url, this.readToken(request));
     if (!identity) {
       rejectUpgrade(socket, '401 Unauthorized');
       return;
@@ -80,8 +87,16 @@ export class LiveAudioGateway
     );
   }
 
-  private async identify(url: URL): Promise<LiveAudioIdentity | null> {
-    const token = url.searchParams.get('token');
+  private readToken(request: IncomingMessage): string | null {
+    const protocols = request.headers['sec-websocket-protocol'] ?? '';
+    const [protocol, token] = protocols.split(',').map((part) => part.trim());
+    return protocol === LIVE_AUDIO_PROTOCOL && token ? token : null;
+  }
+
+  private async identify(
+    url: URL,
+    token: string | null,
+  ): Promise<LiveAudioIdentity | null> {
     const sessionId = url.searchParams.get('sessionId');
     if (!token || !sessionId) return null;
     try {

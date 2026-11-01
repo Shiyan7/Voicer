@@ -4,8 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
-import { MeetingEntity } from '../meetings/meeting.entity';
+import { Repository } from 'typeorm';
+import { MeetingsService } from '../meetings/meetings.service';
 import { FileUpload } from '../file/file-upload';
 import { ClaudeService } from '../claude/claude.service';
 import { InterviewLanguage } from './interview-language.enum';
@@ -13,7 +13,7 @@ import { InterviewSessionEntity } from './interview-session.entity';
 import { InterviewSessionOutput } from './interview-session.output';
 import { InterviewTurnEntity } from './interview-turn.entity';
 import { InterviewTurnOutput } from './interview-turn.output';
-import { InterviewPreparation, InterviewRecording } from './interview.types';
+import { InterviewPreparation } from './interview.types';
 import {
   toInterviewSessionOutput,
   toInterviewTurnOutput,
@@ -35,8 +35,7 @@ export class InterviewSessionsService {
     private readonly sessionsRepository: Repository<InterviewSessionEntity>,
     @InjectRepository(InterviewTurnEntity)
     private readonly turnsRepository: Repository<InterviewTurnEntity>,
-    @InjectRepository(MeetingEntity)
-    private readonly meetingsRepository: Repository<MeetingEntity>,
+    private readonly meetings: MeetingsService,
     private readonly claude: ClaudeService,
   ) {}
 
@@ -48,7 +47,7 @@ export class InterviewSessionsService {
   ): Promise<InterviewSessionOutput> {
     const vacancyText = this.validateVacancy(vacancy);
     const resumeText = await extractPdfText(await this.readPdf(resume));
-    const preparation = await this.prepare(resumeText, vacancyText);
+    const preparation = await this.prepare(resumeText, vacancyText, language);
     const session = await this.sessionsRepository.save(
       this.sessionsRepository.create({
         userId,
@@ -129,16 +128,9 @@ export class InterviewSessionsService {
     sessions: InterviewSessionEntity[],
   ): Promise<InterviewSessionOutput[]> {
     if (!sessions.length) return [];
-    const recordings = await this.meetingsRepository
-      .createQueryBuilder('meeting')
-      .distinctOn(['meeting.interviewSessionId'])
-      .select('meeting.id', 'id')
-      .addSelect('meeting.audioUrl', 'audioUrl')
-      .addSelect('meeting.interviewSessionId', 'sessionId')
-      .where({ interviewSessionId: In(sessions.map(({ id }) => id)) })
-      .orderBy('meeting.interviewSessionId')
-      .addOrderBy('meeting.durationSec', 'DESC', 'NULLS LAST')
-      .getRawMany<InterviewRecording & { sessionId: string }>();
+    const recordings = await this.meetings.findInterviewRecordings(
+      sessions.map(({ id }) => id),
+    );
     const bySession = new Map(recordings.map((r) => [r.sessionId, r]));
     return sessions.map((session) =>
       toInterviewSessionOutput(session, bySession.get(session.id)),
@@ -148,9 +140,10 @@ export class InterviewSessionsService {
   private prepare(
     resumeText: string,
     vacancyText: string,
+    language: InterviewLanguage,
   ): Promise<InterviewPreparation> {
     return this.claude.generateJson<InterviewPreparation>(
-      buildInterviewPreparationPrompt(resumeText, vacancyText),
+      buildInterviewPreparationPrompt(resumeText, vacancyText, language),
       INTERVIEW_PREPARATION_SCHEMA,
     );
   }
