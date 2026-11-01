@@ -323,7 +323,8 @@
       "hide_details": "Hide details",
       "screenshot_question": "Coding task from screenshot",
       "listen_recording": "Listen to recording",
-      "back": "Back"
+      "back": "Back",
+      "scroll_down": "Scroll down"
     }
   }
 }

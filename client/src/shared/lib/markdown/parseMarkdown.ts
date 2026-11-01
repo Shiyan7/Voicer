@@ -1,6 +1,6 @@
 import { MarkdownBlock, MarkdownInline } from './types/MarkdownBlock';
 
-const INLINE_PATTERN = /(\*\*[^*]+\*\*|`[^`]+`|\[\[\d+\]\])/g;
+const INLINE_PATTERN = /(\*\*[^*]+\*\*|`[^`]+`|\[\[\d+]])/g;
 const BULLET_PREFIX = /^\s*[-*•]\s+/;
 
 const toTime = (token: string): MarkdownInline => ({

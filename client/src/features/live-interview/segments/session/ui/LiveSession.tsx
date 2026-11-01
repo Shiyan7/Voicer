@@ -1,7 +1,7 @@
 import { A } from '@solidjs/router';
 import { For, Show } from 'solid-js';
 
-import { useStickToBottom } from '@/shared/hooks/useStickToBottom';
+import { useScrollToBottom } from '@/shared/hooks/useScrollToBottom';
 import { i18n } from '@/shared/i18n';
 import { Button } from '@/shared/ui/button';
 import { Icon } from '@/shared/ui/icon';
@@ -13,7 +13,7 @@ import { LiveTurnCard } from './LiveTurnCard';
 const styles = liveSessionStyles();
 
 export function LiveSession(props: LiveSessionProps) {
-  const { setContent } = useStickToBottom();
+  const scroll = useScrollToBottom();
 
   return (
     <div class={styles.root()}>
@@ -60,16 +60,36 @@ export function LiveSession(props: LiveSessionProps) {
           <p class={styles.empty()}>{i18n.t('live.session.waiting')}</p>
         }
       >
-        <div class={styles.list()} ref={setContent}>
-          <For each={props.turns}>
-            {(turn) => (
-              <LiveTurnCard
-                turn={turn}
-                onToggleDetails={props.onToggleDetails}
-              />
-            )}
-          </For>
+        <div
+          class={styles.scroller()}
+          ref={scroll.setScroller}
+          onScroll={scroll.onScroll}
+        >
+          <div class={styles.list()}>
+            <For each={props.turns}>
+              {(turn) => (
+                <LiveTurnCard
+                  turn={turn}
+                  onToggleDetails={props.onToggleDetails}
+                />
+              )}
+            </For>
+          </div>
         </div>
+        <Show when={scroll.isAwayFromBottom()}>
+          <button
+            class={styles.toBottom()}
+            type="button"
+            aria-label={i18n.t('live.session.scroll_down')}
+            onClick={scroll.scrollToBottom}
+          >
+            <Icon
+              class={styles.toBottomIcon()}
+              name="common:arrow-up"
+              size={18}
+            />
+          </button>
+        </Show>
       </Show>
     </div>
   );

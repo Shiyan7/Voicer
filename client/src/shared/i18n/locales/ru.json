@@ -323,7 +323,8 @@
       "hide_details": "Свернуть",
       "screenshot_question": "Задача со скриншота",
       "listen_recording": "Слушать запись",
-      "back": "Назад"
+      "back": "Назад",
+      "scroll_down": "Вниз"
     }
   }
 }
