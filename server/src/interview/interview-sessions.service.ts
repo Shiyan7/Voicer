@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { MeetingEntity } from '../meetings/meeting.entity';
 import { FileUpload } from '../file/file-upload';
-import { GeminiService } from '../gemini/gemini.service';
+import { GroqService } from '../groq/groq.service';
 import { InterviewSessionEntity } from './interview-session.entity';
 import { InterviewSessionOutput } from './interview-session.output';
 import { InterviewTurnEntity } from './interview-turn.entity';
@@ -17,7 +17,8 @@ import {
   toInterviewSessionOutput,
   toInterviewTurnOutput,
 } from './interview.serializer';
-import { readUpload } from './read-upload';
+import { extractPdfText } from './extract-pdf-text';
+import { readUpload } from '../file/read-upload';
 import {
   buildInterviewPreparationPrompt,
   INTERVIEW_PREPARATION_SCHEMA,
@@ -35,7 +36,7 @@ export class InterviewSessionsService {
     private readonly turnsRepository: Repository<InterviewTurnEntity>,
     @InjectRepository(MeetingEntity)
     private readonly meetingsRepository: Repository<MeetingEntity>,
-    private readonly gemini: GeminiService,
+    private readonly groq: GroqService,
   ) {}
 
   async create(
@@ -44,10 +45,15 @@ export class InterviewSessionsService {
     vacancy: string,
   ): Promise<InterviewSessionOutput> {
     const vacancyText = this.validateVacancy(vacancy);
-    const pdf = await this.readPdf(resume);
-    const preparation = await this.prepare(pdf, vacancyText);
+    const resumeText = await extractPdfText(await this.readPdf(resume));
+    const preparation = await this.prepare(resumeText, vacancyText);
     const session = await this.sessionsRepository.save(
-      this.sessionsRepository.create({ userId, vacancyText, ...preparation }),
+      this.sessionsRepository.create({
+        userId,
+        vacancyText,
+        resumeText,
+        ...preparation,
+      }),
     );
     return toInterviewSessionOutput(session, null);
   }
@@ -100,6 +106,18 @@ export class InterviewSessionsService {
     await this.turnsRepository.insert({ sessionId, question, answer });
   }
 
+  async recentTurns(
+    sessionId: string,
+    limit: number,
+  ): Promise<InterviewTurnEntity[]> {
+    const turns = await this.turnsRepository.find({
+      where: { sessionId },
+      order: { createdAt: 'DESC' },
+      take: limit,
+    });
+    return turns.reverse();
+  }
+
   async findOwned(userId: string, id: string): Promise<InterviewSessionEntity> {
     const session = await this.sessionsRepository.findOneBy({ id, userId });
     if (!session) throw new NotFoundException('Сессия не найдена');
@@ -132,26 +150,12 @@ export class InterviewSessionsService {
   }
 
   private prepare(
-    pdf: Buffer,
+    resumeText: string,
     vacancyText: string,
   ): Promise<InterviewPreparation> {
-    return this.gemini.generateJson<InterviewPreparation>(
-      [
-        {
-          role: 'user',
-          parts: [
-            {
-              inlineData: {
-                mimeType: 'application/pdf',
-                data: pdf.toString('base64'),
-              },
-            },
-            { text: buildInterviewPreparationPrompt(vacancyText) },
-          ],
-        },
-      ],
+    return this.groq.generateJson<InterviewPreparation>(
+      buildInterviewPreparationPrompt(resumeText, vacancyText),
       INTERVIEW_PREPARATION_SCHEMA,
-      (preparation) => Boolean(preparation.cheatSheet?.trim()),
     );
   }
 

@@ -1,15 +1,20 @@
+import type { InterviewRecommendationsOutput } from '@schema';
 import { createSignal } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
+import type { Tab } from '@/shared/ui/tabs';
 
 import { createInterviewSessionMutation } from '../api/createInterviewSessionMutation';
-import { toPrepResult } from '../lib/toPrepResult';
-import { LivePrepResult } from '../types/LivePrepResult';
+import { PREP_SECTIONS } from '../config/liveInterviewConfig';
+import { LivePrepSectionKey } from '../types/LivePrepSectionKey';
 
 export function useLivePrep() {
   const [resume, setResume] = createSignal<File>();
   const [vacancy, setVacancy] = createSignal('');
-  const [result, setResult] = createSignal<LivePrepResult>();
+  const [recommendations, setRecommendations] =
+    createSignal<InterviewRecommendationsOutput>();
+  const [activeSection, setActiveSection] =
+    createSignal<LivePrepSectionKey>('questions');
   const [sessionId, setSessionId] = createSignal<string>();
   const [hasError, setHasError] = createSignal(false);
   const [createState, createSession] = createInterviewSessionMutation();
@@ -24,38 +29,51 @@ export function useLivePrep() {
   const canPrepare = () =>
     !isPreparing() && hasResume() && vacancy().trim().length > 0;
 
-  const sections = () =>
-    (result()?.sections ?? []).map((section) => ({
-      title: i18n.t(`live.prep.sections.${section.titleKey}`),
-      items: section.items,
-    }));
+  const sectionTabs = (): Tab<LivePrepSectionKey>[] =>
+    recommendations()
+      ? (Object.keys(PREP_SECTIONS) as LivePrepSectionKey[]).map((key) => ({
+          label: i18n.t(`live.prep.sections.${key}`),
+          value: key,
+        }))
+      : [];
 
-  const isReady = () => !!result() && !!sessionId();
+  const activeItems = () =>
+    recommendations()?.[PREP_SECTIONS[activeSection()]] ?? [];
+
+  const isReady = () => !!sessionId();
 
   const errorMessage = () => (hasError() ? i18n.t('live.prep.error') : '');
 
-  const onResumeSelected = (event: Event) => {
-    const file = (event.currentTarget as HTMLInputElement).files?.[0];
-    setResume(file);
-  };
+  const onResumeSelected = (file: File | undefined) => setResume(file);
 
   const onVacancyInput = (value: string) => setVacancy(value);
+
+  const fail = () => {
+    setHasError(true);
+  };
+
+  const reset = () => {
+    setSessionId(undefined);
+    setRecommendations(undefined);
+    setActiveSection('questions');
+    setHasError(false);
+  };
 
   const prepare = async () => {
     const file = resume();
     if (!file) return;
-    setHasError(false);
+    reset();
     const response = await createSession({
       resume: file,
       vacancy: vacancy().trim(),
     });
     const session = response.data?.createInterviewSession;
     if (!session) {
-      setHasError(true);
+      fail();
       return;
     }
     setSessionId(session.id);
-    setResult(toPrepResult(session.recommendations));
+    setRecommendations(session.recommendations);
   };
 
   return {
@@ -64,12 +82,17 @@ export function useLivePrep() {
     vacancy,
     isPreparing,
     canPrepare,
-    sections,
+    sectionTabs,
+    activeSection,
+    activeItems,
+    setActiveSection,
     isReady,
     errorMessage,
     sessionId,
     onResumeSelected,
     onVacancyInput,
     prepare,
+    fail,
+    reset,
   };
 }

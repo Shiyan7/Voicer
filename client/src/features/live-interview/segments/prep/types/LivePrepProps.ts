@@ -1,5 +1,7 @@
-import { LivePastSessionView } from '../../../types/LivePastSessionView';
-import { LivePrepSectionView } from '../../../types/LivePrepSectionView';
+import type { InterviewSessionView } from '@/entities/interview-session';
+import type { Tab } from '@/shared/ui/tabs';
+
+import { LivePrepSectionKey } from '../../../types/LivePrepSectionKey';
 
 export interface LivePrepProps {
   resumeLabel: string;
@@ -9,9 +11,12 @@ export interface LivePrepProps {
   canPrepare: boolean;
   isReady: boolean;
   errorMessage: string;
-  sections: LivePrepSectionView[];
-  pastSessions: LivePastSessionView[];
-  onResumeSelected: (event: Event) => void;
+  sectionTabs: Tab<LivePrepSectionKey>[];
+  activeSection: LivePrepSectionKey;
+  activeItems: string[];
+  onSelectSection: (key: LivePrepSectionKey) => void;
+  pastSessions: InterviewSessionView[];
+  onResumeSelected: (file: File) => void;
   onVacancyInput: (value: string) => void;
   onPrepare: () => void;
   onStart: () => void;

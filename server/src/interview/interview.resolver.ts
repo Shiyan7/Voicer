@@ -15,18 +15,13 @@ import { InterviewAnswerOutput } from './interview-answer.output';
 import { InterviewAnswersService } from './interview-answers.service';
 import { InterviewSessionOutput } from './interview-session.output';
 import { InterviewTurnOutput } from './interview-turn.output';
-import { InterviewHistoryService } from './interview-history.service';
 import { InterviewSessionsService } from './interview-sessions.service';
-import { readUpload } from './read-upload';
-
-const MAX_SCREENSHOT_BYTES = 15 * 1024 * 1024;
 
 @Resolver(() => InterviewSessionOutput)
 export class InterviewResolver {
   constructor(
     private readonly sessions: InterviewSessionsService,
     private readonly answers: InterviewAnswersService,
-    private readonly history: InterviewHistoryService,
   ) {}
 
   @Mutation(() => InterviewSessionOutput)
@@ -76,18 +71,12 @@ export class InterviewResolver {
   }
 
   @Mutation(() => ID)
-  async interviewAskScreenshot(
+  interviewAskScreenshot(
     @CurrentUser() user: UserEntity,
     @Args('sessionId', { type: () => ID }) sessionId: string,
     @Args({ name: 'image', type: () => GraphQLUpload }) image: FileUpload,
   ): Promise<string> {
-    const buffer = await readUpload(image, MAX_SCREENSHOT_BYTES);
-    return this.answers.askScreenshot(
-      user.id,
-      sessionId,
-      buffer,
-      this.history.get(sessionId),
-    );
+    return this.answers.askScreenshot(user.id, sessionId, image);
   }
 
   @Subscription(() => InterviewAnswerOutput, { name: 'interviewAnswer' })

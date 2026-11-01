@@ -1,8 +1,13 @@
+import { InterviewTurnEntity } from '../interview-turn.entity';
+
 export interface InterviewAnswerContext {
   cheatSheet: string;
   vacancyText: string;
-  history: string[];
+  history: InterviewTurnEntity[];
 }
+
+const formatTurn = (turn: InterviewTurnEntity): string =>
+  `Интервьюер: ${turn.question}\nКандидат: ${turn.answer}`;
 
 const STYLE_RULES = `Ты кандидат на собеседовании и отвечаешь вслух от первого лица.
 Отвечай на языке вопроса, по умолчанию на русском.
@@ -22,7 +27,9 @@ export function buildInterviewAnswerInstruction(
     `Вакансия:\n${context.vacancyText}`,
   ];
   if (context.history.length) {
-    sections.push(`Недавний ход разговора:\n${context.history.join('\n')}`);
+    sections.push(
+      `Недавний ход разговора:\n${context.history.map(formatTurn).join('\n\n')}`,
+    );
   }
   return sections.join('\n\n');
 }

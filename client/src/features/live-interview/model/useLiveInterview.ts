@@ -18,8 +18,8 @@ export function useLiveInterview() {
   const session = useLiveSession();
   const history = useLiveHistory();
   const [phase, setPhase] = createSignal<LivePhase>('prep');
-  const [activeSessionId, setActiveSessionId] = createSignal<string>();
   const [recordingHref, setRecordingHref] = createSignal('');
+  let activeSessionId: string | undefined;
   let isRecordingOwned = false;
 
   const isSession = () => phase() !== 'prep';
@@ -29,6 +29,7 @@ export function useLiveInterview() {
   const startRecording = async (sessionId: string) => {
     const recording = await ensureRecording();
     isRecordingOwned = recording.isOwned;
+    session.startTimer(recording.startedAt);
     await updateInterviewSession({
       id: sessionId,
       recordingStartedAt: new Date(recording.startedAt).toISOString(),
@@ -36,10 +37,10 @@ export function useLiveInterview() {
   };
 
   const beginSession = (sessionId: string, initialTurns: LiveTurn[]) => {
-    setActiveSessionId(sessionId);
+    activeSessionId = sessionId;
     setPhase('session');
     session.start(sessionId, initialTurns);
-    void startRecording(sessionId);
+    startRecording(sessionId).catch(session.fail);
   };
 
   const startInterview = () => {
@@ -47,10 +48,14 @@ export function useLiveInterview() {
     if (sessionId) beginSession(sessionId, []);
   };
 
+  const loadTurns = async (id: string) =>
+    (await fetchInterviewTurns(id)).map(toCompletedTurn);
+
   const openPastSession = async (id: string) => {
     const pastSession = history.findSession(id);
     if (!pastSession) return;
-    const savedTurns = (await fetchInterviewTurns(id)).map(toCompletedTurn);
+    const savedTurns = await loadTurns(id).catch(prep.fail);
+    if (!savedTurns) return;
     if (!pastSession.finishedAt) {
       beginSession(id, savedTurns);
       return;
@@ -61,15 +66,20 @@ export function useLiveInterview() {
     setPhase('review');
   };
 
+  const finishSession = async (sessionId: string) => {
+    await updateInterviewSession({ id: sessionId, finished: true });
+    await history.refetch();
+  };
+
   const finishInterview = async () => {
+    const sessionId = activeSessionId;
+    activeSessionId = undefined;
     session.stop();
-    setPhase('prep');
-    const sessionId = activeSessionId();
-    if (isRecordingOwned) void stopRecording();
+    if (isRecordingOwned) void stopRecording().catch(prep.fail);
     isRecordingOwned = false;
-    if (sessionId)
-      await updateInterviewSession({ id: sessionId, finished: true });
-    history.refetch();
+    prep.reset();
+    if (sessionId) await finishSession(sessionId).catch(prep.fail);
+    setPhase('prep');
   };
 
   const closeReview = () => setPhase('prep');

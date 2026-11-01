@@ -7,7 +7,9 @@ use std::time::{Duration, Instant};
 
 use super::mic::MicSource;
 use super::system::SystemSource;
-use super::{SampleQueue, LIVE_SYSTEM_TEE, RECORDING_ACTIVE, TARGET_SAMPLE_RATE};
+use super::{
+    SampleQueue, LIVE_FEED_ACTIVE, LIVE_SYSTEM_QUEUE, RECORDING_ACTIVE, TARGET_SAMPLE_RATE,
+};
 
 const STALL_MS: u64 = 2_000;
 const LEVEL_INTERVAL: Duration = Duration::from_millis(40);
@@ -81,11 +83,7 @@ impl Recorder {
         }
     }
 
-    pub fn start(
-        &mut self,
-        recordings_dir: &Path,
-        on_level: LevelSink,
-    ) -> Result<StartInfo, String> {
+    pub fn start(&mut self, recordings_dir: &Path, on_level: LevelSink) -> Result<StartInfo, String> {
         if self.active.is_some() {
             return Err("already recording".into());
         }
@@ -97,7 +95,7 @@ impl Recorder {
         let flac_path = recordings_dir.join(format!("{local_id}.flac"));
 
         let mic_queue = SampleQueue::new();
-        let sys_queue = SampleQueue::with_tee(&LIVE_SYSTEM_TEE);
+        let sys_queue = SampleQueue::new();
         let mut warnings = Vec::new();
 
         RECORDING_ACTIVE.store(true, std::sync::atomic::Ordering::Relaxed);
@@ -148,14 +146,16 @@ impl Recorder {
         let writer = std::thread::Builder::new()
             .name("voicer-recorder-writer".into())
             .spawn(move || {
-                writer_loop(
+                let result = writer_loop(
                     &wav_for_writer,
                     &mic_q,
                     &sys_q,
                     &stop_rx,
                     &paused_for_writer,
                     &on_level,
-                )
+                );
+                LIVE_FEED_ACTIVE.store(false, Ordering::Relaxed);
+                result
             })
             .map_err(|e| {
                 RECORDING_ACTIVE.store(false, std::sync::atomic::Ordering::Relaxed);
@@ -290,6 +290,7 @@ fn writer_loop(
 
         let mut mic_chunk = mic_q.take();
         let mut sys_chunk = sys_q.take();
+        forward_to_live(&sys_chunk, sys_q);
 
         let is_paused = paused.load(Ordering::Relaxed);
         if is_paused && !stop {
@@ -348,6 +349,21 @@ fn writer_loop(
         .finalize()
         .map_err(|e| format!("wav finalize: {e}"))?;
     Ok(frames)
+}
+
+fn forward_to_live(samples: &[i16], sys_q: &SampleQueue) {
+    if sys_q.is_failed() || sys_q.millis_since_last_push() >= STALL_MS {
+        LIVE_FEED_ACTIVE.store(false, Ordering::Relaxed);
+        return;
+    }
+    if samples.is_empty() {
+        return;
+    }
+    let pushed = match LIVE_SYSTEM_QUEUE.lock() {
+        Ok(slot) => slot.as_ref().map(|q| q.push(samples)).is_some(),
+        Err(_) => false,
+    };
+    LIVE_FEED_ACTIVE.store(pushed, Ordering::Relaxed);
 }
 
 fn max_window_rms(samples: &[i16]) -> f32 {

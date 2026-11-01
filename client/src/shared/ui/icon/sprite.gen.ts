@@ -290,6 +290,7 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['chevron-left'], [24]),
         defineSpriteSymbol(['chevron-right'], [24]),
         defineSpriteSymbol(['clock'], [16]),
+        defineSpriteSymbol(['copy'], [24]),
         defineSpriteSymbol(['cross'], [15]),
         defineSpriteSymbol(['crown'], [24]),
         defineSpriteSymbol(['document-text'], [24]),
@@ -314,7 +315,7 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['trash'], [24]),
         defineSpriteSymbol(['upload'], [24]),
       ],
-      defineExternalAssetMeta('common.a369b7e4.svg'),
+      defineExternalAssetMeta('common.ee996744.svg'),
     ),
   ]),
   defineSprite('navigation', [
@@ -363,6 +364,7 @@ export type SpritesMeta = {
     | 'chevron-left'
     | 'chevron-right'
     | 'clock'
+    | 'copy'
     | 'cross'
     | 'crown'
     | 'document-text'

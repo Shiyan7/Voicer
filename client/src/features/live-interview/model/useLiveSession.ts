@@ -1,107 +1,59 @@
 import { createSignal, onCleanup } from 'solid-js';
 import { createStore, produce } from 'solid-js/store';
 
+import { useElapsedTimer } from '@/shared/hooks/useElapsedTimer';
 import { i18n } from '@/shared/i18n';
+import { formatClock } from '@/shared/lib/time';
 
 import { createServerLiveSource } from '../api/createServerLiveSource';
-import { TIMER_INTERVAL_MS } from '../config/liveInterviewConfig';
-import { formatElapsed } from '../lib/formatElapsed';
+import { EMPTY_TURN } from '../config/liveInterviewConfig';
 import { toLiveTurnView } from '../lib/toLiveTurnView';
-import { LiveAnswerUpdate } from '../types/LiveAnswerUpdate';
-import { LiveSource } from '../types/LiveSource';
+import { LiveSourceHandlers } from '../types/LiveSourceHandlers';
 import { LiveStatus } from '../types/LiveStatus';
-import { LiveTranscriptEvent } from '../types/LiveTranscriptEvent';
 import { LiveTurn } from '../types/LiveTurn';
-
-const createTurn = (event: LiveTranscriptEvent): LiveTurn => ({
-  id: event.turnId,
-  question: event.text,
-  isQuestionFinal: event.isFinal,
-  short: '',
-  details: '',
-  code: '',
-  codeLanguage: '',
-  isDone: false,
-});
 
 export function useLiveSession() {
   const [turns, setTurns] = createStore<LiveTurn[]>([]);
   const [status, setStatus] = createSignal<LiveStatus>('idle');
-  const [elapsed, setElapsed] = createSignal(0);
-  const [expanded, setExpanded] = createSignal<Set<string>>(new Set());
-  let timer: ReturnType<typeof setInterval> | undefined;
-  let source: LiveSource | undefined;
-  let unsubscribers: (() => void)[] = [];
+  const [expanded, setExpanded] = createSignal(new Set<string>());
+  const timer = useElapsedTimer();
+  let source: ReturnType<typeof createServerLiveSource> | undefined;
 
-  const applyTranscript = (event: LiveTranscriptEvent) =>
+  const applyTurn: LiveSourceHandlers['onTurn'] = (patch) =>
     setTurns(
       produce((list) => {
-        const turn = list.find((item) => item.id === event.turnId);
-        if (!turn) {
-          list.push(createTurn(event));
-          return;
-        }
-        turn.question = event.text;
-        turn.isQuestionFinal = event.isFinal;
+        const turn = list.find((item) => item.id === patch.id);
+        if (turn) Object.assign(turn, patch);
+        else list.push({ ...EMPTY_TURN, ...patch });
       }),
     );
-
-  const applyAnswer = (update: LiveAnswerUpdate) =>
-    setTurns(
-      produce((list) => {
-        const turn = list.find((item) => item.id === update.turnId);
-        if (!turn) return;
-        turn.short = update.short;
-        turn.details = update.details;
-        turn.code = update.code;
-        turn.codeLanguage = update.codeLanguage;
-        turn.isDone = update.isDone;
-      }),
-    );
-
-  const detachSource = () => {
-    source?.stop();
-    unsubscribers.forEach((unsubscribe) => unsubscribe());
-    unsubscribers = [];
-    source = undefined;
-  };
-
-  const attachSource = (sessionId: string) => {
-    const next = createServerLiveSource(sessionId);
-    unsubscribers = [
-      next.onTranscript(applyTranscript),
-      next.onAnswer(applyAnswer),
-      next.onStatus(setStatus),
-    ];
-    source = next;
-    return next;
-  };
-
-  const stopTimer = () => clearInterval(timer);
-
-  const start = (sessionId: string, initialTurns: LiveTurn[]) => {
-    detachSource();
-    setTurns(initialTurns);
-    setElapsed(0);
-    stopTimer();
-    timer = setInterval(
-      () => setElapsed((value) => value + 1),
-      TIMER_INTERVAL_MS,
-    );
-    attachSource(sessionId).start();
-  };
 
   const stop = () => {
-    stopTimer();
-    detachSource();
+    source?.stop();
+    source = undefined;
+    timer.stop();
   };
 
   const show = (savedTurns: LiveTurn[]) => {
     stop();
     setTurns(savedTurns);
+    setExpanded(new Set<string>());
   };
 
-  const timerLabel = () => formatElapsed(elapsed());
+  const start = (sessionId: string, initialTurns: LiveTurn[]) => {
+    show(initialTurns);
+    source = createServerLiveSource(sessionId, {
+      onTurn: applyTurn,
+      onStatus: setStatus,
+    });
+    source.start();
+  };
+
+  const startTimer = (startedAt: number) => timer.start(startedAt);
+
+  const fail = () => setStatus('error');
+
+  const timerLabel = () => formatClock(timer.elapsedSeconds());
 
   const statusLabel = () => i18n.t(`live.session.status.${status()}`);
 
@@ -122,7 +74,7 @@ export function useLiveSession() {
 
   const answerNow = () => source?.requestAnswer();
 
-  const captureCode = () => source?.captureCode();
+  const captureCode = () => void source?.captureCode();
 
   onCleanup(stop);
 
@@ -130,6 +82,8 @@ export function useLiveSession() {
     start,
     stop,
     show,
+    startTimer,
+    fail,
     timerLabel,
     statusLabel,
     isAnswering,

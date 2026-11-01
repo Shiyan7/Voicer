@@ -3,6 +3,8 @@ mod audio;
 mod commands;
 #[cfg(target_os = "macos")]
 mod detect;
+#[cfg(target_os = "macos")]
+mod screen;
 #[cfg(desktop)]
 mod tray;
 

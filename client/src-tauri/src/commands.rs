@@ -236,34 +236,38 @@ pub fn resolve_recording_path(app: &AppHandle, path: &str) -> Result<PathBuf, St
 #[derive(Default)]
 pub struct LiveCaptureHandle {
     #[cfg(target_os = "macos")]
-    pub capture: std::sync::Mutex<Option<crate::audio::live::LiveCapture>>,
+    capture: std::sync::Mutex<Option<crate::audio::live::LiveCapture>>,
+}
+
+#[cfg(target_os = "macos")]
+fn take_live_capture(app: &AppHandle) -> Result<Option<crate::audio::live::LiveCapture>, String> {
+    app.state::<LiveCaptureHandle>()
+        .capture
+        .lock()
+        .map(|mut slot| slot.take())
+        .map_err(|_| "live capture lock poisoned".to_string())
 }
 
 #[tauri::command]
-pub async fn start_live_capture(
+pub fn start_live_capture(
     app: AppHandle,
     on_system: tauri::ipc::Channel<tauri::ipc::InvokeResponseBody>,
 ) -> Result<(), String> {
     #[cfg(target_os = "macos")]
     {
-        use crate::audio::live::{ChunkSink, LiveCapture};
-        let system_sink: ChunkSink = Box::new(move |bytes| {
-            let _ = on_system.send(tauri::ipc::InvokeResponseBody::Raw(bytes));
-        });
-        tauri::async_runtime::spawn_blocking(move || {
-            let state = app.state::<LiveCaptureHandle>();
-            let mut slot = state
-                .capture
-                .lock()
-                .map_err(|_| "live capture lock poisoned".to_string())?;
-            if let Some(previous) = slot.take() {
-                previous.stop();
-            }
-            *slot = Some(LiveCapture::start(system_sink)?);
-            Ok(())
-        })
-        .await
-        .map_err(|e| format!("live capture task failed: {e}"))?
+        drop(take_live_capture(&app)?);
+        let capture = crate::audio::live::LiveCapture::start(Box::new(move |bytes| {
+            on_system
+                .send(tauri::ipc::InvokeResponseBody::Raw(bytes))
+                .is_ok()
+        }))?;
+        let state = app.state::<LiveCaptureHandle>();
+        let mut slot = state
+            .capture
+            .lock()
+            .map_err(|_| "live capture lock poisoned".to_string())?;
+        *slot = Some(capture);
+        Ok(())
     }
     #[cfg(not(target_os = "macos"))]
     {
@@ -273,23 +277,11 @@ pub async fn start_live_capture(
 }
 
 #[tauri::command]
-pub async fn stop_live_capture(app: AppHandle) -> Result<(), String> {
+pub fn stop_live_capture(app: AppHandle) -> Result<(), String> {
     #[cfg(target_os = "macos")]
     {
-        tauri::async_runtime::spawn_blocking(move || {
-            let state = app.state::<LiveCaptureHandle>();
-            let previous = state
-                .capture
-                .lock()
-                .map_err(|_| "live capture lock poisoned".to_string())?
-                .take();
-            if let Some(previous) = previous {
-                previous.stop();
-            }
-            Ok(())
-        })
-        .await
-        .map_err(|e| format!("live capture task failed: {e}"))?
+        drop(take_live_capture(&app)?);
+        Ok(())
     }
     #[cfg(not(target_os = "macos"))]
     {
@@ -302,11 +294,9 @@ pub async fn stop_live_capture(app: AppHandle) -> Result<(), String> {
 pub async fn capture_screenshot() -> Result<tauri::ipc::Response, String> {
     #[cfg(target_os = "macos")]
     {
-        let png = tauri::async_runtime::spawn_blocking(
-            crate::audio::screenshot::capture_main_display_png,
-        )
-        .await
-        .map_err(|e| format!("screenshot task failed: {e}"))??;
+        let png = tauri::async_runtime::spawn_blocking(crate::screen::capture_main_display_png)
+            .await
+            .map_err(|e| format!("screenshot task failed: {e}"))??;
         Ok(tauri::ipc::Response::new(png))
     }
     #[cfg(not(target_os = "macos"))]

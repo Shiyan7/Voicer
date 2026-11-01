@@ -4,13 +4,13 @@ import { AuthModule } from '../auth/auth.module';
 import { GeminiModule } from '../gemini/gemini.module';
 import { GroqModule } from '../groq/groq.module';
 import { InterviewAnswersService } from './interview-answers.service';
-import { InterviewHistoryService } from './interview-history.service';
 import { InterviewSessionEntity } from './interview-session.entity';
 import { InterviewTurnEntity } from './interview-turn.entity';
 import { MeetingEntity } from '../meetings/meeting.entity';
 import { InterviewSessionsService } from './interview-sessions.service';
 import { InterviewResolver } from './interview.resolver';
 import { LiveAudioGateway } from './live/live-audio.gateway';
+import { TranscriptionModule } from '../transcription/transcription.module';
 
 @Module({
   imports: [
@@ -22,11 +22,11 @@ import { LiveAudioGateway } from './live/live-audio.gateway';
     AuthModule,
     GeminiModule,
     GroqModule,
+    TranscriptionModule,
   ],
   providers: [
     InterviewSessionsService,
     InterviewAnswersService,
-    InterviewHistoryService,
     InterviewResolver,
     LiveAudioGateway,
   ],

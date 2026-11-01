@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { GeminiTurn } from '../gemini/gemini.types';
-import { GroqMessage, GroqStreamChunk } from './groq.types';
+import { LlmTurn } from '../llm/llm-turn';
+import { GroqCompletion, GroqMessage, GroqStreamChunk } from './groq.types';
 
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const GROQ_MODEL = 'openai/gpt-oss-120b';
@@ -16,10 +16,38 @@ export class GroqService {
 
   async streamText(
     systemInstruction: string,
-    turns: GeminiTurn[],
+    turns: LlmTurn[],
     onText: (text: string) => Promise<void>,
     signal?: AbortSignal,
   ): Promise<string> {
+    const response = await this.post(
+      {
+        messages: this.toMessages(systemInstruction, turns),
+        stream: true,
+        include_reasoning: false,
+      },
+      signal,
+    );
+    if (!response.body) throw new Error('Groq returned empty stream');
+    return this.readStream(response.body, onText);
+  }
+
+  async generateJson<T>(prompt: string, schema: object): Promise<T> {
+    const response = await this.post({
+      messages: [{ role: 'user', content: prompt }],
+      response_format: {
+        type: 'json_schema',
+        json_schema: { name: 'response', schema },
+      },
+    });
+    const completion = (await response.json()) as GroqCompletion;
+    return JSON.parse(completion.choices[0].message.content) as T;
+  }
+
+  private async post(
+    body: Record<string, unknown>,
+    signal?: AbortSignal,
+  ): Promise<Response> {
     const response = await fetch(GROQ_URL, {
       method: 'POST',
       headers: {
@@ -28,19 +56,13 @@ export class GroqService {
       },
       body: JSON.stringify({
         model: GROQ_MODEL,
-        messages: this.toMessages(systemInstruction, turns),
-        stream: true,
         reasoning_effort: 'low',
-        include_reasoning: false,
+        ...body,
       }),
       signal,
     });
-
-    if (!response.ok || !response.body) {
-      throw new Error(`Groq failed with ${response.status}`);
-    }
-
-    return this.readStream(response.body, onText);
+    if (!response.ok) throw new Error(`Groq failed with ${response.status}`);
+    return response;
   }
 
   private async readStream(
@@ -79,7 +101,7 @@ export class GroqService {
 
   private toMessages(
     systemInstruction: string,
-    turns: GeminiTurn[],
+    turns: LlmTurn[],
   ): GroqMessage[] {
     return [
       { role: 'system', content: systemInstruction },

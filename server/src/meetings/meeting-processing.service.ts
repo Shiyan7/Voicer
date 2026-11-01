@@ -10,6 +10,7 @@ import { EntityManager, In, IsNull, Repository } from 'typeorm';
 import { ActionItemEntity } from '../actions/action-item.entity';
 import { FileStorageService } from '../file/file-storage.service';
 import { PUB_SUB } from '../pubsub/pubsub.module';
+import { topic } from '../pubsub/topic';
 import { SummarizationService } from '../summarization/summarization.service';
 import { SummaryStyle } from '../summarization/summary-style.enum';
 import {
@@ -25,7 +26,7 @@ import { toMeetingOutput } from './meeting.serializer';
 import { TranscriptSegmentEntity } from './transcript-segment.entity';
 
 export const meetingUpdatedTopic = (meetingId: string): string =>
-  `meetingUpdated.${meetingId}`;
+  topic('meetingUpdated', meetingId);
 
 @Injectable()
 export class MeetingProcessingService implements OnApplicationBootstrap {

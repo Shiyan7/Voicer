@@ -26,7 +26,10 @@ export function LiveInterviewOrchestrator() {
               canPrepare={vm.prep.canPrepare()}
               isReady={vm.prep.isReady()}
               errorMessage={vm.prep.errorMessage()}
-              sections={vm.prep.sections()}
+              sectionTabs={vm.prep.sectionTabs()}
+              activeSection={vm.prep.activeSection()}
+              activeItems={vm.prep.activeItems()}
+              onSelectSection={vm.prep.setActiveSection}
               pastSessions={vm.history.pastSessions()}
               onResumeSelected={vm.prep.onResumeSelected}
               onVacancyInput={vm.prep.onVacancyInput}

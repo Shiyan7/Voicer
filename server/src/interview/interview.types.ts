@@ -5,7 +5,6 @@ export interface InterviewRecommendations {
 }
 
 export interface InterviewPreparation {
-  resumeText: string;
   cheatSheet: string;
   recommendations: InterviewRecommendations;
 }

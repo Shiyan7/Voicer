@@ -1,9 +1,9 @@
-import { ChatBlock } from './ChatBlock';
+import type { MarkdownBlock } from '@/shared/lib/markdown';
 
 export interface ChatMessageView {
   id: string;
   isUser: boolean;
   text: string;
-  blocks: ChatBlock[];
+  blocks: MarkdownBlock[];
   isFailed: boolean;
 }

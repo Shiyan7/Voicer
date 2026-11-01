@@ -10,11 +10,12 @@ import { PubSub } from 'graphql-subscriptions';
 import { Repository } from 'typeorm';
 import { ActionItemEntity } from '../actions/action-item.entity';
 import { GeminiService } from '../gemini/gemini.service';
-import { GeminiTurn } from '../gemini/gemini.types';
+import { LlmTurn } from '../llm/llm-turn';
 import { KeyPointEntity } from '../meetings/key-point.entity';
 import { MeetingEntity } from '../meetings/meeting.entity';
 import { TranscriptSegmentEntity } from '../meetings/transcript-segment.entity';
 import { PUB_SUB } from '../pubsub/pubsub.module';
+import { topic } from '../pubsub/topic';
 import { TranscribedSegment } from '../transcription/transcription.types';
 import { ChatMessageEntity } from './chat-message.entity';
 import { ChatMessageOutput } from './chat-message.output';
@@ -32,7 +33,7 @@ const MAX_QUESTION_LENGTH = 2000;
 const MAX_HISTORY_MESSAGES = 20;
 
 const chatMessageTopic = (meetingId: string): string =>
-  `meetingChatMessage.${meetingId}`;
+  topic('meetingChatMessage', meetingId);
 
 interface ChatMessagePayload {
   meetingChatMessage: ChatMessageOutput;
@@ -134,7 +135,7 @@ export class MeetingChatService {
 
   private async answer(
     meeting: MeetingEntity,
-    turns: GeminiTurn[],
+    turns: LlmTurn[],
     message: ChatMessageEntity,
   ): Promise<void> {
     try {
@@ -151,7 +152,7 @@ export class MeetingChatService {
 
   private async generateReply(
     meeting: MeetingEntity,
-    turns: GeminiTurn[],
+    turns: LlmTurn[],
     message: ChatMessageEntity,
   ): Promise<Pick<ChatMessageEntity, 'content' | 'followUps' | 'isFailed'>> {
     const context = await this.buildContext(meeting);
@@ -197,7 +198,7 @@ export class MeetingChatService {
     };
   }
 
-  private async getHistory(meetingId: string): Promise<GeminiTurn[]> {
+  private async getHistory(meetingId: string): Promise<LlmTurn[]> {
     const messages = await this.messagesRepository.find({
       where: { meetingId, isFailed: false },
       order: { createdAt: 'DESC' },

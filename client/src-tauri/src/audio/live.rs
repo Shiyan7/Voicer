@@ -5,12 +5,13 @@ use std::thread::JoinHandle;
 use std::time::{Duration, Instant};
 
 use super::system::SystemSource;
-use super::{SampleQueue, LIVE_SYSTEM_TEE, RECORDING_ACTIVE};
+use super::{SampleQueue, LIVE_FEED_ACTIVE, LIVE_SYSTEM_QUEUE};
 
 const CHUNK_INTERVAL: Duration = Duration::from_millis(100);
 const RETRY_INTERVAL: Duration = Duration::from_secs(2);
 
-pub type ChunkSink = Box<dyn Fn(Vec<u8>) + Send>;
+/// Returns false once the receiver is gone, which stops the capture.
+pub type ChunkSink = Box<dyn Fn(Vec<u8>) -> bool + Send>;
 
 struct Feed {
     queue: Arc<SampleQueue>,
@@ -22,8 +23,8 @@ struct Feed {
 impl Feed {
     fn new(sink: ChunkSink) -> Self {
         let queue = SampleQueue::new();
-        if let Ok(mut guard) = LIVE_SYSTEM_TEE.lock() {
-            *guard = Some(queue.clone());
+        if let Ok(mut slot) = LIVE_SYSTEM_QUEUE.lock() {
+            *slot = Some(queue.clone());
         }
         Self {
             queue,
@@ -33,19 +34,16 @@ impl Feed {
         }
     }
 
+    /// Uses the recorder's system feed while it delivers, otherwise runs its own source.
     fn reconcile(&mut self) -> Result<(), String> {
-        if RECORDING_ACTIVE.load(Ordering::Relaxed) {
-            if let Some(own) = self.own.take() {
-                own.stop();
-            }
+        if LIVE_FEED_ACTIVE.load(Ordering::Relaxed) {
+            self.own = None;
             return Ok(());
         }
-        if self.own.is_some() {
-            return Ok(());
-        }
-        if self
-            .last_attempt
-            .is_some_and(|at| at.elapsed() < RETRY_INTERVAL)
+        if self.own.is_some()
+            || self
+                .last_attempt
+                .is_some_and(|at| at.elapsed() < RETRY_INTERVAL)
         {
             return Ok(());
         }
@@ -54,20 +52,18 @@ impl Feed {
         Ok(())
     }
 
-    fn flush(&self) {
+    fn flush(&self) -> bool {
         let samples = self.queue.take();
-        if !samples.is_empty() {
-            (self.sink)(pcm_to_le_bytes(&samples));
-        }
+        samples.is_empty() || (self.sink)(pcm_to_le_bytes(&samples))
     }
+}
 
-    fn shutdown(mut self) {
-        if let Ok(mut guard) = LIVE_SYSTEM_TEE.lock() {
-            *guard = None;
+impl Drop for Feed {
+    fn drop(&mut self) {
+        if let Ok(mut slot) = LIVE_SYSTEM_QUEUE.lock() {
+            *slot = None;
         }
-        if let Some(own) = self.own.take() {
-            own.stop();
-        }
+        self.own = None;
         self.flush();
     }
 }
@@ -80,10 +76,8 @@ pub struct LiveCapture {
 impl LiveCapture {
     pub fn start(on_system: ChunkSink) -> Result<Self, String> {
         let mut feed = Feed::new(on_system);
-        if let Err(e) = feed.reconcile() {
-            feed.shutdown();
-            return Err(format!("system audio unavailable: {e}"));
-        }
+        feed.reconcile()
+            .map_err(|e| format!("system audio unavailable: {e}"))?;
 
         let (stop_tx, stop_rx) = mpsc::channel::<()>();
         let join = std::thread::Builder::new()
@@ -96,12 +90,10 @@ impl LiveCapture {
             join: Some(join),
         })
     }
+}
 
-    pub fn stop(mut self) {
-        self.shutdown();
-    }
-
-    fn shutdown(&mut self) {
+impl Drop for LiveCapture {
+    fn drop(&mut self) {
         let _ = self.stop_tx.send(());
         if let Some(join) = self.join.take() {
             let _ = join.join();
@@ -109,35 +101,25 @@ impl LiveCapture {
     }
 }
 
-impl Drop for LiveCapture {
-    fn drop(&mut self) {
-        self.shutdown();
-    }
-}
-
 fn live_loop(mut feed: Feed, stop_rx: &Receiver<()>) {
     loop {
-        let stop = matches!(
+        if !matches!(
             stop_rx.recv_timeout(CHUNK_INTERVAL),
-            Ok(()) | Err(RecvTimeoutError::Disconnected)
-        );
-        if stop {
+            Err(RecvTimeoutError::Timeout)
+        ) {
             break;
         }
         if let Err(e) = feed.reconcile() {
             eprintln!("[voicer] live capture source restart failed: {e}");
         }
-        feed.flush();
+        if !feed.flush() {
+            break;
+        }
     }
-    feed.shutdown();
 }
 
-pub fn pcm_to_le_bytes(samples: &[i16]) -> Vec<u8> {
-    let mut out = Vec::with_capacity(samples.len() * 2);
-    for s in samples {
-        out.extend_from_slice(&s.to_le_bytes());
-    }
-    out
+fn pcm_to_le_bytes(samples: &[i16]) -> Vec<u8> {
+    samples.iter().flat_map(|s| s.to_le_bytes()).collect()
 }
 
 #[cfg(test)]
@@ -150,19 +132,5 @@ mod tests {
             pcm_to_le_bytes(&[1, -2, 0x1234]),
             vec![1, 0, 0xfe, 0xff, 0x34, 0x12]
         );
-    }
-
-    #[test]
-    fn tee_forwards_samples() {
-        static SLOT: crate::audio::TeeSlot = std::sync::Mutex::new(None);
-        let target = SampleQueue::new();
-        *SLOT.lock().unwrap() = Some(target.clone());
-        let source = SampleQueue::with_tee(&SLOT);
-        source.push(&[1, 2, 3]);
-        assert_eq!(source.take(), vec![1, 2, 3]);
-        assert_eq!(target.take(), vec![1, 2, 3]);
-        *SLOT.lock().unwrap() = None;
-        source.push(&[4]);
-        assert!(target.take().is_empty());
     }
 }

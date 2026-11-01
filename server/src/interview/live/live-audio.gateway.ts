@@ -6,16 +6,12 @@ import {
   OnApplicationBootstrap,
   OnApplicationShutdown,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { HttpAdapterHost } from '@nestjs/core';
-import { JwtService } from '@nestjs/jwt';
 import { DeepgramClient } from '@deepgram/sdk';
 import { Server } from 'http';
 import { WebSocket, WebSocketServer } from 'ws';
 import { AuthService } from '../../auth/auth.service';
-import { authenticateAccessToken } from '../../graphql/ws-auth';
 import { InterviewAnswersService } from '../interview-answers.service';
-import { InterviewHistoryService } from '../interview-history.service';
 import { InterviewSessionsService } from '../interview-sessions.service';
 import { DEEPGRAM_LIVE_OPTIONS, LIVE_AUDIO_PATH } from './live-audio.config';
 import { LiveAudioSession } from './live-audio.session';
@@ -37,21 +33,14 @@ export class LiveAudioGateway
   private readonly logger = new Logger(LiveAudioGateway.name);
   private readonly server = new WebSocketServer({ noServer: true });
   private readonly sessions = new Set<LiveAudioSession>();
-  private readonly deepgram: DeepgramClient;
 
   constructor(
     private readonly adapterHost: HttpAdapterHost,
-    private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
     private readonly authService: AuthService,
     private readonly interviewSessions: InterviewSessionsService,
     private readonly answers: InterviewAnswersService,
-    private readonly history: InterviewHistoryService,
-  ) {
-    this.deepgram = new DeepgramClient({
-      apiKey: configService.get<string>('DEEPGRAM_API_KEY'),
-    });
-  }
+    private readonly deepgram: DeepgramClient,
+  ) {}
 
   onApplicationBootstrap(): void {
     const httpServer: Server = this.adapterHost.httpAdapter.getHttpServer();
@@ -94,12 +83,7 @@ export class LiveAudioGateway
     const sessionId = url.searchParams.get('sessionId');
     if (!token || !sessionId) return null;
     try {
-      const user = await authenticateAccessToken(
-        this.jwtService,
-        this.configService,
-        this.authService,
-        token,
-      );
+      const user = await this.authService.authenticateAccessToken(token);
       await this.interviewSessions.findOwned(user.id, sessionId);
       return { userId: user.id, sessionId };
     } catch {
@@ -112,7 +96,6 @@ export class LiveAudioGateway
       client,
       ...identity,
       answers: this.answers,
-      history: this.history,
     });
     this.sessions.add(session);
     client.on('close', () => this.sessions.delete(session));

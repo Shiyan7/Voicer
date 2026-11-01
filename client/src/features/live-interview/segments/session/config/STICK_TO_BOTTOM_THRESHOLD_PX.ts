@@ -1,1 +1,0 @@
-export const STICK_TO_BOTTOM_THRESHOLD_PX = 80;

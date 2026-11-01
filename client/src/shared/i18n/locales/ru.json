@@ -29,7 +29,9 @@
     }
   },
   "common": {
-    "or": "или"
+    "or": "или",
+    "copy": "Копировать",
+    "copied": "Скопировано"
   },
   "validation": {
     "common": {
@@ -310,7 +312,8 @@
       "status": {
         "idle": "Остановлено",
         "listening": "Слушаю",
-        "answering": "Отвечаю"
+        "answering": "Отвечаю",
+        "error": "Ошибка"
       },
       "stop": "Стоп",
       "answer_now": "Ответь сейчас",

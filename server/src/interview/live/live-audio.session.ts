@@ -2,12 +2,8 @@ import { Logger } from '@nestjs/common';
 import { DeepgramClient, listen } from '@deepgram/sdk';
 import { RawData, WebSocket } from 'ws';
 import { InterviewAnswersService } from '../interview-answers.service';
-import { InterviewHistoryService } from '../interview-history.service';
 import { isLikelyQuestion } from './is-likely-question';
-import {
-  INTERVIEWER_PREFIX,
-  KEEP_ALIVE_INTERVAL_MS,
-} from './live-audio.config';
+import { KEEP_ALIVE_INTERVAL_MS } from './live-audio.config';
 import { LiveClientMessage, LiveServerMessage } from './live-audio.types';
 
 export type DeepgramSocket = Awaited<
@@ -25,7 +21,6 @@ export interface LiveAudioSessionDeps {
   userId: string;
   sessionId: string;
   answers: InterviewAnswersService;
-  history: InterviewHistoryService;
 }
 
 const joinText = (...parts: string[]): string =>
@@ -82,7 +77,6 @@ export class LiveAudioSession {
     this.isClosed = true;
     if (this.keepAlive) clearInterval(this.keepAlive);
     this.pending.length = 0;
-    this.deps.history.clear(this.deps.sessionId);
     this.closeDeepgram();
     if (this.deps.client.readyState === WebSocket.OPEN) {
       this.deps.client.close(1000);
@@ -186,10 +180,6 @@ export class LiveAudioSession {
     this.interim = '';
     this.utteranceId += 1;
     this.lastUtterance = { id, text };
-    this.deps.history.append(
-      this.deps.sessionId,
-      `${INTERVIEWER_PREFIX}: ${text}`,
-    );
     if (force || isLikelyQuestion(text)) void this.answer(id, text);
     return text;
   }
@@ -201,13 +191,9 @@ export class LiveAudioSession {
   }
 
   private async answer(utteranceId: number, question: string): Promise<void> {
-    const { answers, history, userId, sessionId } = this.deps;
-    const questionLine = `${INTERVIEWER_PREFIX}: ${question}`;
-    const previous = history
-      .get(sessionId)
-      .filter((line) => line !== questionLine);
+    const { answers, userId, sessionId } = this.deps;
     try {
-      const answerId = await answers.ask(userId, sessionId, question, previous);
+      const answerId = await answers.ask(userId, sessionId, question);
       this.send({ type: 'answerStarted', utteranceId, answerId });
     } catch (error) {
       this.logger.warn(

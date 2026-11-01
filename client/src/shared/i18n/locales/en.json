@@ -29,7 +29,9 @@
     }
   },
   "common": {
-    "or": "or"
+    "or": "or",
+    "copy": "Copy",
+    "copied": "Copied"
   },
   "validation": {
     "common": {
@@ -310,7 +312,8 @@
       "status": {
         "idle": "Stopped",
         "listening": "Listening",
-        "answering": "Answering"
+        "answering": "Answering",
+        "error": "Error"
       },
       "stop": "Stop",
       "answer_now": "Answer now",

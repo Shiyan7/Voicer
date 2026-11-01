@@ -8,8 +8,6 @@ export const LIVE_AUDIO_PATH = '/live-audio';
 
 export const KEEP_ALIVE_INTERVAL_MS = 5000;
 
-export const INTERVIEWER_PREFIX = 'Интервьюер';
-
 export const DEEPGRAM_LIVE_OPTIONS: ListenConnectArgs = {
   model: 'nova-3',
   language: 'multi',
@@ -22,5 +20,4 @@ export const DEEPGRAM_LIVE_OPTIONS: ListenConnectArgs = {
   endpointing: 300,
   utterance_end_ms: 1000,
   vad_events: 'true',
-  reconnectAttempts: 3,
 };

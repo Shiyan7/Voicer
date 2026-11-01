@@ -1,11 +1,11 @@
 import { A } from '@solidjs/router';
 import { For, Show } from 'solid-js';
 
+import { useStickToBottom } from '@/shared/hooks/useStickToBottom';
 import { i18n } from '@/shared/i18n';
 import { Button } from '@/shared/ui/button';
 import { Icon } from '@/shared/ui/icon';
 
-import { useStickToBottom } from '../model/useStickToBottom';
 import { LiveSessionProps } from '../types/LiveSessionProps';
 import { liveSessionStyles } from './LiveSession.styles';
 import { LiveTurnCard } from './LiveTurnCard';

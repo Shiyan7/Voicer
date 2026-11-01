@@ -1,1 +1,1 @@
-export type LiveStatus = 'idle' | 'listening' | 'answering';
+export type LiveStatus = 'idle' | 'listening' | 'answering' | 'error';

@@ -1,7 +1,6 @@
 pub mod live;
 pub mod mic;
 pub mod recorder;
-pub mod screenshot;
 pub mod system;
 
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
@@ -12,34 +11,24 @@ pub const TARGET_SAMPLE_RATE: u32 = 16_000;
 
 pub static RECORDING_ACTIVE: AtomicBool = AtomicBool::new(false);
 
-pub type TeeSlot = Mutex<Option<Arc<SampleQueue>>>;
+pub static LIVE_SYSTEM_QUEUE: Mutex<Option<Arc<SampleQueue>>> = Mutex::new(None);
 
-pub static LIVE_SYSTEM_TEE: TeeSlot = Mutex::new(None);
+pub static LIVE_FEED_ACTIVE: AtomicBool = AtomicBool::new(false);
 
 pub struct SampleQueue {
     samples: Mutex<Vec<i16>>,
     failed: AtomicBool,
     last_push_ms: AtomicU64,
     created: Instant,
-    tee: Option<&'static TeeSlot>,
 }
 
 impl SampleQueue {
     pub fn new() -> Arc<Self> {
-        Self::build(None)
-    }
-
-    pub fn with_tee(tee: &'static TeeSlot) -> Arc<Self> {
-        Self::build(Some(tee))
-    }
-
-    fn build(tee: Option<&'static TeeSlot>) -> Arc<Self> {
         Arc::new(Self {
             samples: Mutex::new(Vec::new()),
             failed: AtomicBool::new(false),
             last_push_ms: AtomicU64::new(0),
             created: Instant::now(),
-            tee,
         })
     }
 
@@ -49,13 +38,6 @@ impl SampleQueue {
         }
         if let Ok(mut buf) = self.samples.lock() {
             buf.extend_from_slice(data);
-        }
-        if let Some(slot) = self.tee {
-            if let Ok(guard) = slot.try_lock() {
-                if let Some(target) = guard.as_ref() {
-                    target.push(data);
-                }
-            }
         }
         self.last_push_ms
             .store(self.created.elapsed().as_millis() as u64, Ordering::Relaxed);

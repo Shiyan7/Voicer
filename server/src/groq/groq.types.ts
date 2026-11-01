@@ -6,3 +6,7 @@ export interface GroqMessage {
 export interface GroqStreamChunk {
   choices?: { delta?: { content?: string } }[];
 }
+
+export interface GroqCompletion {
+  choices: { message: { content: string } }[];
+}

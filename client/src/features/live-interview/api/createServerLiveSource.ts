@@ -5,46 +5,54 @@ import {
   captureScreenshot,
   startLiveCapture,
   stopLiveCapture,
-} from '@/shared/lib/recorder/liveCaptureBridge';
+} from '@/shared/lib/recorder';
 import { authRoot } from '@/shared/roots/authRoot';
 
 import { buildLiveAudioUrl } from '../lib/buildLiveAudioUrl';
-import { createEmitter } from '../lib/createEmitter';
 import { parseLiveServerMessage } from '../lib/parseLiveServerMessage';
-import { splitAnswer } from '../lib/splitAnswer';
-import { LiveAnswerUpdate } from '../types/LiveAnswerUpdate';
 import { LiveServerMessage } from '../types/LiveServerMessage';
-import { LiveSource } from '../types/LiveSource';
-import { LiveStatus } from '../types/LiveStatus';
-import { LiveTranscriptEvent } from '../types/LiveTranscriptEvent';
+import { LiveSourceHandlers } from '../types/LiveSourceHandlers';
 import { askInterviewScreenshot } from './askInterviewScreenshot';
 import { subscribeInterviewAnswer } from './subscribeInterviewAnswer';
 
 const utteranceTurnId = (utteranceId: number) => `utterance-${utteranceId}`;
 
-export const createServerLiveSource = (sessionId: string): LiveSource => {
-  const transcript = createEmitter<LiveTranscriptEvent>();
-  const answer = createEmitter<LiveAnswerUpdate>();
-  const status = createEmitter<LiveStatus>();
+export const createServerLiveSource = (
+  sessionId: string,
+  { onTurn, onStatus }: LiveSourceHandlers,
+) => {
   const answerTurns = new Map<string, string>();
   const unmatchedAnswers = new Map<string, InterviewAnswerOutput>();
-  const utteranceTexts = new Map<number, string>();
+  const activeAnswers = new Set<string>();
   let socket: WebSocket | undefined;
   let unsubscribeAnswers: (() => void) | undefined;
   let screenshotCount = 0;
   let isActive = false;
 
+  const emitStatus = () =>
+    onStatus(activeAnswers.size > 0 ? 'answering' : 'listening');
+
+  const beginAnswer = (id: string) => {
+    activeAnswers.add(id);
+    emitStatus();
+  };
+
+  const endAnswer = (id: string) => {
+    activeAnswers.delete(id);
+    emitStatus();
+  };
+
   const emitAnswer = (turnId: string, output: InterviewAnswerOutput) => {
-    answer.emit({ turnId, ...splitAnswer(output.text), isDone: output.done });
-    status.emit(output.done ? 'listening' : 'answering');
+    onTurn({ id: turnId, answer: output.text });
+    if (output.done) endAnswer(output.answerId);
   };
 
   const linkAnswer = (answerId: string, turnId: string) => {
     answerTurns.set(answerId, turnId);
+    beginAnswer(answerId);
     const pending = unmatchedAnswers.get(answerId);
     unmatchedAnswers.delete(answerId);
     if (pending) emitAnswer(turnId, pending);
-    else status.emit('answering');
   };
 
   const onAnswerOutput = (output: InterviewAnswerOutput) => {
@@ -55,24 +63,21 @@ export const createServerLiveSource = (sessionId: string): LiveSource => {
 
   const onServerMessage = (message: LiveServerMessage) => {
     if (message.type === 'transcript') {
-      utteranceTexts.set(message.utteranceId, message.text);
-      transcript.emit({
-        turnId: utteranceTurnId(message.utteranceId),
-        text: message.text,
-        isFinal: false,
+      onTurn({
+        id: utteranceTurnId(message.utteranceId),
+        question: message.text,
       });
     }
     if (message.type === 'utteranceEnd') {
-      transcript.emit({
-        turnId: utteranceTurnId(message.utteranceId),
-        text: utteranceTexts.get(message.utteranceId) ?? '',
-        isFinal: true,
+      onTurn({
+        id: utteranceTurnId(message.utteranceId),
+        isQuestionFinal: true,
       });
-      utteranceTexts.delete(message.utteranceId);
     }
     if (message.type === 'answerStarted') {
       linkAnswer(message.answerId, utteranceTurnId(message.utteranceId));
     }
+    if (message.type === 'error') onStatus('error');
   };
 
   const sendAudio = (pcm: Int16Array) => {
@@ -92,7 +97,7 @@ export const createServerLiveSource = (sessionId: string): LiveSource => {
       if (message) onServerMessage(message);
     };
     next.onclose = () => {
-      if (isActive) status.emit('idle');
+      if (isActive) onStatus('idle');
     };
     return next;
   };
@@ -104,8 +109,8 @@ export const createServerLiveSource = (sessionId: string): LiveSource => {
       { sessionId },
       onAnswerOutput,
     );
-    status.emit('listening');
-    startLiveCapture(sendAudio).catch(() => status.emit('idle'));
+    emitStatus();
+    startLiveCapture(sendAudio).catch(() => onStatus('error'));
   };
 
   const stop = () => {
@@ -115,7 +120,7 @@ export const createServerLiveSource = (sessionId: string): LiveSource => {
     socket = undefined;
     unsubscribeAnswers?.();
     unsubscribeAnswers = undefined;
-    status.emit('idle');
+    onStatus('idle');
   };
 
   const requestAnswer = () => {
@@ -126,30 +131,23 @@ export const createServerLiveSource = (sessionId: string): LiveSource => {
   const captureCode = async () => {
     screenshotCount += 1;
     const turnId = `screenshot-${screenshotCount}`;
-    transcript.emit({
-      turnId,
-      text: i18n.t('live.session.screenshot_question'),
-      isFinal: true,
+    onTurn({
+      id: turnId,
+      question: i18n.t('live.session.screenshot_question'),
+      isQuestionFinal: true,
     });
-    status.emit('answering');
+    beginAnswer(turnId);
     try {
-      const image = new File([await captureScreenshot()], 'screenshot.png', {
-        type: 'image/png',
-      });
+      const image = await captureScreenshot();
       const answerId = await askInterviewScreenshot({ sessionId, image });
+      activeAnswers.delete(turnId);
       if (answerId) linkAnswer(answerId, turnId);
+      else emitStatus();
     } catch {
-      status.emit('listening');
+      endAnswer(turnId);
+      onStatus('error');
     }
   };
 
-  return {
-    start,
-    stop,
-    requestAnswer,
-    captureCode: () => void captureCode(),
-    onTranscript: transcript.subscribe,
-    onAnswer: answer.subscribe,
-    onStatus: status.subscribe,
-  };
+  return { start, stop, requestAnswer, captureCode };
 };

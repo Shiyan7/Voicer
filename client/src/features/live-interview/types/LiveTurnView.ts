@@ -1,16 +1,13 @@
-import { CodeToken } from './CodeToken';
+import type { MarkdownBlock } from '@/shared/lib/markdown';
 
 export interface LiveTurnView {
   id: string;
   question: string;
   isQuestionLive: boolean;
-  short: string;
-  detailLines: string[];
-  toggleLabel: string;
-  hasDetails: boolean;
-  codeTokens: CodeToken[];
-  hasCode: boolean;
+  short?: MarkdownBlock[];
+  details?: MarkdownBlock[];
+  code: string;
   codeLanguage: string;
-  isStreaming: boolean;
+  toggleLabel: string;
   isExpanded: boolean;
 }

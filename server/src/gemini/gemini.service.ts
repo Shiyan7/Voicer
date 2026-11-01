@@ -1,12 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import {
-  ApiError,
-  Content,
-  ContentListUnion,
-  GoogleGenAI,
-} from '@google/genai';
-import { GeminiTurn } from './gemini.types';
+import { ApiError, Content, GoogleGenAI } from '@google/genai';
+import { LlmTurn } from '../llm/llm-turn';
 
 const FREE_TIER_MODELS = [
   'gemini-3.6-flash',
@@ -30,7 +25,7 @@ export class GeminiService {
   }
 
   async generateJson<T>(
-    contents: ContentListUnion,
+    contents: string,
     schema: object,
     isUsable: (result: T) => boolean,
   ): Promise<T> {
@@ -47,7 +42,7 @@ export class GeminiService {
 
   async streamText(
     systemInstruction: string,
-    turns: GeminiTurn[],
+    turns: LlmTurn[],
     onText: (text: string) => Promise<void>,
     signal?: AbortSignal,
   ): Promise<string> {
@@ -72,7 +67,7 @@ export class GeminiService {
 
   private async tryJson<T>(
     model: string,
-    contents: ContentListUnion,
+    contents: string,
     schema: object,
   ): Promise<T | null> {
     try {
@@ -113,7 +108,6 @@ export class GeminiService {
         config: { systemInstruction, abortSignal: signal },
       });
       for await (const chunk of stream) {
-        if (signal?.aborted) break;
         if (!chunk.text) continue;
         text += chunk.text;
         await onText(text);
@@ -126,7 +120,7 @@ export class GeminiService {
     }
   }
 
-  private toContent(turn: GeminiTurn): Content {
+  private toContent(turn: LlmTurn): Content {
     const images = (turn.images ?? []).map((image) => ({
       inlineData: image,
     }));

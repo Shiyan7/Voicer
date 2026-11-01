@@ -1,5 +1,4 @@
 import { SHORT_ANSWER_MIN_LENGTH } from '../config/liveInterviewConfig';
-import { LiveAnswerContent } from '../types/LiveAnswerContent';
 
 const CODE_FENCE = /```([\w+#-]*)[^\n]*\n?([\s\S]*?)(?:```|$)/g;
 const SENTENCE = /[^.!?…]+(?:[.!?…]+|$)/g;
@@ -27,7 +26,7 @@ const splitShort = (prose: string) => {
   };
 };
 
-export const splitAnswer = (text: string): LiveAnswerContent => {
+export const splitAnswer = (text: string) => {
   const { prose, code, codeLanguage } = extractCode(text);
   return { ...splitShort(prose), code, codeLanguage };
 };
