@@ -59,6 +59,11 @@ type InterviewAnswerOutput {
   text: String!
 }
 
+enum InterviewLanguage {
+  EN
+  RU
+}
+
 type InterviewRecommendationsOutput {
   emphasize: [String!]!
   likelyQuestions: [String!]!
@@ -70,8 +75,10 @@ type InterviewSessionOutput {
   createdAt: DateTime!
   finishedAt: DateTime
   id: ID!
+  language: InterviewLanguage!
   meetingId: ID
   recommendations: InterviewRecommendationsOutput!
+  recordingUrl: String
   resumeText: String!
   vacancyText: String!
 }
@@ -97,6 +104,7 @@ type MeetingOutput {
   durationSec: Int
   endedAt: DateTime
   id: ID!
+  interviewSessionId: ID
   isFavorite: Boolean!
   source: String
   startedAt: DateTime!
@@ -147,7 +155,7 @@ type MeetingsStatsOutput {
 type Mutation {
   apiTokenCreate(name: String!): ApiTokenCreatedOutput!
   apiTokenRevoke(id: ID!): Boolean!
-  createInterviewSession(resume: Upload!, vacancy: String!): InterviewSessionOutput!
+  createInterviewSession(language: InterviewLanguage! = RU, resume: Upload!, vacancy: String!): InterviewSessionOutput!
   interviewAskScreenshot(image: Upload!, sessionId: ID!): ID!
   meetingChatAsk(meetingId: ID!, question: String!): ChatMessageOutput!
   meetingChatClear(meetingId: ID!): Boolean!
@@ -156,7 +164,7 @@ type Mutation {
   meetingSetFavorite(id: ID!, isFavorite: Boolean!): MeetingOutput!
   meetingSuggestTitle(id: ID!): String!
   meetingSummarize(id: ID!, style: SummaryStyle! = AUTO): MeetingOutput!
-  meetingUploadAudio(file: Upload!, source: String, startedAt: DateTime): MeetingOutput!
+  meetingUploadAudio(file: Upload!, interviewSessionId: String, source: String, startedAt: DateTime): MeetingOutput!
   signIn(input: SignInInput!): AuthPayload!
   signUp(input: SignUpInput!): AuthPayload!
   toggleActionItem(id: ID!): Boolean!

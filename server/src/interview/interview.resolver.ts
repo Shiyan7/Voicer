@@ -12,6 +12,7 @@ import { FileUpload } from '../file/file-upload';
 import { UserEntity } from '../users/user.entity';
 import { InterviewAnswerOutput } from './interview-answer.output';
 import { InterviewAnswersService } from './interview-answers.service';
+import { InterviewLanguage } from './interview-language.enum';
 import { InterviewSessionOutput } from './interview-session.output';
 import { InterviewTurnOutput } from './interview-turn.output';
 import { InterviewSessionsService } from './interview-sessions.service';
@@ -28,8 +29,13 @@ export class InterviewResolver {
     @CurrentUser() user: UserEntity,
     @Args({ name: 'resume', type: () => GraphQLUpload }) resume: FileUpload,
     @Args('vacancy') vacancy: string,
+    @Args('language', {
+      type: () => InterviewLanguage,
+      defaultValue: InterviewLanguage.RU,
+    })
+    language: InterviewLanguage,
   ): Promise<InterviewSessionOutput> {
-    return this.sessions.create(user.id, resume, vacancy);
+    return this.sessions.create(user.id, resume, vacancy, language);
   }
 
   @Query(() => InterviewSessionOutput)

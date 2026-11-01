@@ -15,6 +15,5 @@ export const fetchInterviewTurns = async (sessionId: string) => {
       QueryInterviewTurnsArgs
     >(INTERVIEW_TURNS_QUERY, { sessionId }, { requestPolicy: 'network-only' })
     .toPromise();
-  if (result.error) throw result.error;
   return result.data?.interviewTurns ?? [];
 };

@@ -1,4 +1,7 @@
-import type { InterviewRecommendationsOutput } from '@schema';
+import {
+  InterviewLanguage,
+  type InterviewRecommendationsOutput,
+} from '@schema';
 import { createSignal } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
@@ -11,6 +14,7 @@ import { LivePrepSectionKey } from '../types/LivePrepSectionKey';
 export function useLivePrep() {
   const [resume, setResume] = createSignal<File>();
   const [vacancy, setVacancy] = createSignal('');
+  const [language, setLanguage] = createSignal(InterviewLanguage.Ru);
   const [recommendations, setRecommendations] =
     createSignal<InterviewRecommendationsOutput>();
   const [activeSection, setActiveSection] =
@@ -48,10 +52,6 @@ export function useLivePrep() {
 
   const onVacancyInput = (value: string) => setVacancy(value);
 
-  const fail = () => {
-    setHasError(true);
-  };
-
   const reset = () => {
     setSessionId(undefined);
     setRecommendations(undefined);
@@ -66,10 +66,11 @@ export function useLivePrep() {
     const response = await createSession({
       resume: file,
       vacancy: vacancy().trim(),
+      language: language(),
     });
     const session = response.data?.createInterviewSession;
     if (!session) {
-      fail();
+      setHasError(true);
       return;
     }
     setSessionId(session.id);
@@ -80,6 +81,8 @@ export function useLivePrep() {
     resumeLabel,
     hasResume,
     vacancy,
+    language,
+    setLanguage,
     isPreparing,
     canPrepare,
     sectionTabs,
@@ -92,7 +95,6 @@ export function useLivePrep() {
     onResumeSelected,
     onVacancyInput,
     prepare,
-    fail,
     reset,
   };
 }

@@ -1,3 +1,5 @@
+import type { InterviewLanguage } from '@schema';
+
 import type { InterviewSessionView } from '@/entities/interview-session';
 import type { Tab } from '@/shared/ui/tabs';
 
@@ -7,6 +9,8 @@ export interface LivePrepProps {
   resumeLabel: string;
   hasResume: boolean;
   vacancy: string;
+  language: InterviewLanguage;
+  onSelectLanguage: (language: InterviewLanguage) => void;
   isPreparing: boolean;
   canPrepare: boolean;
   isReady: boolean;

@@ -40,10 +40,13 @@ export class MeetingsResolver {
     source?: string,
     @Args('startedAt', { type: () => Date, nullable: true })
     startedAt?: Date,
+    @Args('interviewSessionId', { type: () => String, nullable: true })
+    interviewSessionId?: string,
   ): Promise<MeetingOutput> {
     return this.meetingsService.createFromUpload(user.id, await upload, {
       source,
       startedAt,
+      interviewSessionId,
     });
   }
 

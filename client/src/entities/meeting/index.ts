@@ -1,4 +1,6 @@
 export { deleteMeetingMutation } from './api/deleteMeetingMutation';
+export { fetchMeetingTranscript } from './api/fetchMeetingTranscript';
+export { meetingTranscriptQuery } from './api/meetingTranscriptQuery';
 export { renameMeetingMutation } from './api/renameMeetingMutation';
 export { setMeetingFavoriteMutation } from './api/setMeetingFavoriteMutation';
 export { suggestMeetingTitleMutation } from './api/suggestMeetingTitleMutation';

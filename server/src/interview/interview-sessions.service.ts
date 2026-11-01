@@ -4,21 +4,21 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MoreThanOrEqual, Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { MeetingEntity } from '../meetings/meeting.entity';
 import { FileUpload } from '../file/file-upload';
 import { GroqService } from '../groq/groq.service';
+import { InterviewLanguage } from './interview-language.enum';
 import { InterviewSessionEntity } from './interview-session.entity';
 import { InterviewSessionOutput } from './interview-session.output';
 import { InterviewTurnEntity } from './interview-turn.entity';
 import { InterviewTurnOutput } from './interview-turn.output';
-import { InterviewPreparation } from './interview.types';
+import { InterviewPreparation, InterviewRecording } from './interview.types';
 import {
   toInterviewSessionOutput,
   toInterviewTurnOutput,
 } from './interview.serializer';
 import { extractPdfText } from './extract-pdf-text';
-import { findRecording } from './find-recording';
 import { readUpload } from '../file/read-upload';
 import {
   buildInterviewPreparationPrompt,
@@ -44,6 +44,7 @@ export class InterviewSessionsService {
     userId: string,
     resume: FileUpload,
     vacancy: string,
+    language: InterviewLanguage,
   ): Promise<InterviewSessionOutput> {
     const vacancyText = this.validateVacancy(vacancy);
     const resumeText = await extractPdfText(await this.readPdf(resume));
@@ -53,14 +54,15 @@ export class InterviewSessionsService {
         userId,
         vacancyText,
         resumeText,
+        language,
         ...preparation,
       }),
     );
-    return toInterviewSessionOutput(session, null);
+    return toInterviewSessionOutput(session);
   }
 
   async get(userId: string, id: string): Promise<InterviewSessionOutput> {
-    const [session] = await this.withMeetings(userId, [
+    const [session] = await this.withMeetings([
       await this.findOwned(userId, id),
     ]);
     return session;
@@ -71,7 +73,7 @@ export class InterviewSessionsService {
       where: { userId },
       order: { createdAt: 'DESC' },
     });
-    return this.withMeetings(userId, sessions);
+    return this.withMeetings(sessions);
   }
 
   async update(
@@ -124,18 +126,22 @@ export class InterviewSessionsService {
   }
 
   private async withMeetings(
-    userId: string,
     sessions: InterviewSessionEntity[],
   ): Promise<InterviewSessionOutput[]> {
     if (!sessions.length) return [];
-    const earliest = sessions[sessions.length - 1].createdAt;
-    const meetings = await this.meetingsRepository.find({
-      select: { id: true, startedAt: true, durationSec: true },
-      where: { userId, startedAt: MoreThanOrEqual(earliest) },
-      order: { durationSec: { direction: 'DESC', nulls: 'LAST' } },
-    });
+    const recordings = await this.meetingsRepository
+      .createQueryBuilder('meeting')
+      .distinctOn(['meeting.interviewSessionId'])
+      .select('meeting.id', 'id')
+      .addSelect('meeting.audioUrl', 'audioUrl')
+      .addSelect('meeting.interviewSessionId', 'sessionId')
+      .where({ interviewSessionId: In(sessions.map(({ id }) => id)) })
+      .orderBy('meeting.interviewSessionId')
+      .addOrderBy('meeting.durationSec', 'DESC', 'NULLS LAST')
+      .getRawMany<InterviewRecording & { sessionId: string }>();
+    const bySession = new Map(recordings.map((r) => [r.sessionId, r]));
     return sessions.map((session) =>
-      toInterviewSessionOutput(session, findRecording(session, meetings)),
+      toInterviewSessionOutput(session, bySession.get(session.id)),
     );
   }
 

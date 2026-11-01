@@ -7,8 +7,7 @@ import { UPDATE_INTERVIEW_SESSION_MUTATION } from './gql/UPDATE_INTERVIEW_SESSIO
 export const updateInterviewSession = async (
   variables: MutationUpdateInterviewSessionArgs,
 ) => {
-  const result = await urqlClient
+  await urqlClient
     .mutation(UPDATE_INTERVIEW_SESSION_MUTATION, variables)
     .toPromise();
-  if (result.error) throw result.error;
 };

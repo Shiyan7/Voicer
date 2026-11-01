@@ -1,5 +1,6 @@
 import { Show } from 'solid-js';
 
+import { MeetingPlayer } from '@/entities/meeting-player';
 import { PageFade } from '@/shared/ui/page-fade';
 
 import { liveInterviewStyles } from './LiveInterview.styles';
@@ -22,6 +23,8 @@ export function LiveInterviewOrchestrator() {
               resumeLabel={vm.prep.resumeLabel()}
               hasResume={vm.prep.hasResume()}
               vacancy={vm.prep.vacancy()}
+              language={vm.prep.language()}
+              onSelectLanguage={vm.prep.setLanguage}
               isPreparing={vm.prep.isPreparing()}
               canPrepare={vm.prep.canPrepare()}
               isReady={vm.prep.isReady()}
@@ -50,8 +53,19 @@ export function LiveInterviewOrchestrator() {
             onCaptureCode={vm.session.captureCode}
             onStop={vm.finishInterview}
             isReadOnly={vm.isReview()}
-            recordingHref={vm.recordingHref()}
             onBack={vm.closeReview}
+            reviewTitle={vm.reviewTitle()}
+            player={
+              <Show when={vm.isReview() && vm.recording.audioUrl()}>
+                {(audioUrl) => (
+                  <MeetingPlayer
+                    audioUrl={audioUrl()}
+                    transcript={vm.recording.transcript()}
+                    playback={vm.recording.playback}
+                  />
+                )}
+              </Show>
+            }
           />
         </Show>
       </div>

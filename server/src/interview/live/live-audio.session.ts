@@ -68,7 +68,6 @@ export class LiveAudioSession {
   }
 
   fail(message: string): void {
-    this.send({ type: 'error', message });
     this.deps.client.close(1011, message);
   }
 
@@ -87,20 +86,12 @@ export class LiveAudioSession {
     const socket = this.deepgram;
     this.deepgram = null;
     if (!socket) return;
-    try {
-      socket.sendCloseStream({ type: 'CloseStream' });
-    } catch {
-      this.logger.debug('Deepgram stream already closed');
-    }
+    socket.sendCloseStream({ type: 'CloseStream' });
     socket.close();
   }
 
   private sendKeepAlive(): void {
-    try {
-      this.deepgram?.sendKeepAlive({ type: 'KeepAlive' });
-    } catch {
-      this.logger.debug('Deepgram keep-alive skipped');
-    }
+    this.deepgram?.sendKeepAlive({ type: 'KeepAlive' });
   }
 
   private onClientMessage(data: RawData, isBinary: boolean): void {
@@ -133,11 +124,7 @@ export class LiveAudioSession {
       this.pending.push(chunk);
       return;
     }
-    try {
-      this.deepgram.sendMedia(chunk);
-    } catch {
-      this.logger.debug('Deepgram not ready, audio dropped');
-    }
+    this.deepgram.sendMedia(chunk);
   }
 
   private onDeepgramMessage(message: DeepgramMessage): void {

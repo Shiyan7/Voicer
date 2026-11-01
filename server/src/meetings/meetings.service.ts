@@ -11,6 +11,7 @@ import {
   FindOperator,
   FindOptionsOrder,
   In,
+  IsNull,
   LessThan,
   MoreThanOrEqual,
   Repository,
@@ -26,6 +27,7 @@ import { FileUpload } from '../file/file-upload';
 import { TranscriptSegmentEntity } from './transcript-segment.entity';
 import { TranscriptSegmentOutput } from './transcript-segment.output';
 import { SummaryStyle } from '../summarization/summary-style.enum';
+import { InterviewSessionEntity } from '../interview/interview-session.entity';
 import { KeyPointEntity } from './key-point.entity';
 import { KeyPointOutput } from './key-point.output';
 import {
@@ -48,6 +50,8 @@ export class MeetingsService {
     private readonly meetingsRepository: Repository<MeetingEntity>,
     @InjectRepository(TranscriptSegmentEntity)
     private readonly transcriptSegmentsRepository: Repository<TranscriptSegmentEntity>,
+    @InjectRepository(InterviewSessionEntity)
+    private readonly interviewSessionsRepository: Repository<InterviewSessionEntity>,
     @InjectRepository(KeyPointEntity)
     private readonly keyPointsRepository: Repository<KeyPointEntity>,
     private readonly fileStorageService: FileStorageService,
@@ -86,21 +90,26 @@ export class MeetingsService {
     options: {
       source?: string;
       startedAt?: Date;
+      interviewSessionId?: string;
     } = {},
   ): Promise<MeetingOutput> {
     if (!upload.mimetype.startsWith('audio/')) {
       throw new BadRequestException('Только аудиофайлы');
     }
 
+    const interviewSessionId = await this.resolveInterviewSessionId(
+      userId,
+      options.interviewSessionId,
+    );
     const audioUrl = await this.fileStorageService.save(userId, upload);
-    const { source, startedAt } = options;
 
     const meeting = this.meetingsRepository.create({
       userId,
-      source: source || null,
+      source: options.source || null,
       audioUrl,
       status: MeetingStatus.TRANSCRIBING,
-      startedAt: startedAt ?? new Date(),
+      startedAt: options.startedAt ?? new Date(),
+      interviewSessionId,
     });
 
     const saved = await this.meetingsRepository.save(meeting);
@@ -108,6 +117,19 @@ export class MeetingsService {
     void this.processing.transcribe(saved);
 
     return toMeetingOutput(saved);
+  }
+
+  private async resolveInterviewSessionId(
+    userId: string,
+    id?: string,
+  ): Promise<string | null> {
+    if (!id) return null;
+    const exists = await this.interviewSessionsRepository.existsBy({
+      id,
+      userId,
+    });
+    if (!exists) throw new NotFoundException('Interview session not found');
+    return id;
   }
 
   async getUserMeetingsPage(
@@ -138,9 +160,8 @@ export class MeetingsService {
   }
 
   private buildPageWhere(userId: string, input: MeetingsPageInput) {
-    const base = input.favoritesOnly
-      ? { userId, isFavorite: true }
-      : { userId };
+    const owned = { userId, interviewSessionId: IsNull() };
+    const base = input.favoritesOnly ? { ...owned, isFavorite: true } : owned;
     const startedAt = this.buildStartedAtRange(input.from, input.to);
     const ranged = startedAt ? { ...base, startedAt } : base;
 

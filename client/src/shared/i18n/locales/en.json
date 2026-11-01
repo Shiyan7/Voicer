@@ -293,6 +293,7 @@
       "subtitle": "Upload your resume and the job description to get tailored recommendations",
       "resume": "Resume",
       "resume_placeholder": "Choose a PDF file",
+      "language": "Interview language",
       "vacancy": "Job description",
       "vacancy_placeholder": "Paste the job description or a link to it",
       "prepare": "Prepare",
@@ -312,8 +313,7 @@
       "status": {
         "idle": "Stopped",
         "listening": "Listening",
-        "answering": "Answering",
-        "error": "Error"
+        "answering": "Answering"
       },
       "stop": "Stop",
       "answer_now": "Answer now",
@@ -322,7 +322,6 @@
       "show_details": "Show details",
       "hide_details": "Hide details",
       "screenshot_question": "Coding task from screenshot",
-      "listen_recording": "Listen to recording",
       "back": "Back",
       "scroll_down": "Scroll down"
     }

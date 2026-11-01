@@ -1,5 +1,5 @@
 import { createSignal, onCleanup } from 'solid-js';
-import { createStore, produce } from 'solid-js/store';
+import { createStore } from 'solid-js/store';
 
 import { useElapsedTimer } from '@/shared/hooks/useElapsedTimer';
 import { i18n } from '@/shared/i18n';
@@ -19,14 +19,11 @@ export function useLiveSession() {
   const timer = useElapsedTimer();
   let source: ReturnType<typeof createServerLiveSource> | undefined;
 
-  const applyTurn: LiveSourceHandlers['onTurn'] = (patch) =>
-    setTurns(
-      produce((list) => {
-        const turn = list.find((item) => item.id === patch.id);
-        if (turn) Object.assign(turn, patch);
-        else list.push({ ...EMPTY_TURN, ...patch });
-      }),
-    );
+  const applyTurn: LiveSourceHandlers['onTurn'] = (patch) => {
+    const index = turns.findIndex((turn) => turn.id === patch.id);
+    if (index < 0) setTurns(turns.length, { ...EMPTY_TURN, ...patch });
+    else setTurns(index, patch);
+  };
 
   const stop = () => {
     source?.stop();
@@ -50,8 +47,6 @@ export function useLiveSession() {
   };
 
   const startTimer = (startedAt: number) => timer.start(startedAt);
-
-  const fail = () => setStatus('error');
 
   const timerLabel = () => formatClock(timer.elapsedSeconds());
 
@@ -83,7 +78,6 @@ export function useLiveSession() {
     stop,
     show,
     startTimer,
-    fail,
     timerLabel,
     statusLabel,
     isAnswering,

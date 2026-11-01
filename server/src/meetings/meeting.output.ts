@@ -30,6 +30,9 @@ export class MeetingOutput {
   @Field(() => Int, { nullable: true })
   durationSec: number | null;
 
+  @Field(() => ID, { nullable: true })
+  interviewSessionId: string | null;
+
   @Field()
   isFavorite: boolean;
 

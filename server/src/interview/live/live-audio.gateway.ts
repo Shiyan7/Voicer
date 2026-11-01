@@ -12,6 +12,7 @@ import { Server } from 'http';
 import { WebSocket, WebSocketServer } from 'ws';
 import { AuthService } from '../../auth/auth.service';
 import { InterviewAnswersService } from '../interview-answers.service';
+import { InterviewLanguage } from '../interview-language.enum';
 import { InterviewSessionsService } from '../interview-sessions.service';
 import { DEEPGRAM_LIVE_OPTIONS, LIVE_AUDIO_PATH } from './live-audio.config';
 import { LiveAudioSession } from './live-audio.session';
@@ -19,6 +20,7 @@ import { LiveAudioSession } from './live-audio.session';
 interface LiveAudioIdentity {
   userId: string;
   sessionId: string;
+  language: InterviewLanguage;
 }
 
 const rejectUpgrade = (socket: Duplex, status: string): void => {
@@ -84,23 +86,29 @@ export class LiveAudioGateway
     if (!token || !sessionId) return null;
     try {
       const user = await this.authService.authenticateAccessToken(token);
-      await this.interviewSessions.findOwned(user.id, sessionId);
-      return { userId: user.id, sessionId };
+      const { language } = await this.interviewSessions.findOwned(
+        user.id,
+        sessionId,
+      );
+      return { userId: user.id, sessionId, language };
     } catch {
       return null;
     }
   }
 
   private open(client: WebSocket, identity: LiveAudioIdentity): void {
+    const { language, ...deps } = identity;
     const session = new LiveAudioSession({
       client,
-      ...identity,
+      ...deps,
       answers: this.answers,
     });
     this.sessions.add(session);
     client.on('close', () => this.sessions.delete(session));
     session
-      .attach(() => this.deepgram.listen.v1.connect(DEEPGRAM_LIVE_OPTIONS))
+      .attach(() =>
+        this.deepgram.listen.v1.connect({ ...DEEPGRAM_LIVE_OPTIONS, language }),
+      )
       .catch((error: unknown) => {
         this.logger.error(
           `Deepgram live connection failed for ${identity.sessionId}`,

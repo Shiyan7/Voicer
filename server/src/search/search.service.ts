@@ -67,7 +67,7 @@ const SEARCH_SQL = (orderBy: string) => `
     m.title, m.source, m."startedAt", m."durationSec"
   FROM ranked r
   JOIN meetings m ON m.id = r."meetingId"
-  WHERE r.rank = 1
+  WHERE r.rank = 1 AND m."interviewSessionId" IS NULL
   ORDER BY ${orderBy}
   LIMIT $3 OFFSET $4
 `;

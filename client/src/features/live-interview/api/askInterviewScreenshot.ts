@@ -17,6 +17,5 @@ export const askInterviewScreenshot = async (
       MutationInterviewAskScreenshotArgs
     >(INTERVIEW_ASK_SCREENSHOT_MUTATION, variables)
     .toPromise();
-  if (result.error) throw result.error;
   return result.data?.interviewAskScreenshot;
 };

@@ -156,6 +156,7 @@ export class InterviewAnswersService {
     session: InterviewSessionEntity,
   ): Promise<string> {
     return buildInterviewAnswerInstruction({
+      language: session.language,
       cheatSheet: session.cheatSheet,
       vacancyText: session.vacancyText,
       history: await this.sessions.recentTurns(session.id, MAX_HISTORY),

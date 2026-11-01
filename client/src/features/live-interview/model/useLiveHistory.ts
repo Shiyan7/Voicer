@@ -1,12 +1,9 @@
 import { toInterviewSessionView } from '@/entities/interview-session';
 
-import {
-  interviewSessionsQuery,
-  refetchInterviewSessions,
-} from '../api/interviewSessionsQuery';
+import { interviewSessionsQuery } from '../api/interviewSessionsQuery';
 
 export function useLiveHistory() {
-  const [sessionsState] = interviewSessionsQuery();
+  const [sessionsState, reexecute] = interviewSessionsQuery();
 
   const sessions = () => sessionsState.data?.interviewSessions ?? [];
 
@@ -15,7 +12,7 @@ export function useLiveHistory() {
   const findSession = (id: string) =>
     sessions().find((session) => session.id === id);
 
-  const refetch = refetchInterviewSessions;
+  const refetch = () => reexecute({ requestPolicy: 'network-only' });
 
   return { pastSessions, findSession, refetch };
 }

@@ -2,7 +2,7 @@ import { MeetingStatus } from '@schema';
 import { useNavigate, useParams, useSearchParams } from '@solidjs/router';
 import { createEffect, createSignal, on } from 'solid-js';
 
-import { mapMeeting } from '@/entities/meeting';
+import { mapMeeting, meetingTranscriptQuery } from '@/entities/meeting';
 import { usePlayback } from '@/entities/meeting-player';
 import { useToasts } from '@/entities/toasts';
 import { i18n } from '@/shared/i18n';
@@ -11,7 +11,6 @@ import { getSpeakerTone } from '@/shared/ui/speaker-avatar';
 
 import { meetingActionItemsQuery } from '../api/meetingActionItemsQuery';
 import { meetingKeyPointsQuery } from '../api/meetingKeyPointsQuery';
-import { meetingTranscriptQuery } from '../api/meetingTranscriptQuery';
 import { meetingUpdatedSubscription } from '../api/meetingUpdatedSubscription';
 import { getMeetingTabs } from '../config/getMeetingTabs';
 import { toMeetingTab } from '../lib/toMeetingTab';

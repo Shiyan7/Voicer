@@ -9,7 +9,6 @@ import {
 import { authRoot } from '@/shared/roots/authRoot';
 
 import { buildLiveAudioUrl } from '../lib/buildLiveAudioUrl';
-import { parseLiveServerMessage } from '../lib/parseLiveServerMessage';
 import { LiveServerMessage } from '../types/LiveServerMessage';
 import { LiveSourceHandlers } from '../types/LiveSourceHandlers';
 import { askInterviewScreenshot } from './askInterviewScreenshot';
@@ -77,7 +76,6 @@ export const createServerLiveSource = (
     if (message.type === 'answerStarted') {
       linkAnswer(message.answerId, utteranceTurnId(message.utteranceId));
     }
-    if (message.type === 'error') onStatus('error');
   };
 
   const sendAudio = (pcm: Int16Array) => {
@@ -92,10 +90,8 @@ export const createServerLiveSource = (
     );
     const next = new WebSocket(url);
     next.binaryType = 'arraybuffer';
-    next.onmessage = (event) => {
-      const message = parseLiveServerMessage(event.data);
-      if (message) onServerMessage(message);
-    };
+    next.onmessage = (event: MessageEvent<string>) =>
+      onServerMessage(JSON.parse(event.data) as LiveServerMessage);
     next.onclose = () => {
       if (isActive) onStatus('idle');
     };
@@ -110,12 +106,12 @@ export const createServerLiveSource = (
       onAnswerOutput,
     );
     emitStatus();
-    startLiveCapture(sendAudio).catch(() => onStatus('error'));
+    void startLiveCapture(sendAudio);
   };
 
   const stop = () => {
     isActive = false;
-    void stopLiveCapture().catch(() => undefined);
+    void stopLiveCapture();
     socket?.close();
     socket = undefined;
     unsubscribeAnswers?.();
@@ -140,12 +136,9 @@ export const createServerLiveSource = (
     try {
       const image = await captureScreenshot();
       const answerId = await askInterviewScreenshot({ sessionId, image });
-      activeAnswers.delete(turnId);
       if (answerId) linkAnswer(answerId, turnId);
-      else emitStatus();
-    } catch {
+    } finally {
       endAnswer(turnId);
-      onStatus('error');
     }
   };
 

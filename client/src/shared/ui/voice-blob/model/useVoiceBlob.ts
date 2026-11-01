@@ -1,4 +1,4 @@
-import { createEffect, createSignal, onCleanup } from 'solid-js';
+import { createEffect, onCleanup } from 'solid-js';
 
 import {
   ATTACK_SEC,
@@ -6,10 +6,8 @@ import {
   BLOB_LAYERS,
   BLOB_POINTS,
   HIDDEN_SCALE,
-  MAX_DPR,
   RELEASE_SEC,
   SETTLED_LEVEL,
-  STROKE_WIDTH,
 } from '../config/voiceBlobConfig';
 import { VoiceBlobProps } from '../types/VoiceBlobProps';
 
@@ -24,8 +22,9 @@ const follow = (current: number, target: number, dt: number) => {
 
 type Point = [number, number];
 
-const traceBlob = (
-  ctx: CanvasRenderingContext2D,
+const toPoint = ([x, y]: Point) => `${x.toFixed(1)} ${y.toFixed(1)}`;
+
+const blobPath = (
   center: number,
   radius: number,
   wobble: number,
@@ -45,40 +44,27 @@ const traceBlob = (
     const [x2, y2] = points[(index + 1) % BLOB_POINTS];
     return [(x1 + x2) / 2, (y1 + y2) / 2];
   };
-
-  ctx.beginPath();
-  ctx.moveTo(...midpoint(0));
-  for (let index = 1; index <= BLOB_POINTS; index++) {
-    const [cx, cy] = points[index % BLOB_POINTS];
-    const [mx, my] = midpoint(index);
-    ctx.quadraticCurveTo(cx, cy, mx, my);
-  }
-  ctx.closePath();
+  const curves = points.map(
+    (_, index) =>
+      `Q ${toPoint(points[(index + 1) % BLOB_POINTS])} ${toPoint(midpoint(index + 1))}`,
+  );
+  return `path("M ${toPoint(midpoint(0))} ${curves.join(' ')} Z")`;
 };
 
 export const useVoiceBlob = (props: VoiceBlobProps) => {
-  const [canvas, setCanvas] = createSignal<HTMLCanvasElement>();
+  const layers: HTMLDivElement[] = [];
 
-  const canvasStyle = () => ({
+  const setLayer = (index: number) => (node: HTMLDivElement) => {
+    layers[index] = node;
+  };
+
+  const rootStyle = () => ({
     width: `${props.size}px`,
     height: `${props.size}px`,
   });
 
   createEffect(() => {
-    const node = canvas();
-    const ctx = node?.getContext('2d');
-    if (!node || !ctx) return;
-
     const size = props.size;
-    const dpr = Math.min(MAX_DPR, window.devicePixelRatio || 1);
-    node.width = Math.round(size * dpr);
-    node.height = Math.round(size * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const color = getComputedStyle(node).color;
-    ctx.fillStyle = color;
-    ctx.strokeStyle = color;
-    ctx.lineWidth = STROKE_WIDTH;
-
     const center = size / 2;
     const baseRadius = size * BASE_RADIUS_RATIO;
     let level = 0;
@@ -87,25 +73,28 @@ export const useVoiceBlob = (props: VoiceBlobProps) => {
     let last = performance.now();
     let frame = 0;
 
+    const paintLayer = (index: number) => {
+      const layer = BLOB_LAYERS[index];
+      const shrink = HIDDEN_SCALE + (1 - HIDDEN_SCALE) * presence;
+      const radius = baseRadius * (layer.scale + layer.growth * level) * shrink;
+      const wobble = reducedMotion ? 0 : layer.wobble * (0.6 + level);
+      const node = layers[index];
+      node.style.clipPath = blobPath(
+        center,
+        radius,
+        wobble,
+        time * layer.speed,
+      );
+      node.style.opacity = String(presence);
+    };
+
     const draw = (now: number) => {
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       level = follow(level, props.paused ? 0 : props.level, dt);
       presence = follow(presence, props.paused ? 0 : 1, dt);
       if (!props.paused && !reducedMotion) time += dt * (0.6 + level * 1.4);
-
-      ctx.clearRect(0, 0, size, size);
-      for (const layer of BLOB_LAYERS) {
-        ctx.globalAlpha = layer.alpha * presence;
-        const shrink = HIDDEN_SCALE + (1 - HIDDEN_SCALE) * presence;
-        const radius =
-          baseRadius * (layer.scale + layer.growth * level) * shrink;
-        const wobble = reducedMotion ? 0 : layer.wobble * (0.6 + level);
-        traceBlob(ctx, center, radius, wobble, time * layer.speed);
-        ctx.fill();
-        ctx.globalAlpha = layer.stroke * presence;
-        ctx.stroke();
-      }
+      BLOB_LAYERS.forEach((_, index) => paintLayer(index));
       const settled = props.paused && presence < SETTLED_LEVEL;
       frame = settled ? 0 : requestAnimationFrame(draw);
     };
@@ -119,5 +108,5 @@ export const useVoiceBlob = (props: VoiceBlobProps) => {
     onCleanup(() => cancelAnimationFrame(frame));
   });
 
-  return { setCanvas, canvasStyle };
+  return { setLayer, rootStyle, layerCount: BLOB_LAYERS.length };
 };

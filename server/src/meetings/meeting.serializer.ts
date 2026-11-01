@@ -15,6 +15,7 @@ export function toMeetingOutput(meeting: MeetingEntity): MeetingOutput {
     startedAt: meeting.startedAt,
     endedAt: meeting.endedAt,
     durationSec: meeting.durationSec,
+    interviewSessionId: meeting.interviewSessionId,
     isFavorite: meeting.isFavorite,
     summaryStyle: meeting.summaryStyle,
     createdAt: meeting.createdAt,

@@ -10,7 +10,6 @@ export const KEEP_ALIVE_INTERVAL_MS = 5000;
 
 export const DEEPGRAM_LIVE_OPTIONS: ListenConnectArgs = {
   model: 'nova-3',
-  language: 'multi',
   encoding: 'linear16',
   sample_rate: 16000,
   channels: 1,

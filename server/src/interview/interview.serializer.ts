@@ -1,3 +1,4 @@
+import { InterviewRecording } from './interview.types';
 import { InterviewSessionEntity } from './interview-session.entity';
 import { InterviewSessionOutput } from './interview-session.output';
 import { InterviewTurnEntity } from './interview-turn.entity';
@@ -5,16 +6,18 @@ import { InterviewTurnOutput } from './interview-turn.output';
 
 export function toInterviewSessionOutput(
   session: InterviewSessionEntity,
-  meetingId: string | null,
+  recording?: InterviewRecording,
 ): InterviewSessionOutput {
   return {
     id: session.id,
     resumeText: session.resumeText,
     vacancyText: session.vacancyText,
     cheatSheet: session.cheatSheet,
+    language: session.language,
     recommendations: session.recommendations,
     finishedAt: session.finishedAt,
-    meetingId,
+    meetingId: recording?.id ?? null,
+    recordingUrl: recording?.audioUrl ?? null,
     createdAt: session.createdAt,
   };
 }

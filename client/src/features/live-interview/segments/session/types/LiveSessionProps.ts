@@ -1,3 +1,5 @@
+import { JSX } from 'solid-js';
+
 import { LiveTurnView } from '../../../types/LiveTurnView';
 
 export interface LiveSessionProps {
@@ -11,6 +13,7 @@ export interface LiveSessionProps {
   onCaptureCode: () => void;
   onStop: () => void;
   isReadOnly: boolean;
-  recordingHref: string;
+  player?: JSX.Element;
+  reviewTitle?: string;
   onBack: () => void;
 }

@@ -1,3 +1,4 @@
+import { InterviewSessionEntity } from '../interview/interview-session.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MeetingEntity } from './meeting.entity';
@@ -17,6 +18,7 @@ import { MeetingProcessingService } from './meeting-processing.service';
       MeetingEntity,
       TranscriptSegmentEntity,
       KeyPointEntity,
+      InterviewSessionEntity,
       ActionItemEntity,
     ]),
     FileModule,

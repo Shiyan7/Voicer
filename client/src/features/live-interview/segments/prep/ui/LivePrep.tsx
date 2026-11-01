@@ -7,6 +7,7 @@ import { FileInput } from '@/shared/ui/file-input';
 import { Icon } from '@/shared/ui/icon';
 import { Tabs } from '@/shared/ui/tabs';
 
+import { LANGUAGE_TABS } from '../../../config/liveInterviewConfig';
 import { LivePrepProps } from '../types/LivePrepProps';
 import { livePrepStyles } from './LivePrep.styles';
 
@@ -39,6 +40,13 @@ export function LivePrep(props: LivePrepProps) {
           accept="application/pdf"
           isFilled={props.hasResume}
           onSelect={props.onResumeSelected}
+        />
+        <span class={styles.label()}>{i18n.t('live.prep.language')}</span>
+        <Tabs
+          size="sm"
+          tabs={LANGUAGE_TABS}
+          activeTab={props.language}
+          onSelect={props.onSelectLanguage}
         />
         <span class={styles.label()}>{i18n.t('live.prep.vacancy')}</span>
         <textarea

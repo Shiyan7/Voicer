@@ -1,18 +1,22 @@
 /** Internal type. DO NOT USE DIRECTLY. */
-export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type Incremental<T> =
+  | T
+  | {
+      [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never;
+    };
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string; }
-  String: { input: string; output: string; }
-  Boolean: { input: boolean; output: boolean; }
-  Int: { input: number; output: number; }
-  Float: { input: number; output: number; }
+  ID: { input: string; output: string };
+  String: { input: string; output: string };
+  Boolean: { input: boolean; output: boolean };
+  Int: { input: number; output: number };
+  Float: { input: number; output: number };
   /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
-  DateTime: { input: string; output: string; }
+  DateTime: { input: string; output: string };
   /** The `Upload` scalar type represents a file upload. */
-  Upload: { input: File; output: File; }
+  Upload: { input: File; output: File };
 };
 
 export type ActionItemOutput = {
@@ -62,7 +66,7 @@ export type ChatMessageOutput = {
 
 export enum ChatRole {
   Assistant = 'ASSISTANT',
-  User = 'USER'
+  User = 'USER',
 }
 
 export type InterviewAnswerOutput = {
@@ -72,6 +76,11 @@ export type InterviewAnswerOutput = {
   question: Scalars['String']['output'];
   text: Scalars['String']['output'];
 };
+
+export enum InterviewLanguage {
+  En = 'EN',
+  Ru = 'RU',
+}
 
 export type InterviewRecommendationsOutput = {
   __typename?: 'InterviewRecommendationsOutput';
@@ -86,8 +95,10 @@ export type InterviewSessionOutput = {
   createdAt: Scalars['DateTime']['output'];
   finishedAt?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['ID']['output'];
+  language: InterviewLanguage;
   meetingId?: Maybe<Scalars['ID']['output']>;
   recommendations: InterviewRecommendationsOutput;
+  recordingUrl?: Maybe<Scalars['String']['output']>;
   resumeText: Scalars['String']['output'];
   vacancyText: Scalars['String']['output'];
 };
@@ -116,6 +127,7 @@ export type MeetingOutput = {
   durationSec?: Maybe<Scalars['Int']['output']>;
   endedAt?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['ID']['output'];
+  interviewSessionId?: Maybe<Scalars['ID']['output']>;
   isFavorite: Scalars['Boolean']['output'];
   source?: Maybe<Scalars['String']['output']>;
   startedAt: Scalars['DateTime']['output'];
@@ -131,7 +143,7 @@ export enum MeetingStatus {
   Ready = 'READY',
   Summarizing = 'SUMMARIZING',
   Transcribed = 'TRANSCRIBED',
-  Transcribing = 'TRANSCRIBING'
+  Transcribing = 'TRANSCRIBING',
 }
 
 export type MeetingsPageInput = {
@@ -154,7 +166,7 @@ export enum MeetingsSort {
   DateAsc = 'DATE_ASC',
   DateDesc = 'DATE_DESC',
   DurationAsc = 'DURATION_ASC',
-  DurationDesc = 'DURATION_DESC'
+  DurationDesc = 'DURATION_DESC',
 }
 
 export type MeetingsStatsOutput = {
@@ -185,89 +197,75 @@ export type Mutation = {
   updateInterviewSession: InterviewSessionOutput;
 };
 
-
 export type MutationApiTokenCreateArgs = {
   name: Scalars['String']['input'];
 };
-
 
 export type MutationApiTokenRevokeArgs = {
   id: Scalars['ID']['input'];
 };
 
-
 export type MutationCreateInterviewSessionArgs = {
+  language?: InterviewLanguage;
   resume: Scalars['Upload']['input'];
   vacancy: Scalars['String']['input'];
 };
-
 
 export type MutationInterviewAskScreenshotArgs = {
   image: Scalars['Upload']['input'];
   sessionId: Scalars['ID']['input'];
 };
 
-
 export type MutationMeetingChatAskArgs = {
   meetingId: Scalars['ID']['input'];
   question: Scalars['String']['input'];
 };
 
-
 export type MutationMeetingChatClearArgs = {
   meetingId: Scalars['ID']['input'];
 };
 
-
 export type MutationMeetingDeleteArgs = {
   id: Scalars['ID']['input'];
 };
-
 
 export type MutationMeetingRenameArgs = {
   id: Scalars['ID']['input'];
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
-
 export type MutationMeetingSetFavoriteArgs = {
   id: Scalars['ID']['input'];
   isFavorite: Scalars['Boolean']['input'];
 };
 
-
 export type MutationMeetingSuggestTitleArgs = {
   id: Scalars['ID']['input'];
 };
-
 
 export type MutationMeetingSummarizeArgs = {
   id: Scalars['ID']['input'];
   style?: SummaryStyle;
 };
 
-
 export type MutationMeetingUploadAudioArgs = {
   file: Scalars['Upload']['input'];
+  interviewSessionId?: InputMaybe<Scalars['String']['input']>;
   source?: InputMaybe<Scalars['String']['input']>;
   startedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
-
 
 export type MutationSignInArgs = {
   input: SignInInput;
 };
 
-
 export type MutationSignUpArgs = {
   input: SignUpInput;
 };
 
-
 export type MutationToggleActionItemArgs = {
   id: Scalars['ID']['input'];
 };
-
 
 export type MutationUpdateInterviewSessionArgs = {
   finished?: InputMaybe<Scalars['Boolean']['input']>;
@@ -303,61 +301,49 @@ export type Query = {
   userMe: UserMeOutput;
 };
 
-
 export type QueryInterviewSessionArgs = {
   id: Scalars['ID']['input'];
 };
-
 
 export type QueryInterviewTurnsArgs = {
   sessionId: Scalars['ID']['input'];
 };
 
-
 export type QueryMeetingActionItemsArgs = {
   meetingId: Scalars['ID']['input'];
 };
-
 
 export type QueryMeetingChatMessagesArgs = {
   meetingId: Scalars['ID']['input'];
 };
 
-
 export type QueryMeetingChatSuggestionsArgs = {
   meetingId: Scalars['ID']['input'];
 };
-
 
 export type QueryMeetingKeyPointsArgs = {
   meetingId: Scalars['ID']['input'];
 };
 
-
 export type QueryMeetingTranscriptArgs = {
   meetingId: Scalars['ID']['input'];
 };
-
 
 export type QueryMeetingsPageArgs = {
   input: MeetingsPageInput;
 };
 
-
 export type QuerySearchArgs = {
   input: SearchInput;
 };
-
 
 export type QueryStatsDayMeetingsArgs = {
   input: StatsDayMeetingsInput;
 };
 
-
 export type QueryStatsSummaryArgs = {
   input: StatsSummaryInput;
 };
-
 
 export type QueryStatsYearArgs = {
   input: StatsYearInput;
@@ -374,7 +360,7 @@ export enum SearchMatchKind {
   ActionItem = 'ACTION_ITEM',
   KeyPoint = 'KEY_POINT',
   Source = 'SOURCE',
-  Transcript = 'TRANSCRIPT'
+  Transcript = 'TRANSCRIPT',
 }
 
 export type SearchPageOutput = {
@@ -399,7 +385,7 @@ export type SearchResultOutput = {
 
 export enum SearchSort {
   Recent = 'RECENT',
-  Relevance = 'RELEVANCE'
+  Relevance = 'RELEVANCE',
 }
 
 export type SignInInput = {
@@ -471,16 +457,13 @@ export type Subscription = {
   meetingUpdated: MeetingOutput;
 };
 
-
 export type SubscriptionInterviewAnswerArgs = {
   sessionId: Scalars['ID']['input'];
 };
 
-
 export type SubscriptionMeetingChatMessageArgs = {
   meetingId: Scalars['ID']['input'];
 };
-
 
 export type SubscriptionMeetingUpdatedArgs = {
   id: Scalars['ID']['input'];
@@ -494,7 +477,7 @@ export enum SummaryStyle {
   Concise = 'CONCISE',
   Detailed = 'DETAILED',
   Interview = 'INTERVIEW',
-  Work = 'WORK'
+  Work = 'WORK',
 }
 
 export type TranscriptSegmentOutput = {

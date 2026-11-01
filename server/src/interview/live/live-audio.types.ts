@@ -7,8 +7,7 @@ export type LiveServerMessage =
       speechFinal: boolean;
     }
   | { type: 'utteranceEnd'; utteranceId: number }
-  | { type: 'answerStarted'; utteranceId: number; answerId: string }
-  | { type: 'error'; message: string };
+  | { type: 'answerStarted'; utteranceId: number; answerId: string };
 
 export interface LiveClientMessage {
   type: 'answerNow';

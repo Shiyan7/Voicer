@@ -7,6 +7,7 @@ export const INTERVIEW_SESSIONS_QUERY = gql`
       vacancyText
       finishedAt
       meetingId
+      recordingUrl
       createdAt
     }
   }

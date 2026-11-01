@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UserEntity } from '../users/user.entity';
+import { InterviewLanguage } from './interview-language.enum';
 import { InterviewRecommendations } from './interview.types';
 
 @Entity({ name: 'interview_sessions' })
@@ -31,6 +32,9 @@ export class InterviewSessionEntity {
 
   @Column({ type: 'text', default: '' })
   cheatSheet: string;
+
+  @Column({ type: 'varchar', default: InterviewLanguage.RU })
+  language: InterviewLanguage;
 
   @Column({ type: 'jsonb' })
   recommendations: InterviewRecommendations;

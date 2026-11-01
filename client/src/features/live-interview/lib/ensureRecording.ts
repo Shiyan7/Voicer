@@ -5,6 +5,6 @@ export const ensureRecording = async () => {
   if (state.state === 'recording') {
     return { startedAt: state.startedAt, isOwned: false };
   }
-  const { startedAt } = await startRecording();
+  const { startedAt } = await startRecording('interview');
   return { startedAt, isOwned: true };
 };

@@ -10,7 +10,7 @@ export const recordingBarStyles = tv({
     indicator: 'relative flex size-12 shrink-0 items-center justify-center',
     blob: `
       absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-      rounded-full text-red-500 backdrop-blur-[6px]
+      text-red-500
     `,
     mic: `
       relative flex size-12 items-center justify-center rounded-full
