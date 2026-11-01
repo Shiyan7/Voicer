@@ -7,6 +7,7 @@ import { LlmTextModel } from '../llm/llm-text-model';
 import { LlmTurn } from '../llm/llm-turn';
 import { ClaudeJsonResult, ClaudeStreamLine } from './claude.types';
 
+const DEFAULT_CLAUDE_BIN = 'claude';
 const DEFAULT_CLAUDE_MODEL = 'haiku';
 const JSON_SYSTEM_PROMPT = 'Return only data matching the given JSON schema.';
 const CLAUDE_TIMEOUT_MS = 180_000;
@@ -18,9 +19,11 @@ interface ClaudeRun {
 
 @Injectable()
 export class ClaudeService implements LlmTextModel {
+  private readonly bin: string;
   private readonly model: string;
 
   constructor(configService: ConfigService) {
+    this.bin = configService.get<string>('CLAUDE_BIN') ?? DEFAULT_CLAUDE_BIN;
     this.model =
       configService.get<string>('CLAUDE_MODEL') ?? DEFAULT_CLAUDE_MODEL;
   }
@@ -72,7 +75,7 @@ export class ClaudeService implements LlmTextModel {
 
   private run(args: string[], signal?: AbortSignal): ClaudeRun {
     const timeout = AbortSignal.timeout(CLAUDE_TIMEOUT_MS);
-    const child = spawn('claude', args, {
+    const child = spawn(this.bin, args, {
       cwd: tmpdir(),
       signal: signal ? AbortSignal.any([signal, timeout]) : timeout,
     });

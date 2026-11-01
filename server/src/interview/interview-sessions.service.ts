@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -30,6 +31,8 @@ const MAX_VACANCY_LENGTH = 20000;
 
 @Injectable()
 export class InterviewSessionsService {
+  private readonly logger = new Logger(InterviewSessionsService.name);
+
   constructor(
     @InjectRepository(InterviewSessionEntity)
     private readonly sessionsRepository: Repository<InterviewSessionEntity>,
@@ -137,15 +140,20 @@ export class InterviewSessionsService {
     );
   }
 
-  private prepare(
+  private async prepare(
     resumeText: string,
     vacancyText: string,
     language: InterviewLanguage,
   ): Promise<InterviewPreparation> {
-    return this.claude.generateJson<InterviewPreparation>(
-      buildInterviewPreparationPrompt(resumeText, vacancyText, language),
-      INTERVIEW_PREPARATION_SCHEMA,
-    );
+    try {
+      return await this.claude.generateJson<InterviewPreparation>(
+        buildInterviewPreparationPrompt(resumeText, vacancyText, language),
+        INTERVIEW_PREPARATION_SCHEMA,
+      );
+    } catch (error) {
+      this.logger.error('Failed to prepare interview', error);
+      throw error;
+    }
   }
 
   private readPdf(upload: FileUpload): Promise<Buffer> {
