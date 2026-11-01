@@ -54,21 +54,15 @@ export function LiveSession(props: LiveSessionProps) {
             <p class={styles.empty()}>{i18n.t('live.session.waiting')}</p>
           }
         >
-          <div
-            class={styles.scroller()}
-            ref={scroll.setScroller}
-            onScroll={scroll.onScroll}
-          >
-            <div class={styles.list()}>
-              <For each={props.turns}>
-                {(turn) => (
-                  <LiveTurnCard
-                    turn={turn}
-                    onToggleDetails={props.onToggleDetails}
-                  />
-                )}
-              </For>
-            </div>
+          <div class={styles.list()}>
+            <For each={props.turns}>
+              {(turn) => (
+                <LiveTurnCard
+                  turn={turn}
+                  onToggleDetails={props.onToggleDetails}
+                />
+              )}
+            </For>
           </div>
           <Show when={scroll.isAwayFromBottom()}>
             <button

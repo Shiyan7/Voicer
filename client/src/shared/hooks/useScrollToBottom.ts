@@ -1,19 +1,34 @@
-import { createSignal } from 'solid-js';
+import { createSignal, onCleanup, onMount } from 'solid-js';
 
 const BOTTOM_THRESHOLD_PX = 80;
 
+const distanceToBottom = () =>
+  document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
+
+const scrollPageToBottom = (behavior: ScrollBehavior) =>
+  window.scrollTo({ top: document.documentElement.scrollHeight, behavior });
+
 export function useScrollToBottom() {
-  const [scroller, setScroller] = createSignal<HTMLElement>();
   const [isAwayFromBottom, setIsAwayFromBottom] = createSignal(false);
 
-  const onScroll = () => {
-    const element = scroller();
-    if (!element) return;
-    setIsAwayFromBottom(Math.abs(element.scrollTop) > BOTTOM_THRESHOLD_PX);
+  const onScroll = () =>
+    setIsAwayFromBottom(distanceToBottom() > BOTTOM_THRESHOLD_PX);
+
+  const onContentResize = () => {
+    if (!isAwayFromBottom()) scrollPageToBottom('auto');
   };
 
-  const scrollToBottom = () =>
-    scroller()?.scrollTo({ top: 0, behavior: 'smooth' });
+  const scrollToBottom = () => scrollPageToBottom('smooth');
 
-  return { setScroller, isAwayFromBottom, onScroll, scrollToBottom };
+  onMount(() => {
+    const observer = new ResizeObserver(onContentResize);
+    observer.observe(document.body);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onCleanup(() => {
+      observer.disconnect();
+      window.removeEventListener('scroll', onScroll);
+    });
+  });
+
+  return { isAwayFromBottom, scrollToBottom };
 }

@@ -1,5 +1,3 @@
-const MIN_QUESTION_WORDS = 4;
-
 const FILLER_WORDS = new Set([
   'ага',
   'угу',
@@ -41,8 +39,6 @@ const toWords = (text: string): string[] =>
     .split(/\s+/)
     .filter(Boolean);
 
-export function isLikelyQuestion(text: string): boolean {
-  const meaningful = toWords(text).filter((word) => !FILLER_WORDS.has(word));
-  if (text.trim().endsWith('?')) return meaningful.length >= 2;
-  return meaningful.length >= MIN_QUESTION_WORDS;
+export function hasMeaningfulSpeech(text: string): boolean {
+  return toWords(text).some((word) => !FILLER_WORDS.has(word));
 }

@@ -2,8 +2,13 @@ import { Logger } from '@nestjs/common';
 import { DeepgramClient, listen } from '@deepgram/sdk';
 import { RawData, WebSocket } from 'ws';
 import { InterviewAnswersService } from '../interview-answers.service';
-import { isLikelyQuestion } from './is-likely-question';
-import { KEEP_ALIVE_INTERVAL_MS } from './live-audio.config';
+import { hasMeaningfulSpeech } from './has-meaningful-speech';
+import {
+  KEEP_ALIVE_INTERVAL_MS,
+  MAX_REPLY_LENGTH,
+  REPLY_GAP_MS,
+  REPLY_SETTLE_MS,
+} from './live-audio.config';
 import { LiveClientMessage, LiveServerMessage } from './live-audio.types';
 
 export type DeepgramSocket = Awaited<
@@ -38,6 +43,9 @@ export class LiveAudioSession {
   private committed = '';
   private interim = '';
   private lastUtterance = { id: 0, text: '' };
+  private reply = '';
+  private replyUpdatedAt = 0;
+  private settleTimer: ReturnType<typeof setTimeout> | null = null;
   private isClosed = false;
 
   constructor(private readonly deps: LiveAudioSessionDeps) {
@@ -75,6 +83,7 @@ export class LiveAudioSession {
     if (this.isClosed) return;
     this.isClosed = true;
     if (this.keepAlive) clearInterval(this.keepAlive);
+    this.cancelSettle();
     this.pending.length = 0;
     this.closeDeepgram();
     if (this.deps.client.readyState === WebSocket.OPEN) {
@@ -146,6 +155,7 @@ export class LiveAudioSession {
 
     const full = joinText(this.committed, this.interim);
     if (full) {
+      this.cancelSettle();
       this.send({
         type: 'transcript',
         utteranceId: this.utteranceId,
@@ -166,21 +176,66 @@ export class LiveAudioSession {
     this.committed = '';
     this.interim = '';
     this.utteranceId += 1;
-    this.lastUtterance = { id, text };
-    if (force || isLikelyQuestion(text)) void this.answer(id, text);
+    const reply = this.appendToReply(text);
+    this.lastUtterance = { id, text: reply };
+    if (force) this.answerReply(true);
+    else if (hasMeaningfulSpeech(reply)) this.scheduleAnswer();
     return text;
+  }
+
+  private scheduleAnswer(): void {
+    this.cancelSettle();
+    this.settleTimer = setTimeout(
+      () => this.answerReply(false),
+      REPLY_SETTLE_MS,
+    );
+  }
+
+  private cancelSettle(): void {
+    if (this.settleTimer) clearTimeout(this.settleTimer);
+    this.settleTimer = null;
+  }
+
+  private answerReply(force: boolean): void {
+    this.cancelSettle();
+    const { id, text } = this.lastUtterance;
+    this.reply = '';
+    void this.answer(id, text, force);
+  }
+
+  private restoreReply(text: string): void {
+    this.reply = joinText(text, this.reply).slice(-MAX_REPLY_LENGTH);
+    this.replyUpdatedAt = Date.now();
+  }
+
+  private appendToReply(text: string): string {
+    const now = Date.now();
+    const previous = now - this.replyUpdatedAt > REPLY_GAP_MS ? '' : this.reply;
+    this.reply = joinText(previous, text).slice(-MAX_REPLY_LENGTH);
+    this.replyUpdatedAt = now;
+    return this.reply;
   }
 
   private answerNow(): void {
     if (this.finishUtterance(true)) return;
     if (!this.lastUtterance.text) return;
-    void this.answer(this.lastUtterance.id, this.lastUtterance.text);
+    void this.answer(this.lastUtterance.id, this.lastUtterance.text, true);
   }
 
-  private async answer(utteranceId: number, question: string): Promise<void> {
+  private async answer(
+    utteranceId: number,
+    question: string,
+    force: boolean,
+  ): Promise<void> {
     const { answers, userId, sessionId } = this.deps;
     try {
-      const answerId = await answers.ask(userId, sessionId, question);
+      const answerId = force
+        ? await answers.ask(userId, sessionId, question)
+        : await answers.askIfExpected(userId, sessionId, question);
+      if (!answerId) {
+        this.restoreReply(question);
+        return;
+      }
       this.send({ type: 'answerStarted', utteranceId, answerId });
     } catch (error) {
       this.logger.warn(

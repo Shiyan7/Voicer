@@ -87,13 +87,15 @@ export function useLiveInterview() {
     activeSessionId = undefined;
     isRecordingOwned = false;
     session.stop();
-    if (sessionId) {
-      await Promise.all([
-        updateInterviewSession({ id: sessionId, finished: true }),
-        isOwned && saveRecording(sessionId),
-      ]);
+    if (!sessionId) {
+      navigate(paths.live);
+      return;
     }
-    navigate(paths.live);
+    await Promise.all([
+      updateInterviewSession({ id: sessionId, finished: true }),
+      isOwned && saveRecording(sessionId),
+    ]);
+    await open(sessionId);
   };
 
   const closeReview = () => navigate(paths.live);

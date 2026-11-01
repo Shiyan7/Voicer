@@ -6,6 +6,7 @@ export interface InterviewAnswerContext {
   cheatSheet: string;
   vacancyText: string;
   history: InterviewTurnEntity[];
+  isGated: boolean;
 }
 
 const formatTurn = (turn: InterviewTurnEntity): string =>
@@ -24,6 +25,12 @@ const STYLE_RULES = `Ты кандидат на собеседовании и о
 Опирайся на конкретные факты из шпаргалки: проекты, стек, цифры. Не выдумывай опыт, которого там нет.
 Если вопрос про код или задачу на программирование, дай простой читаемый блок кода в ограждении \`\`\`язык и одно предложение устного пояснения.`;
 
+export const SKIP_ANSWER = 'SKIP';
+
+const GATE_RULES = `Перед ответом реши, ждёт ли интервьюер ответа от кандидата. Текст получен из распознавания речи, знаков вопроса и конца фразы может не быть.
+Отвечай, если это вопрос, просьба или задание, даже без вопросительного знака и даже если фраза оборвана, но смысл понятен.
+Если это рассказ о компании или проекте, комментарий, реакция, организационная реплика или обрывок без понятного смысла, напиши ровно ${SKIP_ANSWER} и больше ничего.`;
+
 export function buildInterviewAnswerInstruction(
   context: InterviewAnswerContext,
 ): string {
@@ -33,6 +40,7 @@ export function buildInterviewAnswerInstruction(
     `Шпаргалка кандидата:\n${context.cheatSheet}`,
     `Вакансия:\n${context.vacancyText}`,
   ];
+  if (context.isGated) sections.push(GATE_RULES);
   if (context.history.length) {
     sections.push(
       `Недавний ход разговора:\n${context.history.map(formatTurn).join('\n\n')}`,

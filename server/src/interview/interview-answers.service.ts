@@ -6,10 +6,10 @@ import {
 } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { PubSub } from 'graphql-subscriptions';
+import { ClaudeService } from '../claude/claude.service';
 import { FileUpload } from '../file/file-upload';
 import { readUpload } from '../file/read-upload';
 import { GeminiService } from '../gemini/gemini.service';
-import { GroqService } from '../groq/groq.service';
 import { LlmTurn } from '../llm/llm-turn';
 import { PUB_SUB } from '../pubsub/pubsub.module';
 import { topic } from '../pubsub/topic';
@@ -18,6 +18,7 @@ import { InterviewSessionEntity } from './interview-session.entity';
 import { InterviewSessionsService } from './interview-sessions.service';
 import {
   buildInterviewAnswerInstruction,
+  SKIP_ANSWER,
   SCREENSHOT_TASK_PROMPT,
   SCREENSHOT_QUESTION_LABEL,
 } from './prompts/interview-answer.prompt';
@@ -33,7 +34,7 @@ interface InterviewAnswerPayload {
   interviewAnswer: InterviewAnswerOutput;
 }
 
-type AnswerModel = Pick<GroqService | GeminiService, 'streamText'>;
+type AnswerModel = Pick<ClaudeService | GeminiService, 'streamText'>;
 
 interface AnswerRequest {
   question: string;
@@ -41,14 +42,22 @@ interface AnswerRequest {
   model: AnswerModel;
 }
 
+interface AnswerGate {
+  order: number;
+  isOpen: boolean;
+  settle: (answerId: string | null) => void;
+}
+
 @Injectable()
 export class InterviewAnswersService {
   private readonly logger = new Logger(InterviewAnswersService.name);
   private readonly inFlight = new Map<string, AbortController>();
+  private readonly claimedOrders = new Map<string, number>();
+  private lastOrder = 0;
 
   constructor(
     private readonly sessions: InterviewSessionsService,
-    private readonly groq: GroqService,
+    private readonly claude: ClaudeService,
     private readonly gemini: GeminiService,
     @Inject(PUB_SUB) private readonly pubSub: PubSub,
   ) {}
@@ -63,7 +72,33 @@ export class InterviewAnswersService {
     return this.start(session, {
       question: text,
       turn: { role: 'user', text },
-      model: this.groq,
+      model: this.claude,
+    });
+  }
+
+  async askIfExpected(
+    userId: string,
+    sessionId: string,
+    question: string,
+  ): Promise<string | null> {
+    const text = this.validateQuestion(question);
+    const session = await this.sessions.findOwned(userId, sessionId);
+    const request: AnswerRequest = {
+      question: text,
+      turn: { role: 'user', text },
+      model: this.claude,
+    };
+    this.lastOrder += 1;
+    const order = this.lastOrder;
+    return new Promise((settle) => {
+      const gate: AnswerGate = { order, isOpen: false, settle };
+      void this.stream(
+        session,
+        this.createAnswer(text),
+        request,
+        new AbortController(),
+        gate,
+      );
     });
   }
 
@@ -95,22 +130,51 @@ export class InterviewAnswersService {
     );
   }
 
+  private createAnswer(question: string): InterviewAnswerOutput {
+    return { answerId: randomUUID(), question, text: '', done: false };
+  }
+
   private start(
     session: InterviewSessionEntity,
     request: AnswerRequest,
   ): string {
-    this.inFlight.get(session.id)?.abort();
     const controller = new AbortController();
-    this.inFlight.set(session.id, controller);
-
-    const answer: InterviewAnswerOutput = {
-      answerId: randomUUID(),
-      question: request.question,
-      text: '',
-      done: false,
-    };
+    this.lastOrder += 1;
+    this.claim(session.id, controller, this.lastOrder);
+    const answer = this.createAnswer(request.question);
     void this.stream(session, answer, request, controller);
     return answer.answerId;
+  }
+
+  private claim(
+    sessionId: string,
+    controller: AbortController,
+    order: number,
+  ): void {
+    this.inFlight.get(sessionId)?.abort();
+    this.inFlight.set(sessionId, controller);
+    this.claimedOrders.set(sessionId, order);
+  }
+
+  private shouldPublish(
+    sessionId: string,
+    answer: InterviewAnswerOutput,
+    partial: string,
+    controller: AbortController,
+    gate?: AnswerGate,
+  ): boolean {
+    if (!gate || gate.isOpen) return true;
+    const head = partial.trimStart();
+    if (SKIP_ANSWER.startsWith(head)) return false;
+    const isStale = gate.order < (this.claimedOrders.get(sessionId) ?? 0);
+    if (head.startsWith(SKIP_ANSWER) || isStale) {
+      controller.abort();
+      return false;
+    }
+    gate.isOpen = true;
+    this.claim(sessionId, controller, gate.order);
+    gate.settle(answer.answerId);
+    return true;
   }
 
   private async stream(
@@ -118,15 +182,24 @@ export class InterviewAnswersService {
     answer: InterviewAnswerOutput,
     request: AnswerRequest,
     controller: AbortController,
+    gate?: AnswerGate,
   ): Promise<void> {
     let text = '';
     try {
       await request.model.streamText(
-        await this.buildInstruction(session),
+        await this.buildInstruction(session, !!gate),
         [request.turn],
-        (partial) => {
+        async (partial) => {
+          const isPublished = this.shouldPublish(
+            session.id,
+            answer,
+            partial,
+            controller,
+            gate,
+          );
+          if (!isPublished) return;
           text = partial;
-          return this.publish(session.id, { ...answer, text });
+          await this.publish(session.id, { ...answer, text });
         },
         controller.signal,
       );
@@ -134,6 +207,10 @@ export class InterviewAnswersService {
       if (!controller.signal.aborted) {
         this.logger.error(`Failed to answer in interview ${session.id}`, error);
       }
+    }
+    if (gate && !gate.isOpen) {
+      gate.settle(null);
+      return;
     }
     await this.finish(session.id, { ...answer, text, done: true }, controller);
   }
@@ -154,12 +231,14 @@ export class InterviewAnswersService {
 
   private async buildInstruction(
     session: InterviewSessionEntity,
+    isGated: boolean,
   ): Promise<string> {
     return buildInterviewAnswerInstruction({
       language: session.language,
       cheatSheet: session.cheatSheet,
       vacancyText: session.vacancyText,
       history: await this.sessions.recentTurns(session.id, MAX_HISTORY),
+      isGated,
     });
   }
 

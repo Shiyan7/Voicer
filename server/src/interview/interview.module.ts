@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from '../auth/auth.module';
 import { GeminiModule } from '../gemini/gemini.module';
+import { ClaudeModule } from '../claude/claude.module';
 import { GroqModule } from '../groq/groq.module';
 import { InterviewAnswersService } from './interview-answers.service';
 import { InterviewSessionEntity } from './interview-session.entity';
@@ -21,6 +22,7 @@ import { TranscriptionModule } from '../transcription/transcription.module';
     ]),
     AuthModule,
     GeminiModule,
+    ClaudeModule,
     GroqModule,
     TranscriptionModule,
   ],
