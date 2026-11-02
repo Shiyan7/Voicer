@@ -6,6 +6,7 @@ import { toDateRangeInput } from '@/shared/lib/date-range';
 
 import { interviewSessionsPageQuery } from '../api/interviewSessionsPageQuery';
 import { getInterviewSortOptions } from '../lib/getInterviewSortOptions';
+import { getModeOptions } from '../lib/getModeOptions';
 import { getStatusOptions } from '../lib/getStatusOptions';
 import { mapInterviewRows } from '../lib/mapInterviewRows';
 import { useInterviewsFilters } from './useInterviewsFilters';
@@ -21,6 +22,7 @@ export function useInterviews() {
       limit: pagination.limit,
       sort: filters.sort(),
       status: filters.statusInput(),
+      mode: filters.modeInput(),
       ...toDateRangeInput(filters.dateRange()),
     },
   }));
@@ -46,6 +48,7 @@ export function useInterviews() {
     emptyLabel,
     totalCount,
     statusOptions: getStatusOptions,
+    modeOptions: getModeOptions,
     sortOptions: getInterviewSortOptions,
     pagination,
     isDeleting,

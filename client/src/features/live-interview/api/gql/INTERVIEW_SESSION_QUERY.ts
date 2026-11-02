@@ -5,6 +5,7 @@ export const INTERVIEW_SESSION_QUERY = gql`
     interviewSession(id: $id) {
       id
       title
+      mode
       finishedAt
       meetingId
       recordingUrl

@@ -12,6 +12,7 @@ import { MeetingsService } from '../meetings/meetings.service';
 import { FileUpload } from '../file/file-upload';
 import { ClaudeService } from '../claude/claude.service';
 import { InterviewLanguage } from './interview-language.enum';
+import { InterviewMode } from './interview-mode.enum';
 import { InterviewSessionEntity } from './interview-session.entity';
 import { InterviewSessionOutput } from './interview-session.output';
 import { InterviewSessionStatus } from './interview-session-status.enum';
@@ -55,6 +56,7 @@ export class InterviewSessionsService {
     resume: FileUpload,
     vacancy: string,
     language: InterviewLanguage,
+    mode: InterviewMode,
   ): Promise<InterviewSessionOutput> {
     const vacancyText = requireText(
       vacancy,
@@ -69,6 +71,7 @@ export class InterviewSessionsService {
         vacancyText,
         resumeText,
         language,
+        mode,
         ...preparation,
       }),
     );
@@ -158,6 +161,7 @@ export class InterviewSessionsService {
       userId,
       ...(createdAt && { createdAt }),
       ...(input.status && { finishedAt: STATUS_CONDITIONS[input.status] }),
+      ...(input.mode && { mode: input.mode }),
     };
   }
 

@@ -13,6 +13,7 @@ import { UserEntity } from '../users/user.entity';
 import { InterviewAnswerOutput } from './interview-answer.output';
 import { InterviewAnswersService } from './interview-answers.service';
 import { InterviewLanguage } from './interview-language.enum';
+import { InterviewMode } from './interview-mode.enum';
 import { InterviewSessionOutput } from './interview-session.output';
 import { InterviewTurnOutput } from './interview-turn.output';
 import { InterviewSessionsPageInput } from './interview-sessions-page.input';
@@ -36,8 +37,13 @@ export class InterviewResolver {
       defaultValue: InterviewLanguage.RU,
     })
     language: InterviewLanguage,
+    @Args('mode', {
+      type: () => InterviewMode,
+      defaultValue: InterviewMode.REAL,
+    })
+    mode: InterviewMode,
   ): Promise<InterviewSessionOutput> {
-    return this.sessions.create(user.id, resume, vacancy, language);
+    return this.sessions.create(user.id, resume, vacancy, language, mode);
   }
 
   @Query(() => InterviewSessionOutput)

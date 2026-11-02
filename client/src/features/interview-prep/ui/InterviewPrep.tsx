@@ -3,11 +3,12 @@ import { For, Show } from 'solid-js';
 import { i18n } from '@/shared/i18n';
 import { BackButton } from '@/shared/ui/back-button';
 import { Button } from '@/shared/ui/button';
+import { Dropdown } from '@/shared/ui/dropdown';
 import { FileInput } from '@/shared/ui/file-input';
 import { Icon } from '@/shared/ui/icon';
 import { Tabs } from '@/shared/ui/tabs';
 
-import { LANGUAGE_TABS } from '../config/interviewPrepConfig';
+import { LANGUAGE_OPTIONS } from '../config/interviewPrepConfig';
 import { InterviewPrepProps } from '../types/InterviewPrepProps';
 import { interviewPrepStyles } from './InterviewPrep.styles';
 
@@ -18,24 +19,34 @@ export function InterviewPrep(props: InterviewPrepProps) {
     <div class={styles.root()}>
       <header class={styles.header()}>
         <BackButton onClick={props.onBack} />
-        <div>
-          <h1 class={styles.title()}>{i18n.t('live.prep.title')}</h1>
-          <p class={styles.subtitle()}>{i18n.t('live.prep.subtitle')}</p>
-        </div>
+        <h1 class={styles.title()}>{i18n.t('live.new')}</h1>
       </header>
       <section class={styles.card()}>
+        <div class={styles.modes()} role="radiogroup">
+          <For each={props.modeOptions}>
+            {(option) => (
+              <button
+                class={styles.mode({ selected: props.mode === option.value })}
+                type="button"
+                role="radio"
+                aria-checked={props.mode === option.value}
+                onClick={() => props.onSelectMode(option.value)}
+              >
+                <Icon name={option.icon} size={20} />
+                <span class={styles.modeTitle()}>{option.title}</span>
+                <span class={styles.modeDescription()}>
+                  {option.description}
+                </span>
+              </button>
+            )}
+          </For>
+        </div>
         <span class={styles.label()}>{i18n.t('live.prep.resume')}</span>
         <FileInput
           label={props.resumeLabel}
           accept="application/pdf"
           isFilled={props.hasResume}
           onSelect={props.onResumeSelected}
-        />
-        <span class={styles.label()}>{i18n.t('live.prep.language')}</span>
-        <Tabs
-          tabs={LANGUAGE_TABS}
-          activeTab={props.language}
-          onSelect={props.onSelectLanguage}
         />
         <span class={styles.label()}>{i18n.t('live.prep.vacancy')}</span>
         <textarea
@@ -45,9 +56,29 @@ export function InterviewPrep(props: InterviewPrepProps) {
           onInput={(event) => props.onVacancyInput(event.currentTarget.value)}
         />
         <div class={styles.actions()}>
+          <Dropdown
+            options={LANGUAGE_OPTIONS}
+            selected={props.language}
+            onSelect={props.onSelectLanguage}
+            triggerClass={styles.language()}
+            panelClass={styles.languagePanel()}
+            trigger={() => (
+              <span
+                class={styles.languageValue()}
+                title={i18n.t('live.prep.language')}
+              >
+                {props.languageLabel}
+                <Icon
+                  class={styles.languageIcon()}
+                  name="common:chevron-right"
+                  size={14}
+                />
+              </span>
+            )}
+          />
           <Button disabled={!props.canPrepare} onClick={props.onPrepare}>
             <Icon name="common:sparkles" size={16} />
-            {i18n.t('live.prep.prepare')}
+            {props.prepareLabel}
           </Button>
         </div>
       </section>

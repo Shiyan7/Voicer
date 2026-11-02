@@ -64,6 +64,11 @@ enum InterviewLanguage {
   RU
 }
 
+enum InterviewMode {
+  MOCK
+  REAL
+}
+
 type InterviewRecommendationsOutput {
   emphasize: [String!]!
   likelyQuestions: [String!]!
@@ -76,6 +81,7 @@ type InterviewSessionOutput {
   id: ID!
   language: InterviewLanguage!
   meetingId: ID
+  mode: InterviewMode!
   recommendations: InterviewRecommendationsOutput!
   recordingUrl: String
   title: String
@@ -89,6 +95,7 @@ enum InterviewSessionStatus {
 input InterviewSessionsPageInput {
   from: DateTime
   limit: Int! = 10
+  mode: InterviewMode
   page: Int! = 1
   sort: InterviewSessionsSort! = DATE_DESC
   status: InterviewSessionStatus
@@ -177,7 +184,7 @@ type MeetingsStatsOutput {
 type Mutation {
   apiTokenCreate(name: String!): ApiTokenCreatedOutput!
   apiTokenRevoke(id: ID!): Boolean!
-  createInterviewSession(language: InterviewLanguage! = RU, resume: Upload!, vacancy: String!): InterviewSessionOutput!
+  createInterviewSession(language: InterviewLanguage! = RU, mode: InterviewMode! = REAL, resume: Upload!, vacancy: String!): InterviewSessionOutput!
   deleteInterviewSession(id: ID!): InterviewSessionOutput!
   finishInterviewSession(id: ID!): InterviewSessionOutput!
   interviewAskScreenshot(image: Upload!, sessionId: ID!): ID!

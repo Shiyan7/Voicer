@@ -1,5 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { DatedPageInput } from '../common/listing/dated-page.input';
+import { InterviewMode } from './interview-mode.enum';
 import { InterviewSessionStatus } from './interview-session-status.enum';
 import { InterviewSessionsSort } from './interview-sessions-sort.enum';
 
@@ -12,4 +13,7 @@ export class InterviewSessionsPageInput extends DatedPageInput {
 
   @Field(() => InterviewSessionStatus, { nullable: true })
   status?: InterviewSessionStatus | null;
+
+  @Field(() => InterviewMode, { nullable: true })
+  mode?: InterviewMode | null;
 }

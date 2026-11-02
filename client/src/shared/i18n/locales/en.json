@@ -53,7 +53,7 @@
     "expand": "Expand sidebar",
     "shared": "Shared with me",
     "stats": "Statistics",
-    "live": "Live interview"
+    "live": "Interviews"
   },
   "pagination": {
     "prev": "Prev",
@@ -288,8 +288,6 @@
     "empty": "No interviews yet",
     "unfinished": "Unfinished",
     "prep": {
-      "title": "Interview prep",
-      "subtitle": "Upload your resume and the job description to get tailored recommendations",
       "resume": "Resume",
       "resume_placeholder": "Choose a PDF file",
       "language": "Interview language",
@@ -303,7 +301,19 @@
         "questions": "Likely questions",
         "emphasis": "What to emphasize"
       },
-      "error": "Could not prepare. Check the resume and try again."
+      "error": "Could not prepare. Check the resume and try again.",
+      "start_mock": "Start practice",
+      "prepare_real": "Prepare for the call",
+      "modes": {
+        "mock": {
+          "title": "Practice",
+          "description": "AI asks questions, then gives a review"
+        },
+        "real": {
+          "title": "On a real call",
+          "description": "AI listens to the call and suggests answers"
+        }
+      }
     },
     "session": {
       "status": {
@@ -319,7 +329,8 @@
       "show_details": "Show details",
       "hide_details": "Hide details",
       "screenshot_question": "Coding task from screenshot",
-      "scroll_down": "Scroll down"
+      "scroll_down": "Scroll down",
+      "mock_placeholder": "The AI conversation is coming in the next stage"
     },
     "status_filter": {
       "title": "Status",
@@ -333,6 +344,12 @@
       "success": "Interview deleted",
       "error": "Couldn’t delete the interview",
       "menu": "Delete interview"
+    },
+    "mode_filter": {
+      "title": "Type",
+      "all": "All types",
+      "real": "Real",
+      "mock": "Practice"
     }
   },
   "filters": {

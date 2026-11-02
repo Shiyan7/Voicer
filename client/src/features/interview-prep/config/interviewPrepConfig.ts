@@ -3,7 +3,7 @@ import {
   type InterviewRecommendationsOutput,
 } from '@schema';
 
-import type { Tab } from '@/shared/ui/tabs';
+import { DropdownOption } from '@/shared/ui/dropdown';
 
 export const PREP_SECTIONS = {
   topics: 'topics',
@@ -14,7 +14,9 @@ export const PREP_SECTIONS = {
   Exclude<keyof InterviewRecommendationsOutput, '__typename'>
 >;
 
-export const LANGUAGE_TABS: Tab<InterviewLanguage>[] = [
-  { label: 'RU', value: InterviewLanguage.Ru },
-  { label: 'EN', value: InterviewLanguage.En },
+export const LANGUAGE_OPTIONS: DropdownOption<InterviewLanguage>[] = [
+  { label: 'Русский', value: InterviewLanguage.Ru },
+  { label: 'English', value: InterviewLanguage.En },
 ];
+
+export const PREP_MODE_STORAGE_KEY = 'interview-prep-mode';

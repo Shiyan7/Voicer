@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { InterviewLanguage } from './interview-language.enum';
+import { InterviewMode } from './interview-mode.enum';
 import { InterviewRecommendationsOutput } from './interview-recommendations.output';
 
 @ObjectType()
@@ -12,6 +13,9 @@ export class InterviewSessionOutput {
 
   @Field(() => InterviewLanguage)
   language: InterviewLanguage;
+
+  @Field(() => InterviewMode)
+  mode: InterviewMode;
 
   @Field(() => InterviewRecommendationsOutput)
   recommendations: InterviewRecommendationsOutput;

@@ -1,16 +1,23 @@
 import {
   InterviewLanguage,
+  InterviewMode,
   type InterviewRecommendationsOutput,
 } from '@schema';
 import { useNavigate } from '@solidjs/router';
-import { createSignal } from 'solid-js';
+import { createSignal, onMount } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
 import { paths } from '@/shared/router';
+import { storage } from '@/shared/storage';
 import type { Tab } from '@/shared/ui/tabs';
 
 import { createInterviewSessionMutation } from '../api/createInterviewSessionMutation';
-import { PREP_SECTIONS } from '../config/interviewPrepConfig';
+import {
+  LANGUAGE_OPTIONS,
+  PREP_MODE_STORAGE_KEY,
+  PREP_SECTIONS,
+} from '../config/interviewPrepConfig';
+import { getModeOptions } from '../lib/getModeOptions';
 import { PrepSectionKey } from '../types/PrepSectionKey';
 
 export function useInterviewPrep() {
@@ -18,6 +25,7 @@ export function useInterviewPrep() {
   const [resume, setResume] = createSignal<File>();
   const [vacancy, setVacancy] = createSignal('');
   const [language, setLanguage] = createSignal(InterviewLanguage.Ru);
+  const [mode, setMode] = createSignal<InterviewMode>();
   const [recommendations, setRecommendations] =
     createSignal<InterviewRecommendationsOutput>();
   const [activeSection, setActiveSection] =
@@ -34,7 +42,16 @@ export function useInterviewPrep() {
   const isPreparing = () => createState.fetching;
 
   const canPrepare = () =>
-    !isPreparing() && hasResume() && vacancy().trim().length > 0;
+    !isPreparing() && !!mode() && hasResume() && vacancy().trim().length > 0;
+
+  const languageLabel = () =>
+    LANGUAGE_OPTIONS.find((option) => option.value === language())?.label ?? '';
+
+  const prepareLabel = () => {
+    if (mode() === InterviewMode.Mock) return i18n.t('live.prep.start_mock');
+    if (mode() === InterviewMode.Real) return i18n.t('live.prep.prepare_real');
+    return i18n.t('live.prep.prepare');
+  };
 
   const sectionTabs = (): Tab<PrepSectionKey>[] =>
     recommendations()
@@ -62,6 +79,19 @@ export function useInterviewPrep() {
     setHasError(false);
   };
 
+  const selectMode = (value: InterviewMode) => {
+    reset();
+    setMode(value);
+    void storage.setItem(PREP_MODE_STORAGE_KEY, value);
+  };
+
+  const restoreMode = async () => {
+    const saved = await storage.getItem(PREP_MODE_STORAGE_KEY);
+    if (Object.values(InterviewMode).includes(saved as InterviewMode)) {
+      setMode(saved as InterviewMode);
+    }
+  };
+
   const start = () => {
     const id = sessionId();
     if (id) navigate(paths.liveSession(id));
@@ -71,28 +101,43 @@ export function useInterviewPrep() {
 
   const prepare = async () => {
     const file = resume();
-    if (!file) return;
+    const selectedMode = mode();
+    if (!file || !selectedMode) return;
     reset();
     const response = await createSession({
       resume: file,
       vacancy: vacancy().trim(),
       language: language(),
+      mode: selectedMode,
     });
     const session = response.data?.createInterviewSession;
     if (!session) {
       setHasError(true);
       return;
     }
+    if (selectedMode === InterviewMode.Mock) {
+      navigate(paths.liveSession(session.id));
+      return;
+    }
     setSessionId(session.id);
     setRecommendations(session.recommendations);
   };
+
+  onMount(() => void restoreMode());
+
+  const modeOptions = getModeOptions;
 
   return {
     resumeLabel,
     hasResume,
     vacancy,
     language,
+    languageLabel,
     setLanguage,
+    modeOptions,
+    mode,
+    selectMode,
+    prepareLabel,
     isPreparing,
     canPrepare,
     sectionTabs,

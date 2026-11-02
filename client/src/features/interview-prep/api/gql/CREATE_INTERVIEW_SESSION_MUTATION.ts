@@ -5,11 +5,13 @@ export const CREATE_INTERVIEW_SESSION_MUTATION = gql`
     $resume: Upload!
     $vacancy: String!
     $language: InterviewLanguage!
+    $mode: InterviewMode!
   ) {
     createInterviewSession(
       resume: $resume
       vacancy: $vacancy
       language: $language
+      mode: $mode
     ) {
       id
       recommendations {

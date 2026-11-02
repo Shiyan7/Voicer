@@ -47,6 +47,14 @@ export function InterviewsOrchestrator() {
               onSelect={vm.filters.setStatus}
             />
             <SelectFilter
+              icon="common:adjustments"
+              title={i18n.t('live.mode_filter.title')}
+              options={vm.modeOptions()}
+              selected={vm.filters.mode()}
+              isActive={vm.filters.hasModeFilter()}
+              onSelect={vm.filters.setMode}
+            />
+            <SelectFilter
               icon="common:sort"
               title={i18n.t('filters.sort.title')}
               options={vm.sortOptions()}
@@ -67,7 +75,7 @@ export function InterviewsOrchestrator() {
               {(row) => (
                 <ListRow
                   href={row.href}
-                  icon="common:microphone"
+                  icon={row.icon}
                   title={row.title}
                   meta={row.status}
                   dateLabel={row.dateLabel}

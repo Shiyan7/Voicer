@@ -82,6 +82,11 @@ export enum InterviewLanguage {
   Ru = 'RU',
 }
 
+export enum InterviewMode {
+  Mock = 'MOCK',
+  Real = 'REAL',
+}
+
 export type InterviewRecommendationsOutput = {
   __typename?: 'InterviewRecommendationsOutput';
   emphasize: Array<Scalars['String']['output']>;
@@ -96,6 +101,7 @@ export type InterviewSessionOutput = {
   id: Scalars['ID']['output'];
   language: InterviewLanguage;
   meetingId?: Maybe<Scalars['ID']['output']>;
+  mode: InterviewMode;
   recommendations: InterviewRecommendationsOutput;
   recordingUrl?: Maybe<Scalars['String']['output']>;
   title?: Maybe<Scalars['String']['output']>;
@@ -109,6 +115,7 @@ export enum InterviewSessionStatus {
 export type InterviewSessionsPageInput = {
   from?: InputMaybe<Scalars['DateTime']['input']>;
   limit?: Scalars['Int']['input'];
+  mode?: InputMaybe<InterviewMode>;
   page?: Scalars['Int']['input'];
   sort?: InterviewSessionsSort;
   status?: InputMaybe<InterviewSessionStatus>;
@@ -231,6 +238,7 @@ export type MutationApiTokenRevokeArgs = {
 
 export type MutationCreateInterviewSessionArgs = {
   language?: InterviewLanguage;
+  mode?: InterviewMode;
   resume: Scalars['Upload']['input'];
   vacancy: Scalars['String']['input'];
 };

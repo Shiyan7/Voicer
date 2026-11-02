@@ -1,7 +1,8 @@
-import type { InterviewLanguage } from '@schema';
+import type { InterviewLanguage, InterviewMode } from '@schema';
 
 import type { Tab } from '@/shared/ui/tabs';
 
+import { PrepModeOption } from './PrepModeOption';
 import { PrepSectionKey } from './PrepSectionKey';
 
 export interface InterviewPrepProps {
@@ -9,7 +10,12 @@ export interface InterviewPrepProps {
   hasResume: boolean;
   vacancy: string;
   language: InterviewLanguage;
+  languageLabel: string;
   onSelectLanguage: (language: InterviewLanguage) => void;
+  modeOptions: PrepModeOption[];
+  mode: InterviewMode | undefined;
+  onSelectMode: (mode: InterviewMode) => void;
+  prepareLabel: string;
   isPreparing: boolean;
   canPrepare: boolean;
   isReady: boolean;

@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { UserEntity } from '../users/user.entity';
 import { InterviewLanguage } from './interview-language.enum';
+import { InterviewMode } from './interview-mode.enum';
 import { InterviewRecommendations } from './interview.types';
 
 @Entity({ name: 'interview_sessions' })
@@ -38,6 +39,9 @@ export class InterviewSessionEntity {
 
   @Column({ type: 'varchar', default: InterviewLanguage.RU })
   language: InterviewLanguage;
+
+  @Column({ type: 'varchar', default: InterviewMode.REAL })
+  mode: InterviewMode;
 
   @Column({ type: 'jsonb' })
   recommendations: InterviewRecommendations;

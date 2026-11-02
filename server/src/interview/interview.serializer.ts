@@ -12,6 +12,7 @@ export function toInterviewSessionOutput(
     id: session.id,
     title: session.title,
     language: session.language,
+    mode: session.mode,
     recommendations: session.recommendations,
     finishedAt: session.finishedAt,
     meetingId: recording?.id ?? null,

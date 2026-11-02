@@ -1,6 +1,8 @@
 import { Show } from 'solid-js';
 
 import { MeetingPlayer } from '@/entities/meeting-player';
+import { i18n } from '@/shared/i18n';
+import { BackButton } from '@/shared/ui/back-button';
 import { PageFade } from '@/shared/ui/page-fade';
 
 import { liveInterviewStyles } from './LiveInterview.styles';
@@ -16,7 +18,13 @@ export function LiveInterviewOrchestrator() {
   return (
     <PageFade>
       <div class={styles.root()}>
-        <Show when={vm.isLoaded()}>
+        <Show when={vm.isMock()}>
+          <div class={styles.mockPlaceholder()}>
+            <BackButton onClick={vm.closeReview} />
+            <p>{i18n.t('live.session.mock_placeholder')}</p>
+          </div>
+        </Show>
+        <Show when={vm.isLoaded() && !vm.isMock()}>
           <LiveSession
             header={
               <Show

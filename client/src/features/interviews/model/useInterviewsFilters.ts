@@ -5,7 +5,11 @@ import { useFilterParams } from '@/shared/hooks/useFilterParams';
 import { useOptionFilter } from '@/shared/hooks/useOptionFilter';
 import { useSortFilter } from '@/shared/hooks/useSortFilter';
 
-import { SORT_VALUES, STATUS_VALUES } from '../config/interviewsConfig';
+import {
+  MODE_VALUES,
+  SORT_VALUES,
+  STATUS_VALUES,
+} from '../config/interviewsConfig';
 
 export const useInterviewsFilters = () => {
   const params = useFilterParams();
@@ -16,23 +20,34 @@ export const useInterviewsFilters = () => {
   );
   const dateFilter = useDateRangeFilter(params);
   const statusFilter = useOptionFilter(params, 'status', STATUS_VALUES);
+  const modeFilter = useOptionFilter(params, 'mode', MODE_VALUES);
 
   const hasActiveFilters = () =>
-    statusFilter.isActive() || dateFilter.hasDateFilter();
+    statusFilter.isActive() ||
+    modeFilter.isActive() ||
+    dateFilter.hasDateFilter();
 
   const resetFilters = () =>
-    params.clear(statusFilter.paramKey, ...dateFilter.paramKeys);
+    params.clear(
+      statusFilter.paramKey,
+      modeFilter.paramKey,
+      ...dateFilter.paramKeys,
+    );
 
   return {
     sort,
     status: statusFilter.value,
     statusInput: statusFilter.activeValue,
+    mode: modeFilter.value,
+    modeInput: modeFilter.activeValue,
     dateRange: dateFilter.dateRange,
     isCustomSort,
     hasStatusFilter: statusFilter.isActive,
+    hasModeFilter: modeFilter.isActive,
     hasActiveFilters,
     setSort,
     setStatus: statusFilter.set,
+    setMode: modeFilter.set,
     setDateRange: dateFilter.setDateRange,
     resetFilters,
   };

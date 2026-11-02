@@ -6,6 +6,7 @@ export const INTERVIEW_SESSIONS_PAGE_QUERY = gql`
       items {
         id
         title
+        mode
         finishedAt
         createdAt
       }

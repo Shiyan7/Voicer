@@ -13,7 +13,12 @@ export function InterviewPrepOrchestrator() {
         hasResume={vm.hasResume()}
         vacancy={vm.vacancy()}
         language={vm.language()}
+        languageLabel={vm.languageLabel()}
         onSelectLanguage={vm.setLanguage}
+        modeOptions={vm.modeOptions()}
+        mode={vm.mode()}
+        onSelectMode={vm.selectMode}
+        prepareLabel={vm.prepareLabel()}
         isPreparing={vm.isPreparing()}
         canPrepare={vm.canPrepare()}
         isReady={vm.isReady()}

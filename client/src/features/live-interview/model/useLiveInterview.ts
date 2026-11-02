@@ -1,3 +1,4 @@
+import { InterviewMode } from '@schema';
 import { useNavigate, useParams } from '@solidjs/router';
 import { createEffect, createSignal, on } from 'solid-js';
 
@@ -30,6 +31,8 @@ export function useLiveInterview() {
   const sessionId = () => params.id;
 
   const isLoaded = () => !!details();
+
+  const isMock = () => details()?.mode === InterviewMode.Mock;
 
   const isReview = () => !!details()?.finishedAt;
 
@@ -71,6 +74,7 @@ export function useLiveInterview() {
     }
     const savedTurns = turns.map(toCompletedTurn);
     setDetails(found);
+    if (found.mode === InterviewMode.Mock) return;
     if (found.finishedAt) showReview(found, savedTurns);
     else beginSession(id, savedTurns);
   };
@@ -119,6 +123,7 @@ export function useLiveInterview() {
     session,
     sessionId,
     isLoaded,
+    isMock,
     isReview,
     reviewTitle,
     emptyLabel,
