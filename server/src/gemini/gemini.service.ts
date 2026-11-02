@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiError, Content, GoogleGenAI } from '@google/genai';
-import { LlmTextModel } from '../llm/llm-text-model';
 import { LlmTurn } from '../llm/llm-turn';
 
 const FREE_TIER_MODELS = [
@@ -15,7 +14,7 @@ const FREE_TIER_MODELS = [
 const RETRYABLE_STATUSES = [404, 429, 503];
 
 @Injectable()
-export class GeminiService implements LlmTextModel {
+export class GeminiService {
   private readonly logger = new Logger(GeminiService.name);
   private readonly ai: GoogleGenAI;
 

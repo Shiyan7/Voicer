@@ -10,8 +10,6 @@ import { ClaudeService } from '../claude/claude.service';
 import { FileUpload } from '../file/file-upload';
 import { readUpload } from '../file/read-upload';
 import { GeminiService } from '../gemini/gemini.service';
-import { LlmTextModel } from '../llm/llm-text-model';
-import { LlmTurn } from '../llm/llm-turn';
 import { PUB_SUB } from '../pubsub/pubsub.module';
 import { topic } from '../pubsub/topic';
 import { InterviewAnswerOutput } from './interview-answer.output';
@@ -35,10 +33,15 @@ interface InterviewAnswerPayload {
   interviewAnswer: InterviewAnswerOutput;
 }
 
+type AnswerGenerator = (
+  instruction: string,
+  onText: (text: string) => Promise<void>,
+  signal: AbortSignal,
+) => Promise<string>;
+
 interface AnswerRequest {
   question: string;
-  turn: LlmTurn;
-  model: LlmTextModel;
+  generate: AnswerGenerator;
 }
 
 interface AnswerGate {
@@ -108,12 +111,21 @@ export class InterviewAnswersService {
     const image = await this.readScreenshot(upload);
     return this.start(session, {
       question: SCREENSHOT_QUESTION_LABEL,
-      turn: {
-        role: 'user',
-        text: SCREENSHOT_TASK_PROMPT,
-        images: [{ mimeType: upload.mimetype, data: image.toString('base64') }],
-      },
-      model: this.gemini,
+      generate: (instruction, onText, signal) =>
+        this.gemini.streamText(
+          instruction,
+          [
+            {
+              role: 'user',
+              text: SCREENSHOT_TASK_PROMPT,
+              images: [
+                { mimeType: upload.mimetype, data: image.toString('base64') },
+              ],
+            },
+          ],
+          onText,
+          signal,
+        ),
     });
   }
 
@@ -143,8 +155,8 @@ export class InterviewAnswersService {
       session,
       request: {
         question: text,
-        turn: { role: 'user', text },
-        model: this.claude,
+        generate: (instruction, onText, signal) =>
+          this.claude.streamText(instruction, text, onText, signal),
       },
     };
   }
@@ -216,9 +228,8 @@ export class InterviewAnswersService {
     let text = '';
     const untrack = this.track(session.id, controller);
     try {
-      await request.model.streamText(
+      await request.generate(
         await this.buildInstruction(session, !!gate),
-        [request.turn],
         async (partial) => {
           const isPublished = this.shouldPublish(
             session.id,

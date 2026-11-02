@@ -3,8 +3,6 @@ import { ConfigService } from '@nestjs/config';
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
 import { tmpdir } from 'os';
 import { createInterface } from 'readline';
-import { LlmTextModel } from '../llm/llm-text-model';
-import { LlmTurn } from '../llm/llm-turn';
 import { ClaudeJsonResult, ClaudeStreamLine } from './claude.types';
 
 const DEFAULT_CLAUDE_BIN = 'claude';
@@ -18,7 +16,7 @@ interface ClaudeRun {
 }
 
 @Injectable()
-export class ClaudeService implements LlmTextModel {
+export class ClaudeService {
   private readonly bin: string;
   private readonly model: string;
 
@@ -30,7 +28,7 @@ export class ClaudeService implements LlmTextModel {
 
   async streamText(
     systemInstruction: string,
-    turns: LlmTurn[],
+    prompt: string,
     onText: (text: string) => Promise<void>,
     signal?: AbortSignal,
   ): Promise<string> {
@@ -44,7 +42,7 @@ export class ClaudeService implements LlmTextModel {
       ],
       signal,
     );
-    child.stdin.end(this.toPrompt(turns));
+    child.stdin.end(prompt);
 
     const [text] = await Promise.all([
       this.readStream(child.stdout, onText),
@@ -94,14 +92,6 @@ export class ClaudeService implements LlmTextModel {
       });
     });
     return { child, finished };
-  }
-
-  private toPrompt(turns: LlmTurn[]): string {
-    if (turns.some((turn) => turn.images?.length)) {
-      throw new Error('ClaudeService does not support images');
-    }
-    if (turns.length === 1) return turns[0].text;
-    return turns.map((turn) => `${turn.role}: ${turn.text}`).join('\n\n');
   }
 
   private buildArgs(systemInstruction: string): string[] {
