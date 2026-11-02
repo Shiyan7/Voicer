@@ -13,6 +13,7 @@ import { readUpload } from '../file/read-upload';
 import { GeminiService } from '../gemini/gemini.service';
 import { PUB_SUB } from '../pubsub/pubsub.module';
 import { topic } from '../pubsub/topic';
+import { AnswerRuns } from './answer-runs';
 import { InterviewAnswerOutput } from './interview-answer.output';
 import { InterviewSessionEntity } from './interview-session.entity';
 import { InterviewSessionsService } from './interview-sessions.service';
@@ -47,6 +48,8 @@ interface AnswerRequest {
 
 interface AnswerGate {
   order: number;
+  answerId: string;
+  controller: AbortController;
   isOpen: boolean;
   settle: (answerId: string | null) => void;
 }
@@ -54,10 +57,7 @@ interface AnswerGate {
 @Injectable()
 export class InterviewAnswersService {
   private readonly logger = new Logger(InterviewAnswersService.name);
-  private readonly inFlight = new Map<string, AbortController>();
-  private readonly claimedOrders = new Map<string, number>();
-  private readonly running = new Map<string, Set<AbortController>>();
-  private lastOrder = 0;
+  private readonly runs = new AnswerRuns();
 
   constructor(
     private readonly sessions: InterviewSessionsService,
@@ -89,17 +89,17 @@ export class InterviewAnswersService {
       sessionId,
       question,
     );
-    this.lastOrder += 1;
-    const order = this.lastOrder;
+    const answer = this.createAnswer(request.question);
+    const controller = new AbortController();
     return new Promise((settle) => {
-      const gate: AnswerGate = { order, isOpen: false, settle };
-      void this.stream(
-        session,
-        this.createAnswer(request.question),
-        request,
-        new AbortController(),
-        gate,
-      );
+      const gate: AnswerGate = {
+        order: this.runs.nextOrder(),
+        answerId: answer.answerId,
+        controller,
+        isOpen: false,
+        settle,
+      };
+      void this.stream(session, answer, request, controller, gate);
     });
   }
 
@@ -141,8 +141,7 @@ export class InterviewAnswersService {
   }
 
   release(sessionId: string): void {
-    this.running.get(sessionId)?.forEach((controller) => controller.abort());
-    this.claimedOrders.delete(sessionId);
+    this.runs.release(sessionId);
   }
 
   private async prepareQuestion(
@@ -166,16 +165,6 @@ export class InterviewAnswersService {
     };
   }
 
-  private track(sessionId: string, controller: AbortController): () => void {
-    const controllers = this.running.get(sessionId) ?? new Set();
-    controllers.add(controller);
-    this.running.set(sessionId, controllers);
-    return () => {
-      controllers.delete(controller);
-      if (!controllers.size) this.running.delete(sessionId);
-    };
-  }
-
   private createAnswer(question: string): InterviewAnswerOutput {
     return { answerId: randomUUID(), question, text: '', done: false };
   }
@@ -185,41 +174,29 @@ export class InterviewAnswersService {
     request: AnswerRequest,
   ): string {
     const controller = new AbortController();
-    this.lastOrder += 1;
-    this.claim(session.id, controller, this.lastOrder);
+    this.runs.claim(session.id, controller, this.runs.nextOrder());
     const answer = this.createAnswer(request.question);
     void this.stream(session, answer, request, controller);
     return answer.answerId;
   }
 
-  private claim(
+  private tryOpenGate(
     sessionId: string,
-    controller: AbortController,
-    order: number,
-  ): void {
-    this.inFlight.get(sessionId)?.abort();
-    this.inFlight.set(sessionId, controller);
-    this.claimedOrders.set(sessionId, order);
-  }
-
-  private shouldPublish(
-    sessionId: string,
-    answer: InterviewAnswerOutput,
+    gate: AnswerGate,
     partial: string,
-    controller: AbortController,
-    gate?: AnswerGate,
   ): boolean {
-    if (!gate || gate.isOpen) return true;
     const head = partial.trimStart();
     if (SKIP_ANSWER.startsWith(head)) return false;
-    const isStale = gate.order < (this.claimedOrders.get(sessionId) ?? 0);
-    if (head.startsWith(SKIP_ANSWER) || isStale) {
-      controller.abort();
+    if (
+      head.startsWith(SKIP_ANSWER) ||
+      this.runs.isStale(sessionId, gate.order)
+    ) {
+      gate.controller.abort();
       return false;
     }
     gate.isOpen = true;
-    this.claim(sessionId, controller, gate.order);
-    gate.settle(answer.answerId);
+    this.runs.claim(sessionId, gate.controller, gate.order);
+    gate.settle(gate.answerId);
     return true;
   }
 
@@ -231,19 +208,16 @@ export class InterviewAnswersService {
     gate?: AnswerGate,
   ): Promise<void> {
     let text = '';
-    const untrack = this.track(session.id, controller);
+    const untrack = this.runs.track(session.id, controller);
     try {
       await request.generate(
         await this.buildInstruction(session, !!gate),
         async (partial) => {
-          const isPublished = this.shouldPublish(
-            session.id,
-            answer,
-            partial,
-            controller,
-            gate,
-          );
-          if (!isPublished) return;
+          const isBlocked =
+            gate &&
+            !gate.isOpen &&
+            !this.tryOpenGate(session.id, gate, partial);
+          if (isBlocked) return;
           text = partial;
           await this.publish(session.id, { ...answer, text });
         },
@@ -267,9 +241,7 @@ export class InterviewAnswersService {
     answer: InterviewAnswerOutput,
     controller: AbortController,
   ): Promise<void> {
-    if (this.inFlight.get(sessionId) === controller) {
-      this.inFlight.delete(sessionId);
-    }
+    this.runs.complete(sessionId, controller);
     await this.publish(sessionId, answer);
     if (!controller.signal.aborted && answer.text.trim()) {
       await this.sessions.addTurn(sessionId, answer.question, answer.text);

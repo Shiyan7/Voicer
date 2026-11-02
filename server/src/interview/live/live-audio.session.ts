@@ -4,13 +4,10 @@ import { RawData, WebSocket } from 'ws';
 import { describeError } from '../../common/describe-error';
 import { InterviewAnswersService } from '../interview-answers.service';
 import { hasMeaningfulSpeech } from './has-meaningful-speech';
-import {
-  KEEP_ALIVE_INTERVAL_MS,
-  MAX_REPLY_LENGTH,
-  REPLY_GAP_MS,
-  REPLY_SETTLE_MS,
-} from './live-audio.config';
+import { joinText } from './join-text';
+import { KEEP_ALIVE_INTERVAL_MS, REPLY_SETTLE_MS } from './live-audio.config';
 import { LiveClientMessage, LiveServerMessage } from './live-audio.types';
+import { ReplyBuffer } from './reply-buffer';
 
 type DeepgramSocket = Awaited<
   ReturnType<DeepgramClient['listen']['v1']['connect']>
@@ -29,12 +26,6 @@ interface LiveAudioSessionDeps {
   answers: InterviewAnswersService;
 }
 
-const joinText = (...parts: string[]): string =>
-  parts
-    .map((part) => part.trim())
-    .filter(Boolean)
-    .join(' ');
-
 export class LiveAudioSession {
   private readonly logger = new Logger(LiveAudioSession.name);
   private readonly pending: Buffer[] = [];
@@ -43,9 +34,8 @@ export class LiveAudioSession {
   private utteranceId = 1;
   private committed = '';
   private interim = '';
-  private lastUtterance = { id: 0, text: '' };
-  private reply = '';
-  private replyUpdatedAt = 0;
+  private lastReply = { utteranceId: 0, text: '' };
+  private readonly reply = new ReplyBuffer();
   private settleTimer: ReturnType<typeof setTimeout> | null = null;
   private isClosed = false;
 
@@ -167,25 +157,27 @@ export class LiveAudioSession {
     if (speechFinal) this.finishUtterance();
   }
 
-  private finishUtterance(force = false): string {
+  private finishUtterance(): void {
+    if (!this.closeUtterance()) return;
+    if (hasMeaningfulSpeech(this.lastReply.text)) this.scheduleAnswer();
+  }
+
+  private closeUtterance(): boolean {
     const text = joinText(this.committed, this.interim);
-    if (!text) return '';
-    const id = this.utteranceId;
-    this.send({ type: 'utteranceEnd', utteranceId: id });
+    if (!text) return false;
+    const utteranceId = this.utteranceId;
+    this.send({ type: 'utteranceEnd', utteranceId });
     this.committed = '';
     this.interim = '';
     this.utteranceId += 1;
-    const reply = this.appendToReply(text);
-    this.lastUtterance = { id, text: reply };
-    if (force) this.answerReply(true);
-    else if (hasMeaningfulSpeech(reply)) this.scheduleAnswer();
-    return text;
+    this.lastReply = { utteranceId, text: this.reply.append(text) };
+    return true;
   }
 
   private scheduleAnswer(): void {
     this.cancelSettle();
     this.settleTimer = setTimeout(
-      () => this.answerReply(false),
+      () => this.answerIfExpected(),
       REPLY_SETTLE_MS,
     );
   }
@@ -195,47 +187,39 @@ export class LiveAudioSession {
     this.settleTimer = null;
   }
 
-  private answerReply(force: boolean): void {
+  private takeReply(): void {
     this.cancelSettle();
-    const { id, text } = this.lastUtterance;
-    this.reply = '';
-    void this.answer(id, text, force);
+    this.reply.clear();
   }
 
-  private restoreReply(text: string): void {
-    this.reply = joinText(text, this.reply).slice(-MAX_REPLY_LENGTH);
-    this.replyUpdatedAt = Date.now();
-  }
-
-  private appendToReply(text: string): string {
-    const now = Date.now();
-    const previous = now - this.replyUpdatedAt > REPLY_GAP_MS ? '' : this.reply;
-    this.reply = joinText(previous, text).slice(-MAX_REPLY_LENGTH);
-    this.replyUpdatedAt = now;
-    return this.reply;
+  private answerIfExpected(): void {
+    this.takeReply();
+    const { answers, userId, sessionId } = this.deps;
+    const { utteranceId, text } = this.lastReply;
+    void this.publishAnswer(utteranceId, async () => {
+      const answerId = await answers.askIfExpected(userId, sessionId, text);
+      if (!answerId) this.reply.restore(text);
+      return answerId;
+    });
   }
 
   private answerNow(): void {
-    if (this.finishUtterance(true)) return;
-    if (!this.lastUtterance.text) return;
-    void this.answer(this.lastUtterance.id, this.lastUtterance.text, true);
+    if (this.closeUtterance()) this.takeReply();
+    const { utteranceId, text } = this.lastReply;
+    if (!text) return;
+    const { answers, userId, sessionId } = this.deps;
+    void this.publishAnswer(utteranceId, () =>
+      answers.ask(userId, sessionId, text),
+    );
   }
 
-  private async answer(
+  private async publishAnswer(
     utteranceId: number,
-    question: string,
-    force: boolean,
+    ask: () => Promise<string | null>,
   ): Promise<void> {
-    const { answers, userId, sessionId } = this.deps;
     try {
-      const answerId = force
-        ? await answers.ask(userId, sessionId, question)
-        : await answers.askIfExpected(userId, sessionId, question);
-      if (!answerId) {
-        this.restoreReply(question);
-        return;
-      }
-      this.send({ type: 'answerStarted', utteranceId, answerId });
+      const answerId = await ask();
+      if (answerId) this.send({ type: 'answerStarted', utteranceId, answerId });
     } catch (error) {
       this.logger.warn(`Answer failed: ${describeError(error)}`);
     }
