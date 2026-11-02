@@ -73,12 +73,11 @@ export class InterviewResolver {
   }
 
   @Mutation(() => InterviewSessionOutput)
-  updateInterviewSession(
+  finishInterviewSession(
     @CurrentUser() user: UserEntity,
     @Args('id', { type: () => ID }) id: string,
-    @Args('finished', { nullable: true }) finished?: boolean,
   ): Promise<InterviewSessionOutput> {
-    return this.sessions.update(user.id, id, finished);
+    return this.sessions.finish(user.id, id);
   }
 
   @Mutation(() => ID)

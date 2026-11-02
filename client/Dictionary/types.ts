@@ -206,6 +206,7 @@ export type Mutation = {
   apiTokenRevoke: Scalars['Boolean']['output'];
   createInterviewSession: InterviewSessionOutput;
   deleteInterviewSession: InterviewSessionOutput;
+  finishInterviewSession: InterviewSessionOutput;
   interviewAskScreenshot: Scalars['ID']['output'];
   meetingChatAsk: ChatMessageOutput;
   meetingChatClear: Scalars['Boolean']['output'];
@@ -218,7 +219,6 @@ export type Mutation = {
   signIn: AuthPayload;
   signUp: AuthPayload;
   toggleActionItem: Scalars['Boolean']['output'];
-  updateInterviewSession: InterviewSessionOutput;
 };
 
 export type MutationApiTokenCreateArgs = {
@@ -236,6 +236,10 @@ export type MutationCreateInterviewSessionArgs = {
 };
 
 export type MutationDeleteInterviewSessionArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type MutationFinishInterviewSessionArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -292,11 +296,6 @@ export type MutationSignUpArgs = {
 };
 
 export type MutationToggleActionItemArgs = {
-  id: Scalars['ID']['input'];
-};
-
-export type MutationUpdateInterviewSessionArgs = {
-  finished?: InputMaybe<Scalars['Boolean']['input']>;
   id: Scalars['ID']['input'];
 };
 

@@ -56,8 +56,7 @@ export class LiveAudioSession {
     deps.client.on('error', () => this.close());
   }
 
-  async attach(connect: () => Promise<DeepgramSocket>): Promise<void> {
-    const socket = await connect();
+  async attach(socket: DeepgramSocket): Promise<void> {
     socket.on('message', (message) => this.onDeepgramMessage(message));
     socket.on('error', (error) => this.logger.warn(error.message));
     socket.on('close', () => this.close());

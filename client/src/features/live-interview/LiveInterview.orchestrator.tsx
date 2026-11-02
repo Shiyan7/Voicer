@@ -8,14 +8,14 @@ import { useLiveInterview } from './model/useLiveInterview';
 import { ReviewActions } from './segments/review-actions';
 import { LiveSession } from './segments/session';
 
-const styles = liveInterviewStyles;
+const styles = liveInterviewStyles();
 
 export function LiveInterviewOrchestrator() {
   const vm = useLiveInterview();
 
   return (
     <PageFade>
-      <div class={styles()}>
+      <div class={styles.root()}>
         <Show when={vm.isLoaded()}>
           <LiveSession
             timerLabel={vm.session.timerLabel()}
@@ -35,7 +35,7 @@ export function LiveInterviewOrchestrator() {
                 <ReviewActions
                   sessionId={vm.sessionId()}
                   meetingId={vm.recording.meetingId()}
-                  audioUrl={vm.recording.audioUrl() || null}
+                  audioUrl={vm.recording.audioUrl()}
                   fileName={vm.reviewTitle()}
                 />
               </Show>

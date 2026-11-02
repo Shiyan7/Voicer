@@ -1,12 +1,11 @@
-import { InterviewSessionsSort, InterviewSessionStatus } from '@schema';
+import { InterviewSessionsSort } from '@schema';
 
 import { useDateRangeFilter } from '@/shared/hooks/useDateRangeFilter';
 import { useFilterParams } from '@/shared/hooks/useFilterParams';
 import { useOptionFilter } from '@/shared/hooks/useOptionFilter';
 import { useSortFilter } from '@/shared/hooks/useSortFilter';
 
-const SORT_VALUES = Object.values(InterviewSessionsSort);
-const STATUS_VALUES = Object.values(InterviewSessionStatus);
+import { SORT_VALUES, STATUS_VALUES } from '../config/interviewsConfig';
 
 export const useInterviewsFilters = () => {
   const params = useFilterParams();
@@ -18,8 +17,6 @@ export const useInterviewsFilters = () => {
   const dateFilter = useDateRangeFilter(params);
   const statusFilter = useOptionFilter(params, 'status', STATUS_VALUES);
 
-  const statusInput = () => statusFilter.value() || null;
-
   const hasActiveFilters = () =>
     statusFilter.isActive() || dateFilter.hasDateFilter();
 
@@ -29,7 +26,7 @@ export const useInterviewsFilters = () => {
   return {
     sort,
     status: statusFilter.value,
-    statusInput,
+    statusInput: statusFilter.activeValue,
     dateRange: dateFilter.dateRange,
     isCustomSort,
     hasStatusFilter: statusFilter.isActive,

@@ -15,10 +15,12 @@ export const useOptionFilter = <T extends string>(
     return current;
   };
 
+  const activeValue = () => value() || null;
+
   const isActive = () => value() !== ALL_FILTER_VALUE;
 
   const set = (next: T | typeof ALL_FILTER_VALUE) =>
     params.update({ [key]: next === ALL_FILTER_VALUE ? undefined : next });
 
-  return { value, isActive, set, paramKey: key };
+  return { value, activeValue, isActive, set, paramKey: key };
 };

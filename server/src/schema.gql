@@ -179,6 +179,7 @@ type Mutation {
   apiTokenRevoke(id: ID!): Boolean!
   createInterviewSession(language: InterviewLanguage! = RU, resume: Upload!, vacancy: String!): InterviewSessionOutput!
   deleteInterviewSession(id: ID!): InterviewSessionOutput!
+  finishInterviewSession(id: ID!): InterviewSessionOutput!
   interviewAskScreenshot(image: Upload!, sessionId: ID!): ID!
   meetingChatAsk(meetingId: ID!, question: String!): ChatMessageOutput!
   meetingChatClear(meetingId: ID!): Boolean!
@@ -191,7 +192,6 @@ type Mutation {
   signIn(input: SignInInput!): AuthPayload!
   signUp(input: SignUpInput!): AuthPayload!
   toggleActionItem(id: ID!): Boolean!
-  updateInterviewSession(finished: Boolean, id: ID!): InterviewSessionOutput!
 }
 
 type PagePaginationMetaOutput {

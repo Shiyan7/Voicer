@@ -1,4 +1,4 @@
-import { IncomingMessage } from 'http';
+import { IncomingMessage, Server } from 'http';
 import { Duplex } from 'stream';
 import {
   Injectable,
@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { DeepgramClient } from '@deepgram/sdk';
-import { Server } from 'http';
 import { WebSocket, WebSocketServer } from 'ws';
 import { AuthService } from '../../auth/auth.service';
 import { InterviewAnswersService } from '../interview-answers.service';
@@ -120,10 +119,9 @@ export class LiveAudioGateway
     });
     this.sessions.add(session);
     client.on('close', () => this.sessions.delete(session));
-    session
-      .attach(() =>
-        this.deepgram.listen.v1.connect({ ...DEEPGRAM_LIVE_OPTIONS, language }),
-      )
+    this.deepgram.listen.v1
+      .connect({ ...DEEPGRAM_LIVE_OPTIONS, language })
+      .then((socket) => session.attach(socket))
       .catch((error: unknown) => {
         this.logger.error(
           `Deepgram live connection failed for ${identity.sessionId}`,

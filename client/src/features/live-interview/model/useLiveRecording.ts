@@ -5,7 +5,7 @@ import { usePlayback } from '@/entities/meeting-player';
 
 export function useLiveRecording() {
   const [meetingId, setMeetingId] = createSignal('');
-  const [audioUrl, setAudioUrl] = createSignal('');
+  const [audioUrl, setAudioUrl] = createSignal<string | null>(null);
   const playback = usePlayback();
   const [transcriptResult] = meetingTranscriptQuery(
     () => ({ meetingId: meetingId() }),
@@ -14,7 +14,7 @@ export function useLiveRecording() {
 
   const transcript = () => transcriptResult.data?.meetingTranscript ?? [];
 
-  const show = (id: string, url: string) => {
+  const show = (id: string, url: string | null) => {
     setMeetingId(id);
     setAudioUrl(url);
   };

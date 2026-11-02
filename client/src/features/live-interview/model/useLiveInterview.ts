@@ -8,7 +8,7 @@ import { paths } from '@/shared/router';
 
 import { fetchInterviewSession } from '../api/fetchInterviewSession';
 import { fetchInterviewTurns } from '../api/fetchInterviewTurns';
-import { updateInterviewSession } from '../api/updateInterviewSession';
+import { finishInterviewSession } from '../api/finishInterviewSession';
 import { ensureRecording } from '../lib/ensureRecording';
 import { toCompletedTurn } from '../lib/toCompletedTurn';
 import { LiveSessionDetails } from '../types/LiveSessionDetails';
@@ -43,14 +43,14 @@ export function useLiveInterview() {
     session.startTimer(startedAt);
   };
 
-  const beginSession = (sessionId: string, initialTurns: LiveTurn[]) => {
-    activeSessionId = sessionId;
-    session.start(sessionId, initialTurns);
+  const beginSession = (id: string, initialTurns: LiveTurn[]) => {
+    activeSessionId = id;
+    session.start(id, initialTurns);
     void startRecording();
   };
 
   const showReview = (found: LiveSessionDetails, savedTurns: LiveTurn[]) => {
-    recording.show(found.meetingId ?? '', found.recordingUrl ?? '');
+    recording.show(found.meetingId ?? '', found.recordingUrl ?? null);
     session.show(savedTurns);
   };
 
@@ -84,20 +84,20 @@ export function useLiveInterview() {
   };
 
   const finishInterview = async () => {
-    const sessionId = activeSessionId;
+    const finishingId = activeSessionId;
     const isOwned = isRecordingOwned;
     activeSessionId = undefined;
     isRecordingOwned = false;
     session.stop();
-    if (!sessionId) {
+    if (!finishingId) {
       navigate(paths.live);
       return;
     }
     await Promise.all([
-      updateInterviewSession({ id: sessionId, finished: true }),
-      isOwned && saveRecording(sessionId),
+      finishInterviewSession({ id: finishingId }),
+      isOwned ? saveRecording(finishingId) : Promise.resolve(),
     ]);
-    await open(sessionId);
+    await open(finishingId);
   };
 
   const closeReview = () => navigate(paths.live);

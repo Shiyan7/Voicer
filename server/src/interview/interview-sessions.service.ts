@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Injectable,
-  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -41,8 +40,6 @@ const STATUS_CONDITIONS = {
 
 @Injectable()
 export class InterviewSessionsService {
-  private readonly logger = new Logger(InterviewSessionsService.name);
-
   constructor(
     @InjectRepository(InterviewSessionEntity)
     private readonly sessionsRepository: Repository<InterviewSessionEntity>,
@@ -94,25 +91,9 @@ export class InterviewSessionsService {
     return { items: await this.withMeetings(items), meta };
   }
 
-  private buildPageWhere(
-    userId: string,
-    input: InterviewSessionsPageInput,
-  ): FindOptionsWhere<InterviewSessionEntity> {
-    const createdAt = buildDateRangeCondition(input.from, input.to);
-    return {
-      userId,
-      ...(createdAt && { createdAt }),
-      ...(input.status && { finishedAt: STATUS_CONDITIONS[input.status] }),
-    };
-  }
-
-  async update(
-    userId: string,
-    id: string,
-    finished: boolean | undefined,
-  ): Promise<InterviewSessionOutput> {
+  async finish(userId: string, id: string): Promise<InterviewSessionOutput> {
     const session = await this.findOwned(userId, id);
-    if (finished) session.finishedAt ??= new Date();
+    session.finishedAt ??= new Date();
     await this.sessionsRepository.save(session);
     return this.get(userId, id);
   }
@@ -163,6 +144,18 @@ export class InterviewSessionsService {
     return session;
   }
 
+  private buildPageWhere(
+    userId: string,
+    input: InterviewSessionsPageInput,
+  ): FindOptionsWhere<InterviewSessionEntity> {
+    const createdAt = buildDateRangeCondition(input.from, input.to);
+    return {
+      userId,
+      ...(createdAt && { createdAt }),
+      ...(input.status && { finishedAt: STATUS_CONDITIONS[input.status] }),
+    };
+  }
+
   private async withMeetings(
     sessions: InterviewSessionEntity[],
   ): Promise<InterviewSessionOutput[]> {
@@ -176,20 +169,15 @@ export class InterviewSessionsService {
     );
   }
 
-  private async prepare(
+  private prepare(
     resumeText: string,
     vacancyText: string,
     language: InterviewLanguage,
   ): Promise<InterviewPreparation> {
-    try {
-      return await this.claude.generateJson<InterviewPreparation>(
-        buildInterviewPreparationPrompt(resumeText, vacancyText, language),
-        INTERVIEW_PREPARATION_SCHEMA,
-      );
-    } catch (error) {
-      this.logger.error('Failed to prepare interview', error);
-      throw error;
-    }
+    return this.claude.generateJson<InterviewPreparation>(
+      buildInterviewPreparationPrompt(resumeText, vacancyText, language),
+      INTERVIEW_PREPARATION_SCHEMA,
+    );
   }
 
   private readPdf(upload: FileUpload): Promise<Buffer> {

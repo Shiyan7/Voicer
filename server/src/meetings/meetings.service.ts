@@ -57,7 +57,7 @@ export class MeetingsService {
     userId: string,
     meetingId: string,
   ): Promise<AsyncGenerator<{ meetingUpdated: MeetingOutput }>> {
-    const meeting = await this.findOwnedMeeting(userId, meetingId);
+    const meeting = await this.content.findOwned(userId, meetingId);
 
     return this.streamMeetingUpdates(meeting);
   }
@@ -136,6 +136,127 @@ export class MeetingsService {
     return this.fileStorageService.signUrl(audioUrl);
   }
 
+  async getUserMeetingsPage(
+    userId: string,
+    input: MeetingsPageInput,
+  ): Promise<MeetingsPageOutput> {
+    const { items, meta } = await findPage(this.meetingsRepository, input, {
+      where: this.buildPageWhere(userId, input),
+      order: this.buildPageOrder(input.sort),
+    });
+
+    return { items: items.map(toMeetingOutput), meta };
+  }
+
+  async getMeeting(userId: string, id: string): Promise<MeetingOutput> {
+    return toMeetingOutput(await this.content.findOwned(userId, id));
+  }
+
+  async getMeetingTranscript(
+    userId: string,
+    meetingId: string,
+  ): Promise<TranscriptSegmentOutput[]> {
+    await this.content.findOwned(userId, meetingId);
+
+    const segments = await this.transcriptSegmentsRepository.find({
+      where: { meetingId },
+      order: { startMs: 'ASC' },
+    });
+
+    return segments.map(toSegmentOutput);
+  }
+
+  async getMeetingKeyPoints(
+    userId: string,
+    meetingId: string,
+  ): Promise<KeyPointOutput[]> {
+    await this.content.findOwned(userId, meetingId);
+
+    const keyPoints = await this.keyPointsRepository.find({
+      where: { meetingId },
+      order: { order: 'ASC' },
+    });
+
+    return keyPoints.map(toKeyPointOutput);
+  }
+
+  async deleteMeeting(userId: string, id: string): Promise<MeetingOutput> {
+    const meeting = await this.content.findOwned(userId, id);
+    const deleted = toMeetingOutput(meeting);
+
+    await this.meetingsRepository.remove(meeting);
+
+    if (deleted.audioUrl) {
+      await this.fileStorageService.remove(userId, deleted.audioUrl);
+    }
+
+    return deleted;
+  }
+
+  async deleteInterviewRecordings(
+    userId: string,
+    interviewSessionId: string,
+  ): Promise<void> {
+    const recordings = await this.meetingsRepository.findBy({
+      userId,
+      interviewSessionId,
+    });
+    await Promise.all(
+      recordings.map(({ id }) => this.deleteMeeting(userId, id)),
+    );
+  }
+
+  async setMeetingFavorite(
+    userId: string,
+    id: string,
+    isFavorite: boolean,
+  ): Promise<MeetingOutput> {
+    const meeting = await this.content.findOwned(userId, id);
+
+    await this.processing.updateAndPublish(meeting.id, { isFavorite });
+
+    return toMeetingOutput({ ...meeting, isFavorite });
+  }
+
+  async renameMeeting(
+    userId: string,
+    id: string,
+    title: string | null,
+  ): Promise<MeetingOutput> {
+    const meeting = await this.content.findOwned(userId, id);
+    const normalized = title?.trim().slice(0, MAX_TITLE_LENGTH) || null;
+
+    await this.processing.updateAndPublish(meeting.id, { title: normalized });
+
+    return toMeetingOutput({ ...meeting, title: normalized });
+  }
+
+  async suggestMeetingTitle(userId: string, id: string): Promise<string> {
+    const meeting = await this.content.findOwned(userId, id);
+
+    return this.processing.suggestTitle(meeting.id);
+  }
+
+  async summarizeMeeting(
+    userId: string,
+    id: string,
+    style: SummaryStyle,
+  ): Promise<MeetingOutput> {
+    const meeting = await this.content.findOwned(userId, id);
+
+    if (meeting.status === MeetingStatus.SUMMARIZING) {
+      return toMeetingOutput(meeting);
+    }
+
+    await this.processing.summarize(meeting, style);
+
+    return toMeetingOutput({
+      ...meeting,
+      status: MeetingStatus.SUMMARIZING,
+      summaryStyle: style,
+    });
+  }
+
   private async saveOrRemoveFile(
     userId: string,
     meeting: MeetingEntity,
@@ -156,18 +277,6 @@ export class MeetingsService {
     const isOwned = await this.interviewAccess.isOwned(userId, id);
     if (!isOwned) throw new NotFoundException('Сессия не найдена');
     return id;
-  }
-
-  async getUserMeetingsPage(
-    userId: string,
-    input: MeetingsPageInput,
-  ): Promise<MeetingsPageOutput> {
-    const { items, meta } = await findPage(this.meetingsRepository, input, {
-      where: this.buildPageWhere(userId, input),
-      order: this.buildPageOrder(input.sort),
-    });
-
-    return { items: items.map(toMeetingOutput), meta };
   }
 
   private buildPageWhere(userId: string, input: MeetingsPageInput) {
@@ -200,118 +309,5 @@ export class MeetingsService {
       default:
         return { startedAt: 'DESC', id: 'DESC' };
     }
-  }
-
-  async getMeeting(userId: string, id: string): Promise<MeetingOutput> {
-    return toMeetingOutput(await this.findOwnedMeeting(userId, id));
-  }
-
-  async getMeetingTranscript(
-    userId: string,
-    meetingId: string,
-  ): Promise<TranscriptSegmentOutput[]> {
-    await this.findOwnedMeeting(userId, meetingId);
-
-    const segments = await this.transcriptSegmentsRepository.find({
-      where: { meetingId },
-      order: { startMs: 'ASC' },
-    });
-
-    return segments.map(toSegmentOutput);
-  }
-
-  async getMeetingKeyPoints(
-    userId: string,
-    meetingId: string,
-  ): Promise<KeyPointOutput[]> {
-    await this.findOwnedMeeting(userId, meetingId);
-
-    const keyPoints = await this.keyPointsRepository.find({
-      where: { meetingId },
-      order: { order: 'ASC' },
-    });
-
-    return keyPoints.map(toKeyPointOutput);
-  }
-
-  async deleteMeeting(userId: string, id: string): Promise<MeetingOutput> {
-    const meeting = await this.findOwnedMeeting(userId, id);
-    const deleted = toMeetingOutput(meeting);
-
-    await this.meetingsRepository.remove(meeting);
-
-    if (deleted.audioUrl) {
-      await this.fileStorageService.remove(userId, deleted.audioUrl);
-    }
-
-    return deleted;
-  }
-
-  async deleteInterviewRecordings(
-    userId: string,
-    interviewSessionId: string,
-  ): Promise<void> {
-    const recordings = await this.meetingsRepository.findBy({
-      userId,
-      interviewSessionId,
-    });
-    await Promise.all(
-      recordings.map(({ id }) => this.deleteMeeting(userId, id)),
-    );
-  }
-
-  async setMeetingFavorite(
-    userId: string,
-    id: string,
-    isFavorite: boolean,
-  ): Promise<MeetingOutput> {
-    const meeting = await this.findOwnedMeeting(userId, id);
-
-    await this.processing.updateAndPublish(meeting.id, { isFavorite });
-
-    return toMeetingOutput({ ...meeting, isFavorite });
-  }
-
-  async renameMeeting(
-    userId: string,
-    id: string,
-    title: string | null,
-  ): Promise<MeetingOutput> {
-    const meeting = await this.findOwnedMeeting(userId, id);
-    const normalized = title?.trim().slice(0, MAX_TITLE_LENGTH) || null;
-
-    await this.processing.updateAndPublish(meeting.id, { title: normalized });
-
-    return toMeetingOutput({ ...meeting, title: normalized });
-  }
-
-  async suggestMeetingTitle(userId: string, id: string): Promise<string> {
-    const meeting = await this.findOwnedMeeting(userId, id);
-
-    return this.processing.suggestTitle(meeting.id);
-  }
-
-  async summarizeMeeting(
-    userId: string,
-    id: string,
-    style: SummaryStyle,
-  ): Promise<MeetingOutput> {
-    const meeting = await this.findOwnedMeeting(userId, id);
-
-    if (meeting.status === MeetingStatus.SUMMARIZING) {
-      return toMeetingOutput(meeting);
-    }
-
-    await this.processing.summarize(meeting, style);
-
-    return toMeetingOutput({
-      ...meeting,
-      status: MeetingStatus.SUMMARIZING,
-      summaryStyle: style,
-    });
-  }
-
-  private findOwnedMeeting(userId: string, id: string): Promise<MeetingEntity> {
-    return this.content.findOwned(userId, id);
   }
 }

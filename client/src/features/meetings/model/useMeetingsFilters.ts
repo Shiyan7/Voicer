@@ -5,8 +5,7 @@ import { useFilterParams } from '@/shared/hooks/useFilterParams';
 import { useOptionFilter } from '@/shared/hooks/useOptionFilter';
 import { useSortFilter } from '@/shared/hooks/useSortFilter';
 
-const SORT_VALUES = Object.values(MeetingsSort);
-const FAVORITES_PARAM = 'favorites';
+import { FAVORITES_PARAM, SORT_VALUES } from '../config/meetingsConfig';
 
 export const useMeetingsFilters = () => {
   const params = useFilterParams();
