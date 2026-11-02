@@ -67,13 +67,12 @@ export class InterviewAnswersService {
     sessionId: string,
     question: string,
   ): Promise<string> {
-    const text = this.validateQuestion(question);
-    const session = await this.sessions.findOwned(userId, sessionId);
-    return this.start(session, {
-      question: text,
-      turn: { role: 'user', text },
-      model: this.claude,
-    });
+    const { session, request } = await this.prepareQuestion(
+      userId,
+      sessionId,
+      question,
+    );
+    return this.start(session, request);
   }
 
   async askIfExpected(
@@ -81,20 +80,18 @@ export class InterviewAnswersService {
     sessionId: string,
     question: string,
   ): Promise<string | null> {
-    const text = this.validateQuestion(question);
-    const session = await this.sessions.findOwned(userId, sessionId);
-    const request: AnswerRequest = {
-      question: text,
-      turn: { role: 'user', text },
-      model: this.claude,
-    };
+    const { session, request } = await this.prepareQuestion(
+      userId,
+      sessionId,
+      question,
+    );
     this.lastOrder += 1;
     const order = this.lastOrder;
     return new Promise((settle) => {
       const gate: AnswerGate = { order, isOpen: false, settle };
       void this.stream(
         session,
-        this.createAnswer(text),
+        this.createAnswer(request.question),
         request,
         new AbortController(),
         gate,
@@ -133,6 +130,23 @@ export class InterviewAnswersService {
   release(sessionId: string): void {
     this.running.get(sessionId)?.forEach((controller) => controller.abort());
     this.claimedOrders.delete(sessionId);
+  }
+
+  private async prepareQuestion(
+    userId: string,
+    sessionId: string,
+    question: string,
+  ): Promise<{ session: InterviewSessionEntity; request: AnswerRequest }> {
+    const text = this.validateQuestion(question);
+    const session = await this.sessions.findOwned(userId, sessionId);
+    return {
+      session,
+      request: {
+        question: text,
+        turn: { role: 'user', text },
+        model: this.claude,
+      },
+    };
   }
 
   private track(sessionId: string, controller: AbortController): () => void {

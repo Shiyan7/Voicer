@@ -161,8 +161,6 @@ export class LiveAudioSession {
         type: 'transcript',
         utteranceId: this.utteranceId,
         text: full,
-        isFinal,
-        speechFinal,
       });
     }
 

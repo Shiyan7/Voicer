@@ -9,8 +9,3 @@ export interface InterviewPreparation {
   cheatSheet: string;
   recommendations: InterviewRecommendations;
 }
-
-export interface InterviewRecording {
-  id: string;
-  audioUrl: string | null;
-}

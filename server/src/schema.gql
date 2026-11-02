@@ -71,7 +71,6 @@ type InterviewRecommendationsOutput {
 }
 
 type InterviewSessionOutput {
-  cheatSheet: String!
   createdAt: DateTime!
   finishedAt: DateTime
   id: ID!
@@ -79,9 +78,7 @@ type InterviewSessionOutput {
   meetingId: ID
   recommendations: InterviewRecommendationsOutput!
   recordingUrl: String
-  resumeText: String!
   title: String
-  vacancyText: String!
 }
 
 enum InterviewSessionStatus {

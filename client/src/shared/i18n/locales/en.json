@@ -97,8 +97,6 @@
     "delete": {
       "title": "Delete meeting?",
       "description": "This permanently removes the meeting and its transcript. This can't be undone.",
-      "confirm": "Delete",
-      "cancel": "Cancel",
       "success": "Meeting deleted",
       "error": "Couldn’t delete the meeting"
     },
@@ -345,5 +343,9 @@
       "this_month": "This month",
       "last_month": "Last month"
     }
+  },
+  "delete_modal": {
+    "confirm": "Delete",
+    "cancel": "Cancel"
   }
 }

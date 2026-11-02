@@ -19,7 +19,5 @@ export function useLiveRecording() {
     setAudioUrl(url);
   };
 
-  const clear = () => show('', '');
-
-  return { meetingId, audioUrl, transcript, playback, show, clear };
+  return { meetingId, audioUrl, transcript, playback, show };
 }

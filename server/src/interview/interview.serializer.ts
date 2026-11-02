@@ -1,4 +1,4 @@
-import { InterviewRecording } from './interview.types';
+import { MeetingRecording } from '../meetings/meeting-recording';
 import { InterviewSessionEntity } from './interview-session.entity';
 import { InterviewSessionOutput } from './interview-session.output';
 import { InterviewTurnEntity } from './interview-turn.entity';
@@ -6,14 +6,11 @@ import { InterviewTurnOutput } from './interview-turn.output';
 
 export function toInterviewSessionOutput(
   session: InterviewSessionEntity,
-  recording?: InterviewRecording,
+  recording?: MeetingRecording,
 ): InterviewSessionOutput {
   return {
     id: session.id,
     title: session.title,
-    resumeText: session.resumeText,
-    vacancyText: session.vacancyText,
-    cheatSheet: session.cheatSheet,
     language: session.language,
     recommendations: session.recommendations,
     finishedAt: session.finishedAt,

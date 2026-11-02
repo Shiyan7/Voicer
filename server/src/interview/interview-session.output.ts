@@ -10,15 +10,6 @@ export class InterviewSessionOutput {
   @Field(() => String, { nullable: true })
   title: string | null;
 
-  @Field()
-  resumeText: string;
-
-  @Field()
-  vacancyText: string;
-
-  @Field()
-  cheatSheet: string;
-
   @Field(() => InterviewLanguage)
   language: InterviewLanguage;
 

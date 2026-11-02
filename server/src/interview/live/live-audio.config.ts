@@ -26,5 +26,4 @@ export const DEEPGRAM_LIVE_OPTIONS: ListenConnectArgs = {
   punctuate: 'true',
   endpointing: 300,
   utterance_end_ms: 1000,
-  vad_events: 'true',
 };

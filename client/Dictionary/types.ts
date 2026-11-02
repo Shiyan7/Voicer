@@ -91,7 +91,6 @@ export type InterviewRecommendationsOutput = {
 
 export type InterviewSessionOutput = {
   __typename?: 'InterviewSessionOutput';
-  cheatSheet: Scalars['String']['output'];
   createdAt: Scalars['DateTime']['output'];
   finishedAt?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['ID']['output'];
@@ -99,9 +98,7 @@ export type InterviewSessionOutput = {
   meetingId?: Maybe<Scalars['ID']['output']>;
   recommendations: InterviewRecommendationsOutput;
   recordingUrl?: Maybe<Scalars['String']['output']>;
-  resumeText: Scalars['String']['output'];
   title?: Maybe<Scalars['String']['output']>;
-  vacancyText: Scalars['String']['output'];
 };
 
 export enum InterviewSessionStatus {
