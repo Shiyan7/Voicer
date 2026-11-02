@@ -8,6 +8,7 @@ export const paths = {
   live: '/live',
   liveNew: '/live/new',
   liveSession: (id: string) => `/live/${id}`,
+  liveBriefing: (id: string) => `/live/${id}/briefing`,
   stats: '/stats',
   settings: '/settings',
   notFound: '*404',

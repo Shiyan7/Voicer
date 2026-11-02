@@ -15,7 +15,9 @@ export const mapInterviewRows = (
 ): InterviewRowData[] =>
   sessions.map((session) => ({
     id: session.id,
-    href: paths.liveSession(session.id),
+    href: session.finishedAt
+      ? paths.liveSession(session.id)
+      : paths.liveBriefing(session.id),
     title: getInterviewSessionTitle(session),
     status: session.finishedAt ? null : i18n.t('live.unfinished'),
     dateLabel: formatRelativeTime(session.createdAt),

@@ -19,10 +19,13 @@ export const buttonStyles = tv({
       ghost:
         'bg-transparent text-gray-900 hover:bg-gray-900/5 active:bg-gray-900/10',
       frost: 'frost-surface focus-visible:ring-sky-400/60',
+      emerald:
+        'bg-emerald-600 text-white hover:bg-emerald-700 active:bg-emerald-800',
     },
     size: {
       md: 'min-h-9 px-4 text-sm',
       lg: 'min-h-11 px-5 text-[15px]',
+      xl: 'min-h-13 px-7 text-base font-semibold',
     },
   },
   defaultVariants: {

@@ -1,81 +1,61 @@
-import {
-  InterviewLanguage,
-  type InterviewRecommendationsOutput,
-} from '@schema';
+import { createFormStore, setValue } from '@modular-forms/solid';
+import { InterviewLanguage } from '@schema';
 import { useNavigate } from '@solidjs/router';
 import { createSignal } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
 import { paths } from '@/shared/router';
-import type { Tab } from '@/shared/ui/tabs';
 
 import { createInterviewSessionMutation } from '../api/createInterviewSessionMutation';
-import { PREP_SECTIONS } from '../config/interviewPrepConfig';
-import { PrepSectionKey } from '../types/PrepSectionKey';
+import { InterviewPrepForm } from '../config/createInterviewPrepSchema';
+import { LANGUAGE_OPTIONS } from '../config/interviewPrepConfig';
+import { validateInterviewPrep } from '../lib/validateInterviewPrep';
+import { ResumeSelection } from '../types/ResumeSelection';
+import { useResumePicker } from './useResumePicker';
 
 export function useInterviewPrep() {
   const navigate = useNavigate();
-  const [resume, setResume] = createSignal<File>();
-  const [vacancy, setVacancy] = createSignal('');
+  const [resume, setResumeSelection] = createSignal<ResumeSelection>();
   const [language, setLanguage] = createSignal(InterviewLanguage.Ru);
-  const [recommendations, setRecommendations] =
-    createSignal<InterviewRecommendationsOutput>();
-  const [activeSection, setActiveSection] =
-    createSignal<PrepSectionKey>('questions');
-  const [sessionId, setSessionId] = createSignal<string>();
   const [hasError, setHasError] = createSignal(false);
   const [createState, createSession] = createInterviewSessionMutation();
 
-  const resumeLabel = () =>
-    resume()?.name || i18n.t('live.prep.resume_placeholder');
+  const form = createFormStore<InterviewPrepForm>({
+    initialValues: { vacancy: '' },
+    validate: validateInterviewPrep,
+    revalidateOn: 'input',
+  });
 
-  const hasResume = () => !!resume();
-
-  const isPreparing = () => createState.fetching;
-
-  const canPrepare = () =>
-    !isPreparing() && hasResume() && vacancy().trim().length > 0;
-
-  const sectionTabs = (): Tab<PrepSectionKey>[] =>
-    recommendations()
-      ? (Object.keys(PREP_SECTIONS) as PrepSectionKey[]).map((key) => ({
-          label: i18n.t(`live.prep.sections.${key}`),
-          value: key,
-        }))
-      : [];
-
-  const activeItems = () =>
-    recommendations()?.[PREP_SECTIONS[activeSection()]] ?? [];
-
-  const isReady = () => !!sessionId();
+  const languageLabel = () =>
+    LANGUAGE_OPTIONS.find((option) => option.value === language())?.label ?? '';
 
   const errorMessage = () => (hasError() ? i18n.t('live.prep.error') : '');
 
-  const onResumeSelected = (file: File | undefined) => setResume(file);
-
-  const onVacancyInput = (value: string) => setVacancy(value);
-
-  const reset = () => {
-    setSessionId(undefined);
-    setRecommendations(undefined);
-    setActiveSection('questions');
-    setHasError(false);
+  const setResume = (selection: ResumeSelection | undefined) => {
+    setResumeSelection(selection);
+    setValue(
+      form,
+      'resumeFile',
+      selection?.kind === 'file' ? selection.file : undefined,
+    );
+    setValue(
+      form,
+      'resumeSessionId',
+      selection?.kind === 'saved' ? selection.id : undefined,
+    );
   };
 
-  const start = () => {
-    const id = sessionId();
-    if (id) navigate(paths.liveSession(id));
-  };
+  const resumePicker = useResumePicker(resume, setResume);
 
   const goBack = () => navigate(paths.live);
 
-  const prepare = async () => {
-    const file = resume();
-    if (!file) return;
-    reset();
+  const prepare = async (values: InterviewPrepForm) => {
+    if (createState.fetching) return;
+    setHasError(false);
     const response = await createSession({
-      resume: file,
-      vacancy: vacancy().trim(),
+      resume: values.resumeFile,
+      resumeSessionId: values.resumeSessionId,
+      vacancy: values.vacancy.trim(),
       language: language(),
     });
     const session = response.data?.createInterviewSession;
@@ -83,28 +63,17 @@ export function useInterviewPrep() {
       setHasError(true);
       return;
     }
-    setSessionId(session.id);
-    setRecommendations(session.recommendations);
+    navigate(paths.liveBriefing(session.id));
   };
 
   return {
-    resumeLabel,
-    hasResume,
-    vacancy,
+    form,
+    ...resumePicker,
     language,
+    languageLabel,
     setLanguage,
-    isPreparing,
-    canPrepare,
-    sectionTabs,
-    activeSection,
-    activeItems,
-    setActiveSection,
-    isReady,
     errorMessage,
-    onResumeSelected,
-    onVacancyInput,
     prepare,
-    start,
     goBack,
   };
 }

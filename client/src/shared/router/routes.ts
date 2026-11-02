@@ -28,6 +28,10 @@ export const routes = [
     component: lazy(() => import('@/pages/live-new/LiveNewPage')),
   },
   {
+    path: paths.liveBriefing(':id'),
+    component: lazy(() => import('@/pages/live-briefing/LiveBriefingPage')),
+  },
+  {
     path: paths.liveSession(':id'),
     component: lazy(() => import('@/pages/live-session/LiveSessionPage')),
   },

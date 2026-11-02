@@ -27,7 +27,7 @@ export function InterviewsOrchestrator() {
       <div class={styles.root()}>
         <header class={styles.header()}>
           <h1 class={styles.title()}>{i18n.t('live.title')}</h1>
-          <Button as={A} href={paths.liveNew}>
+          <Button size="lg" as={A} href={paths.liveNew}>
             <Icon name="common:microphone" size={16} />
             {i18n.t('live.new')}
           </Button>

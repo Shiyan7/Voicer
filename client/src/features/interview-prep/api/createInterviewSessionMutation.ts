@@ -7,10 +7,7 @@ import { createMutation } from '@urql/solid';
 import { CREATE_INTERVIEW_SESSION_MUTATION } from './gql/CREATE_INTERVIEW_SESSION_MUTATION';
 
 interface CreateInterviewSessionMutation {
-  createInterviewSession: Pick<
-    InterviewSessionOutput,
-    'id' | 'recommendations'
-  >;
+  createInterviewSession: Pick<InterviewSessionOutput, 'id'>;
 }
 
 export const createInterviewSessionMutation = () =>
