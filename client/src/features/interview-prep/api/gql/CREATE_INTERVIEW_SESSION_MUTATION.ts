@@ -2,23 +2,20 @@ import { gql } from '@urql/solid';
 
 export const CREATE_INTERVIEW_SESSION_MUTATION = gql`
   mutation CreateInterviewSession(
-    $resume: Upload!
+    $resume: Upload
+    $resumeSessionId: ID
     $vacancy: String!
     $language: InterviewLanguage!
     $mode: InterviewMode!
   ) {
     createInterviewSession(
       resume: $resume
+      resumeSessionId: $resumeSessionId
       vacancy: $vacancy
       language: $language
       mode: $mode
     ) {
       id
-      recommendations {
-        topics
-        likelyQuestions
-        emphasize
-      }
     }
   }
 `;

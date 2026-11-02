@@ -1,4 +1,4 @@
-import { InterviewMode } from '@schema';
+import { InterviewMode, InterviewPrepStatus } from '@schema';
 import { useNavigate, useParams } from '@solidjs/router';
 import { createEffect, createSignal, on } from 'solid-js';
 
@@ -75,6 +75,10 @@ export function useLiveInterview() {
     const savedTurns = turns.map(toCompletedTurn);
     setDetails(found);
     if (found.mode === InterviewMode.Mock) return;
+    if (!found.finishedAt && found.prepStatus !== InterviewPrepStatus.Ready) {
+      navigate(paths.liveBriefing(id), { replace: true });
+      return;
+    }
     if (found.finishedAt) showReview(found, savedTurns);
     else beginSession(id, savedTurns);
   };

@@ -14,6 +14,7 @@ import { InterviewAnswerOutput } from './interview-answer.output';
 import { InterviewAnswersService } from './interview-answers.service';
 import { InterviewLanguage } from './interview-language.enum';
 import { InterviewMode } from './interview-mode.enum';
+import { InterviewResumeOutput } from './interview-resume.output';
 import { InterviewSessionOutput } from './interview-session.output';
 import { InterviewTurnOutput } from './interview-turn.output';
 import { InterviewSessionsPageInput } from './interview-sessions-page.input';
@@ -30,7 +31,10 @@ export class InterviewResolver {
   @Mutation(() => InterviewSessionOutput)
   createInterviewSession(
     @CurrentUser() user: UserEntity,
-    @Args({ name: 'resume', type: () => GraphQLUpload }) resume: FileUpload,
+    @Args({ name: 'resume', type: () => GraphQLUpload, nullable: true })
+    resume: FileUpload | null,
+    @Args('resumeSessionId', { type: () => ID, nullable: true })
+    resumeSessionId: string | null,
     @Args('vacancy') vacancy: string,
     @Args('language', {
       type: () => InterviewLanguage,
@@ -43,7 +47,29 @@ export class InterviewResolver {
     })
     mode: InterviewMode,
   ): Promise<InterviewSessionOutput> {
-    return this.sessions.create(user.id, resume, vacancy, language, mode);
+    return this.sessions.create(
+      user.id,
+      resume,
+      resumeSessionId,
+      vacancy,
+      language,
+      mode,
+    );
+  }
+
+  @Mutation(() => InterviewSessionOutput)
+  retryInterviewPreparation(
+    @CurrentUser() user: UserEntity,
+    @Args('id', { type: () => ID }) id: string,
+  ): Promise<InterviewSessionOutput> {
+    return this.sessions.retryPreparation(user.id, id);
+  }
+
+  @Query(() => [InterviewResumeOutput])
+  interviewResumes(
+    @CurrentUser() user: UserEntity,
+  ): Promise<InterviewResumeOutput[]> {
+    return this.sessions.resumes(user.id);
   }
 
   @Query(() => InterviewSessionOutput)

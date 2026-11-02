@@ -88,11 +88,23 @@ export enum InterviewMode {
   Real = 'REAL',
 }
 
+export enum InterviewPrepStatus {
+  Failed = 'FAILED',
+  Preparing = 'PREPARING',
+  Ready = 'READY',
+}
+
 export type InterviewRecommendationsOutput = {
   __typename?: 'InterviewRecommendationsOutput';
   emphasize: Array<Scalars['String']['output']>;
   likelyQuestions: Array<Scalars['String']['output']>;
   topics: Array<Scalars['String']['output']>;
+};
+
+export type InterviewResumeOutput = {
+  __typename?: 'InterviewResumeOutput';
+  fileName?: Maybe<Scalars['String']['output']>;
+  sessionId: Scalars['ID']['output'];
 };
 
 export type InterviewSessionOutput = {
@@ -103,6 +115,7 @@ export type InterviewSessionOutput = {
   language: InterviewLanguage;
   meetingId?: Maybe<Scalars['ID']['output']>;
   mode: InterviewMode;
+  prepStatus: InterviewPrepStatus;
   recommendations: InterviewRecommendationsOutput;
   recordingUrl?: Maybe<Scalars['String']['output']>;
   title?: Maybe<Scalars['String']['output']>;
@@ -224,6 +237,7 @@ export type Mutation = {
   meetingSuggestTitle: Scalars['String']['output'];
   meetingSummarize: MeetingOutput;
   meetingUploadAudio: MeetingOutput;
+  retryInterviewPreparation: InterviewSessionOutput;
   signIn: AuthPayload;
   signUp: AuthPayload;
   toggleActionItem: Scalars['Boolean']['output'];
@@ -240,7 +254,8 @@ export type MutationApiTokenRevokeArgs = {
 export type MutationCreateInterviewSessionArgs = {
   language?: InterviewLanguage;
   mode?: InterviewMode;
-  resume: Scalars['Upload']['input'];
+  resume?: InputMaybe<Scalars['Upload']['input']>;
+  resumeSessionId?: InputMaybe<Scalars['ID']['input']>;
   vacancy: Scalars['String']['input'];
 };
 
@@ -296,6 +311,10 @@ export type MutationMeetingUploadAudioArgs = {
   startedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
+export type MutationRetryInterviewPreparationArgs = {
+  id: Scalars['ID']['input'];
+};
+
 export type MutationSignInArgs = {
   input: SignInInput;
 };
@@ -320,6 +339,7 @@ export type Query = {
   __typename?: 'Query';
   actionItems: Array<ActionItemOutput>;
   apiTokens: Array<ApiTokenOutput>;
+  interviewResumes: Array<InterviewResumeOutput>;
   interviewSession: InterviewSessionOutput;
   interviewSessionsPage: InterviewSessionsPageOutput;
   interviewTurns: Array<InterviewTurnOutput>;

@@ -1,11 +1,9 @@
 import type { FormStore, SubmitHandler } from '@modular-forms/solid';
 import type { InterviewLanguage, InterviewMode } from '@schema';
 
-import type { Tab } from '@/shared/ui/tabs';
-
 import type { PrepForm } from '../config/createPrepSchema';
 import { PrepModeOption } from './PrepModeOption';
-import { PrepSectionKey } from './PrepSectionKey';
+import { PrepResumeOption } from './PrepResumeOption';
 
 export interface InterviewPrepProps {
   form: FormStore<PrepForm>;
@@ -15,15 +13,13 @@ export interface InterviewPrepProps {
   modeOptions: PrepModeOption[];
   mode: InterviewMode;
   onSelectMode: (mode: InterviewMode) => void;
-  prepareLabel: string;
-  isPreparing: boolean;
-  isReady: boolean;
+  submitLabel: string;
+  resumeOptions: PrepResumeOption[];
+  selectedResumeId: string | undefined;
+  selectedResumeLabel: string | undefined;
+  onSelectResume: (id: string) => void;
+  isSubmitting: boolean;
   errorMessage: string;
-  sectionTabs: Tab<PrepSectionKey>[];
-  activeSection: PrepSectionKey;
-  activeItems: string[];
-  onSelectSection: (key: PrepSectionKey) => void;
-  onPrepare: SubmitHandler<PrepForm>;
-  onStart: () => void;
+  onSubmit: SubmitHandler<PrepForm>;
   onBack: () => void;
 }

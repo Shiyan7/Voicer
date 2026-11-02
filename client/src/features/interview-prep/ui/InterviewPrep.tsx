@@ -7,12 +7,12 @@ import { Button } from '@/shared/ui/button';
 import { Dropdown } from '@/shared/ui/dropdown';
 import { FileInput } from '@/shared/ui/file-input';
 import { Icon } from '@/shared/ui/icon';
-import { Tabs } from '@/shared/ui/tabs';
 
 import { LANGUAGE_OPTIONS } from '../config/interviewPrepConfig';
 import { InterviewPrepProps } from '../types/InterviewPrepProps';
 import { interviewPrepStyles } from './InterviewPrep.styles';
 import { PrepModeCard } from './PrepModeCard';
+import { PrepResumeTiles } from './PrepResumeTiles';
 
 const styles = interviewPrepStyles();
 
@@ -34,7 +34,7 @@ export function InterviewPrep(props: InterviewPrepProps) {
           )}
         </For>
       </div>
-      <Form class={styles.form()} of={props.form} onSubmit={props.onPrepare}>
+      <Form class={styles.form()} of={props.form} onSubmit={props.onSubmit}>
         <Field of={props.form} name="vacancy">
           {(field, fieldProps) => (
             <label class={styles.field()}>
@@ -59,41 +59,52 @@ export function InterviewPrep(props: InterviewPrepProps) {
               <span class={styles.label()}>{i18n.t('live.prep.resume')}</span>
               <FileInput
                 label={
-                  field.value?.name ?? i18n.t('live.prep.resume_placeholder')
+                  field.value?.name ??
+                  props.selectedResumeLabel ??
+                  i18n.t('live.prep.resume_placeholder')
                 }
                 accept="application/pdf"
-                isFilled={!!field.value}
+                isFilled={!!field.value || !!props.selectedResumeLabel}
                 error={field.error}
                 inputProps={fieldProps}
+              />
+              <PrepResumeTiles
+                options={props.resumeOptions}
+                selectedId={props.selectedResumeId}
+                onSelect={props.onSelectResume}
               />
             </div>
           )}
         </Field>
         <div class={styles.actions()}>
-          <Dropdown
-            options={LANGUAGE_OPTIONS}
-            selected={props.language}
-            onSelect={props.onSelectLanguage}
-            triggerClass={styles.language()}
-            panelClass={styles.languagePanel()}
-            trigger={() => (
-              <span class={styles.languageValue()}>
-                {props.languageLabel}
-                <Icon
-                  class={styles.languageIcon()}
-                  name="common:chevron-right"
-                  size={14}
-                />
-              </span>
-            )}
-          />
+          <div class={styles.field()}>
+            <span class={styles.label()}>{i18n.t('live.prep.language')}</span>
+            <Dropdown
+              options={LANGUAGE_OPTIONS}
+              selected={props.language}
+              onSelect={props.onSelectLanguage}
+              triggerClass={styles.language()}
+              panelClass={styles.languagePanel()}
+              trigger={() => (
+                <span class={styles.languageValue()}>
+                  {props.languageLabel}
+                  <Icon
+                    class={styles.languageIcon()}
+                    name="common:chevron-right"
+                    size={14}
+                  />
+                </span>
+              )}
+            />
+          </div>
           <Button
             class={interviewPrepStyles({ mode: props.mode }).submit()}
             type="submit"
             size="lg"
-            disabled={props.isPreparing}
+            disabled={props.isSubmitting}
           >
-            {props.prepareLabel}
+            {props.submitLabel}
+            <Icon name="common:chevron-right" size={18} />
           </Button>
         </div>
       </Form>
@@ -101,24 +112,6 @@ export function InterviewPrep(props: InterviewPrepProps) {
         <p class={styles.error()} role="alert">
           {props.errorMessage}
         </p>
-      </Show>
-      <Show when={props.isReady && !props.isPreparing}>
-        <section class={styles.section()}>
-          <Tabs
-            tabs={props.sectionTabs}
-            activeTab={props.activeSection}
-            onSelect={props.onSelectSection}
-          />
-          <ol class={styles.items()}>
-            <For each={props.activeItems}>
-              {(item) => <li class={styles.item()}>{item}</li>}
-            </For>
-          </ol>
-        </section>
-        <Button class={styles.start()} size="lg" onClick={props.onStart}>
-          <Icon name="common:microphone" size={18} />
-          {i18n.t('live.prep.start')}
-        </Button>
       </Show>
     </div>
   );

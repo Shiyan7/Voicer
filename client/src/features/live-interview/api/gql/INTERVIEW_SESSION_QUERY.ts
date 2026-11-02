@@ -6,6 +6,7 @@ export const INTERVIEW_SESSION_QUERY = gql`
       id
       title
       mode
+      prepStatus
       finishedAt
       meetingId
       recordingUrl

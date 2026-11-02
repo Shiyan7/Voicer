@@ -2,5 +2,5 @@ import type { InterviewSessionOutput } from '@schema';
 
 export type LiveSessionDetails = Pick<
   InterviewSessionOutput,
-  'id' | 'title' | 'mode' | 'finishedAt' | 'meetingId' | 'recordingUrl' | 'createdAt'
+  'id' | 'title' | 'mode' | 'prepStatus' | 'finishedAt' | 'meetingId' | 'recordingUrl' | 'createdAt'
 >;

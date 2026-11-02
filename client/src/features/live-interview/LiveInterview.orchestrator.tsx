@@ -1,8 +1,10 @@
 import { Show } from 'solid-js';
 
+import { useInterviewPreparation } from '@/entities/interview-session';
 import { MeetingPlayer } from '@/entities/meeting-player';
 import { i18n } from '@/shared/i18n';
 import { BackButton } from '@/shared/ui/back-button';
+import { Button } from '@/shared/ui/button';
 import { PageFade } from '@/shared/ui/page-fade';
 
 import { liveInterviewStyles } from './LiveInterview.styles';
@@ -14,6 +16,7 @@ const styles = liveInterviewStyles();
 
 export function LiveInterviewOrchestrator() {
   const vm = useLiveInterview();
+  const preparation = useInterviewPreparation(vm.sessionId);
 
   return (
     <PageFade>
@@ -21,7 +24,18 @@ export function LiveInterviewOrchestrator() {
         <Show when={vm.isMock()}>
           <div class={styles.mockPlaceholder()}>
             <BackButton onClick={vm.closeReview} />
-            <p>{i18n.t('live.session.mock_placeholder')}</p>
+            <Show when={preparation.isPreparing()}>
+              <p>{i18n.t('live.session.mock_preparing')}</p>
+            </Show>
+            <Show when={preparation.isReady()}>
+              <p>{i18n.t('live.session.mock_placeholder')}</p>
+            </Show>
+            <Show when={preparation.isFailed()}>
+              <p>{i18n.t('live.prep.error')}</p>
+              <Button variant="secondary" onClick={preparation.retry}>
+                {i18n.t('live.prep.retry')}
+              </Button>
+            </Show>
           </div>
         </Show>
         <Show when={vm.isLoaded() && !vm.isMock()}>

@@ -4,7 +4,7 @@ import { tv } from 'tailwind-variants';
 export const prepModeCardStyles = tv({
   slots: {
     card: `
-      flex w-full cursor-pointer flex-col items-start gap-1 rounded-2xl border
+      flex w-full cursor-pointer flex-col items-start gap-1 rounded-2xl border-2
       bg-white p-4 text-left text-gray-900 transition-colors duration-200
     `,
     icon: `

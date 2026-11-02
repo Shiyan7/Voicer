@@ -70,10 +70,21 @@ enum InterviewMode {
   REAL
 }
 
+enum InterviewPrepStatus {
+  FAILED
+  PREPARING
+  READY
+}
+
 type InterviewRecommendationsOutput {
   emphasize: [String!]!
   likelyQuestions: [String!]!
   topics: [String!]!
+}
+
+type InterviewResumeOutput {
+  fileName: String
+  sessionId: ID!
 }
 
 type InterviewSessionOutput {
@@ -83,6 +94,7 @@ type InterviewSessionOutput {
   language: InterviewLanguage!
   meetingId: ID
   mode: InterviewMode!
+  prepStatus: InterviewPrepStatus!
   recommendations: InterviewRecommendationsOutput!
   recordingUrl: String
   title: String
@@ -185,7 +197,7 @@ type MeetingsStatsOutput {
 type Mutation {
   apiTokenCreate(name: String!): ApiTokenCreatedOutput!
   apiTokenRevoke(id: ID!): Boolean!
-  createInterviewSession(language: InterviewLanguage! = RU, mode: InterviewMode! = REAL, resume: Upload!, vacancy: String!): InterviewSessionOutput!
+  createInterviewSession(language: InterviewLanguage! = RU, mode: InterviewMode! = REAL, resume: Upload, resumeSessionId: ID, vacancy: String!): InterviewSessionOutput!
   deleteInterviewSession(id: ID!): InterviewSessionOutput!
   finishInterviewSession(id: ID!): InterviewSessionOutput!
   interviewAskScreenshot(image: Upload!, sessionId: ID!): ID!
@@ -197,6 +209,7 @@ type Mutation {
   meetingSuggestTitle(id: ID!): String!
   meetingSummarize(id: ID!, style: SummaryStyle! = AUTO): MeetingOutput!
   meetingUploadAudio(file: Upload!, interviewSessionId: String, source: String, startedAt: DateTime): MeetingOutput!
+  retryInterviewPreparation(id: ID!): InterviewSessionOutput!
   signIn(input: SignInInput!): AuthPayload!
   signUp(input: SignUpInput!): AuthPayload!
   toggleActionItem(id: ID!): Boolean!
@@ -212,6 +225,7 @@ type PagePaginationMetaOutput {
 type Query {
   actionItems: [ActionItemOutput!]!
   apiTokens: [ApiTokenOutput!]!
+  interviewResumes: [InterviewResumeOutput!]!
   interviewSession(id: ID!): InterviewSessionOutput!
   interviewSessionsPage(input: InterviewSessionsPageInput!): InterviewSessionsPageOutput!
   interviewTurns(sessionId: ID!): [InterviewTurnOutput!]!

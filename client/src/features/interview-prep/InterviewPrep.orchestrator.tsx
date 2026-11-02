@@ -15,17 +15,15 @@ export function InterviewPrepOrchestrator() {
         onSelectLanguage={vm.setLanguage}
         modeOptions={vm.modeOptions()}
         mode={vm.mode()}
-        onSelectMode={vm.selectMode}
-        prepareLabel={vm.prepareLabel()}
-        isPreparing={vm.isPreparing()}
-        isReady={vm.isReady()}
+        onSelectMode={vm.setMode}
+        submitLabel={vm.submitLabel()}
+        resumeOptions={vm.resumeOptions()}
+        selectedResumeId={vm.selectedResumeId()}
+        selectedResumeLabel={vm.selectedResumeLabel()}
+        onSelectResume={vm.selectResume}
+        isSubmitting={vm.isSubmitting()}
         errorMessage={vm.errorMessage()}
-        sectionTabs={vm.sectionTabs()}
-        activeSection={vm.activeSection()}
-        activeItems={vm.activeItems()}
-        onSelectSection={vm.setActiveSection}
-        onPrepare={vm.prepare}
-        onStart={vm.start}
+        onSubmit={vm.submit}
         onBack={vm.goBack}
       />
     </PageFade>
