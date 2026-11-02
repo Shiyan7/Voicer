@@ -288,8 +288,16 @@
     "empty": "No interviews yet",
     "unfinished": "Unfinished",
     "prep": {
-      "title": "Interview prep",
-      "subtitle": "Upload your resume and the job description to get tailored recommendations",
+      "title": "Preparing for the call",
+      "retry": "Retry",
+      "vacancy_expand": "Show all",
+      "vacancy_collapse": "Collapse",
+      "resume_delete": {
+        "title": "Delete resume?",
+        "description": "The resume will be removed from your saved list. Past interviews stay.",
+        "success": "Resume deleted",
+        "error": "Preparation failed. Please try again."
+      },
       "resume": "Resume",
       "resume_placeholder": "Choose a PDF file",
       "language": "Interview language",

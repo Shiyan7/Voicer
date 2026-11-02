@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { InterviewLanguage } from './interview-language.enum';
+import { InterviewPrepStatus } from './interview-prep-status.enum';
 import { InterviewRecommendationsOutput } from './interview-recommendations.output';
 
 @ObjectType()
@@ -10,8 +11,17 @@ export class InterviewSessionOutput {
   @Field(() => String, { nullable: true })
   title: string | null;
 
+  @Field(() => String, { nullable: true })
+  resumeFileName: string | null;
+
+  @Field(() => String)
+  vacancyText: string;
+
   @Field(() => InterviewLanguage)
   language: InterviewLanguage;
+
+  @Field(() => InterviewPrepStatus)
+  prepStatus: InterviewPrepStatus;
 
   @Field(() => InterviewRecommendationsOutput)
   recommendations: InterviewRecommendationsOutput;

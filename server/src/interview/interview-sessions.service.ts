@@ -1,7 +1,9 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
+  OnModuleInit,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, IsNull, Not, Repository } from 'typeorm';
@@ -12,6 +14,7 @@ import { MeetingsService } from '../meetings/meetings.service';
 import { FileUpload } from '../file/file-upload';
 import { ClaudeService } from '../claude/claude.service';
 import { InterviewLanguage } from './interview-language.enum';
+import { InterviewPrepStatus } from './interview-prep-status.enum';
 import { InterviewSessionEntity } from './interview-session.entity';
 import { InterviewSessionOutput } from './interview-session.output';
 import { InterviewSessionStatus } from './interview-session-status.enum';
@@ -20,7 +23,11 @@ import { InterviewSessionsPageOutput } from './interview-sessions-page.output';
 import { InterviewSessionsSort } from './interview-sessions-sort.enum';
 import { InterviewTurnEntity } from './interview-turn.entity';
 import { InterviewTurnOutput } from './interview-turn.output';
-import { InterviewPreparation } from './interview.types';
+import { InterviewResumeOutput } from './interview-resume.output';
+import {
+  InterviewPreparation,
+  InterviewRecommendations,
+} from './interview.types';
 import {
   toInterviewSessionOutput,
   toInterviewTurnOutput,
@@ -34,13 +41,22 @@ import {
 
 const MAX_RESUME_BYTES = 10 * 1024 * 1024;
 const MAX_VACANCY_LENGTH = 20000;
+const RESUME_LOOKBACK = 50;
+const MAX_RESUMES = 5;
+const EMPTY_RECOMMENDATIONS: InterviewRecommendations = {
+  topics: [],
+  likelyQuestions: [],
+  emphasize: [],
+};
 const STATUS_CONDITIONS = {
   [InterviewSessionStatus.FINISHED]: Not(IsNull()),
   [InterviewSessionStatus.UNFINISHED]: IsNull(),
 };
 
 @Injectable()
-export class InterviewSessionsService {
+export class InterviewSessionsService implements OnModuleInit {
+  private readonly logger = new Logger(InterviewSessionsService.name);
+
   constructor(
     @InjectRepository(InterviewSessionEntity)
     private readonly sessionsRepository: Repository<InterviewSessionEntity>,
@@ -50,9 +66,17 @@ export class InterviewSessionsService {
     private readonly claude: ClaudeService,
   ) {}
 
+  async onModuleInit(): Promise<void> {
+    await this.sessionsRepository.update(
+      { prepStatus: InterviewPrepStatus.PREPARING },
+      { prepStatus: InterviewPrepStatus.FAILED },
+    );
+  }
+
   async create(
     userId: string,
-    resume: FileUpload,
+    resume: FileUpload | null,
+    resumeSessionId: string | null,
     vacancy: string,
     language: InterviewLanguage,
   ): Promise<InterviewSessionOutput> {
@@ -61,18 +85,67 @@ export class InterviewSessionsService {
       MAX_VACANCY_LENGTH,
       'Некорректный текст вакансии',
     );
-    const resumeText = await extractPdfText(await this.readPdf(resume));
-    const preparation = await this.prepare(resumeText, vacancyText, language);
+    const { resumeText, resumeFileName } = await this.resolveResume(
+      userId,
+      resume,
+      resumeSessionId,
+    );
     const session = await this.sessionsRepository.save(
       this.sessionsRepository.create({
         userId,
         vacancyText,
         resumeText,
+        resumeFileName,
         language,
-        ...preparation,
+        prepStatus: InterviewPrepStatus.PREPARING,
+        recommendations: EMPTY_RECOMMENDATIONS,
       }),
     );
+    void this.runPreparation(session);
     return toInterviewSessionOutput(session);
+  }
+
+  async retryPreparation(
+    userId: string,
+    id: string,
+  ): Promise<InterviewSessionOutput> {
+    const session = await this.findOwned(userId, id);
+    if (session.prepStatus !== InterviewPrepStatus.FAILED) {
+      return toInterviewSessionOutput(session);
+    }
+    session.prepStatus = InterviewPrepStatus.PREPARING;
+    await this.sessionsRepository.save(session);
+    void this.runPreparation(session);
+    return toInterviewSessionOutput(session);
+  }
+
+  async resumes(userId: string): Promise<InterviewResumeOutput[]> {
+    const sessions = await this.sessionsRepository.find({
+      where: { userId, resumeFileName: Not(IsNull()) },
+      order: { createdAt: 'DESC' },
+      take: RESUME_LOOKBACK,
+    });
+    const latestByText = new Map<string, InterviewSessionEntity>();
+    for (const session of sessions) {
+      if (!latestByText.has(session.resumeText)) {
+        latestByText.set(session.resumeText, session);
+      }
+    }
+    return [...latestByText.values()]
+      .slice(0, MAX_RESUMES)
+      .map(({ id, resumeFileName }) => ({
+        sessionId: id,
+        fileName: resumeFileName,
+      }));
+  }
+
+  async deleteResume(userId: string, sessionId: string): Promise<string> {
+    const { resumeText } = await this.findOwned(userId, sessionId);
+    await this.sessionsRepository.update(
+      { userId, resumeText },
+      { resumeFileName: null },
+    );
+    return sessionId;
   }
 
   async get(userId: string, id: string): Promise<InterviewSessionOutput> {
@@ -172,6 +245,44 @@ export class InterviewSessionsService {
     return sessions.map((session) =>
       toInterviewSessionOutput(session, bySession.get(session.id)),
     );
+  }
+
+  private async resolveResume(
+    userId: string,
+    resume: FileUpload | null,
+    resumeSessionId: string | null,
+  ): Promise<{ resumeText: string; resumeFileName: string | null }> {
+    if (resume) {
+      return {
+        resumeText: await extractPdfText(await this.readPdf(resume)),
+        resumeFileName: resume.filename,
+      };
+    }
+    if (!resumeSessionId) throw new BadRequestException('Загрузите резюме');
+    const { resumeText, resumeFileName } = await this.findOwned(
+      userId,
+      resumeSessionId,
+    );
+    return { resumeText, resumeFileName };
+  }
+
+  private async runPreparation(session: InterviewSessionEntity): Promise<void> {
+    try {
+      const preparation = await this.prepare(
+        session.resumeText,
+        session.vacancyText,
+        session.language,
+      );
+      await this.sessionsRepository.update(session.id, {
+        ...preparation,
+        prepStatus: InterviewPrepStatus.READY,
+      });
+    } catch (error) {
+      this.logger.error(`Failed to prepare interview ${session.id}`, error);
+      await this.sessionsRepository.update(session.id, {
+        prepStatus: InterviewPrepStatus.FAILED,
+      });
+    }
   }
 
   private prepare(

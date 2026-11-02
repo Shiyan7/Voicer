@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { UserEntity } from '../users/user.entity';
 import { InterviewLanguage } from './interview-language.enum';
+import { InterviewPrepStatus } from './interview-prep-status.enum';
 import { InterviewRecommendations } from './interview.types';
 
 @Entity({ name: 'interview_sessions' })
@@ -38,6 +39,12 @@ export class InterviewSessionEntity {
 
   @Column({ type: 'varchar', default: InterviewLanguage.RU })
   language: InterviewLanguage;
+
+  @Column({ type: 'varchar', default: InterviewPrepStatus.READY })
+  prepStatus: InterviewPrepStatus;
+
+  @Column({ type: 'varchar', nullable: true })
+  resumeFileName: string | null;
 
   @Column({ type: 'jsonb' })
   recommendations: InterviewRecommendations;

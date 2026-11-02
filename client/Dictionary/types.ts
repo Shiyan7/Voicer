@@ -82,11 +82,23 @@ export enum InterviewLanguage {
   Ru = 'RU',
 }
 
+export enum InterviewPrepStatus {
+  Failed = 'FAILED',
+  Preparing = 'PREPARING',
+  Ready = 'READY',
+}
+
 export type InterviewRecommendationsOutput = {
   __typename?: 'InterviewRecommendationsOutput';
   emphasize: Array<Scalars['String']['output']>;
   likelyQuestions: Array<Scalars['String']['output']>;
   topics: Array<Scalars['String']['output']>;
+};
+
+export type InterviewResumeOutput = {
+  __typename?: 'InterviewResumeOutput';
+  fileName?: Maybe<Scalars['String']['output']>;
+  sessionId: Scalars['ID']['output'];
 };
 
 export type InterviewSessionOutput = {
@@ -96,9 +108,12 @@ export type InterviewSessionOutput = {
   id: Scalars['ID']['output'];
   language: InterviewLanguage;
   meetingId?: Maybe<Scalars['ID']['output']>;
+  prepStatus: InterviewPrepStatus;
   recommendations: InterviewRecommendationsOutput;
   recordingUrl?: Maybe<Scalars['String']['output']>;
+  resumeFileName?: Maybe<Scalars['String']['output']>;
   title?: Maybe<Scalars['String']['output']>;
+  vacancyText: Scalars['String']['output'];
 };
 
 export enum InterviewSessionStatus {
@@ -205,6 +220,7 @@ export type Mutation = {
   apiTokenCreate: ApiTokenCreatedOutput;
   apiTokenRevoke: Scalars['Boolean']['output'];
   createInterviewSession: InterviewSessionOutput;
+  deleteInterviewResume: Scalars['ID']['output'];
   deleteInterviewSession: InterviewSessionOutput;
   finishInterviewSession: InterviewSessionOutput;
   interviewAskScreenshot: Scalars['ID']['output'];
@@ -216,6 +232,7 @@ export type Mutation = {
   meetingSuggestTitle: Scalars['String']['output'];
   meetingSummarize: MeetingOutput;
   meetingUploadAudio: MeetingOutput;
+  retryInterviewPreparation: InterviewSessionOutput;
   signIn: AuthPayload;
   signUp: AuthPayload;
   toggleActionItem: Scalars['Boolean']['output'];
@@ -231,8 +248,13 @@ export type MutationApiTokenRevokeArgs = {
 
 export type MutationCreateInterviewSessionArgs = {
   language?: InterviewLanguage;
-  resume: Scalars['Upload']['input'];
+  resume?: InputMaybe<Scalars['Upload']['input']>;
+  resumeSessionId?: InputMaybe<Scalars['ID']['input']>;
   vacancy: Scalars['String']['input'];
+};
+
+export type MutationDeleteInterviewResumeArgs = {
+  sessionId: Scalars['ID']['input'];
 };
 
 export type MutationDeleteInterviewSessionArgs = {
@@ -287,6 +309,10 @@ export type MutationMeetingUploadAudioArgs = {
   startedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
+export type MutationRetryInterviewPreparationArgs = {
+  id: Scalars['ID']['input'];
+};
+
 export type MutationSignInArgs = {
   input: SignInInput;
 };
@@ -311,6 +337,7 @@ export type Query = {
   __typename?: 'Query';
   actionItems: Array<ActionItemOutput>;
   apiTokens: Array<ApiTokenOutput>;
+  interviewResumes: Array<InterviewResumeOutput>;
   interviewSession: InterviewSessionOutput;
   interviewSessionsPage: InterviewSessionsPageOutput;
   interviewTurns: Array<InterviewTurnOutput>;

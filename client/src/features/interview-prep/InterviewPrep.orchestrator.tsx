@@ -11,21 +11,22 @@ export function InterviewPrepOrchestrator() {
       <InterviewPrep
         resumeLabel={vm.resumeLabel()}
         hasResume={vm.hasResume()}
+        resumeOptions={vm.savedResumes.options()}
+        selectedResumeId={vm.savedResumes.selectedId()}
+        onSelectResume={vm.selectResume}
+        isDeletingResume={vm.savedResumes.isDeleting()}
+        onRequestResumeDelete={vm.savedResumes.requestDelete}
+        onConfirmResumeDelete={vm.savedResumes.confirmDelete}
+        onCancelResumeDelete={vm.savedResumes.cancelDelete}
         vacancy={vm.vacancy()}
         language={vm.language()}
+        languageLabel={vm.languageLabel()}
         onSelectLanguage={vm.setLanguage}
-        isPreparing={vm.isPreparing()}
         canPrepare={vm.canPrepare()}
-        isReady={vm.isReady()}
         errorMessage={vm.errorMessage()}
-        sectionTabs={vm.sectionTabs()}
-        activeSection={vm.activeSection()}
-        activeItems={vm.activeItems()}
-        onSelectSection={vm.setActiveSection}
         onResumeSelected={vm.onResumeSelected}
         onVacancyInput={vm.onVacancyInput}
         onPrepare={vm.prepare}
-        onStart={vm.start}
         onBack={vm.goBack}
       />
     </PageFade>
