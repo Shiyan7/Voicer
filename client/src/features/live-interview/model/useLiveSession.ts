@@ -1,4 +1,4 @@
-import { createSignal, onCleanup } from 'solid-js';
+import { createMemo, createSignal, mapArray, onCleanup } from 'solid-js';
 import { createStore } from 'solid-js/store';
 
 import { useElapsedTimer } from '@/shared/hooks/useElapsedTimer';
@@ -54,8 +54,10 @@ export function useLiveSession() {
 
   const isAnswering = () => status() === 'answering';
 
-  const turnViews = () =>
-    turns.map((turn) => toLiveTurnView(turn, expanded().has(turn.id)));
+  const turnViews = mapArray(
+    () => turns,
+    (turn) => createMemo(() => toLiveTurnView(turn, expanded().has(turn.id))),
+  );
 
   const isEmpty = () => turns.length === 0;
 

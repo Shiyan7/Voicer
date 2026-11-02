@@ -25,7 +25,7 @@ export function LiveSession(props: LiveSessionProps) {
             <For each={props.turns}>
               {(turn) => (
                 <LiveTurnCard
-                  turn={turn}
+                  turn={turn()}
                   onToggleDetails={props.onToggleDetails}
                 />
               )}
