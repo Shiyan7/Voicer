@@ -293,7 +293,6 @@
       "language": "Interview language",
       "vacancy": "Job description",
       "vacancy_placeholder": "Paste the job description or a link to it",
-      "prepare": "Prepare",
       "preparing": "Analyzing resume and job description…",
       "start": "Start interview",
       "sections": {
@@ -313,6 +312,11 @@
           "title": "On a real call",
           "description": "AI listens to the call and suggests answers"
         }
+      },
+      "validation": {
+        "resume": "Upload your resume",
+        "resume_pdf": "The resume must be a PDF",
+        "vacancy": "Add the job description"
       }
     },
     "session": {

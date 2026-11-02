@@ -3,6 +3,7 @@ import { InterviewLanguage } from '../interview-language.enum';
 const OUTPUT_LANGUAGES: Record<InterviewLanguage, string> = {
   [InterviewLanguage.RU]: 'Russian',
   [InterviewLanguage.EN]: 'English',
+  [InterviewLanguage.UK]: 'Ukrainian',
 };
 
 export const INTERVIEW_PREPARATION_SCHEMA = {

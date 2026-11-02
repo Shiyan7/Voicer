@@ -62,6 +62,7 @@ type InterviewAnswerOutput {
 enum InterviewLanguage {
   EN
   RU
+  UK
 }
 
 enum InterviewMode {

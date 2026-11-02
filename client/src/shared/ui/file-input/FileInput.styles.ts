@@ -2,17 +2,22 @@ import { tv } from 'tailwind-variants';
 
 export const fileInputStyles = tv({
   slots: {
-    root: `
-      flex cursor-pointer items-center gap-3 rounded-xl border border-dashed
-      border-gray-300 px-4 py-3 text-[15px] text-gray-500 transition-colors
-      hover:border-gray-500
+    root: 'flex flex-col gap-2',
+    field: `
+      flex h-11 cursor-pointer flex-row-reverse items-center justify-between gap-3 bg-white rounded-xl border
+      border-dashed px-4 text-[15px] hover:border-gray-500
     `,
     label: 'truncate',
     input: 'hidden',
+    error: 'text-[13px] text-red-600',
   },
   variants: {
     filled: {
-      true: { root: 'text-gray-900' },
+      true: { field: 'border-gray-500 text-gray-900' },
+      false: { field: 'border-gray-300 text-gray-500' },
+    },
+    invalid: {
+      true: { field: 'border-red-500' },
     },
   },
 });

@@ -1,3 +1,4 @@
+import { Field, Form } from '@modular-forms/solid';
 import { For, Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
@@ -11,6 +12,7 @@ import { Tabs } from '@/shared/ui/tabs';
 import { LANGUAGE_OPTIONS } from '../config/interviewPrepConfig';
 import { InterviewPrepProps } from '../types/InterviewPrepProps';
 import { interviewPrepStyles } from './InterviewPrep.styles';
+import { PrepModeCard } from './PrepModeCard';
 
 const styles = interviewPrepStyles();
 
@@ -21,40 +23,52 @@ export function InterviewPrep(props: InterviewPrepProps) {
         <BackButton onClick={props.onBack} />
         <h1 class={styles.title()}>{i18n.t('live.new')}</h1>
       </header>
-      <section class={styles.card()}>
-        <div class={styles.modes()} role="radiogroup">
-          <For each={props.modeOptions}>
-            {(option) => (
-              <button
-                class={styles.mode({ selected: props.mode === option.value })}
-                type="button"
-                role="radio"
-                aria-checked={props.mode === option.value}
-                onClick={() => props.onSelectMode(option.value)}
-              >
-                <Icon name={option.icon} size={20} />
-                <span class={styles.modeTitle()}>{option.title}</span>
-                <span class={styles.modeDescription()}>
-                  {option.description}
-                </span>
-              </button>
-            )}
-          </For>
-        </div>
-        <span class={styles.label()}>{i18n.t('live.prep.resume')}</span>
-        <FileInput
-          label={props.resumeLabel}
-          accept="application/pdf"
-          isFilled={props.hasResume}
-          onSelect={props.onResumeSelected}
-        />
-        <span class={styles.label()}>{i18n.t('live.prep.vacancy')}</span>
-        <textarea
-          class={styles.textarea()}
-          placeholder={i18n.t('live.prep.vacancy_placeholder')}
-          value={props.vacancy}
-          onInput={(event) => props.onVacancyInput(event.currentTarget.value)}
-        />
+      <div class={styles.modes()} role="radiogroup">
+        <For each={props.modeOptions}>
+          {(option) => (
+            <PrepModeCard
+              option={option}
+              isSelected={props.mode === option.value}
+              onSelect={() => props.onSelectMode(option.value)}
+            />
+          )}
+        </For>
+      </div>
+      <Form class={styles.form()} of={props.form} onSubmit={props.onPrepare}>
+        <Field of={props.form} name="vacancy">
+          {(field, fieldProps) => (
+            <label class={styles.field()}>
+              <span class={styles.label()}>{i18n.t('live.prep.vacancy')}</span>
+              <textarea
+                {...fieldProps}
+                class={interviewPrepStyles({
+                  invalid: !!field.error,
+                }).textarea()}
+                placeholder={i18n.t('live.prep.vacancy_placeholder')}
+                value={field.value ?? ''}
+              />
+              <Show when={field.error}>
+                <span class={styles.fieldError()}>{field.error}</span>
+              </Show>
+            </label>
+          )}
+        </Field>
+        <Field of={props.form} name="resume" type="File">
+          {(field, fieldProps) => (
+            <div class={styles.field()}>
+              <span class={styles.label()}>{i18n.t('live.prep.resume')}</span>
+              <FileInput
+                label={
+                  field.value?.name ?? i18n.t('live.prep.resume_placeholder')
+                }
+                accept="application/pdf"
+                isFilled={!!field.value}
+                error={field.error}
+                inputProps={fieldProps}
+              />
+            </div>
+          )}
+        </Field>
         <div class={styles.actions()}>
           <Dropdown
             options={LANGUAGE_OPTIONS}
@@ -63,10 +77,7 @@ export function InterviewPrep(props: InterviewPrepProps) {
             triggerClass={styles.language()}
             panelClass={styles.languagePanel()}
             trigger={() => (
-              <span
-                class={styles.languageValue()}
-                title={i18n.t('live.prep.language')}
-              >
+              <span class={styles.languageValue()}>
                 {props.languageLabel}
                 <Icon
                   class={styles.languageIcon()}
@@ -76,20 +87,19 @@ export function InterviewPrep(props: InterviewPrepProps) {
               </span>
             )}
           />
-          <Button disabled={!props.canPrepare} onClick={props.onPrepare}>
-            <Icon name="common:sparkles" size={16} />
+          <Button
+            class={interviewPrepStyles({ mode: props.mode }).submit()}
+            type="submit"
+            size="lg"
+            disabled={props.isPreparing}
+          >
             {props.prepareLabel}
           </Button>
         </div>
-      </section>
+      </Form>
       <Show when={props.errorMessage}>
         <p class={styles.error()} role="alert">
           {props.errorMessage}
-        </p>
-      </Show>
-      <Show when={props.isPreparing}>
-        <p class={styles.loading()} role="status">
-          {i18n.t('live.prep.preparing')}
         </p>
       </Show>
       <Show when={props.isReady && !props.isPreparing}>

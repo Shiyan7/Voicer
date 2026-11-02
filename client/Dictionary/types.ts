@@ -80,6 +80,7 @@ export type InterviewAnswerOutput = {
 export enum InterviewLanguage {
   En = 'EN',
   Ru = 'RU',
+  Uk = 'UK',
 }
 
 export enum InterviewMode {

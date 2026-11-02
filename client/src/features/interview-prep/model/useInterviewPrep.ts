@@ -1,3 +1,4 @@
+import { createFormStore, valiForm } from '@modular-forms/solid';
 import {
   InterviewLanguage,
   InterviewMode,
@@ -12,6 +13,7 @@ import { storage } from '@/shared/storage';
 import type { Tab } from '@/shared/ui/tabs';
 
 import { createInterviewSessionMutation } from '../api/createInterviewSessionMutation';
+import { createPrepSchema, PrepForm } from '../config/createPrepSchema';
 import {
   LANGUAGE_OPTIONS,
   PREP_MODE_STORAGE_KEY,
@@ -22,10 +24,13 @@ import { PrepSectionKey } from '../types/PrepSectionKey';
 
 export function useInterviewPrep() {
   const navigate = useNavigate();
-  const [resume, setResume] = createSignal<File>();
-  const [vacancy, setVacancy] = createSignal('');
+  const form = createFormStore<PrepForm>({
+    validate: (values) => valiForm(createPrepSchema())(values),
+    validateOn: 'submit',
+    revalidateOn: 'input',
+  });
   const [language, setLanguage] = createSignal(InterviewLanguage.Ru);
-  const [mode, setMode] = createSignal<InterviewMode>();
+  const [mode, setMode] = createSignal(InterviewMode.Mock);
   const [recommendations, setRecommendations] =
     createSignal<InterviewRecommendationsOutput>();
   const [activeSection, setActiveSection] =
@@ -34,23 +39,16 @@ export function useInterviewPrep() {
   const [hasError, setHasError] = createSignal(false);
   const [createState, createSession] = createInterviewSessionMutation();
 
-  const resumeLabel = () =>
-    resume()?.name || i18n.t('live.prep.resume_placeholder');
-
-  const hasResume = () => !!resume();
-
   const isPreparing = () => createState.fetching;
-
-  const canPrepare = () =>
-    !isPreparing() && !!mode() && hasResume() && vacancy().trim().length > 0;
 
   const languageLabel = () =>
     LANGUAGE_OPTIONS.find((option) => option.value === language())?.label ?? '';
 
   const prepareLabel = () => {
-    if (mode() === InterviewMode.Mock) return i18n.t('live.prep.start_mock');
-    if (mode() === InterviewMode.Real) return i18n.t('live.prep.prepare_real');
-    return i18n.t('live.prep.prepare');
+    if (isPreparing()) return i18n.t('live.prep.preparing');
+    return mode() === InterviewMode.Mock
+      ? i18n.t('live.prep.start_mock')
+      : i18n.t('live.prep.prepare_real');
   };
 
   const sectionTabs = (): Tab<PrepSectionKey>[] =>
@@ -67,10 +65,6 @@ export function useInterviewPrep() {
   const isReady = () => !!sessionId();
 
   const errorMessage = () => (hasError() ? i18n.t('live.prep.error') : '');
-
-  const onResumeSelected = (file: File | undefined) => setResume(file);
-
-  const onVacancyInput = (value: string) => setVacancy(value);
 
   const reset = () => {
     setSessionId(undefined);
@@ -99,14 +93,12 @@ export function useInterviewPrep() {
 
   const goBack = () => navigate(paths.live);
 
-  const prepare = async () => {
-    const file = resume();
+  const prepare = async (values: PrepForm) => {
     const selectedMode = mode();
-    if (!file || !selectedMode) return;
     reset();
     const response = await createSession({
-      resume: file,
-      vacancy: vacancy().trim(),
+      resume: values.resume,
+      vacancy: values.vacancy,
       language: language(),
       mode: selectedMode,
     });
@@ -128,9 +120,7 @@ export function useInterviewPrep() {
   const modeOptions = getModeOptions;
 
   return {
-    resumeLabel,
-    hasResume,
-    vacancy,
+    form,
     language,
     languageLabel,
     setLanguage,
@@ -139,15 +129,12 @@ export function useInterviewPrep() {
     selectMode,
     prepareLabel,
     isPreparing,
-    canPrepare,
     sectionTabs,
     activeSection,
     activeItems,
     setActiveSection,
     isReady,
     errorMessage,
-    onResumeSelected,
-    onVacancyInput,
     prepare,
     start,
     goBack,

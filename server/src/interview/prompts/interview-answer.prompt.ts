@@ -15,6 +15,7 @@ const formatTurn = (turn: InterviewTurnEntity): string =>
 const LANGUAGE_RULES: Record<InterviewLanguage, string> = {
   [InterviewLanguage.RU]: 'Answer in Russian.',
   [InterviewLanguage.EN]: 'Answer only in English.',
+  [InterviewLanguage.UK]: 'Answer only in Ukrainian.',
 };
 
 const STYLE_RULES = `You are the candidate in a job interview, answering out loud in the first person.

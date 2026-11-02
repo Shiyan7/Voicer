@@ -1,6 +1,9 @@
+import type { JSX } from 'solid-js';
+
 export interface FileInputProps {
   label: string;
   accept?: string;
   isFilled?: boolean;
-  onSelect: (file: File) => void;
+  error?: string;
+  inputProps: JSX.InputHTMLAttributes<HTMLInputElement>;
 }

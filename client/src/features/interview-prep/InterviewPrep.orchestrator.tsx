@@ -9,9 +9,7 @@ export function InterviewPrepOrchestrator() {
   return (
     <PageFade>
       <InterviewPrep
-        resumeLabel={vm.resumeLabel()}
-        hasResume={vm.hasResume()}
-        vacancy={vm.vacancy()}
+        form={vm.form}
         language={vm.language()}
         languageLabel={vm.languageLabel()}
         onSelectLanguage={vm.setLanguage}
@@ -20,15 +18,12 @@ export function InterviewPrepOrchestrator() {
         onSelectMode={vm.selectMode}
         prepareLabel={vm.prepareLabel()}
         isPreparing={vm.isPreparing()}
-        canPrepare={vm.canPrepare()}
         isReady={vm.isReady()}
         errorMessage={vm.errorMessage()}
         sectionTabs={vm.sectionTabs()}
         activeSection={vm.activeSection()}
         activeItems={vm.activeItems()}
         onSelectSection={vm.setActiveSection}
-        onResumeSelected={vm.onResumeSelected}
-        onVacancyInput={vm.onVacancyInput}
         onPrepare={vm.prepare}
         onStart={vm.start}
         onBack={vm.goBack}
