@@ -11,7 +11,6 @@ export function toInterviewSessionOutput(
   return {
     id: session.id,
     title: session.title,
-    resumeFileName: session.resumeFileName,
     vacancyText: session.vacancyText,
     language: session.language,
     prepStatus: session.prepStatus,

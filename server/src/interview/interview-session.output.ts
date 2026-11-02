@@ -11,9 +11,6 @@ export class InterviewSessionOutput {
   @Field(() => String, { nullable: true })
   title: string | null;
 
-  @Field(() => String, { nullable: true })
-  resumeFileName: string | null;
-
   @Field(() => String)
   vacancyText: string;
 
@@ -23,8 +20,8 @@ export class InterviewSessionOutput {
   @Field(() => InterviewPrepStatus)
   prepStatus: InterviewPrepStatus;
 
-  @Field(() => InterviewRecommendationsOutput)
-  recommendations: InterviewRecommendationsOutput;
+  @Field(() => InterviewRecommendationsOutput, { nullable: true })
+  recommendations: InterviewRecommendationsOutput | null;
 
   @Field(() => Date, { nullable: true })
   finishedAt: Date | null;

@@ -1,22 +1,12 @@
-import type {
-  InterviewSessionOutput,
-  QueryInterviewSessionArgs,
-} from '@schema';
+import type { QueryInterviewSessionArgs } from '@schema';
 
 import { urqlClient } from '@/shared/urql-client';
 
+import { InterviewPreparation } from '../types/InterviewPreparation';
 import { INTERVIEW_PREPARATION_QUERY } from './gql/INTERVIEW_PREPARATION_QUERY';
 
 interface InterviewPreparationQuery {
-  interviewSession: Pick<
-    InterviewSessionOutput,
-    | 'id'
-    | 'prepStatus'
-    | 'title'
-    | 'resumeFileName'
-    | 'vacancyText'
-    | 'recommendations'
-  >;
+  interviewSession: InterviewPreparation;
 }
 
 export const fetchInterviewPreparation = async (id: string) => {
@@ -26,5 +16,5 @@ export const fetchInterviewPreparation = async (id: string) => {
       QueryInterviewSessionArgs
     >(INTERVIEW_PREPARATION_QUERY, { id }, { requestPolicy: 'network-only' })
     .toPromise();
-  return result.data?.interviewSession;
+  return result.data?.interviewSession ?? null;
 };

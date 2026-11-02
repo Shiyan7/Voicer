@@ -4,7 +4,7 @@ import { createMutation } from '@urql/solid';
 import { DELETE_INTERVIEW_RESUME_MUTATION } from './gql/DELETE_INTERVIEW_RESUME_MUTATION';
 
 interface DeleteInterviewResumeMutation {
-  deleteInterviewResume: string;
+  deleteInterviewResume: boolean;
 }
 
 export const deleteInterviewResumeMutation = () =>

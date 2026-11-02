@@ -14,8 +14,11 @@ export function FileInput(props: FileInputProps) {
 
   return (
     <label class={styles.root({ filled: props.isFilled })}>
-      <Icon name={props.isFilled ? 'common:check' : 'common:upload'} size={20} />
       <span class={styles.label()}>{props.label}</span>
+      <Icon
+        name={props.isFilled ? 'common:check' : 'common:upload'}
+        size={20}
+      />
       <input
         class={styles.input()}
         type="file"

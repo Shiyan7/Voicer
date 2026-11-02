@@ -1,18 +1,21 @@
-import { createSignal, onCleanup } from 'solid-js';
+import { createEffect, createSignal, onCleanup } from 'solid-js';
 
 import {
   TITLE_DOTS_INTERVAL_MS,
   TITLE_DOTS_MAX,
 } from '../config/briefingConfig';
 
-export function useTitleDots() {
+export function useTitleDots(isActive: () => boolean) {
   const [count, setCount] = createSignal(0);
-  const timer = setInterval(
-    () => setCount((current) => (current + 1) % (TITLE_DOTS_MAX + 1)),
-    TITLE_DOTS_INTERVAL_MS,
-  );
 
-  onCleanup(() => clearInterval(timer));
+  createEffect(() => {
+    if (!isActive()) return;
+    const timer = setInterval(
+      () => setCount((current) => (current + 1) % (TITLE_DOTS_MAX + 1)),
+      TITLE_DOTS_INTERVAL_MS,
+    );
+    onCleanup(() => clearInterval(timer));
+  });
 
   const dots = () => '.'.repeat(count());
 

@@ -10,9 +10,9 @@ export function InterviewBriefingOrchestrator() {
     <PageFade>
       <InterviewBriefing
         title={vm.title()}
-        isPreparing={vm.isPreparing()}
-        isFailed={vm.isFailed()}
-        briefing={vm.briefing()}
+        status={vm.status()}
+        recommendations={vm.session()?.recommendations}
+        vacancyText={vm.session()?.vacancyText}
         onRetry={vm.retry}
         onStart={vm.start}
         onBack={vm.goBack}

@@ -65,11 +65,11 @@ export class InterviewResolver {
     return this.sessions.resumes(user.id);
   }
 
-  @Mutation(() => ID)
+  @Mutation(() => Boolean)
   deleteInterviewResume(
     @CurrentUser() user: UserEntity,
     @Args('sessionId', { type: () => ID }) sessionId: string,
-  ): Promise<string> {
+  ): Promise<boolean> {
     return this.sessions.deleteResume(user.id, sessionId);
   }
 

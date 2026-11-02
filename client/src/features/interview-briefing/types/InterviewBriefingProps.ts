@@ -1,12 +1,13 @@
-import type { InterviewSessionOutput } from '@schema';
+import type {
+  InterviewPrepStatus,
+  InterviewRecommendationsOutput,
+} from '@schema';
 
 export interface InterviewBriefingProps {
   title: string;
-  isPreparing: boolean;
-  isFailed: boolean;
-  briefing:
-    | Pick<InterviewSessionOutput, 'vacancyText' | 'recommendations'>
-    | undefined;
+  status: InterviewPrepStatus;
+  recommendations: InterviewRecommendationsOutput | null | undefined;
+  vacancyText: string | undefined;
   onRetry: () => void;
   onStart: () => void;
   onBack: () => void;

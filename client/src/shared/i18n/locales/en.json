@@ -296,13 +296,15 @@
         "title": "Delete resume?",
         "description": "The resume will be removed from your saved list. Past interviews stay.",
         "success": "Resume deleted",
-        "error": "Preparation failed. Please try again."
+        "error": "Couldn't delete the resume. Please try again."
       },
       "resume": "Resume",
       "resume_placeholder": "Choose a PDF file",
+      "resume_required": "Choose or upload a resume",
       "language": "Interview language",
       "vacancy": "Job description",
       "vacancy_placeholder": "Paste the job description or a link to it",
+      "vacancy_required": "Paste the job description",
       "prepare": "Prepare",
       "preparing": "Analyzing resume and job description…",
       "start": "Start interview",

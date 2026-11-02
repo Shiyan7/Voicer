@@ -97,7 +97,7 @@ export type InterviewRecommendationsOutput = {
 
 export type InterviewResumeOutput = {
   __typename?: 'InterviewResumeOutput';
-  fileName?: Maybe<Scalars['String']['output']>;
+  fileName: Scalars['String']['output'];
   sessionId: Scalars['ID']['output'];
 };
 
@@ -109,9 +109,8 @@ export type InterviewSessionOutput = {
   language: InterviewLanguage;
   meetingId?: Maybe<Scalars['ID']['output']>;
   prepStatus: InterviewPrepStatus;
-  recommendations: InterviewRecommendationsOutput;
+  recommendations?: Maybe<InterviewRecommendationsOutput>;
   recordingUrl?: Maybe<Scalars['String']['output']>;
-  resumeFileName?: Maybe<Scalars['String']['output']>;
   title?: Maybe<Scalars['String']['output']>;
   vacancyText: Scalars['String']['output'];
 };
@@ -220,7 +219,7 @@ export type Mutation = {
   apiTokenCreate: ApiTokenCreatedOutput;
   apiTokenRevoke: Scalars['Boolean']['output'];
   createInterviewSession: InterviewSessionOutput;
-  deleteInterviewResume: Scalars['ID']['output'];
+  deleteInterviewResume: Scalars['Boolean']['output'];
   deleteInterviewSession: InterviewSessionOutput;
   finishInterviewSession: InterviewSessionOutput;
   interviewAskScreenshot: Scalars['ID']['output'];

@@ -1,31 +1,34 @@
 import { PageFade } from '@/shared/ui/page-fade';
 
 import { useInterviewPrep } from './model/useInterviewPrep';
-import { InterviewPrep } from './ui/InterviewPrep';
+import { PrepForm } from './segments/prep-form';
+import { ResumePicker } from './segments/resume-picker';
 
 export function InterviewPrepOrchestrator() {
   const vm = useInterviewPrep();
 
   return (
     <PageFade>
-      <InterviewPrep
-        resumeLabel={vm.resumeLabel()}
-        hasResume={vm.hasResume()}
-        resumeOptions={vm.savedResumes.options()}
-        selectedResumeId={vm.savedResumes.selectedId()}
-        onSelectResume={vm.selectResume}
-        isDeletingResume={vm.savedResumes.isDeleting()}
-        onRequestResumeDelete={vm.savedResumes.requestDelete}
-        onConfirmResumeDelete={vm.savedResumes.confirmDelete}
-        onCancelResumeDelete={vm.savedResumes.cancelDelete}
-        vacancy={vm.vacancy()}
+      <PrepForm
+        form={vm.form}
+        resumePicker={
+          <ResumePicker
+            label={vm.resumeLabel()}
+            isFilled={vm.hasResume()}
+            options={vm.resumeOptions()}
+            selectedId={vm.selectedResumeId()}
+            isDeleting={vm.isDeletingResume()}
+            onSelectFile={vm.selectResumeFile}
+            onSelectSaved={vm.selectSavedResume}
+            onRequestDelete={vm.requestResumeDelete}
+            onConfirmDelete={vm.confirmResumeDelete}
+            onCancelDelete={vm.cancelResumeDelete}
+          />
+        }
         language={vm.language()}
         languageLabel={vm.languageLabel()}
         onSelectLanguage={vm.setLanguage}
-        canPrepare={vm.canPrepare()}
         errorMessage={vm.errorMessage()}
-        onResumeSelected={vm.onResumeSelected}
-        onVacancyInput={vm.onVacancyInput}
         onPrepare={vm.prepare}
         onBack={vm.goBack}
       />

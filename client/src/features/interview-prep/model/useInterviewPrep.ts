@@ -1,3 +1,4 @@
+import { createFormStore, setValue } from '@modular-forms/solid';
 import { InterviewLanguage } from '@schema';
 import { useNavigate } from '@solidjs/router';
 import { createSignal } from 'solid-js';
@@ -6,55 +7,55 @@ import { i18n } from '@/shared/i18n';
 import { paths } from '@/shared/router';
 
 import { createInterviewSessionMutation } from '../api/createInterviewSessionMutation';
+import { InterviewPrepForm } from '../config/createInterviewPrepSchema';
 import { LANGUAGE_OPTIONS } from '../config/interviewPrepConfig';
-import { useSavedResumes } from './useSavedResumes';
+import { validateInterviewPrep } from '../lib/validateInterviewPrep';
+import { ResumeSelection } from '../types/ResumeSelection';
+import { useResumePicker } from './useResumePicker';
 
 export function useInterviewPrep() {
   const navigate = useNavigate();
-  const savedResumes = useSavedResumes();
-  const [resume, setResume] = createSignal<File>();
-  const [vacancy, setVacancy] = createSignal('');
+  const [resume, setResumeSelection] = createSignal<ResumeSelection>();
   const [language, setLanguage] = createSignal(InterviewLanguage.Ru);
   const [hasError, setHasError] = createSignal(false);
   const [createState, createSession] = createInterviewSessionMutation();
 
-  const resumeLabel = () =>
-    resume()?.name ??
-    savedResumes.selectedLabel() ??
-    i18n.t('live.prep.resume_placeholder');
-
-  const hasResume = () => !!resume() || !!savedResumes.selectedId();
+  const form = createFormStore<InterviewPrepForm>({
+    initialValues: { vacancy: '' },
+    validate: validateInterviewPrep,
+    revalidateOn: 'input',
+  });
 
   const languageLabel = () =>
     LANGUAGE_OPTIONS.find((option) => option.value === language())?.label ?? '';
 
-  const isPreparing = () => createState.fetching;
-
-  const canPrepare = () =>
-    !isPreparing() && hasResume() && vacancy().trim().length > 0;
-
   const errorMessage = () => (hasError() ? i18n.t('live.prep.error') : '');
 
-  const onResumeSelected = (file: File) => {
-    savedResumes.setSelectedId(undefined);
-    setResume(file);
+  const setResume = (selection: ResumeSelection | undefined) => {
+    setResumeSelection(selection);
+    setValue(
+      form,
+      'resumeFile',
+      selection?.kind === 'file' ? selection.file : undefined,
+    );
+    setValue(
+      form,
+      'resumeSessionId',
+      selection?.kind === 'saved' ? selection.id : undefined,
+    );
   };
 
-  const selectResume = (id: string) => {
-    setResume(undefined);
-    savedResumes.setSelectedId(id);
-  };
-
-  const onVacancyInput = (value: string) => setVacancy(value);
+  const resumePicker = useResumePicker(resume, setResume);
 
   const goBack = () => navigate(paths.live);
 
-  const prepare = async () => {
+  const prepare = async (values: InterviewPrepForm) => {
+    if (createState.fetching) return;
     setHasError(false);
     const response = await createSession({
-      resume: resume(),
-      resumeSessionId: savedResumes.selectedId(),
-      vacancy: vacancy().trim(),
+      resume: values.resumeFile,
+      resumeSessionId: values.resumeSessionId,
+      vacancy: values.vacancy.trim(),
       language: language(),
     });
     const session = response.data?.createInterviewSession;
@@ -66,18 +67,12 @@ export function useInterviewPrep() {
   };
 
   return {
-    resumeLabel,
-    hasResume,
-    savedResumes,
-    selectResume,
-    vacancy,
+    form,
+    ...resumePicker,
     language,
     languageLabel,
     setLanguage,
-    canPrepare,
     errorMessage,
-    onResumeSelected,
-    onVacancyInput,
     prepare,
     goBack,
   };

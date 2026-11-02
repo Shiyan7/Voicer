@@ -24,10 +24,7 @@ import { InterviewSessionsSort } from './interview-sessions-sort.enum';
 import { InterviewTurnEntity } from './interview-turn.entity';
 import { InterviewTurnOutput } from './interview-turn.output';
 import { InterviewResumeOutput } from './interview-resume.output';
-import {
-  InterviewPreparation,
-  InterviewRecommendations,
-} from './interview.types';
+import { InterviewPreparation } from './interview.types';
 import {
   toInterviewSessionOutput,
   toInterviewTurnOutput,
@@ -43,11 +40,6 @@ const MAX_RESUME_BYTES = 10 * 1024 * 1024;
 const MAX_VACANCY_LENGTH = 20000;
 const RESUME_LOOKBACK = 50;
 const MAX_RESUMES = 5;
-const EMPTY_RECOMMENDATIONS: InterviewRecommendations = {
-  topics: [],
-  likelyQuestions: [],
-  emphasize: [],
-};
 const STATUS_CONDITIONS = {
   [InterviewSessionStatus.FINISHED]: Not(IsNull()),
   [InterviewSessionStatus.UNFINISHED]: IsNull(),
@@ -67,6 +59,10 @@ export class InterviewSessionsService implements OnModuleInit {
   ) {}
 
   async onModuleInit(): Promise<void> {
+    await this.failInterruptedPreparations();
+  }
+
+  private async failInterruptedPreparations(): Promise<void> {
     await this.sessionsRepository.update(
       { prepStatus: InterviewPrepStatus.PREPARING },
       { prepStatus: InterviewPrepStatus.FAILED },
@@ -98,7 +94,6 @@ export class InterviewSessionsService implements OnModuleInit {
         resumeFileName,
         language,
         prepStatus: InterviewPrepStatus.PREPARING,
-        recommendations: EMPTY_RECOMMENDATIONS,
       }),
     );
     void this.runPreparation(session);
@@ -139,13 +134,13 @@ export class InterviewSessionsService implements OnModuleInit {
       }));
   }
 
-  async deleteResume(userId: string, sessionId: string): Promise<string> {
+  async deleteResume(userId: string, sessionId: string): Promise<boolean> {
     const { resumeText } = await this.findOwned(userId, sessionId);
     await this.sessionsRepository.update(
       { userId, resumeText },
       { resumeFileName: null },
     );
-    return sessionId;
+    return true;
   }
 
   async get(userId: string, id: string): Promise<InterviewSessionOutput> {

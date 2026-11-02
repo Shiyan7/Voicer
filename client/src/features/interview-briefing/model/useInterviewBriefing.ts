@@ -1,3 +1,4 @@
+import { InterviewPrepStatus } from '@schema';
 import { useNavigate, useParams } from '@solidjs/router';
 
 import { i18n } from '@/shared/i18n';
@@ -10,16 +11,14 @@ export function useInterviewBriefing() {
   const params = useParams<{ id: string }>();
   const navigate = useNavigate();
   const sessionId = () => params.id;
-  const { session, isPreparing, isReady, isFailed, retry } =
-    useInterviewPreparation(sessionId);
-  const { dots } = useTitleDots();
+  const { session, status, retry } = useInterviewPreparation(sessionId);
+  const isPreparing = () => status() === InterviewPrepStatus.Preparing;
+  const { dots } = useTitleDots(isPreparing);
 
   const title = () => {
     const base = i18n.t('live.prep.title');
     return isPreparing() ? base + dots() : (session()?.title ?? base);
   };
-
-  const briefing = () => (isReady() ? session() : undefined);
 
   const start = () => navigate(paths.liveSession(sessionId()));
 
@@ -27,10 +26,9 @@ export function useInterviewBriefing() {
 
   return {
     title,
-    isPreparing,
-    isFailed,
+    status,
     retry,
-    briefing,
+    session,
     start,
     goBack,
   };

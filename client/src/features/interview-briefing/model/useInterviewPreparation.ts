@@ -4,37 +4,35 @@ import { createEffect, createSignal, on, onCleanup } from 'solid-js';
 import { fetchInterviewPreparation } from '../api/fetchInterviewPreparation';
 import { retryInterviewPreparationMutation } from '../api/retryInterviewPreparationMutation';
 import { PREPARATION_POLL_MS } from '../config/briefingConfig';
+import { InterviewPreparation } from '../types/InterviewPreparation';
 
 export function useInterviewPreparation(sessionId: () => string) {
-  const [status, setStatus] = createSignal(InterviewPrepStatus.Preparing);
-  const [session, setSession] =
-    createSignal<Awaited<ReturnType<typeof fetchInterviewPreparation>>>();
+  const [session, setSession] = createSignal<InterviewPreparation | null>();
   const [, retryPreparation] = retryInterviewPreparationMutation();
   let timer: ReturnType<typeof setTimeout> | undefined;
   let isDisposed = false;
+
+  const status = () => {
+    const current = session();
+    if (current === undefined) return InterviewPrepStatus.Preparing;
+    return current?.prepStatus ?? InterviewPrepStatus.Failed;
+  };
 
   const poll = async () => {
     clearTimeout(timer);
     const found = await fetchInterviewPreparation(sessionId());
     if (isDisposed) return;
     setSession(found);
-    setStatus(found?.prepStatus ?? InterviewPrepStatus.Failed);
     if (found?.prepStatus === InterviewPrepStatus.Preparing) {
       timer = setTimeout(() => void poll(), PREPARATION_POLL_MS);
     }
   };
 
   const retry = async () => {
-    setStatus(InterviewPrepStatus.Preparing);
+    setSession(undefined);
     await retryPreparation({ id: sessionId() });
     await poll();
   };
-
-  const isPreparing = () => status() === InterviewPrepStatus.Preparing;
-
-  const isReady = () => status() === InterviewPrepStatus.Ready;
-
-  const isFailed = () => status() === InterviewPrepStatus.Failed;
 
   createEffect(on(sessionId, () => void poll()));
 
@@ -43,5 +41,5 @@ export function useInterviewPreparation(sessionId: () => string) {
     clearTimeout(timer);
   });
 
-  return { session, isPreparing, isReady, isFailed, retry };
+  return { session, status, retry };
 }

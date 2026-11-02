@@ -6,7 +6,6 @@ export const INTERVIEW_PREPARATION_QUERY = gql`
       id
       prepStatus
       title
-      resumeFileName
       vacancyText
       recommendations {
         topics

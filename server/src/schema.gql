@@ -77,7 +77,7 @@ type InterviewRecommendationsOutput {
 }
 
 type InterviewResumeOutput {
-  fileName: String
+  fileName: String!
   sessionId: ID!
 }
 
@@ -88,9 +88,8 @@ type InterviewSessionOutput {
   language: InterviewLanguage!
   meetingId: ID
   prepStatus: InterviewPrepStatus!
-  recommendations: InterviewRecommendationsOutput!
+  recommendations: InterviewRecommendationsOutput
   recordingUrl: String
-  resumeFileName: String
   title: String
   vacancyText: String!
 }
@@ -192,7 +191,7 @@ type Mutation {
   apiTokenCreate(name: String!): ApiTokenCreatedOutput!
   apiTokenRevoke(id: ID!): Boolean!
   createInterviewSession(language: InterviewLanguage! = RU, resume: Upload, resumeSessionId: ID, vacancy: String!): InterviewSessionOutput!
-  deleteInterviewResume(sessionId: ID!): ID!
+  deleteInterviewResume(sessionId: ID!): Boolean!
   deleteInterviewSession(id: ID!): InterviewSessionOutput!
   finishInterviewSession(id: ID!): InterviewSessionOutput!
   interviewAskScreenshot(image: Upload!, sessionId: ID!): ID!
