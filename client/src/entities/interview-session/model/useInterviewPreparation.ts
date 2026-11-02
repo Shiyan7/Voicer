@@ -1,7 +1,4 @@
-import {
-  InterviewPrepStatus,
-  type InterviewRecommendationsOutput,
-} from '@schema';
+import { InterviewPrepStatus } from '@schema';
 import { createEffect, createSignal, on, onCleanup } from 'solid-js';
 
 import { fetchInterviewPreparation } from '../api/fetchInterviewPreparation';
@@ -10,8 +7,8 @@ import { PREPARATION_POLL_MS } from '../config/PREPARATION_POLL_MS';
 
 export function useInterviewPreparation(sessionId: () => string) {
   const [status, setStatus] = createSignal(InterviewPrepStatus.Preparing);
-  const [recommendations, setRecommendations] =
-    createSignal<InterviewRecommendationsOutput>();
+  const [session, setSession] =
+    createSignal<Awaited<ReturnType<typeof fetchInterviewPreparation>>>();
   const [, retryPreparation] = retryInterviewPreparationMutation();
   let timer: ReturnType<typeof setTimeout> | undefined;
 
@@ -19,14 +16,14 @@ export function useInterviewPreparation(sessionId: () => string) {
 
   const poll = async () => {
     stopPolling();
-    const session = await fetchInterviewPreparation(sessionId());
-    if (!session) {
+    const found = await fetchInterviewPreparation(sessionId());
+    if (!found) {
       setStatus(InterviewPrepStatus.Failed);
       return;
     }
-    setStatus(session.prepStatus);
-    setRecommendations(session.recommendations);
-    if (session.prepStatus === InterviewPrepStatus.Preparing) {
+    setSession(found);
+    setStatus(found.prepStatus);
+    if (found.prepStatus === InterviewPrepStatus.Preparing) {
       timer = setTimeout(() => void poll(), PREPARATION_POLL_MS);
     }
   };
@@ -36,6 +33,8 @@ export function useInterviewPreparation(sessionId: () => string) {
     await retryPreparation({ id: sessionId() });
     await poll();
   };
+
+  const recommendations = () => session()?.recommendations;
 
   const isPreparing = () => status() === InterviewPrepStatus.Preparing;
 
@@ -47,5 +46,5 @@ export function useInterviewPreparation(sessionId: () => string) {
 
   onCleanup(stopPolling);
 
-  return { isPreparing, isReady, isFailed, recommendations, retry };
+  return { session, isPreparing, isReady, isFailed, recommendations, retry };
 }

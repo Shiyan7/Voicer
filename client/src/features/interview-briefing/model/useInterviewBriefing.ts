@@ -3,6 +3,7 @@ import { createSignal, onCleanup } from 'solid-js';
 
 import { useInterviewPreparation } from '@/entities/interview-session';
 import { i18n } from '@/shared/i18n';
+import { MODALS, showModal } from '@/shared/lib/modal';
 import { paths } from '@/shared/router';
 import type { Tab } from '@/shared/ui/tabs';
 
@@ -31,8 +32,34 @@ export function useInterviewBriefing() {
 
   const title = () => {
     const base = i18n.t('live.prep.title');
-    return preparation.isPreparing() ? base + '.'.repeat(dotCount()) : base;
+    if (preparation.isPreparing()) return base + '.'.repeat(dotCount());
+    return preparation.session()?.title ?? base;
   };
+
+  const resumeName = () => preparation.session()?.resumeFileName;
+
+  const [isVacancyExpanded, setIsVacancyExpanded] = createSignal(false);
+  const [isVacancyLong, setIsVacancyLong] = createSignal(false);
+
+  const measureVacancy = (element: HTMLElement) =>
+    requestAnimationFrame(() =>
+      setIsVacancyLong(element.scrollHeight > element.clientHeight),
+    );
+
+  const toggleVacancy = () => setIsVacancyExpanded((current) => !current);
+
+  const vacancyToggleLabel = () =>
+    isVacancyExpanded()
+      ? i18n.t('live.prep.vacancy_collapse')
+      : i18n.t('live.prep.vacancy_expand');
+
+  const isVacancyFaded = () => isVacancyLong() && !isVacancyExpanded();
+
+  const vacancyText = () => preparation.session()?.vacancyText ?? '';
+
+  const resumeUrl = () => preparation.session()?.resumeUrl;
+
+  const openResume = () => showModal(MODALS.INTERVIEW_RESUME);
 
   const sectionTabs = (): Tab<BriefingSectionKey>[] =>
     (Object.keys(BRIEFING_SECTIONS) as BriefingSectionKey[]).map((key) => ({
@@ -49,6 +76,16 @@ export function useInterviewBriefing() {
 
   return {
     title,
+    resumeName,
+    vacancyText,
+    isVacancyExpanded,
+    isVacancyLong,
+    isVacancyFaded,
+    measureVacancy,
+    toggleVacancy,
+    vacancyToggleLabel,
+    resumeUrl,
+    openResume,
     isPreparing: preparation.isPreparing,
     isReady: preparation.isReady,
     isFailed: preparation.isFailed,

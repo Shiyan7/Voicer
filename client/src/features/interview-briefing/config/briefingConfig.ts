@@ -12,3 +12,5 @@ export const BRIEFING_SECTIONS = {
 export const TITLE_DOTS_MAX = 3;
 
 export const TITLE_DOTS_INTERVAL_MS = 500;
+
+export const PDF_VIEWER_PARAMS = '#toolbar=0&navpanes=0';

@@ -7,10 +7,14 @@ import { InterviewTurnOutput } from './interview-turn.output';
 export function toInterviewSessionOutput(
   session: InterviewSessionEntity,
   recording?: MeetingRecording,
+  resumeUrl: string | null = null,
 ): InterviewSessionOutput {
   return {
     id: session.id,
     title: session.title,
+    resumeFileName: session.resumeFileName,
+    resumeUrl,
+    vacancyText: session.vacancyText,
     language: session.language,
     mode: session.mode,
     prepStatus: session.prepStatus,

@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import { createWriteStream } from 'fs';
-import { mkdir, rm } from 'fs/promises';
+import { mkdir, rm, writeFile } from 'fs/promises';
 import { basename, extname, join, resolve } from 'path';
 import { pipeline } from 'stream/promises';
 import { Injectable } from '@nestjs/common';
@@ -39,6 +39,18 @@ export class FileStorageService {
 
     const playbackName = await this.ensurePlayable(userDir, sourceName);
     return `${this.publicBaseUrl}/storage/${userId}/${playbackName}`;
+  }
+
+  async saveBuffer(
+    userId: string,
+    content: Buffer,
+    extension: string,
+  ): Promise<string> {
+    const userDir = join(this.storageDir, userId);
+    await mkdir(userDir, { recursive: true });
+    const fileName = `${randomUUID()}${extension}`;
+    await writeFile(join(userDir, fileName), content);
+    return `${this.publicBaseUrl}/storage/${userId}/${fileName}`;
   }
 
   private async ensurePlayable(

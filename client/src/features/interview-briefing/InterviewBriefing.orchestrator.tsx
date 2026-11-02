@@ -1,12 +1,15 @@
 import { For, Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
+import { MODALS } from '@/shared/lib/modal';
 import { BackButton } from '@/shared/ui/back-button';
 import { Button } from '@/shared/ui/button';
 import { Icon } from '@/shared/ui/icon';
+import { Modal } from '@/shared/ui/modal';
 import { PageFade } from '@/shared/ui/page-fade';
 import { Tabs } from '@/shared/ui/tabs';
 
+import { PDF_VIEWER_PARAMS } from './config/briefingConfig';
 import { useInterviewBriefing } from './model/useInterviewBriefing';
 import { interviewBriefingStyles } from './ui/InterviewBriefing.styles';
 
@@ -40,6 +43,46 @@ export function InterviewBriefingOrchestrator() {
           </div>
         </Show>
         <Show when={vm.isReady()}>
+          <div class={styles.resume()}>
+            <span class={styles.resumeLabel()}>
+              {i18n.t('live.prep.vacancy')}
+            </span>
+            <p
+              class={interviewBriefingStyles({
+                expanded: vm.isVacancyExpanded(),
+                faded: vm.isVacancyFaded(),
+              }).vacancyText()}
+              ref={vm.measureVacancy}
+            >
+              {vm.vacancyText()}
+            </p>
+            <Show when={vm.isVacancyLong()}>
+              <button
+                class={styles.vacancyToggle()}
+                type="button"
+                onClick={vm.toggleVacancy}
+              >
+                {vm.vacancyToggleLabel()}
+              </button>
+            </Show>
+          </div>
+          <Show when={vm.resumeUrl()}>
+            <div class={styles.resume()}>
+              <span class={styles.resumeLabel()}>
+                {i18n.t('live.prep.resume')}
+              </span>
+              <button
+                class={styles.chip()}
+                type="button"
+                onClick={vm.openResume}
+              >
+                <span class={styles.badge()}>pdf</span>
+                <span class={styles.chipName()}>
+                  {vm.resumeName() ?? i18n.t('live.prep.resume')}
+                </span>
+              </button>
+            </div>
+          </Show>
           <section class={styles.section()}>
             <Tabs
               tabs={vm.sectionTabs()}
@@ -52,10 +95,26 @@ export function InterviewBriefingOrchestrator() {
               </For>
             </ol>
           </section>
-          <Button class={styles.start()} size="lg" onClick={vm.start}>
-            <Icon name="common:microphone" size={18} />
-            {i18n.t('live.prep.start')}
-          </Button>
+          <div class={styles.footer()}>
+            <Button class={styles.start()} size="lg" onClick={vm.start}>
+              <Icon name="common:microphone" size={18} />
+              {i18n.t('live.prep.start')}
+            </Button>
+          </div>
+          <Modal
+            class="overflow-hidden p-0 sm:max-w-4xl"
+            modalId={MODALS.INTERVIEW_RESUME}
+          >
+            <Show when={vm.resumeUrl()}>
+              {(url) => (
+                <iframe
+                  class={styles.resumePdf()}
+                  src={`${url()}${PDF_VIEWER_PARAMS}`}
+                  title={vm.resumeName() ?? i18n.t('live.prep.resume')}
+                />
+              )}
+            </Show>
+          </Modal>
         </Show>
       </div>
     </PageFade>

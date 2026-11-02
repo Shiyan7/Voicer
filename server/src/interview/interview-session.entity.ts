@@ -50,6 +50,9 @@ export class InterviewSessionEntity {
   @Column({ type: 'varchar', nullable: true })
   resumeFileName: string | null;
 
+  @Column({ type: 'varchar', nullable: true })
+  resumeUrl: string | null;
+
   @Column({ type: 'jsonb' })
   recommendations: InterviewRecommendations;
 

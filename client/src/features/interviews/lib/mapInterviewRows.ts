@@ -7,6 +7,13 @@ import { paths } from '@/shared/router';
 
 import { InterviewRowData } from '../types/InterviewRowData';
 
+const getRowHref = (
+  session: Pick<InterviewSessionOutput, 'id' | 'mode' | 'finishedAt'>,
+): string =>
+  session.mode === InterviewMode.Real && !session.finishedAt
+    ? paths.liveBriefing(session.id)
+    : paths.liveSession(session.id);
+
 const getRowMeta = (isMock: boolean, isFinished: boolean): string | null => {
   const labels = [
     isMock && i18n.t('live.mode_filter.mock'),
@@ -23,7 +30,7 @@ export const mapInterviewRows = (
 ): InterviewRowData[] =>
   sessions.map((session) => ({
     id: session.id,
-    href: paths.liveSession(session.id),
+    href: getRowHref(session),
     title: getInterviewSessionTitle(session),
     icon:
       session.mode === InterviewMode.Mock ? 'common:chat' : 'common:microphone',

@@ -118,7 +118,10 @@ export type InterviewSessionOutput = {
   prepStatus: InterviewPrepStatus;
   recommendations: InterviewRecommendationsOutput;
   recordingUrl?: Maybe<Scalars['String']['output']>;
+  resumeFileName?: Maybe<Scalars['String']['output']>;
+  resumeUrl?: Maybe<Scalars['String']['output']>;
   title?: Maybe<Scalars['String']['output']>;
+  vacancyText: Scalars['String']['output'];
 };
 
 export enum InterviewSessionStatus {

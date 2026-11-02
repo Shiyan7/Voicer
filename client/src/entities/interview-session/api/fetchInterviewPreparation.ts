@@ -10,7 +10,13 @@ import { INTERVIEW_PREPARATION_QUERY } from './gql/INTERVIEW_PREPARATION_QUERY';
 interface InterviewPreparationQuery {
   interviewSession: Pick<
     InterviewSessionOutput,
-    'id' | 'prepStatus' | 'recommendations'
+    | 'id'
+    | 'prepStatus'
+    | 'title'
+    | 'resumeFileName'
+    | 'resumeUrl'
+    | 'vacancyText'
+    | 'recommendations'
   >;
 }
 

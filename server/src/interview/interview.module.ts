@@ -1,3 +1,4 @@
+import { FileModule } from '../file/file.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from '../auth/auth.module';
@@ -16,6 +17,7 @@ import { TranscriptionModule } from '../transcription/transcription.module';
   imports: [
     TypeOrmModule.forFeature([InterviewSessionEntity, InterviewTurnEntity]),
     MeetingsModule,
+    FileModule,
     AuthModule,
     GeminiModule,
     ClaudeModule,

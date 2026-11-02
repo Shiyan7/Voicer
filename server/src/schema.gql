@@ -97,7 +97,10 @@ type InterviewSessionOutput {
   prepStatus: InterviewPrepStatus!
   recommendations: InterviewRecommendationsOutput!
   recordingUrl: String
+  resumeFileName: String
+  resumeUrl: String
   title: String
+  vacancyText: String!
 }
 
 enum InterviewSessionStatus {

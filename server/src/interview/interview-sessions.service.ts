@@ -11,6 +11,7 @@ import { buildDateRangeCondition } from '../common/listing/build-date-range-cond
 import { findPage } from '../common/listing/find-page';
 import { requireText } from '../common/require-text';
 import { MeetingsService } from '../meetings/meetings.service';
+import { FileStorageService } from '../file/file-storage.service';
 import { FileUpload } from '../file/file-upload';
 import { ClaudeService } from '../claude/claude.service';
 import { InterviewLanguage } from './interview-language.enum';
@@ -65,6 +66,7 @@ export class InterviewSessionsService implements OnModuleInit {
     private readonly turnsRepository: Repository<InterviewTurnEntity>,
     private readonly meetings: MeetingsService,
     private readonly claude: ClaudeService,
+    private readonly files: FileStorageService,
   ) {}
 
   async onModuleInit(): Promise<void> {
@@ -87,7 +89,7 @@ export class InterviewSessionsService implements OnModuleInit {
       MAX_VACANCY_LENGTH,
       'Некорректный текст вакансии',
     );
-    const { resumeText, resumeFileName } = await this.resolveResume(
+    const { resumeText, resumeFileName, resumeUrl } = await this.resolveResume(
       userId,
       resume,
       resumeSessionId,
@@ -98,6 +100,7 @@ export class InterviewSessionsService implements OnModuleInit {
         vacancyText,
         resumeText,
         resumeFileName,
+        resumeUrl,
         language,
         mode,
         prepStatus: InterviewPrepStatus.PREPARING,
@@ -173,6 +176,7 @@ export class InterviewSessionsService implements OnModuleInit {
     const deleted = toInterviewSessionOutput(session);
     await this.meetings.deleteInterviewRecordings(userId, id);
     await this.sessionsRepository.remove(session);
+    await this.removeUnusedResume(userId, session.resumeUrl);
     return deleted;
   }
 
@@ -236,27 +240,46 @@ export class InterviewSessionsService implements OnModuleInit {
     );
     const bySession = new Map(recordings.map((r) => [r.sessionId, r]));
     return sessions.map((session) =>
-      toInterviewSessionOutput(session, bySession.get(session.id)),
+      toInterviewSessionOutput(
+        session,
+        bySession.get(session.id),
+        this.files.signUrl(session.resumeUrl),
+      ),
     );
+  }
+
+  private async removeUnusedResume(
+    userId: string,
+    resumeUrl: string | null,
+  ): Promise<void> {
+    if (!resumeUrl) return;
+    const isUsed = await this.sessionsRepository.existsBy({ resumeUrl });
+    if (!isUsed) await this.files.remove(userId, resumeUrl);
   }
 
   private async resolveResume(
     userId: string,
     resume: FileUpload | null,
     resumeSessionId: string | null,
-  ): Promise<{ resumeText: string; resumeFileName: string | null }> {
+  ): Promise<{
+    resumeText: string;
+    resumeFileName: string | null;
+    resumeUrl: string | null;
+  }> {
     if (resume) {
+      const content = await this.readPdf(resume);
       return {
-        resumeText: await extractPdfText(await this.readPdf(resume)),
+        resumeText: await extractPdfText(content),
         resumeFileName: resume.filename,
+        resumeUrl: await this.files.saveBuffer(userId, content, '.pdf'),
       };
     }
     if (!resumeSessionId) throw new BadRequestException('Загрузите резюме');
-    const { resumeText, resumeFileName } = await this.findOwned(
+    const { resumeText, resumeFileName, resumeUrl } = await this.findOwned(
       userId,
       resumeSessionId,
     );
-    return { resumeText, resumeFileName };
+    return { resumeText, resumeFileName, resumeUrl };
   }
 
   private async runPreparation(session: InterviewSessionEntity): Promise<void> {

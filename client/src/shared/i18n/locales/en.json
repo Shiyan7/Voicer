@@ -319,7 +319,9 @@
         "vacancy": "Add the job description"
       },
       "title": "Call prep",
-      "retry": "Retry"
+      "retry": "Retry",
+      "vacancy_expand": "Show all",
+      "vacancy_collapse": "Collapse"
     },
     "session": {
       "status": {

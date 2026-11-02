@@ -5,6 +5,10 @@ export const INTERVIEW_PREPARATION_QUERY = gql`
     interviewSession(id: $id) {
       id
       prepStatus
+      title
+      resumeFileName
+      resumeUrl
+      vacancyText
       recommendations {
         topics
         likelyQuestions

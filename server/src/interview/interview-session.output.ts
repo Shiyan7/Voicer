@@ -12,6 +12,15 @@ export class InterviewSessionOutput {
   @Field(() => String, { nullable: true })
   title: string | null;
 
+  @Field(() => String, { nullable: true })
+  resumeFileName: string | null;
+
+  @Field(() => String, { nullable: true })
+  resumeUrl: string | null;
+
+  @Field(() => String)
+  vacancyText: string;
+
   @Field(() => InterviewLanguage)
   language: InterviewLanguage;
 
