@@ -5,21 +5,21 @@ import { useElapsedTimer } from '@/shared/hooks/useElapsedTimer';
 import { i18n } from '@/shared/i18n';
 import { formatClock } from '@/shared/lib/time';
 
-import { createServerLiveSource } from '../api/createServerLiveSource';
 import { EMPTY_TURN } from '../config/liveInterviewConfig';
 import { toLiveTurnView } from '../lib/toLiveTurnView';
-import { LiveSourceHandlers } from '../types/LiveSourceHandlers';
+import { LiveConnectionHandlers } from '../types/LiveConnectionHandlers';
 import { LiveStatus } from '../types/LiveStatus';
 import { LiveTurn } from '../types/LiveTurn';
+import { createLiveConnection } from './createLiveConnection';
 
 export function useLiveSession() {
   const [turns, setTurns] = createStore<LiveTurn[]>([]);
   const [status, setStatus] = createSignal<LiveStatus>('idle');
   const [expanded, setExpanded] = createSignal(new Set<string>());
   const timer = useElapsedTimer();
-  let source: ReturnType<typeof createServerLiveSource> | undefined;
+  let source: ReturnType<typeof createLiveConnection> | undefined;
 
-  const applyTurn: LiveSourceHandlers['onTurn'] = (patch) => {
+  const applyTurn: LiveConnectionHandlers['onTurn'] = (patch) => {
     const index = turns.findIndex((turn) => turn.id === patch.id);
     if (index < 0) setTurns(turns.length, { ...EMPTY_TURN, ...patch });
     else setTurns(index, patch);
@@ -39,7 +39,7 @@ export function useLiveSession() {
 
   const start = (sessionId: string, initialTurns: LiveTurn[]) => {
     show(initialTurns);
-    source = createServerLiveSource(sessionId, {
+    source = createLiveConnection(sessionId, {
       onTurn: applyTurn,
       onStatus: setStatus,
     });
