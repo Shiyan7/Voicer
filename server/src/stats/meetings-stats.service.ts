@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { ActionItemEntity } from '../actions/action-item.entity';
 import { MeetingEntity } from '../meetings/meeting.entity';
 import { MeetingsStatsOutput } from './meetings-stats.output';
@@ -19,7 +19,13 @@ export class MeetingsStatsService {
   async getUserStats(userId: string): Promise<MeetingsStatsOutput> {
     const [week, openActionItems, sources] = await Promise.all([
       this.getWeekTotals(userId),
-      this.actionItemsRepository.count({ where: { userId, isDone: false } }),
+      this.actionItemsRepository.count({
+        where: {
+          userId,
+          isDone: false,
+          meeting: { interviewSessionId: IsNull() },
+        },
+      }),
       this.getSources(userId),
     ]);
 
@@ -39,6 +45,7 @@ export class MeetingsStatsService {
       .select('COUNT(*)::int', 'count')
       .addSelect('COALESCE(SUM(m.durationSec), 0)::int', 'duration')
       .where('m.userId = :userId', { userId })
+      .andWhere('m.interviewSessionId IS NULL')
       .andWhere('m.startedAt >= :weekAgo', { weekAgo })
       .getRawOne<{ count: number; duration: number }>();
   }
@@ -48,6 +55,7 @@ export class MeetingsStatsService {
       .createQueryBuilder('m')
       .select('DISTINCT m.source', 'source')
       .where('m.userId = :userId', { userId })
+      .andWhere('m.interviewSessionId IS NULL')
       .andWhere('m.source IS NOT NULL')
       .getRawMany<{ source: string }>();
 

@@ -1,6 +1,5 @@
 import { readFile } from 'fs/promises';
 import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import {
   Deepgram,
   DeepgramClient,
@@ -9,20 +8,12 @@ import {
 import { TranscribedSegment } from './transcription.types';
 
 const TRANSCRIBE_MODEL = 'nova-3';
-const MAX_RETRIES = 3;
 
 @Injectable()
 export class TranscriptionService {
   private readonly logger = new Logger(TranscriptionService.name);
-  private readonly client: DeepgramClient;
 
-  constructor(configService: ConfigService) {
-    this.client = new DeepgramClient({
-      apiKey: configService.get<string>('DEEPGRAM_API_KEY'),
-      timeoutInSeconds: 1800,
-      maxRetries: MAX_RETRIES,
-    });
-  }
+  constructor(private readonly client: DeepgramClient) {}
 
   async transcribeAudio(filePath: string): Promise<TranscribedSegment[]> {
     this.logger.log(

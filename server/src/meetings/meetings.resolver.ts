@@ -2,7 +2,9 @@ import {
   Args,
   ID,
   Mutation,
+  Parent,
   Query,
+  ResolveField,
   Resolver,
   Subscription,
 } from '@nestjs/graphql';
@@ -22,6 +24,11 @@ import { SummaryStyle } from '../summarization/summary-style.enum';
 export class MeetingsResolver {
   constructor(private readonly meetingsService: MeetingsService) {}
 
+  @ResolveField(() => String, { nullable: true })
+  audioUrl(@Parent() meeting: MeetingOutput): string | null {
+    return this.meetingsService.signAudioUrl(meeting.audioUrl);
+  }
+
   @Query(() => MeetingsPageOutput)
   meetingsPage(
     @CurrentUser() user: UserEntity,
@@ -40,10 +47,13 @@ export class MeetingsResolver {
     source?: string,
     @Args('startedAt', { type: () => Date, nullable: true })
     startedAt?: Date,
+    @Args('interviewSessionId', { type: () => String, nullable: true })
+    interviewSessionId?: string,
   ): Promise<MeetingOutput> {
     return this.meetingsService.createFromUpload(user.id, await upload, {
       source,
       startedAt,
+      interviewSessionId,
     });
   }
 

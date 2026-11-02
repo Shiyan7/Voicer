@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiError, Content, GoogleGenAI } from '@google/genai';
-import { GeminiTurn } from './gemini.types';
+import { LlmTurn } from '../llm/llm-turn';
 
 const FREE_TIER_MODELS = [
   'gemini-3.6-flash',
@@ -42,8 +42,9 @@ export class GeminiService {
 
   async streamText(
     systemInstruction: string,
-    turns: GeminiTurn[],
+    turns: LlmTurn[],
     onText: (text: string) => Promise<void>,
+    signal?: AbortSignal,
   ): Promise<string> {
     const contents = turns.map(this.toContent);
 
@@ -53,6 +54,7 @@ export class GeminiService {
         systemInstruction,
         contents,
         onText,
+        signal,
       );
       if (text) {
         this.logger.log(`Streamed with ${model}`);
@@ -95,6 +97,7 @@ export class GeminiService {
     systemInstruction: string,
     contents: Content[],
     onText: (text: string) => Promise<void>,
+    signal?: AbortSignal,
   ): Promise<string | null> {
     let text = '';
 
@@ -102,7 +105,7 @@ export class GeminiService {
       const stream = await this.ai.models.generateContentStream({
         model,
         contents,
-        config: { systemInstruction },
+        config: { systemInstruction, abortSignal: signal },
       });
       for await (const chunk of stream) {
         if (!chunk.text) continue;
@@ -117,8 +120,11 @@ export class GeminiService {
     }
   }
 
-  private toContent(turn: GeminiTurn): Content {
-    return { role: turn.role, parts: [{ text: turn.text }] };
+  private toContent(turn: LlmTurn): Content {
+    const images = (turn.images ?? []).map((image) => ({
+      inlineData: image,
+    }));
+    return { role: turn.role, parts: [...images, { text: turn.text }] };
   }
 
   private isRetryable(error: unknown): boolean {

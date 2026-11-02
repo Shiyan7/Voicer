@@ -23,6 +23,12 @@ export const getNavItems = (): NavItem[] => [
     activeIcon: 'navigation:check-solid',
   },
   {
+    href: paths.live,
+    label: i18n.t('nav.live'),
+    icon: 'navigation:microphone',
+    activeIcon: 'navigation:microphone-solid',
+  },
+  {
     href: paths.stats,
     label: i18n.t('nav.stats'),
     icon: 'navigation:chart',

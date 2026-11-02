@@ -1,7 +1,9 @@
 import { ChatMessageOutput, ChatRole } from '@schema';
 
+import { parseMarkdown } from '@/shared/lib/markdown';
+
 import { ChatMessageView } from '../types/ChatMessageView';
-import { parseChatContent } from './parseChatContent';
+
 
 export const toChatMessageView = (
   message: ChatMessageOutput,
@@ -12,7 +14,7 @@ export const toChatMessageView = (
     id: message.id,
     isUser,
     text: message.content,
-    blocks: isUser ? [] : parseChatContent(message.content),
+    blocks: isUser ? [] : parseMarkdown(message.content),
     isFailed: message.isFailed,
   };
 };

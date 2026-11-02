@@ -2,11 +2,16 @@ import { Show } from 'solid-js';
 
 import { DeleteMeetingModal } from '@/entities/meeting';
 import { i18n } from '@/shared/i18n';
+import {
+  DateRangeFilter,
+  ListFiltersBar,
+  SelectFilter,
+  ToggleFilter,
+} from '@/shared/ui/list-filters';
 import { PageFade } from '@/shared/ui/page-fade';
 
 import { meetingsStyles } from './Meetings.styles';
 import { useMeetingsPage } from './model/useMeetingsPage';
-import { ListHeader } from './segments/list-header';
 import { MeetingsList } from './segments/meetings-list';
 import { StatsBanner } from './segments/stats-banner';
 import { Toolbar } from './segments/toolbar/ui/Toolbar';
@@ -35,47 +40,52 @@ export function MeetingsOrchestrator() {
           />
         </Show>
         <section class={styles.section()}>
-          <ListHeader
-            count={vm.totalCount()}
-            favoritesOnly={vm.filters.favoritesOnly()}
-            sort={vm.filters.sort()}
-            source={vm.filters.source()}
-            hasSourceFilter={vm.filters.hasSourceFilter()}
-            dateRange={vm.filters.dateRange()}
-            dateRangeLabel={vm.dateRangeLabel()}
-            dateRangePresets={vm.dateRangePresets()}
-            hasDateFilter={vm.filters.hasDateFilter()}
-            isCustomSort={vm.filters.isCustomSort()}
-            favoritesIcon={vm.favoritesIcon()}
-            showSourceFilter={vm.showSourceFilter()}
-            sortOptions={vm.sortOptions()}
-            sourceOptions={vm.sourceOptions()}
-            onToggleFavorites={vm.filters.toggleFavoritesOnly}
-            onSortChange={vm.filters.setSort}
-            onSourceChange={vm.filters.setSource}
-            onDateRangeChange={vm.filters.setDateRange}
-            onDateRangeClear={vm.filters.clearDateRange}
-          />
+          <ListFiltersBar count={vm.totalCount()}>
+            <DateRangeFilter
+              value={vm.filters.dateRange()}
+              onChange={vm.filters.setDateRange}
+            />
+            <ToggleFilter
+              icon={vm.favoritesIcon()}
+              title={i18n.t('meetings.only_favorites')}
+              isActive={vm.filters.favoritesOnly()}
+              onToggle={vm.filters.toggleFavoritesOnly}
+            />
+            <Show when={vm.showSourceFilter()}>
+              <SelectFilter
+                icon="common:filter"
+                title={i18n.t('meetings.filter.title')}
+                options={vm.sourceOptions()}
+                selected={vm.filters.source()}
+                isActive={vm.filters.hasSourceFilter()}
+                onSelect={vm.filters.setSource}
+              />
+            </Show>
+            <SelectFilter
+              icon="common:sort"
+              title={i18n.t('filters.sort.title')}
+              options={vm.sortOptions()}
+              selected={vm.filters.sort()}
+              isActive={vm.filters.isCustomSort()}
+              onSelect={vm.filters.setSort}
+            />
+          </ListFiltersBar>
           <MeetingsList
             items={vm.items()}
             isLoading={vm.isLoading()}
             isEmpty={vm.isEmpty()}
             emptyLabel={vm.emptyLabel()}
             canResetFilters={vm.filters.hasActiveFilters()}
-            currentPage={vm.currentPage()}
-            hasPrevPage={vm.hasPrevPage()}
-            hasNextPage={vm.hasNextPage()}
-            onDelete={vm.requestDeleteMeeting}
+            pagination={vm.pagination}
+            onDelete={vm.requestDelete}
             onResetFilters={vm.filters.resetFilters}
-            onPrevPage={vm.goToPrevPage}
-            onNextPage={vm.goToNextPage}
           />
         </section>
       </div>
       <DeleteMeetingModal
         isDeleting={vm.isDeleting()}
-        onConfirm={vm.confirmDeleteMeeting}
-        onCancel={vm.cancelDeleteMeeting}
+        onConfirm={vm.confirmDelete}
+        onCancel={vm.cancelDelete}
       />
     </PageFade>
   );

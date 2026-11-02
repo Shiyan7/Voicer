@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Manager};
 
 #[cfg(target_os = "macos")]
@@ -10,6 +10,22 @@ use tauri::Emitter;
 pub struct RecorderHandle {
     #[cfg(target_os = "macos")]
     pub recorder: std::sync::Mutex<crate::audio::recorder::Recorder>,
+    #[cfg(target_os = "macos")]
+    pub kind: std::sync::Mutex<RecordingKind>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Copy, Default, PartialEq, Debug)]
+#[serde(rename_all = "lowercase")]
+pub enum RecordingKind {
+    #[default]
+    Call,
+    Interview,
+}
+
+#[derive(Serialize, Clone)]
+pub struct LevelDto {
+    pub level: f32,
+    pub kind: RecordingKind,
 }
 
 #[derive(Serialize, Clone)]
@@ -19,6 +35,7 @@ pub struct StartRecordingResult {
     pub started_at: i64,
     pub path: String,
     pub warnings: Vec<String>,
+    pub kind: RecordingKind,
 }
 
 #[derive(Serialize, Clone)]
@@ -29,6 +46,7 @@ pub struct StopRecordingResult {
     pub local_id: String,
     pub started_at: i64,
     pub source: String,
+    pub kind: RecordingKind,
 }
 
 #[derive(Serialize, Clone)]
@@ -46,6 +64,7 @@ pub enum RecorderStateDto {
         path: String,
         paused_ms: i64,
         paused_at: Option<i64>,
+        kind: RecordingKind,
     },
 }
 
@@ -54,6 +73,20 @@ pub enum RecorderStateDto {
 pub struct PauseStateDto {
     pub paused_ms: i64,
     pub paused_at: Option<i64>,
+    pub kind: RecordingKind,
+}
+
+#[cfg(target_os = "macos")]
+fn lock_state<'a, T>(
+    mutex: &'a std::sync::Mutex<T>,
+    name: &str,
+) -> Result<std::sync::MutexGuard<'a, T>, String> {
+    mutex.lock().map_err(|_| format!("{name} lock poisoned"))
+}
+
+#[cfg(target_os = "macos")]
+fn current_kind(state: &RecorderHandle) -> Result<RecordingKind, String> {
+    lock_state(&state.kind, "recorder kind").map(|kind| *kind)
 }
 
 pub fn recordings_dir(app: &AppHandle) -> Result<PathBuf, String> {
@@ -65,29 +98,32 @@ pub fn recordings_dir(app: &AppHandle) -> Result<PathBuf, String> {
 }
 
 #[tauri::command]
-pub fn start_recording(app: AppHandle) -> Result<StartRecordingResult, String> {
+pub fn start_recording(
+    app: AppHandle,
+    kind: Option<RecordingKind>,
+) -> Result<StartRecordingResult, String> {
     #[cfg(target_os = "macos")]
     {
+        let kind = kind.unwrap_or_default();
         let state = app.state::<RecorderHandle>();
         let dir = recordings_dir(&app)?;
         let info = {
-            let mut recorder = state
-                .recorder
-                .lock()
-                .map_err(|_| "recorder lock poisoned".to_string())?;
+            let mut recorder = lock_state(&state.recorder, "recorder")?;
             let level_app = app.clone();
             recorder.start(
                 &dir,
                 Box::new(move |level| {
-                    let _ = level_app.emit("recording-level", level);
+                    let _ = level_app.emit("recording-level", LevelDto { level, kind });
                 }),
             )?
         };
+        *lock_state(&state.kind, "recorder kind")? = kind;
         let result = StartRecordingResult {
             local_id: info.local_id,
             started_at: info.started_at_ms,
             path: info.path.to_string_lossy().into_owned(),
             warnings: info.warnings,
+            kind,
         };
         let _ = app.emit("recording-started", result.clone());
         #[cfg(desktop)]
@@ -96,7 +132,7 @@ pub fn start_recording(app: AppHandle) -> Result<StartRecordingResult, String> {
     }
     #[cfg(not(target_os = "macos"))]
     {
-        let _ = app;
+        let _ = (app, kind);
         Err("recording is only supported on macOS".into())
     }
 }
@@ -118,10 +154,7 @@ pub fn stop_recording(app: AppHandle) -> Result<StopRecordingResult, String> {
 pub fn do_stop_recording(app: &AppHandle) -> Result<StopRecordingResult, String> {
     let state = app.state::<RecorderHandle>();
     let info = {
-        let mut recorder = state
-            .recorder
-            .lock()
-            .map_err(|_| "recorder lock poisoned".to_string())?;
+        let mut recorder = lock_state(&state.recorder, "recorder")?;
         recorder.stop()?
     };
     let result = StopRecordingResult {
@@ -130,6 +163,7 @@ pub fn do_stop_recording(app: &AppHandle) -> Result<StopRecordingResult, String>
         local_id: info.local_id,
         started_at: info.started_at_ms,
         source: info.source,
+        kind: current_kind(&state)?,
     };
     let _ = app.emit("recording-stopped", result.clone());
     #[cfg(desktop)]
@@ -156,10 +190,7 @@ fn change_pause(_app: &AppHandle, _pause: bool) -> Result<(), String> {
 fn change_pause(app: &AppHandle, pause: bool) -> Result<(), String> {
     let state = app.state::<RecorderHandle>();
     let info = {
-        let mut recorder = state
-            .recorder
-            .lock()
-            .map_err(|_| "recorder lock poisoned".to_string())?;
+        let mut recorder = lock_state(&state.recorder, "recorder")?;
         if pause {
             recorder.pause()?
         } else {
@@ -171,6 +202,7 @@ fn change_pause(app: &AppHandle, pause: bool) -> Result<(), String> {
         PauseStateDto {
             paused_ms: info.paused_ms,
             paused_at: info.paused_at_ms,
+            kind: current_kind(&state)?,
         },
     );
     Ok(())
@@ -182,10 +214,7 @@ pub fn get_recorder_state(app: AppHandle) -> Result<RecorderStateDto, String> {
     {
         use crate::audio::recorder::RecorderState;
         let state = app.state::<RecorderHandle>();
-        let recorder = state
-            .recorder
-            .lock()
-            .map_err(|_| "recorder lock poisoned".to_string())?;
+        let recorder = lock_state(&state.recorder, "recorder")?;
         Ok(match recorder.state() {
             RecorderState::Idle => RecorderStateDto::Idle,
             RecorderState::Recording {
@@ -200,6 +229,7 @@ pub fn get_recorder_state(app: AppHandle) -> Result<RecorderStateDto, String> {
                 path: path.to_string_lossy().into_owned(),
                 paused_ms,
                 paused_at: paused_at_ms,
+                kind: current_kind(&state)?,
             },
         })
     }
@@ -233,3 +263,68 @@ pub fn resolve_recording_path(app: &AppHandle, path: &str) -> Result<PathBuf, St
     Ok(file)
 }
 
+#[derive(Default)]
+pub struct LiveCaptureHandle {
+    #[cfg(target_os = "macos")]
+    capture: std::sync::Mutex<Option<crate::audio::live::LiveCapture>>,
+}
+
+#[cfg(target_os = "macos")]
+fn take_live_capture(app: &AppHandle) -> Result<Option<crate::audio::live::LiveCapture>, String> {
+    lock_state(&app.state::<LiveCaptureHandle>().capture, "live capture")
+        .map(|mut slot| slot.take())
+}
+
+#[tauri::command]
+pub fn start_live_capture(
+    app: AppHandle,
+    on_system: tauri::ipc::Channel<tauri::ipc::InvokeResponseBody>,
+) -> Result<(), String> {
+    #[cfg(target_os = "macos")]
+    {
+        drop(take_live_capture(&app)?);
+        let capture = crate::audio::live::LiveCapture::start(Box::new(move |bytes| {
+            on_system
+                .send(tauri::ipc::InvokeResponseBody::Raw(bytes))
+                .is_ok()
+        }))?;
+        let state = app.state::<LiveCaptureHandle>();
+        let mut slot = lock_state(&state.capture, "live capture")?;
+        *slot = Some(capture);
+        Ok(())
+    }
+    #[cfg(not(target_os = "macos"))]
+    {
+        let _ = (app, on_system);
+        Err("live capture is only supported on macOS".into())
+    }
+}
+
+#[tauri::command]
+pub fn stop_live_capture(app: AppHandle) -> Result<(), String> {
+    #[cfg(target_os = "macos")]
+    {
+        drop(take_live_capture(&app)?);
+        Ok(())
+    }
+    #[cfg(not(target_os = "macos"))]
+    {
+        let _ = app;
+        Err("live capture is only supported on macOS".into())
+    }
+}
+
+#[tauri::command]
+pub async fn capture_screenshot() -> Result<tauri::ipc::Response, String> {
+    #[cfg(target_os = "macos")]
+    {
+        let png = tauri::async_runtime::spawn_blocking(crate::screen::capture_main_display_png)
+            .await
+            .map_err(|e| format!("screenshot task failed: {e}"))??;
+        Ok(tauri::ipc::Response::new(png))
+    }
+    #[cfg(not(target_os = "macos"))]
+    {
+        Err("screenshots are only supported on macOS".into())
+    }
+}

@@ -1,14 +1,9 @@
-import { Field, InputType, Int } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
+import { DatedPageInput } from '../common/listing/dated-page.input';
 import { MeetingsSort } from './meetings-sort.enum';
 
 @InputType()
-export class MeetingsPageInput {
-  @Field(() => Int, { defaultValue: 1 })
-  page: number = 1;
-
-  @Field(() => Int, { defaultValue: 10 })
-  limit: number = 10;
-
+export class MeetingsPageInput extends DatedPageInput {
   @Field({ defaultValue: false })
   favoritesOnly: boolean = false;
 
@@ -17,10 +12,4 @@ export class MeetingsPageInput {
 
   @Field(() => [String], { nullable: true })
   sources?: string[] | null;
-
-  @Field(() => Date, { nullable: true })
-  from?: Date | null;
-
-  @Field(() => Date, { nullable: true })
-  to?: Date | null;
 }

@@ -29,7 +29,10 @@
     }
   },
   "common": {
-    "or": "or"
+    "or": "or",
+    "copy": "Copy",
+    "copied": "Copied",
+    "back": "Back"
   },
   "validation": {
     "common": {
@@ -49,7 +52,8 @@
     "collapse": "Collapse sidebar",
     "expand": "Expand sidebar",
     "shared": "Shared with me",
-    "stats": "Statistics"
+    "stats": "Statistics",
+    "live": "Live interview"
   },
   "pagination": {
     "prev": "Prev",
@@ -93,8 +97,6 @@
     "delete": {
       "title": "Delete meeting?",
       "description": "This permanently removes the meeting and its transcript. This can't be undone.",
-      "confirm": "Delete",
-      "cancel": "Cancel",
       "success": "Meeting deleted",
       "error": "Couldn’t delete the meeting"
     },
@@ -113,29 +115,14 @@
     },
     "speakers_count": "Speakers: {{count}}",
     "only_favorites": "Favorites only",
-    "empty_filtered": "Nothing matches these filters",
     "empty_favorites": "No favorite meetings yet",
-    "reset_filters": "Reset filters",
     "sort": {
-      "title": "Sort",
-      "date_desc": "Newest first",
-      "date_asc": "Oldest first",
       "duration_desc": "Longest first",
       "duration_asc": "Shortest first"
     },
     "filter": {
       "title": "Source",
       "all": "All sources"
-    },
-    "date_filter": {
-      "title": "Date",
-      "clear": "Clear dates",
-      "today": "Today",
-      "yesterday": "Yesterday",
-      "last_7_days": "Last 7 days",
-      "last_30_days": "Last 30 days",
-      "this_month": "This month",
-      "last_month": "Last month"
     },
     "banner": {
       "greeting": "Hi",
@@ -145,7 +132,6 @@
       "week_duration": "recorded",
       "open_actions": "open action items"
     },
-    "total": "Total recordings:",
     "rename": "Rename",
     "rename_placeholder": "Meeting title",
     "rename_error": "Could not rename the meeting",
@@ -283,5 +269,83 @@
     "hint_start": "Pick a start date",
     "hint_end": "Pick an end date",
     "clear": "Clear"
+  },
+  "live": {
+    "title": "Interviews",
+    "title_untitled": "Interview",
+    "new": "New interview",
+    "empty": "No interviews yet",
+    "unfinished": "Unfinished",
+    "prep": {
+      "title": "Interview prep",
+      "subtitle": "Upload your resume and the job description to get tailored recommendations",
+      "resume": "Resume",
+      "resume_placeholder": "Choose a PDF file",
+      "language": "Interview language",
+      "vacancy": "Job description",
+      "vacancy_placeholder": "Paste the job description or a link to it",
+      "prepare": "Prepare",
+      "preparing": "Analyzing resume and job description…",
+      "start": "Start interview",
+      "sections": {
+        "topics": "Likely topics",
+        "questions": "Likely questions",
+        "emphasis": "What to emphasize"
+      },
+      "error": "Could not prepare. Check the resume and try again."
+    },
+    "session": {
+      "status": {
+        "idle": "Stopped",
+        "listening": "Listening",
+        "answering": "Answering"
+      },
+      "stop": "Stop",
+      "answer_now": "Answer now",
+      "capture_code": "Code screenshot",
+      "no_turns": "No questions in this interview",
+      "waiting": "Waiting for the interviewer’s question…",
+      "show_details": "Show details",
+      "hide_details": "Hide details",
+      "screenshot_question": "Coding task from screenshot",
+      "scroll_down": "Scroll down"
+    },
+    "status_filter": {
+      "title": "Status",
+      "all": "All statuses",
+      "finished": "Finished",
+      "unfinished": "Unfinished"
+    },
+    "delete": {
+      "title": "Delete interview?",
+      "description": "This permanently removes the interview, its questions, answers and recording. This can't be undone.",
+      "success": "Interview deleted",
+      "error": "Couldn’t delete the interview",
+      "menu": "Delete interview"
+    }
+  },
+  "filters": {
+    "total": "Total recordings:",
+    "reset": "Reset filters",
+    "empty": "Nothing matches these filters",
+    "sort": {
+      "title": "Sort",
+      "date_desc": "Newest first",
+      "date_asc": "Oldest first"
+    },
+    "date": {
+      "title": "Date",
+      "clear": "Clear dates",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "last_7_days": "Last 7 days",
+      "last_30_days": "Last 30 days",
+      "this_month": "This month",
+      "last_month": "Last month"
+    }
+  },
+  "delete_modal": {
+    "confirm": "Delete",
+    "cancel": "Cancel"
   }
 }

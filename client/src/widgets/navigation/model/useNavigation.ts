@@ -6,6 +6,7 @@ import { i18n } from '@/shared/i18n';
 import { MODALS, showModal } from '@/shared/lib/modal';
 
 import { getNavItems } from '../config/getNavItems';
+import { isNavItemActive } from '../lib/isNavItemActive';
 
 export const useNavigation = () => {
   const location = useLocation();
@@ -17,7 +18,7 @@ export const useNavigation = () => {
   const navItems = () =>
     getNavItems().map((item) => ({
       ...item,
-      isActive: item.href === location.pathname,
+      isActive: isNavItemActive(item.href, location.pathname),
     }));
 
   const toggleSidebar = () => setIsCollapsed((collapsed) => !collapsed);

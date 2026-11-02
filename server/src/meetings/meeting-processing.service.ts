@@ -1,3 +1,4 @@
+import { describeError } from '../common/describe-error';
 import {
   Inject,
   Injectable,
@@ -10,6 +11,7 @@ import { EntityManager, In, IsNull, Repository } from 'typeorm';
 import { ActionItemEntity } from '../actions/action-item.entity';
 import { FileStorageService } from '../file/file-storage.service';
 import { PUB_SUB } from '../pubsub/pubsub.module';
+import { topic } from '../pubsub/topic';
 import { SummarizationService } from '../summarization/summarization.service';
 import { SummaryStyle } from '../summarization/summary-style.enum';
 import {
@@ -17,15 +19,15 @@ import {
   SummarizedKeyPoint,
 } from '../summarization/summarization.types';
 import { TranscriptionService } from '../transcription/transcription.service';
-import { TranscribedSegment } from '../transcription/transcription.types';
 import { KeyPointEntity } from './key-point.entity';
+import { MeetingContentService } from './meeting-content.service';
 import { MeetingEntity, MeetingStatus } from './meeting.entity';
 import { MeetingOutput } from './meeting.output';
 import { toMeetingOutput } from './meeting.serializer';
 import { TranscriptSegmentEntity } from './transcript-segment.entity';
 
 export const meetingUpdatedTopic = (meetingId: string): string =>
-  `meetingUpdated.${meetingId}`;
+  topic('meetingUpdated', meetingId);
 
 @Injectable()
 export class MeetingProcessingService implements OnApplicationBootstrap {
@@ -36,6 +38,7 @@ export class MeetingProcessingService implements OnApplicationBootstrap {
     private readonly meetingsRepository: Repository<MeetingEntity>,
     @InjectRepository(TranscriptSegmentEntity)
     private readonly transcriptSegmentsRepository: Repository<TranscriptSegmentEntity>,
+    private readonly content: MeetingContentService,
     private readonly fileStorageService: FileStorageService,
     private readonly transcriptionService: TranscriptionService,
     private readonly summarizationService: SummarizationService,
@@ -140,7 +143,7 @@ export class MeetingProcessingService implements OnApplicationBootstrap {
   }
 
   async suggestTitle(meetingId: string): Promise<string> {
-    const segments = await this.getTranscribedSegments(meetingId);
+    const segments = await this.content.getSegments(meetingId);
     if (!segments.length) return '';
 
     return this.summarizationService.generateTitle(segments);
@@ -162,7 +165,7 @@ export class MeetingProcessingService implements OnApplicationBootstrap {
 
   private async runSummarization(meeting: MeetingEntity): Promise<void> {
     try {
-      const segments = await this.getTranscribedSegments(meeting.id);
+      const segments = await this.content.getSegments(meeting.id);
       const summary = await this.summarizationService.summarize(
         segments,
         meeting.summaryStyle ?? SummaryStyle.AUTO,
@@ -182,22 +185,6 @@ export class MeetingProcessingService implements OnApplicationBootstrap {
         { summarizationFailed: true },
       );
     }
-  }
-
-  private async getTranscribedSegments(
-    meetingId: string,
-  ): Promise<TranscribedSegment[]> {
-    const segments = await this.transcriptSegmentsRepository.find({
-      where: { meetingId },
-      order: { startMs: 'ASC' },
-    });
-
-    return segments.map(({ speakerIndex, startMs, endMs, text }) => ({
-      speakerIndex,
-      startMs,
-      endMs,
-      text,
-    }));
   }
 
   private async saveKeyPoints(
@@ -242,9 +229,6 @@ export class MeetingProcessingService implements OnApplicationBootstrap {
   }
 
   private logFailure(message: string, error: unknown): void {
-    this.logger.error(
-      message,
-      error instanceof Error ? error.stack : String(error),
-    );
+    this.logger.error(message, describeError(error));
   }
 }

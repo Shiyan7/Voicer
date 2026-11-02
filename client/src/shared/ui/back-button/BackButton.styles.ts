@@ -1,0 +1,12 @@
+import { tv } from 'tailwind-variants';
+
+export const backButtonStyles = tv({
+  base: `
+    flex size-9 shrink-0 items-center justify-center rounded-xl border
+    border-black/5 bg-white text-gray-700 outline-none
+    shadow-[0_1px_2px_rgba(0,0,0,0.04)]
+    transition-[background-color,color,transform] duration-150
+    hover:bg-gray-100 hover:text-gray-900 active:scale-95
+    focus-visible:ring-2 focus-visible:ring-gray-300
+  `,
+});

@@ -13,6 +13,7 @@ import {
   onRecordingStarted,
   onRecordingStopped,
   pauseRecording,
+  readRecordingFile,
   resumeRecording,
   startRecording,
   stopRecording,
@@ -21,7 +22,7 @@ import { formatClock } from '@/shared/lib/time';
 import { settingsRoot } from '@/shared/roots/settingsRoot';
 import { paths } from '@/shared/router';
 
-import { readRecordingFile } from '../lib/readRecordingFile';
+import { isCallRecording } from '../lib/isCallRecording';
 import { toVoiceLevel } from '../lib/toVoiceLevel';
 
 export const useRecorder = () => {
@@ -52,10 +53,9 @@ export const useRecorder = () => {
         source: source,
         startedAt: new Date(startedAt).toISOString(),
       });
-      const meetingId = result.data?.meetingUploadAudio.id;
+      const meeting = result.data?.meetingUploadAudio;
 
-      if (!meetingId) return;
-      navigate(paths.meeting(meetingId));
+      if (meeting) navigate(paths.meeting(meeting.id));
     } catch (error) {
       console.error('[recorder] failed to upload recording:', error);
     }
@@ -80,8 +80,8 @@ export const useRecorder = () => {
 
   const autoStart = async () => {
     if (!settingsRoot.autoRecord) return;
-    if (timer.isRunning()) return;
     try {
+      if ((await getRecorderState()).state === 'recording') return;
       const result = await startRecording();
       if (result.warnings.length) {
         console.warn('[recorder] auto-start warnings:', result.warnings);
@@ -100,19 +100,25 @@ export const useRecorder = () => {
   const setup = async () => {
     const state = await getRecorderState();
 
-    if (state.state === 'recording') {
+    if (state.state === 'recording' && isCallRecording(state)) {
       timer.start(state.startedAt, state.pausedMs, state.pausedAt);
     }
 
-    await onRecordingStarted((payload) => timer.start(payload.startedAt));
+    await onRecordingStarted((payload) => {
+      if (isCallRecording(payload)) timer.start(payload.startedAt);
+    });
 
-    await onRecordingPauseChanged((payload) =>
-      timer.setPause(payload.pausedMs, payload.pausedAt),
-    );
+    await onRecordingPauseChanged((payload) => {
+      if (isCallRecording(payload))
+        timer.setPause(payload.pausedMs, payload.pausedAt);
+    });
 
-    await onRecordingLevel((rms) => setLevel(toVoiceLevel(rms)));
+    await onRecordingLevel((payload) => {
+      if (isCallRecording(payload)) setLevel(toVoiceLevel(payload.level));
+    });
 
     await onRecordingStopped((payload) => {
+      if (!isCallRecording(payload)) return;
       timer.stop();
       setLevel(0);
       void openRecordedMeeting(payload.path, payload.startedAt, payload.source);

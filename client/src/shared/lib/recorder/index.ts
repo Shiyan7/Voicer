@@ -1,4 +1,11 @@
 export {
+  captureScreenshot,
+  startLiveCapture,
+  stopLiveCapture,
+} from './liveCaptureBridge';
+export { readRecordingFile } from './readRecordingFile';
+export type { RecordingKind } from './recorderBridge';
+export {
   getRecorderState,
   onCallDetected,
   onCallEnded,

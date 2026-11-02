@@ -1,11 +1,14 @@
 import { invoke } from '@tauri-apps/api/core';
 import { listen, type UnlistenFn } from '@tauri-apps/api/event';
 
+export type RecordingKind = 'call' | 'interview';
+
 interface StartRecordingResult {
   localId: string;
   startedAt: number;
   path: string;
   warnings: string[];
+  kind: RecordingKind;
 }
 
 interface StopRecordingResult {
@@ -14,6 +17,7 @@ interface StopRecordingResult {
   path: string;
   durationSec: number;
   source: string;
+  kind: RecordingKind;
 }
 
 type RecorderState =
@@ -25,11 +29,18 @@ type RecorderState =
       path: string;
       pausedMs: number;
       pausedAt: number | null;
+      kind: RecordingKind;
     };
 
 interface PauseState {
   pausedMs: number;
   pausedAt: number | null;
+  kind: RecordingKind;
+}
+
+interface RecordingLevel {
+  level: number;
+  kind: RecordingKind;
 }
 
 interface CallDetectedPayload {
@@ -42,8 +53,8 @@ interface CallEndedPayload {
   at: number;
 }
 
-export const startRecording = () =>
-  invoke<StartRecordingResult>('start_recording');
+export const startRecording = (kind: RecordingKind = 'call') =>
+  invoke<StartRecordingResult>('start_recording', { kind });
 
 export const stopRecording = () =>
   invoke<StopRecordingResult>('stop_recording');
@@ -82,9 +93,9 @@ export const onCallEnded = (
   listen<CallEndedPayload>('call-ended', (event) => handler(event.payload));
 
 export const onRecordingLevel = (
-  handler: (level: number) => void,
+  handler: (payload: RecordingLevel) => void,
 ): Promise<UnlistenFn> =>
-  listen<number>('recording-level', (event) => handler(event.payload));
+  listen<RecordingLevel>('recording-level', (event) => handler(event.payload));
 
 export const onRecordingPauseChanged = (
   handler: (payload: PauseState) => void,

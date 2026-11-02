@@ -74,6 +74,7 @@ export class StatsService {
       .createQueryBuilder('m')
       .select(['m.id', 'm.title', 'm.source', 'm.startedAt', 'm.durationSec'])
       .where('m.userId = :userId', { userId })
+      .andWhere('m.interviewSessionId IS NULL')
       .andWhere(
         'm.startedAt >= CAST(:date AS date)::timestamp AT TIME ZONE :timeZone',
       )
@@ -92,6 +93,7 @@ export class StatsService {
       .addSelect('COUNT(*)::int', 'count')
       .addSelect('COALESCE(SUM(m.durationSec), 0)::int', 'durationSec')
       .where('m.userId = :userId', { userId })
+      .andWhere('m.interviewSessionId IS NULL')
       .setParameter('timeZone', timeZone)
       .groupBy('date')
       .orderBy('date', 'ASC');
@@ -104,6 +106,7 @@ export class StatsService {
       .addSelect('COUNT(*)::int', 'count')
       .addSelect('COALESCE(SUM(m.durationSec), 0)::int', 'durationSec')
       .where('m.userId = :userId', { userId })
+      .andWhere('m.interviewSessionId IS NULL')
       .groupBy('1')
       .orderBy('"durationSec"', 'DESC')
       .addOrderBy('count', 'DESC');

@@ -18,7 +18,7 @@ export interface MeetingChatContext {
   actionItems: string[];
 }
 
-export interface ParsedAnswer {
+interface ParsedAnswer {
   answer: string;
   followUps: string[];
 }

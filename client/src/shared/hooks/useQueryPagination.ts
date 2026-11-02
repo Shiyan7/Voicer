@@ -7,6 +7,8 @@ interface UseQueryPaginationOptions {
 
 const DEFAULT_PAGE_LIMIT = 10;
 
+export type QueryPagination = ReturnType<typeof useQueryPagination>;
+
 export const useQueryPagination = (
   meta: () => PagePaginationMetaOutput | undefined,
   options?: UseQueryPaginationOptions,

@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,6 +12,7 @@ import { SignUpInput } from './dto/sign-up.input';
 import { UserEntity } from '../users/user.entity';
 import { isUniqueConstraintError } from '../common/is-unique-constraint-error';
 import { AuthPayload } from './models/auth-payload.model';
+import { JwtDto } from './dto/jwt.dto';
 
 @Injectable()
 export class AuthService {
@@ -64,6 +66,13 @@ export class AuthService {
     }
 
     return this.generateTokens({ userId: user.id });
+  }
+
+  async authenticateAccessToken(token: string): Promise<UserEntity> {
+    const payload = await this.jwtService.verifyAsync<JwtDto>(token);
+    const user = await this.validateUser(payload.userId);
+    if (!user) throw new UnauthorizedException();
+    return user;
   }
 
   async validateUser(userId: unknown): Promise<UserEntity | null> {

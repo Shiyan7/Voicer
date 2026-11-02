@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { UserEntity } from '../users/user.entity';
 import { SummaryStyle } from '../summarization/summary-style.enum';
+import { InterviewSessionEntity } from '../interview/interview-session.entity';
 
 export enum MeetingStatus {
   TRANSCRIBING = 'transcribing',
@@ -52,6 +53,14 @@ export class MeetingEntity {
 
   @Column({ type: 'int', nullable: true })
   durationSec: number | null;
+
+  @Index()
+  @Column({ type: 'uuid', nullable: true })
+  interviewSessionId: string | null;
+
+  @ManyToOne(() => InterviewSessionEntity, { onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'interviewSessionId' })
+  interviewSession: InterviewSessionEntity | null;
 
   @Column({ type: 'boolean', default: false })
   isFavorite: boolean;

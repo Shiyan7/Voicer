@@ -1,3 +1,4 @@
+pub mod live;
 pub mod mic;
 pub mod recorder;
 pub mod system;
@@ -9,6 +10,10 @@ use std::time::Instant;
 pub const TARGET_SAMPLE_RATE: u32 = 16_000;
 
 pub static RECORDING_ACTIVE: AtomicBool = AtomicBool::new(false);
+
+pub static LIVE_SYSTEM_QUEUE: Mutex<Option<Arc<SampleQueue>>> = Mutex::new(None);
+
+pub static LIVE_FEED_ACTIVE: AtomicBool = AtomicBool::new(false);
 
 pub struct SampleQueue {
     samples: Mutex<Vec<i16>>,

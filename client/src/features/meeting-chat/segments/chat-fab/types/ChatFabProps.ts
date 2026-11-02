@@ -4,7 +4,7 @@ import { Point } from '../../../types/Point';
 
 type Handler<E extends Event> = JSX.EventHandler<HTMLButtonElement, E>;
 
-export interface ChatFabHandlers {
+interface ChatFabHandlers {
   onPointerDown: Handler<PointerEvent>;
   onPointerMove: Handler<PointerEvent>;
   onPointerUp: Handler<PointerEvent>;

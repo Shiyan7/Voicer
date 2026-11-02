@@ -24,7 +24,6 @@ export class ApiTokensService {
     const apiTokens = await this.apiTokensRepository.find({
       where: { userId },
       order: { createdAt: 'DESC' },
-      comment: this.getFnName(this.getUserApiTokens.name),
     });
 
     return apiTokens.map((apiToken) => this.serialize(apiToken));
@@ -62,7 +61,6 @@ export class ApiTokensService {
     const apiToken = await this.apiTokensRepository.findOne({
       where: { tokenHash: this.hash(secret) },
       relations: { user: true },
-      comment: this.getFnName(this.findUserBySecret.name),
     });
 
     if (!apiToken) return null;
@@ -92,9 +90,5 @@ export class ApiTokensService {
       lastUsedAt: apiToken.lastUsedAt,
       createdAt: apiToken.createdAt,
     };
-  }
-
-  private getFnName(name: string): string {
-    return `${ApiTokensService.name}.${name}`;
   }
 }

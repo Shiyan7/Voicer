@@ -1,6 +1,7 @@
 import { For, Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
+import { BackButton } from '@/shared/ui/back-button';
 import { Icon } from '@/shared/ui/icon';
 import { SpeakerAvatar } from '@/shared/ui/speaker-avatar';
 
@@ -16,14 +17,7 @@ export function DetailsHeader(props: DetailsHeaderDeps) {
   return (
     <header class={styles.header()}>
       <div class={styles.titleRow()}>
-        <button
-          class={styles.back()}
-          aria-label={i18n.t('meetings.back')}
-          type="button"
-          onClick={props.onBack}
-        >
-          <Icon size={18} name="common:chevron-left" />
-        </button>
+        <BackButton onClick={props.onBack} />
         <Show
           when={vm.isEditing()}
           fallback={

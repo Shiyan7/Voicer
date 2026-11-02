@@ -1,4 +1,3 @@
-import { join } from 'path';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { graphqlUploadExpress } from 'graphql-upload-minimal';
@@ -23,9 +22,6 @@ function configureHttp(
   app.enableCors({
     origin: [...LOCAL_ORIGINS, config.get<string>('CLIENT_URL')],
   });
-
-  const storageDir = config.get<string>('STORAGE_DIR') ?? './storage';
-  app.useStaticAssets(join(process.cwd(), storageDir), { prefix: '/storage/' });
 
   const maxUploadMb =
     Number(config.get('MAX_UPLOAD_MB')) || DEFAULT_MAX_UPLOAD_MB;

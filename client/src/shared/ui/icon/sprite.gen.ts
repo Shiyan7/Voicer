@@ -282,39 +282,40 @@ export const sprites = defineSpriteMap([
   defineSprite('common', [
     defineSpriteAsset(
       [
-        defineSpriteSymbol(['arrow-up'], [16]),
+        defineSpriteSymbol(['arrow-up'], [24]),
         defineSpriteSymbol(['audio'], [24]),
-        defineSpriteSymbol(['calendar'], [16]),
+        defineSpriteSymbol(['calendar'], [24]),
         defineSpriteSymbol(['chat'], [24]),
         defineSpriteSymbol(['check'], [24]),
         defineSpriteSymbol(['chevron-left'], [24]),
         defineSpriteSymbol(['chevron-right'], [24]),
-        defineSpriteSymbol(['clock'], [16]),
-        defineSpriteSymbol(['cross'], [15]),
+        defineSpriteSymbol(['clock'], [24]),
+        defineSpriteSymbol(['copy'], [24]),
+        defineSpriteSymbol(['cross'], [24]),
         defineSpriteSymbol(['crown'], [24]),
         defineSpriteSymbol(['document-text'], [24]),
-        defineSpriteSymbol(['dots'], [16]),
+        defineSpriteSymbol(['dots'], [24]),
         defineSpriteSymbol(['exclamation'], [24]),
         defineSpriteSymbol(['filter'], [24]),
         defineSpriteSymbol(['folder'], [24]),
         defineSpriteSymbol(['login'], [24]),
         defineSpriteSymbol(['logout'], [24]),
         defineSpriteSymbol(['microphone'], [24]),
-        defineSpriteSymbol(['pause'], [16]),
+        defineSpriteSymbol(['pause'], [24]),
         defineSpriteSymbol(['pencil'], [24]),
-        defineSpriteSymbol(['play'], [16]),
+        defineSpriteSymbol(['play'], [24]),
         defineSpriteSymbol(['search'], [24]),
         defineSpriteSymbol(['skip-back'], [24]),
         defineSpriteSymbol(['skip-forward'], [24]),
         defineSpriteSymbol(['smiley'], [16]),
         defineSpriteSymbol(['sort'], [24]),
-        defineSpriteSymbol(['sparkles'], [16]),
-        defineSpriteSymbol(['stop'], [16]),
-        defineSpriteSymbol(['timeline'], [16]),
+        defineSpriteSymbol(['sparkles'], [24]),
+        defineSpriteSymbol(['stop'], [24]),
+        defineSpriteSymbol(['timeline'], [24]),
         defineSpriteSymbol(['trash'], [24]),
         defineSpriteSymbol(['upload'], [24]),
       ],
-      defineExternalAssetMeta('common.a369b7e4.svg'),
+      defineExternalAssetMeta('common.1f937075.svg'),
     ),
   ]),
   defineSprite('navigation', [
@@ -328,12 +329,14 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['chart'], [24]),
         defineSpriteSymbol(['check-solid'], [24]),
         defineSpriteSymbol(['check'], [24]),
+        defineSpriteSymbol(['microphone-solid'], [24]),
+        defineSpriteSymbol(['microphone'], [24]),
         defineSpriteSymbol(['settings-solid'], [24]),
         defineSpriteSymbol(['settings'], [24]),
         defineSpriteSymbol(['users-solid'], [24]),
         defineSpriteSymbol(['users'], [24]),
       ],
-      defineExternalAssetMeta('navigation.eb8abf09.svg'),
+      defineExternalAssetMeta('navigation.40271c91.svg'),
     ),
   ]),
   defineSprite('social', [
@@ -363,6 +366,7 @@ export type SpritesMeta = {
     | 'chevron-left'
     | 'chevron-right'
     | 'clock'
+    | 'copy'
     | 'cross'
     | 'crown'
     | 'document-text'
@@ -395,6 +399,8 @@ export type SpritesMeta = {
     | 'chart'
     | 'check-solid'
     | 'check'
+    | 'microphone-solid'
+    | 'microphone'
     | 'settings-solid'
     | 'settings'
     | 'users-solid'

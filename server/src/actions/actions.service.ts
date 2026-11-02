@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { ActionItemEntity } from './action-item.entity';
 import { ActionItemOutput } from './action-item.output';
 
@@ -21,11 +21,14 @@ export class ActionsService {
     limit?: number,
   ): Promise<ActionItemOutput[]> {
     const actionItems = await this.actionItemsRepository.find({
-      where: isDone === undefined ? { userId } : { userId, isDone },
+      where: {
+        userId,
+        meeting: { interviewSessionId: IsNull() },
+        ...(isDone === undefined ? {} : { isDone }),
+      },
       order: { createdAt: 'DESC' },
       relations: { meeting: true },
       take: limit,
-      comment: this.getFnName(this.getUserActionItems.name),
     });
 
     return actionItems.map((actionItem) => this.serialize(actionItem));
@@ -39,7 +42,6 @@ export class ActionsService {
       where: { userId, meetingId },
       order: { createdAt: 'DESC' },
       relations: { meeting: true },
-      comment: this.getFnName(this.getMeetingActionItems.name),
     });
 
     return actionItems.map((actionItem) => this.serialize(actionItem));
@@ -60,7 +62,6 @@ export class ActionsService {
   ): Promise<ActionItemEntity> {
     const actionItem = await this.actionItemsRepository.findOne({
       where: { id },
-      comment: this.getFnName(this.findOwnedActionItem.name),
     });
 
     if (!actionItem) {
@@ -87,9 +88,5 @@ export class ActionsService {
       meetingSource: actionItem.meeting.source,
       meetingStartedAt: actionItem.meeting.startedAt,
     };
-  }
-
-  private getFnName(name: string): string {
-    return `${ActionsService.name}.${name}`;
   }
 }

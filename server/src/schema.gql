@@ -52,6 +52,66 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type InterviewAnswerOutput {
+  answerId: ID!
+  done: Boolean!
+  question: String!
+  text: String!
+}
+
+enum InterviewLanguage {
+  EN
+  RU
+}
+
+type InterviewRecommendationsOutput {
+  emphasize: [String!]!
+  likelyQuestions: [String!]!
+  topics: [String!]!
+}
+
+type InterviewSessionOutput {
+  createdAt: DateTime!
+  finishedAt: DateTime
+  id: ID!
+  language: InterviewLanguage!
+  meetingId: ID
+  recommendations: InterviewRecommendationsOutput!
+  recordingUrl: String
+  title: String
+}
+
+enum InterviewSessionStatus {
+  FINISHED
+  UNFINISHED
+}
+
+input InterviewSessionsPageInput {
+  from: DateTime
+  limit: Int! = 10
+  page: Int! = 1
+  sort: InterviewSessionsSort! = DATE_DESC
+  status: InterviewSessionStatus
+  to: DateTime
+}
+
+type InterviewSessionsPageOutput {
+  items: [InterviewSessionOutput!]!
+  meta: PagePaginationMetaOutput!
+}
+
+enum InterviewSessionsSort {
+  DATE_ASC
+  DATE_DESC
+}
+
+type InterviewTurnOutput {
+  answer: String!
+  createdAt: DateTime!
+  id: ID!
+  question: String!
+}
+
 type KeyPointOutput {
   atMs: Int
   id: ID!
@@ -66,6 +126,7 @@ type MeetingOutput {
   durationSec: Int
   endedAt: DateTime
   id: ID!
+  interviewSessionId: ID
   isFavorite: Boolean!
   source: String
   startedAt: DateTime!
@@ -116,6 +177,10 @@ type MeetingsStatsOutput {
 type Mutation {
   apiTokenCreate(name: String!): ApiTokenCreatedOutput!
   apiTokenRevoke(id: ID!): Boolean!
+  createInterviewSession(language: InterviewLanguage! = RU, resume: Upload!, vacancy: String!): InterviewSessionOutput!
+  deleteInterviewSession(id: ID!): InterviewSessionOutput!
+  finishInterviewSession(id: ID!): InterviewSessionOutput!
+  interviewAskScreenshot(image: Upload!, sessionId: ID!): ID!
   meetingChatAsk(meetingId: ID!, question: String!): ChatMessageOutput!
   meetingChatClear(meetingId: ID!): Boolean!
   meetingDelete(id: ID!): MeetingOutput!
@@ -123,7 +188,7 @@ type Mutation {
   meetingSetFavorite(id: ID!, isFavorite: Boolean!): MeetingOutput!
   meetingSuggestTitle(id: ID!): String!
   meetingSummarize(id: ID!, style: SummaryStyle! = AUTO): MeetingOutput!
-  meetingUploadAudio(file: Upload!, source: String, startedAt: DateTime): MeetingOutput!
+  meetingUploadAudio(file: Upload!, interviewSessionId: String, source: String, startedAt: DateTime): MeetingOutput!
   signIn(input: SignInInput!): AuthPayload!
   signUp(input: SignUpInput!): AuthPayload!
   toggleActionItem(id: ID!): Boolean!
@@ -139,6 +204,9 @@ type PagePaginationMetaOutput {
 type Query {
   actionItems: [ActionItemOutput!]!
   apiTokens: [ApiTokenOutput!]!
+  interviewSession(id: ID!): InterviewSessionOutput!
+  interviewSessionsPage(input: InterviewSessionsPageInput!): InterviewSessionsPageOutput!
+  interviewTurns(sessionId: ID!): [InterviewTurnOutput!]!
   meetingActionItems(meetingId: ID!): [ActionItemOutput!]!
   meetingChatMessages(meetingId: ID!): [ChatMessageOutput!]!
   meetingChatSuggestions(meetingId: ID!): [String!]!
@@ -248,6 +316,7 @@ type StatsYearOutput {
 }
 
 type Subscription {
+  interviewAnswer(sessionId: ID!): InterviewAnswerOutput!
   meetingChatMessage(meetingId: ID!): ChatMessageOutput!
   meetingUpdated(id: ID!): MeetingOutput!
 }

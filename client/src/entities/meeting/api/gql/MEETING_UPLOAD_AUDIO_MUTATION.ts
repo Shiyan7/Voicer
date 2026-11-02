@@ -5,8 +5,14 @@ export const MEETING_UPLOAD_AUDIO_MUTATION = gql`
     $file: Upload!
     $source: String
     $startedAt: DateTime
+    $interviewSessionId: String
   ) {
-    meetingUploadAudio(file: $file, source: $source, startedAt: $startedAt) {
+    meetingUploadAudio(
+      file: $file
+      source: $source
+      startedAt: $startedAt
+      interviewSessionId: $interviewSessionId
+    ) {
       id
     }
   }

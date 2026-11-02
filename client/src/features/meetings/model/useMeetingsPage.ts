@@ -1,23 +1,23 @@
+import { useMeetingDelete } from '@/entities/meeting';
+import { useListStatus } from '@/shared/hooks/useListStatus';
 import { useQueryPagination } from '@/shared/hooks/useQueryPagination';
 import { i18n } from '@/shared/i18n';
+import { toDateRangeInput } from '@/shared/lib/date-range';
 import { authRoot } from '@/shared/roots/authRoot';
 
 import { meetingsPageQuery } from '../api/meetingsPageQuery';
 import { meetingsStatsQuery } from '../api/meetingsStatsQuery';
-import { formatDateRange } from '../lib/formatDateRange';
-import { getDateRangePresets } from '../lib/getDateRangePresets';
 import { getSortOptions } from '../lib/getSortOptions';
 import { getSourceOptions } from '../lib/getSourceOptions';
 import { mapMeetingCards } from '../lib/mapMeetingCards';
-import { toDateRangeInput } from '../lib/toDateRangeInput';
 import { useMeetingCapture } from './useMeetingCapture';
-import { useMeetingDelete } from './useMeetingDelete';
 import { useMeetingsFilters } from './useMeetingsFilters';
 import { useStatsBanner } from './useStatsBanner';
 
 export const useMeetingsPage = () => {
   const filters = useMeetingsFilters();
   const pagination = useQueryPagination(() => meetingsPage()?.meta);
+  const { isDeleting, request, confirm, cancel } = useMeetingDelete();
 
   const [meetingsResult] = meetingsPageQuery(
     () => ({
@@ -46,13 +46,15 @@ export const useMeetingsPage = () => {
 
   const items = () => mapMeetingCards(meetingsPage()?.items);
 
-  const isLoading = () => meetingsResult.fetching && !items().length;
-
-  const isEmpty = () => !meetingsResult.fetching && items().length === 0;
+  const { isLoading, isEmpty, totalCount } = useListStatus({
+    isFetching: () => meetingsResult.fetching,
+    itemCount: () => items().length,
+    total: () => meetingsPage()?.meta.total,
+  });
 
   const emptyLabel = () => {
     if (filters.hasSourceFilter() || filters.hasDateFilter()) {
-      return i18n.t('meetings.empty_filtered');
+      return i18n.t('filters.empty');
     }
     if (filters.favoritesOnly()) return i18n.t('meetings.empty_favorites');
     return i18n.t('meetings.empty');
@@ -67,13 +69,8 @@ export const useMeetingsPage = () => {
 
   const showSourceFilter = () => sourceOptions().length > 1;
 
-  const dateRangeLabel = () => formatDateRange(filters.dateRange());
-
-  const totalCount = () => String(meetingsPage()?.meta.total ?? 0);
-
   return {
     ...useMeetingCapture(),
-    ...useMeetingDelete(),
     banner: useStatsBanner(stats, isStatsLoading),
     isAuthorized,
     filters,
@@ -85,13 +82,11 @@ export const useMeetingsPage = () => {
     sourceOptions,
     showSourceFilter,
     totalCount,
-    dateRangeLabel,
-    dateRangePresets: getDateRangePresets,
     sortOptions: getSortOptions,
-    currentPage: pagination.currentPage,
-    hasPrevPage: pagination.hasPrevPage,
-    hasNextPage: pagination.hasNextPage,
-    goToPrevPage: pagination.goToPrevPage,
-    goToNextPage: pagination.goToNextPage,
+    pagination,
+    isDeleting,
+    requestDelete: request,
+    confirmDelete: confirm,
+    cancelDelete: cancel,
   };
 };
