@@ -282,6 +282,7 @@ export const sprites = defineSpriteMap([
   defineSprite('common', [
     defineSpriteAsset(
       [
+        defineSpriteSymbol(['adjustments'], [24]),
         defineSpriteSymbol(['arrow-up'], [24]),
         defineSpriteSymbol(['audio'], [24]),
         defineSpriteSymbol(['calendar'], [24]),
@@ -315,7 +316,7 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['trash'], [24]),
         defineSpriteSymbol(['upload'], [24]),
       ],
-      defineExternalAssetMeta('common.1f937075.svg'),
+      defineExternalAssetMeta('common.a7fc97ef.svg'),
     ),
   ]),
   defineSprite('navigation', [
@@ -358,6 +359,7 @@ export const sprites = defineSpriteMap([
 
 export type SpritesMeta = {
   common:
+    | 'adjustments'
     | 'arrow-up'
     | 'audio'
     | 'calendar'

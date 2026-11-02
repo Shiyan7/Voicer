@@ -174,7 +174,18 @@
     "speed": "Speed",
     "back": "Back 15 seconds",
     "forward": "Forward 15 seconds",
-    "speakers": "Speakers"
+    "speakers": "Speakers",
+    "audio_settings": "Audio settings",
+    "volume": "Volume",
+    "sound": "Sound",
+    "preset_normal": "Normal",
+    "preset_normal_hint": "No processing",
+    "preset_hum": "Hum",
+    "preset_hum_hint": "Strongly cuts hum and lows, voices get thinner",
+    "preset_voice": "Voice",
+    "preset_voice_hint": "Keeps only the speech band, sounds like a phone call",
+    "leveling": "Level voices",
+    "reset_audio": "Reset"
   },
   "settings": {
     "general": "General",

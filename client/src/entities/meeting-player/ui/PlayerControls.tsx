@@ -15,7 +15,7 @@ export function PlayerControls(props: PlayerControlsProps) {
       <div class={styles.start()}>
         <Show when={props.hasTracks}>
           <button
-            class={styles.iconBtn({ active: props.isSpeakersOpen })}
+            class={styles.toggleBtn({ active: props.isSpeakersOpen })}
             aria-label={i18n.t('player.speakers')}
             type="button"
             onClick={props.onToggleSpeakers}
@@ -23,6 +23,7 @@ export function PlayerControls(props: PlayerControlsProps) {
             <Icon size={18} name="common:timeline" />
           </button>
         </Show>
+        {props.audioSettings}
       </div>
       <div class={styles.center()}>
         <button

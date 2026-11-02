@@ -4,7 +4,7 @@ export const notesEmptyStyles = tv({
   slots: {
     root: `
       relative flex flex-col items-center overflow-hidden rounded-3xl
-      border border-black/5 bg-white px-6 pb-14 pt-16 text-center
+      border border-gray-200 bg-white px-6 pb-14 pt-16 text-center
     `,
     glow: `
       pointer-events-none absolute -top-24 left-1/2 h-64 w-[36rem]

@@ -21,7 +21,7 @@ export const detailsHeaderStyles = tv({
     editBtn: 'opacity-0 group-hover:opacity-100 focus-visible:opacity-100',
     chips: 'flex flex-wrap items-center gap-2',
     chip: `
-      inline-flex h-7 items-center gap-1.5 rounded-full border border-black/5
+      inline-flex h-7 items-center gap-1.5 rounded-full border border-gray-200
       bg-white/80 px-2.5 text-[13px] font-medium text-gray-600
     `,
     chipIcon: 'size-3.5 shrink-0 text-gray-400',

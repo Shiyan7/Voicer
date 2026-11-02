@@ -10,7 +10,7 @@ export const toastsStyles = tv({
     toast: `
       flex items-center gap-3 py-2 pl-2 pr-2 pointer-events-auto
       relative overflow-hidden
-      rounded-2xl border border-black/5
+      rounded-2xl border border-gray-200
       bg-white/90 backdrop-blur-xl text-gray-900
       shadow-[0_12px_32px_-12px_rgba(15,15,30,0.3)]
       animate-toast-in

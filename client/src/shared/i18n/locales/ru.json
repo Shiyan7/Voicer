@@ -174,7 +174,18 @@
     "speed": "Скорость",
     "back": "Назад на 15 секунд",
     "forward": "Вперёд на 15 секунд",
-    "speakers": "Спикеры"
+    "speakers": "Спикеры",
+    "audio_settings": "Настройки звука",
+    "volume": "Громкость",
+    "sound": "Звук",
+    "preset_normal": "Обычный",
+    "preset_normal_hint": "Без обработки",
+    "preset_hum": "Гул",
+    "preset_hum_hint": "Сильно режет гул и низы, голос станет тоньше",
+    "preset_voice": "Голос",
+    "preset_voice_hint": "Оставляет только полосу речи, звук как в телефоне",
+    "leveling": "Выровнять голоса",
+    "reset_audio": "Сбросить"
   },
   "settings": {
     "general": "Основные",

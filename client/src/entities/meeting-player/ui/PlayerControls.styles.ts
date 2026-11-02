@@ -3,7 +3,7 @@ import { tv } from 'tailwind-variants';
 export const playerControlsStyles = tv({
   slots: {
     root: 'grid grid-cols-[1fr_auto_1fr] items-center',
-    start: 'flex items-center',
+    start: 'flex items-center gap-1',
     center: 'flex items-center gap-2',
     end: 'flex items-center justify-end gap-3',
     avatars: 'flex items-center -space-x-1.5',
@@ -11,6 +11,12 @@ export const playerControlsStyles = tv({
       flex size-9 items-center justify-center rounded-full text-gray-600
       outline-none transition-colors duration-150 hover:bg-gray-100
       hover:text-gray-900 focus-visible:ring-2 focus-visible:ring-gray-300
+      disabled:pointer-events-none disabled:opacity-40
+    `,
+    toggleBtn: `
+      flex size-9 items-center justify-center rounded-full bg-gray-100
+      text-gray-600 outline-none transition-colors duration-150
+      hover:bg-gray-200 hover:text-gray-900 focus-visible:ring-2 focus-visible:ring-gray-300
       disabled:pointer-events-none disabled:opacity-40
     `,
     playBtn: `
@@ -29,7 +35,7 @@ export const playerControlsStyles = tv({
   variants: {
     active: {
       true: {
-        iconBtn: 'bg-gray-100 text-gray-900',
+        toggleBtn: 'text-gray-900',
       },
     },
   },

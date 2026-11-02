@@ -1,3 +1,5 @@
+import { JSX } from 'solid-js';
+
 import { SpeakerTrack } from './SpeakerTrack';
 
 export interface PlayerControlsProps {
@@ -7,6 +9,7 @@ export interface PlayerControlsProps {
   hasTracks: boolean;
   playLabel: string;
   rateLabel: string;
+  audioSettings: JSX.Element;
   tracks: SpeakerTrack[];
   onTogglePlay: () => void;
   onSkipBack: () => void;

@@ -2,6 +2,7 @@ import { createSignal } from 'solid-js';
 
 import { PLAYBACK_RATES } from '../config/playerConfig';
 import { PlaybackController } from '../types/PlaybackController';
+import { useAudioProcessing } from './useAudioProcessing';
 
 export const usePlayback = (): PlaybackController => {
   let audioEl: HTMLAudioElement | undefined;
@@ -11,6 +12,8 @@ export const usePlayback = (): PlaybackController => {
   const [duration, setDuration] = createSignal(0);
   const [rate, setRate] = createSignal(PLAYBACK_RATES[0]);
   const [hasError, setHasError] = createSignal(false);
+
+  const audio = useAudioProcessing(() => audioEl);
 
   const setAudioRef = (element: HTMLAudioElement) => {
     audioEl = element;
@@ -49,6 +52,11 @@ export const usePlayback = (): PlaybackController => {
     if (audioEl) audioEl.playbackRate = next;
   };
 
+  const onPlay = () => {
+    setIsPlaying(true);
+    audio.resumeAudio();
+  };
+
   const onTimeUpdate = () => {
     if (audioEl) setCurrentTime(audioEl.currentTime);
   };
@@ -59,6 +67,7 @@ export const usePlayback = (): PlaybackController => {
   };
 
   return {
+    ...audio,
     isPlaying,
     currentTime,
     duration,
@@ -69,7 +78,7 @@ export const usePlayback = (): PlaybackController => {
     skip,
     seek,
     cycleRate,
-    onPlay: () => setIsPlaying(true),
+    onPlay,
     onPause: () => setIsPlaying(false),
     onTimeUpdate,
     onDurationChange,

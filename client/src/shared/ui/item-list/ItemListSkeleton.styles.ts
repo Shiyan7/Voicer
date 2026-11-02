@@ -4,7 +4,7 @@ export const itemListSkeletonStyles = tv({
   slots: {
     list: `
       flex flex-col divide-y divide-black/5 overflow-hidden rounded-2xl
-      border border-black/5 bg-white
+      border border-gray-200 bg-white
     `,
     row: 'flex h-[60px] items-center gap-4 px-5',
     icon: 'size-5 animate-pulse rounded-md bg-gray-100',

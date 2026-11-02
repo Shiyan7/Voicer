@@ -4,6 +4,7 @@ import { i18n } from '@/shared/i18n';
 
 import { useMeetingPlayer } from '../model/useMeetingPlayer';
 import { MeetingPlayerDeps } from '../types/MeetingPlayerDeps';
+import { AudioSettings } from './AudioSettings';
 import { meetingPlayerStyles } from './MeetingPlayer.styles';
 import { PlayerControls } from './PlayerControls';
 import { PlayerTimeline } from './PlayerTimeline';
@@ -18,6 +19,7 @@ export function MeetingPlayer(props: MeetingPlayerDeps) {
     <section class={styles.root()} ref={props.rootRef}>
       <audio
         ref={props.playback.setAudioRef}
+        crossorigin="anonymous"
         preload="metadata"
         src={props.audioUrl}
         onDurationChange={props.playback.onDurationChange}
@@ -35,6 +37,19 @@ export function MeetingPlayer(props: MeetingPlayerDeps) {
         hasTracks={vm.hasTracks()}
         playLabel={vm.playLabel()}
         rateLabel={vm.rateLabel()}
+        audioSettings={
+          <AudioSettings
+            volume={props.playback.volume()}
+            preset={props.playback.audioPreset()}
+            isLeveling={props.playback.isLeveling()}
+            isChanged={props.playback.isAudioChanged()}
+            isDisabled={props.playback.hasError()}
+            onVolumeChange={props.playback.setVolume}
+            onPresetChange={props.playback.setAudioPreset}
+            onToggleLeveling={props.playback.toggleLeveling}
+            onReset={props.playback.resetAudio}
+          />
+        }
         tracks={vm.tracks()}
         onTogglePlay={props.playback.togglePlay}
         onSkipBack={vm.skipBack}
