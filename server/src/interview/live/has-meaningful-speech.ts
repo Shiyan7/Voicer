@@ -32,7 +32,7 @@ const FILLER_WORDS = new Set([
   'um',
 ]);
 
-const toWords = (text: string): string[] =>
+export const toWords = (text: string): string[] =>
   text
     .toLowerCase()
     .replace(/[^\p{L}\p{N}\s]/gu, ' ')

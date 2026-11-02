@@ -10,6 +10,7 @@ import { InterviewTurnEntity } from './interview-turn.entity';
 import { MeetingsModule } from '../meetings/meetings.module';
 import { InterviewSessionsService } from './interview-sessions.service';
 import { InterviewResolver } from './interview.resolver';
+import { MockInterviewerService } from './mock-interviewer.service';
 import { LiveAudioGateway } from './live/live-audio.gateway';
 import { TranscriptionModule } from '../transcription/transcription.module';
 
@@ -26,6 +27,7 @@ import { TranscriptionModule } from '../transcription/transcription.module';
   providers: [
     InterviewSessionsService,
     InterviewAnswersService,
+    MockInterviewerService,
     InterviewResolver,
     LiveAudioGateway,
   ],

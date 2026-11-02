@@ -1,23 +1,14 @@
 import { Logger } from '@nestjs/common';
-import { DeepgramClient, listen } from '@deepgram/sdk';
+import { listen } from '@deepgram/sdk';
 import { RawData, WebSocket } from 'ws';
 import { describeError } from '../../common/describe-error';
 import { InterviewAnswersService } from '../interview-answers.service';
+import { DeepgramLink, DeepgramMessage, DeepgramSocket } from './deepgram-link';
 import { hasMeaningfulSpeech } from './has-meaningful-speech';
 import { joinText } from './join-text';
-import { KEEP_ALIVE_INTERVAL_MS, REPLY_SETTLE_MS } from './live-audio.config';
+import { REPLY_SETTLE_MS } from './live-audio.config';
 import { LiveClientMessage, LiveServerMessage } from './live-audio.types';
 import { ReplyBuffer } from './reply-buffer';
-
-type DeepgramSocket = Awaited<
-  ReturnType<DeepgramClient['listen']['v1']['connect']>
->;
-
-type DeepgramMessage =
-  | listen.ListenV1Results
-  | listen.ListenV1Metadata
-  | listen.ListenV1UtteranceEnd
-  | listen.ListenV1SpeechStarted;
 
 interface LiveAudioSessionDeps {
   client: WebSocket;
@@ -28,9 +19,7 @@ interface LiveAudioSessionDeps {
 
 export class LiveAudioSession {
   private readonly logger = new Logger(LiveAudioSession.name);
-  private readonly pending: Buffer[] = [];
-  private deepgram: DeepgramSocket | null = null;
-  private keepAlive: ReturnType<typeof setInterval> | null = null;
+  private readonly deepgram = new DeepgramLink();
   private utteranceId = 1;
   private committed = '';
   private interim = '';
@@ -47,22 +36,11 @@ export class LiveAudioSession {
     deps.client.on('error', () => this.close());
   }
 
-  async attach(socket: DeepgramSocket): Promise<void> {
-    socket.on('message', (message) => this.onDeepgramMessage(message));
-    socket.on('error', (error) => this.logger.warn(error.message));
-    socket.on('close', () => this.close());
-    socket.connect();
-    await socket.waitForOpen();
-    if (this.isClosed) {
-      socket.close();
-      return;
-    }
-    this.deepgram = socket;
-    this.pending.splice(0).forEach((chunk) => socket.sendMedia(chunk));
-    this.keepAlive = setInterval(
-      () => this.sendKeepAlive(),
-      KEEP_ALIVE_INTERVAL_MS,
-    );
+  attach(socket: DeepgramSocket): Promise<void> {
+    return this.deepgram.attach(socket, {
+      onMessage: (message) => this.onDeepgramMessage(message),
+      onClose: () => this.close(),
+    });
   }
 
   fail(message: string): void {
@@ -72,31 +50,17 @@ export class LiveAudioSession {
   close(): void {
     if (this.isClosed) return;
     this.isClosed = true;
-    if (this.keepAlive) clearInterval(this.keepAlive);
     this.cancelSettle();
     this.deps.answers.release(this.deps.sessionId);
-    this.pending.length = 0;
-    this.closeDeepgram();
+    this.deepgram.close();
     if (this.deps.client.readyState === WebSocket.OPEN) {
       this.deps.client.close(1000);
     }
   }
 
-  private closeDeepgram(): void {
-    const socket = this.deepgram;
-    this.deepgram = null;
-    if (!socket) return;
-    socket.sendCloseStream({ type: 'CloseStream' });
-    socket.close();
-  }
-
-  private sendKeepAlive(): void {
-    this.deepgram?.sendKeepAlive({ type: 'KeepAlive' });
-  }
-
   private onClientMessage(data: RawData, isBinary: boolean): void {
     if (isBinary) {
-      this.forwardAudio(this.toBuffer(data));
+      this.deepgram.send(this.toBuffer(data));
       return;
     }
     const message = this.parseClientMessage(data);
@@ -117,14 +81,6 @@ export class LiveAudioSession {
     } catch {
       return null;
     }
-  }
-
-  private forwardAudio(chunk: Buffer): void {
-    if (!this.deepgram) {
-      this.pending.push(chunk);
-      return;
-    }
-    this.deepgram.sendMedia(chunk);
   }
 
   private onDeepgramMessage(message: DeepgramMessage): void {

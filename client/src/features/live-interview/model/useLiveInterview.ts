@@ -32,7 +32,8 @@ export function useLiveInterview() {
 
   const isLoaded = () => !!details();
 
-  const isMock = () => details()?.mode === InterviewMode.Mock;
+  const isMockActive = () =>
+    details()?.mode === InterviewMode.Mock && !details()?.finishedAt;
 
   const isReview = () => !!details()?.finishedAt;
 
@@ -74,7 +75,7 @@ export function useLiveInterview() {
     }
     const savedTurns = turns.map(toCompletedTurn);
     setDetails(found);
-    if (found.mode === InterviewMode.Mock) return;
+    if (found.mode === InterviewMode.Mock && !found.finishedAt) return;
     if (!found.finishedAt && found.prepStatus !== InterviewPrepStatus.Ready) {
       navigate(paths.liveBriefing(id), { replace: true });
       return;
@@ -114,6 +115,12 @@ export function useLiveInterview() {
     await open(finishingId);
   };
 
+  const finishMock = async () => {
+    const id = sessionId();
+    await finishInterviewSession({ id });
+    await open(id);
+  };
+
   const closeReview = () => navigate(paths.live);
 
   createEffect(
@@ -127,12 +134,13 @@ export function useLiveInterview() {
     session,
     sessionId,
     isLoaded,
-    isMock,
+    isMockActive,
     isReview,
     reviewTitle,
     emptyLabel,
     recording,
     finishInterview,
+    finishMock,
     closeReview,
   };
 }

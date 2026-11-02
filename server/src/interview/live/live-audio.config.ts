@@ -14,6 +14,10 @@ export const REPLY_GAP_MS = 15000;
 
 export const REPLY_SETTLE_MS = 700;
 
+export const MOCK_REACTION_PAUSE_MS = 2000;
+
+export const MIN_BARGE_IN_WORDS = 2;
+
 export const MAX_REPLY_LENGTH = 2000;
 
 export const DEEPGRAM_LIVE_OPTIONS: ListenConnectArgs = {

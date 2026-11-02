@@ -28,6 +28,9 @@ export class InterviewTurnEntity {
   @Column({ type: 'text' })
   answer: string;
 
+  @Column({ type: 'int', nullable: true })
+  answerDurationMs: number | null;
+
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 }

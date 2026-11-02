@@ -338,7 +338,14 @@
       "hide_details": "Hide details",
       "screenshot_question": "Coding task from screenshot",
       "scroll_down": "Scroll down",
-      "mock_placeholder": "The AI conversation is coming in the next stage",
+      "mock": {
+        "thinking": "Preparing a question…",
+        "speaking": "Interviewer is speaking",
+        "listening": "Listening to your answer",
+        "answer_placeholder": "Go ahead, I am listening…",
+        "failed": "Could not get a question or turn on the microphone.",
+        "finish": "Finish"
+      },
       "mock_preparing": "The interviewer is reading your resume and the job description…"
     },
     "status_filter": {

@@ -1,6 +1,7 @@
 export {
   captureScreenshot,
   startLiveCapture,
+  startMicCapture,
   stopLiveCapture,
 } from './liveCaptureBridge';
 export { readRecordingFile } from './readRecordingFile';

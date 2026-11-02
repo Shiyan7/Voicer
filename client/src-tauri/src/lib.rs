@@ -36,6 +36,7 @@ pub fn run() {
             commands::get_recorder_state,
             commands::delete_recording,
             commands::start_live_capture,
+            commands::start_mic_capture,
             commands::stop_live_capture,
             commands::capture_screenshot,
         ])

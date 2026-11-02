@@ -11,6 +11,12 @@ export const startLiveCapture = (onChunk: (pcm: Int16Array) => void) => {
   return invoke<void>('start_live_capture', { onSystem });
 };
 
+export const startMicCapture = (onChunk: (pcm: Int16Array) => void) => {
+  const onMic = new Channel<ArrayBuffer>();
+  onMic.onmessage = (data) => onChunk(toPcm(data));
+  return invoke<void>('start_mic_capture', { onMic });
+};
+
 export const stopLiveCapture = () => invoke<void>('stop_live_capture');
 
 export const captureScreenshot = async () => {

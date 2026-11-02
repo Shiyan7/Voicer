@@ -338,7 +338,14 @@
       "hide_details": "Свернуть",
       "screenshot_question": "Задача со скриншота",
       "scroll_down": "Вниз",
-      "mock_placeholder": "Диалог с ИИ появится на следующем этапе",
+      "mock": {
+        "thinking": "Готовлю вопрос…",
+        "speaking": "Говорит интервьюер",
+        "listening": "Слушаю ваш ответ",
+        "answer_placeholder": "Говорите, я слушаю…",
+        "failed": "Не удалось получить вопрос или включить микрофон.",
+        "finish": "Завершить"
+      },
       "mock_preparing": "Интервьюер читает резюме и вакансию…"
     },
     "status_filter": {

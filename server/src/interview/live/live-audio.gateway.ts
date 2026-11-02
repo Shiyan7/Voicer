@@ -13,18 +13,22 @@ import { describeError } from '../../common/describe-error';
 import { AuthService } from '../../auth/auth.service';
 import { InterviewAnswersService } from '../interview-answers.service';
 import { InterviewLanguage } from '../interview-language.enum';
+import { InterviewMode } from '../interview-mode.enum';
 import { InterviewSessionsService } from '../interview-sessions.service';
+import { MockInterviewerService } from '../mock-interviewer.service';
 import {
   DEEPGRAM_LIVE_OPTIONS,
   LIVE_AUDIO_PATH,
   LIVE_AUDIO_PROTOCOL,
 } from './live-audio.config';
 import { LiveAudioSession } from './live-audio.session';
+import { MockInterviewSession } from './mock-interview.session';
 
 interface LiveAudioIdentity {
   userId: string;
   sessionId: string;
   language: InterviewLanguage;
+  mode: InterviewMode;
 }
 
 const rejectUpgrade = (socket: Duplex, status: string): void => {
@@ -41,13 +45,16 @@ export class LiveAudioGateway
     noServer: true,
     handleProtocols: () => LIVE_AUDIO_PROTOCOL,
   });
-  private readonly sessions = new Set<LiveAudioSession>();
+  private readonly sessions = new Set<
+    LiveAudioSession | MockInterviewSession
+  >();
 
   constructor(
     private readonly adapterHost: HttpAdapterHost,
     private readonly authService: AuthService,
     private readonly interviewSessions: InterviewSessionsService,
     private readonly answers: InterviewAnswersService,
+    private readonly interviewer: MockInterviewerService,
     private readonly deepgram: DeepgramClient,
   ) {}
 
@@ -101,23 +108,26 @@ export class LiveAudioGateway
     if (!token || !sessionId) return null;
     try {
       const user = await this.authService.authenticateAccessToken(token);
-      const { language } = await this.interviewSessions.findOwned(
+      const { language, mode } = await this.interviewSessions.findOwned(
         user.id,
         sessionId,
       );
-      return { userId: user.id, sessionId, language };
+      return { userId: user.id, sessionId, language, mode };
     } catch {
       return null;
     }
   }
 
   private open(client: WebSocket, identity: LiveAudioIdentity): void {
-    const { language, ...deps } = identity;
-    const session = new LiveAudioSession({
-      client,
-      ...deps,
-      answers: this.answers,
-    });
+    const { language, mode, ...deps } = identity;
+    const session =
+      mode === InterviewMode.MOCK
+        ? new MockInterviewSession({
+            client,
+            ...deps,
+            interviewer: this.interviewer,
+          })
+        : new LiveAudioSession({ client, ...deps, answers: this.answers });
     this.sessions.add(session);
     client.on('close', () => this.sessions.delete(session));
     this.deepgram.listen.v1

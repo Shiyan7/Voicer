@@ -2,6 +2,7 @@ import { Show } from 'solid-js';
 
 import { useInterviewPreparation } from '@/entities/interview-session';
 import { MeetingPlayer } from '@/entities/meeting-player';
+import { MockInterview } from '@/features/mock-interview';
 import { i18n } from '@/shared/i18n';
 import { BackButton } from '@/shared/ui/back-button';
 import { Button } from '@/shared/ui/button';
@@ -21,14 +22,18 @@ export function LiveInterviewOrchestrator() {
   return (
     <PageFade>
       <div class={styles.root()}>
-        <Show when={vm.isMock()}>
+        <Show when={vm.isMockActive() && preparation.isReady()}>
+          <MockInterview
+            sessionId={vm.sessionId()}
+            onBack={vm.closeReview}
+            onFinish={vm.finishMock}
+          />
+        </Show>
+        <Show when={vm.isMockActive() && !preparation.isReady()}>
           <div class={styles.mockPlaceholder()}>
             <BackButton onClick={vm.closeReview} />
             <Show when={preparation.isPreparing()}>
               <p>{i18n.t('live.session.mock_preparing')}</p>
-            </Show>
-            <Show when={preparation.isReady()}>
-              <p>{i18n.t('live.session.mock_placeholder')}</p>
             </Show>
             <Show when={preparation.isFailed()}>
               <p>{i18n.t('live.prep.error')}</p>
@@ -38,7 +43,7 @@ export function LiveInterviewOrchestrator() {
             </Show>
           </div>
         </Show>
-        <Show when={vm.isLoaded() && !vm.isMock()}>
+        <Show when={vm.isLoaded() && !vm.isMockActive()}>
           <LiveSession
             header={
               <Show

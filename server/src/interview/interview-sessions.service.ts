@@ -196,8 +196,14 @@ export class InterviewSessionsService implements OnModuleInit {
     sessionId: string,
     question: string,
     answer: string,
+    answerDurationMs: number | null = null,
   ): Promise<void> {
-    await this.turnsRepository.insert({ sessionId, question, answer });
+    await this.turnsRepository.insert({
+      sessionId,
+      question,
+      answer,
+      answerDurationMs,
+    });
   }
 
   async recentTurns(

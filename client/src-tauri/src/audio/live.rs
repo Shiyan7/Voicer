@@ -4,6 +4,7 @@ use std::sync::Arc;
 use std::thread::JoinHandle;
 use std::time::{Duration, Instant};
 
+use super::mic::MicSource;
 use super::system::SystemSource;
 use super::{SampleQueue, LIVE_FEED_ACTIVE, LIVE_SYSTEM_QUEUE};
 
@@ -90,6 +91,24 @@ impl LiveCapture {
     }
 }
 
+impl LiveCapture {
+    pub fn start_mic(on_mic: ChunkSink) -> Result<Self, String> {
+        let queue = SampleQueue::new();
+        let source = MicSource::start(queue.clone())?;
+
+        let (stop_tx, stop_rx) = mpsc::channel::<()>();
+        let join = std::thread::Builder::new()
+            .name("voicer-live-mic".into())
+            .spawn(move || mic_loop(source, queue, on_mic, &stop_rx))
+            .map_err(|e| format!("failed to spawn live mic thread: {e}"))?;
+
+        Ok(Self {
+            stop_tx,
+            join: Some(join),
+        })
+    }
+}
+
 impl Drop for LiveCapture {
     fn drop(&mut self) {
         let _ = self.stop_tx.send(());
@@ -114,6 +133,19 @@ fn live_loop(mut feed: Feed, stop_rx: &Receiver<()>) {
             break;
         }
     }
+}
+
+fn mic_loop(source: MicSource, queue: Arc<SampleQueue>, sink: ChunkSink, stop_rx: &Receiver<()>) {
+    while matches!(
+        stop_rx.recv_timeout(CHUNK_INTERVAL),
+        Err(RecvTimeoutError::Timeout)
+    ) {
+        let samples = queue.take();
+        if !samples.is_empty() && !sink(pcm_to_le_bytes(&samples)) {
+            break;
+        }
+    }
+    source.stop();
 }
 
 fn pcm_to_le_bytes(samples: &[i16]) -> Vec<u8> {

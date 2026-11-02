@@ -11,6 +11,13 @@ const FREE_TIER_MODELS = [
   'gemini-3.1-flash-lite',
 ];
 
+const FREE_TIER_SPEECH_MODELS = [
+  'gemini-3.8-flash-tts',
+  'gemini-3.8-flash-lite-tts',
+  'gemini-3.1-flash-tts-preview',
+  'gemini-2.5-flash-preview-tts',
+];
+
 const RETRYABLE_STATUSES = [404, 429, 503];
 
 @Injectable()
@@ -63,6 +70,47 @@ export class GeminiService {
     }
 
     throw new Error('All Gemini models failed or returned empty output');
+  }
+
+  async synthesizeSpeech(
+    text: string,
+    voiceName: string,
+    signal?: AbortSignal,
+  ): Promise<Buffer> {
+    for (const model of FREE_TIER_SPEECH_MODELS) {
+      const audio = await this.trySpeech(model, text, voiceName, signal);
+      if (audio) {
+        this.logger.log(`Synthesized with ${model}`);
+        return audio;
+      }
+    }
+
+    throw new Error('All Gemini speech models failed or hit their limits');
+  }
+
+  private async trySpeech(
+    model: string,
+    text: string,
+    voiceName: string,
+    signal?: AbortSignal,
+  ): Promise<Buffer | null> {
+    try {
+      const response = await this.ai.models.generateContent({
+        model,
+        contents: text,
+        config: {
+          abortSignal: signal,
+          responseModalities: ['AUDIO'],
+          speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName } } },
+        },
+      });
+      const audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData;
+      return audio?.data ? Buffer.from(audio.data, 'base64') : null;
+    } catch (error) {
+      if (!this.isRetryable(error)) throw error;
+      this.logger.warn(`${model} unavailable (${this.statusOf(error)})`);
+      return null;
+    }
   }
 
   private async tryJson<T>(

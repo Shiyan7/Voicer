@@ -301,6 +301,29 @@ pub fn start_live_capture(
 }
 
 #[tauri::command]
+pub fn start_mic_capture(
+    app: AppHandle,
+    on_mic: tauri::ipc::Channel<tauri::ipc::InvokeResponseBody>,
+) -> Result<(), String> {
+    #[cfg(target_os = "macos")]
+    {
+        drop(take_live_capture(&app)?);
+        let capture = crate::audio::live::LiveCapture::start_mic(Box::new(move |bytes| {
+            on_mic.send(tauri::ipc::InvokeResponseBody::Raw(bytes)).is_ok()
+        }))?;
+        let state = app.state::<LiveCaptureHandle>();
+        let mut slot = lock_state(&state.capture, "live capture")?;
+        *slot = Some(capture);
+        Ok(())
+    }
+    #[cfg(not(target_os = "macos"))]
+    {
+        let _ = (app, on_mic);
+        Err("live capture is only supported on macOS".into())
+    }
+}
+
+#[tauri::command]
 pub fn stop_live_capture(app: AppHandle) -> Result<(), String> {
     #[cfg(target_os = "macos")]
     {
