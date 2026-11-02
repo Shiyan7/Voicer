@@ -1,6 +1,6 @@
 import { tv } from 'tailwind-variants';
 
-export const interviewBriefingStyles = tv({
+export const briefingLayoutStyles = tv({
   slots: {
     root: 'mx-auto flex min-h-[calc(100vh-2rem)] w-full max-w-3xl flex-col gap-6 pt-6',
     status: 'animate-pulse text-[15px] text-gray-500',

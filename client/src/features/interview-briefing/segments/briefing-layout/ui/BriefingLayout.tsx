@@ -6,14 +6,12 @@ import { BackHeader } from '@/shared/ui/back-header';
 import { Button } from '@/shared/ui/button';
 import { Icon } from '@/shared/ui/icon';
 
-import { BriefingSections } from '../segments/sections';
-import { BriefingVacancy } from '../segments/vacancy';
-import { InterviewBriefingProps } from '../types/InterviewBriefingProps';
-import { interviewBriefingStyles } from './InterviewBriefing.styles';
+import { BriefingLayoutProps } from '../types/BriefingLayoutProps';
+import { briefingLayoutStyles } from './BriefingLayout.styles';
 
-const styles = interviewBriefingStyles();
+const styles = briefingLayoutStyles();
 
-export function InterviewBriefing(props: InterviewBriefingProps) {
+export function BriefingLayout(props: BriefingLayoutProps) {
   return (
     <div class={styles.root()}>
       <BackHeader title={props.title} onBack={props.onBack} />
@@ -33,19 +31,15 @@ export function InterviewBriefing(props: InterviewBriefingProps) {
             </Button>
           </div>
         </Match>
-        <Match when={props.recommendations}>
-          {(recommendations) => (
-            <>
-              <BriefingVacancy text={props.vacancyText ?? ''} />
-              <BriefingSections recommendations={recommendations()} />
-              <div class={styles.footer()}>
-                <Button variant="emerald" size="xl" onClick={props.onStart}>
-                  <Icon name="common:microphone" size={18} />
-                  {i18n.t('live.prep.start')}
-                </Button>
-              </div>
-            </>
-          )}
+        <Match when={props.hasBriefing}>
+          {props.vacancy}
+          {props.sections}
+          <div class={styles.footer()}>
+            <Button variant="emerald" size="xl" onClick={props.onStart}>
+              <Icon name="common:microphone" size={18} />
+              {i18n.t('live.prep.start')}
+            </Button>
+          </div>
         </Match>
       </Switch>
     </div>

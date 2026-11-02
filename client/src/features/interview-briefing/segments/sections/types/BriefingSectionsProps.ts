@@ -1,5 +1,10 @@
-import type { InterviewRecommendationsOutput } from '@schema';
+import type { Tab } from '@/shared/ui/tabs';
+
+import { BriefingSectionKey } from '../../../types/BriefingSectionKey';
 
 export interface BriefingSectionsProps {
-  recommendations: InterviewRecommendationsOutput;
+  tabs: Tab<BriefingSectionKey>[];
+  activeSection: BriefingSectionKey;
+  items: string[];
+  onSelectSection: (key: BriefingSectionKey) => void;
 }

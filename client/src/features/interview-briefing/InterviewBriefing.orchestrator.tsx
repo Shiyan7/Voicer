@@ -1,18 +1,38 @@
 import { PageFade } from '@/shared/ui/page-fade';
 
 import { useInterviewBriefing } from './model/useInterviewBriefing';
-import { InterviewBriefing } from './ui/InterviewBriefing';
+import { BriefingLayout } from './segments/briefing-layout';
+import { BriefingSections } from './segments/sections';
+import { BriefingVacancy } from './segments/vacancy';
 
 export function InterviewBriefingOrchestrator() {
   const vm = useInterviewBriefing();
 
   return (
     <PageFade>
-      <InterviewBriefing
+      <BriefingLayout
         title={vm.title()}
         status={vm.status()}
-        recommendations={vm.session()?.recommendations}
-        vacancyText={vm.session()?.vacancyText}
+        hasBriefing={vm.hasBriefing()}
+        vacancy={
+          <BriefingVacancy
+            text={vm.vacancyText()}
+            isExpanded={vm.isVacancyExpanded()}
+            isFaded={vm.isVacancyFaded()}
+            isLong={vm.isVacancyLong()}
+            toggleLabel={vm.vacancyToggleLabel()}
+            measure={vm.measureVacancy}
+            onToggle={vm.toggleVacancy}
+          />
+        }
+        sections={
+          <BriefingSections
+            tabs={vm.sectionTabs()}
+            activeSection={vm.activeSection()}
+            items={vm.sectionItems()}
+            onSelectSection={vm.setActiveSection}
+          />
+        }
         onRetry={vm.retry}
         onStart={vm.start}
         onBack={vm.goBack}
