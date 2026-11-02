@@ -6,7 +6,7 @@ import { PageFade } from '@/shared/ui/page-fade';
 import { liveInterviewStyles } from './LiveInterview.styles';
 import { useLiveInterview } from './model/useLiveInterview';
 import { ReviewActions } from './segments/review-actions';
-import { LiveSession } from './segments/session';
+import { LiveSession, LiveSessionBar, ReviewHeader } from './segments/session';
 
 const styles = liveInterviewStyles();
 
@@ -18,25 +18,31 @@ export function LiveInterviewOrchestrator() {
       <div class={styles.root()}>
         <Show when={vm.isLoaded()}>
           <LiveSession
-            timerLabel={vm.session.timerLabel()}
-            statusLabel={vm.session.statusLabel()}
-            isAnswering={vm.session.isAnswering()}
-            isEmpty={vm.session.isEmpty()}
-            turns={vm.session.turnViews()}
-            onToggleDetails={vm.session.toggleDetails}
-            onAnswerNow={vm.session.answerNow}
-            onCaptureCode={vm.session.captureCode}
-            onStop={vm.finishInterview}
-            isReadOnly={vm.isReview()}
-            onBack={vm.closeReview}
-            reviewTitle={vm.reviewTitle()}
-            reviewActions={
-              <Show when={vm.isReview()}>
-                <ReviewActions
-                  sessionId={vm.sessionId()}
-                  meetingId={vm.recording.meetingId()}
-                  audioUrl={vm.recording.audioUrl()}
-                  fileName={vm.reviewTitle()}
+            header={
+              <Show
+                when={vm.isReview()}
+                fallback={
+                  <LiveSessionBar
+                    timerLabel={vm.session.timerLabel()}
+                    statusLabel={vm.session.statusLabel()}
+                    isAnswering={vm.session.isAnswering()}
+                    onCaptureCode={vm.session.captureCode}
+                    onAnswerNow={vm.session.answerNow}
+                    onStop={vm.finishInterview}
+                  />
+                }
+              >
+                <ReviewHeader
+                  title={vm.reviewTitle()}
+                  onBack={vm.closeReview}
+                  actions={
+                    <ReviewActions
+                      sessionId={vm.sessionId()}
+                      meetingId={vm.recording.meetingId()}
+                      audioUrl={vm.recording.audioUrl()}
+                      fileName={vm.reviewTitle()}
+                    />
+                  }
                 />
               </Show>
             }
@@ -51,6 +57,10 @@ export function LiveInterviewOrchestrator() {
                 )}
               </Show>
             }
+            turns={vm.session.turnViews()}
+            isEmpty={vm.session.isEmpty()}
+            emptyLabel={vm.emptyLabel()}
+            onToggleDetails={vm.session.toggleDetails}
           />
         </Show>
       </div>

@@ -2,8 +2,6 @@ import { For, Show } from 'solid-js';
 
 import { useScrollToBottom } from '@/shared/hooks/useScrollToBottom';
 import { i18n } from '@/shared/i18n';
-import { BackButton } from '@/shared/ui/back-button';
-import { Button } from '@/shared/ui/button';
 import { Icon } from '@/shared/ui/icon';
 
 import { LiveSessionProps } from '../types/LiveSessionProps';
@@ -18,47 +16,10 @@ export function LiveSession(props: LiveSessionProps) {
   return (
     <div class={styles.root()}>
       <div class={styles.column()}>
-        <Show
-          when={!props.isReadOnly}
-          fallback={
-            <header class={styles.header()}>
-              <BackButton onClick={props.onBack} />
-              <h1 class={styles.title()}>{props.reviewTitle}</h1>
-              <span class={styles.spacer()} />
-              {props.reviewActions}
-            </header>
-          }
-        >
-          <div class={styles.bar()}>
-            <span class={styles.timer()}>{props.timerLabel}</span>
-            <span class={styles.status()} role="status">
-              <span class={styles.dot({ answering: props.isAnswering })} />
-              {props.statusLabel}
-            </span>
-            <span class={styles.spacer()} />
-            <Button variant="secondary" onClick={props.onCaptureCode}>
-              <Icon name="common:document-text" size={16} />
-              {i18n.t('live.session.capture_code')}
-            </Button>
-            <Button variant="secondary" onClick={props.onAnswerNow}>
-              <Icon name="common:sparkles" size={16} />
-              {i18n.t('live.session.answer_now')}
-            </Button>
-            <Button variant="danger" onClick={props.onStop}>
-              <Icon name="common:stop" size={16} />
-              {i18n.t('live.session.stop')}
-            </Button>
-          </div>
-        </Show>
+        {props.header}
         <Show
           when={!props.isEmpty}
-          fallback={
-            <p class={styles.empty()}>
-              {props.isReadOnly
-                ? i18n.t('live.session.no_turns')
-                : i18n.t('live.session.waiting')}
-            </p>
-          }
+          fallback={<p class={styles.empty()}>{props.emptyLabel}</p>}
         >
           <div class={styles.list()}>
             <For each={props.turns}>

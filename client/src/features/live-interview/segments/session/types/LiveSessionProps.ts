@@ -3,18 +3,10 @@ import { JSX } from 'solid-js';
 import { LiveTurnView } from '../../../types/LiveTurnView';
 
 export interface LiveSessionProps {
-  timerLabel: string;
-  statusLabel: string;
-  isAnswering: boolean;
-  isEmpty: boolean;
-  turns: LiveTurnView[];
-  onToggleDetails: (id: string) => void;
-  onAnswerNow: () => void;
-  onCaptureCode: () => void;
-  onStop: () => void;
-  isReadOnly: boolean;
+  header: JSX.Element;
   player?: JSX.Element;
-  reviewActions?: JSX.Element;
-  reviewTitle?: string;
-  onBack: () => void;
+  turns: LiveTurnView[];
+  isEmpty: boolean;
+  emptyLabel: string;
+  onToggleDetails: (id: string) => void;
 }

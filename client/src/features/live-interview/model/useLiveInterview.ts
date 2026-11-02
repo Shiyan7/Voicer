@@ -3,6 +3,7 @@ import { createEffect, createSignal, on } from 'solid-js';
 
 import { getInterviewSessionTitle } from '@/entities/interview-session';
 import { uploadMeetingAudioMutation } from '@/entities/meeting';
+import { i18n } from '@/shared/i18n';
 import { readRecordingFile, stopRecording } from '@/shared/lib/recorder';
 import { paths } from '@/shared/router';
 
@@ -36,6 +37,11 @@ export function useLiveInterview() {
     const current = details();
     return current ? getInterviewSessionTitle(current) : '';
   };
+
+  const emptyLabel = () =>
+    isReview()
+      ? i18n.t('live.session.no_turns')
+      : i18n.t('live.session.waiting');
 
   const startRecording = async () => {
     const { isOwned, startedAt } = await ensureRecording();
@@ -115,6 +121,7 @@ export function useLiveInterview() {
     isLoaded,
     isReview,
     reviewTitle,
+    emptyLabel,
     recording,
     finishInterview,
     closeReview,
