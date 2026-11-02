@@ -7,6 +7,7 @@ import {
 import { randomUUID } from 'crypto';
 import { PubSub } from 'graphql-subscriptions';
 import { ClaudeService } from '../claude/claude.service';
+import { requireText } from '../common/require-text';
 import { FileUpload } from '../file/file-upload';
 import { readUpload } from '../file/read-upload';
 import { GeminiService } from '../gemini/gemini.service';
@@ -149,7 +150,11 @@ export class InterviewAnswersService {
     sessionId: string,
     question: string,
   ): Promise<{ session: InterviewSessionEntity; request: AnswerRequest }> {
-    const text = this.validateQuestion(question);
+    const text = requireText(
+      question,
+      MAX_QUESTION_LENGTH,
+      'Некорректный вопрос',
+    );
     const session = await this.sessions.findOwned(userId, sessionId);
     return {
       session,
@@ -298,13 +303,5 @@ export class InterviewAnswersService {
       throw new BadRequestException('Скриншот должен быть изображением');
     }
     return readUpload(upload, MAX_SCREENSHOT_BYTES);
-  }
-
-  private validateQuestion(question: string): string {
-    const text = question.trim();
-    if (!text || text.length > MAX_QUESTION_LENGTH) {
-      throw new BadRequestException('Некорректный вопрос');
-    }
-    return text;
   }
 }

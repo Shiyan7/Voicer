@@ -77,12 +77,16 @@ pub struct PauseStateDto {
 }
 
 #[cfg(target_os = "macos")]
+fn lock_state<'a, T>(
+    mutex: &'a std::sync::Mutex<T>,
+    name: &str,
+) -> Result<std::sync::MutexGuard<'a, T>, String> {
+    mutex.lock().map_err(|_| format!("{name} lock poisoned"))
+}
+
+#[cfg(target_os = "macos")]
 fn current_kind(state: &RecorderHandle) -> Result<RecordingKind, String> {
-    state
-        .kind
-        .lock()
-        .map(|kind| *kind)
-        .map_err(|_| "recorder kind lock poisoned".to_string())
+    lock_state(&state.kind, "recorder kind").map(|kind| *kind)
 }
 
 pub fn recordings_dir(app: &AppHandle) -> Result<PathBuf, String> {
@@ -104,10 +108,7 @@ pub fn start_recording(
         let state = app.state::<RecorderHandle>();
         let dir = recordings_dir(&app)?;
         let info = {
-            let mut recorder = state
-                .recorder
-                .lock()
-                .map_err(|_| "recorder lock poisoned".to_string())?;
+            let mut recorder = lock_state(&state.recorder, "recorder")?;
             let level_app = app.clone();
             recorder.start(
                 &dir,
@@ -116,10 +117,7 @@ pub fn start_recording(
                 }),
             )?
         };
-        *state
-            .kind
-            .lock()
-            .map_err(|_| "recorder kind lock poisoned".to_string())? = kind;
+        *lock_state(&state.kind, "recorder kind")? = kind;
         let result = StartRecordingResult {
             local_id: info.local_id,
             started_at: info.started_at_ms,
@@ -156,10 +154,7 @@ pub fn stop_recording(app: AppHandle) -> Result<StopRecordingResult, String> {
 pub fn do_stop_recording(app: &AppHandle) -> Result<StopRecordingResult, String> {
     let state = app.state::<RecorderHandle>();
     let info = {
-        let mut recorder = state
-            .recorder
-            .lock()
-            .map_err(|_| "recorder lock poisoned".to_string())?;
+        let mut recorder = lock_state(&state.recorder, "recorder")?;
         recorder.stop()?
     };
     let result = StopRecordingResult {
@@ -195,10 +190,7 @@ fn change_pause(_app: &AppHandle, _pause: bool) -> Result<(), String> {
 fn change_pause(app: &AppHandle, pause: bool) -> Result<(), String> {
     let state = app.state::<RecorderHandle>();
     let info = {
-        let mut recorder = state
-            .recorder
-            .lock()
-            .map_err(|_| "recorder lock poisoned".to_string())?;
+        let mut recorder = lock_state(&state.recorder, "recorder")?;
         if pause {
             recorder.pause()?
         } else {
@@ -222,10 +214,7 @@ pub fn get_recorder_state(app: AppHandle) -> Result<RecorderStateDto, String> {
     {
         use crate::audio::recorder::RecorderState;
         let state = app.state::<RecorderHandle>();
-        let recorder = state
-            .recorder
-            .lock()
-            .map_err(|_| "recorder lock poisoned".to_string())?;
+        let recorder = lock_state(&state.recorder, "recorder")?;
         Ok(match recorder.state() {
             RecorderState::Idle => RecorderStateDto::Idle,
             RecorderState::Recording {
@@ -282,11 +271,8 @@ pub struct LiveCaptureHandle {
 
 #[cfg(target_os = "macos")]
 fn take_live_capture(app: &AppHandle) -> Result<Option<crate::audio::live::LiveCapture>, String> {
-    app.state::<LiveCaptureHandle>()
-        .capture
-        .lock()
+    lock_state(&app.state::<LiveCaptureHandle>().capture, "live capture")
         .map(|mut slot| slot.take())
-        .map_err(|_| "live capture lock poisoned".to_string())
 }
 
 #[tauri::command]
@@ -303,10 +289,7 @@ pub fn start_live_capture(
                 .is_ok()
         }))?;
         let state = app.state::<LiveCaptureHandle>();
-        let mut slot = state
-            .capture
-            .lock()
-            .map_err(|_| "live capture lock poisoned".to_string())?;
+        let mut slot = lock_state(&state.capture, "live capture")?;
         *slot = Some(capture);
         Ok(())
     }

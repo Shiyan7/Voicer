@@ -8,6 +8,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { PubSub } from 'graphql-subscriptions';
 import { Repository } from 'typeorm';
+import { describeError } from '../common/describe-error';
+import { requireText } from '../common/require-text';
 import { GeminiService } from '../gemini/gemini.service';
 import { LlmTurn } from '../llm/llm-turn';
 import { MeetingContentService } from '../meetings/meeting-content.service';
@@ -85,7 +87,11 @@ export class MeetingChatService implements OnApplicationBootstrap {
     meetingId: string,
     question: string,
   ): Promise<ChatMessageOutput> {
-    const text = this.validateQuestion(question);
+    const text = requireText(
+      question,
+      MAX_QUESTION_LENGTH,
+      'Некорректный вопрос',
+    );
     const meeting = await this.content.findOwned(userId, meetingId);
     if (this.answeringMeetings.has(meetingId)) {
       throw new BadRequestException('Дождитесь окончания ответа');
@@ -171,7 +177,7 @@ export class MeetingChatService implements OnApplicationBootstrap {
   private logFailure(meetingId: string, error: unknown): void {
     this.logger.error(
       `Failed to answer in meeting ${meetingId}`,
-      error instanceof Error ? error.stack : String(error),
+      describeError(error),
     );
   }
 
@@ -234,13 +240,5 @@ export class MeetingChatService implements OnApplicationBootstrap {
       !message.isFailed &&
       this.answeringMeetings.has(message.meetingId)
     );
-  }
-
-  private validateQuestion(question: string): string {
-    const text = question.trim();
-    if (!text || text.length > MAX_QUESTION_LENGTH) {
-      throw new BadRequestException('Некорректный вопрос');
-    }
-    return text;
   }
 }

@@ -14,12 +14,9 @@ import { MoreActionsDeps } from '../types/MoreActionsDeps';
 export const useMoreActions = (props: MoreActionsDeps) => {
   const navigate = useNavigate();
   const [, setFavorite] = setMeetingFavoriteMutation();
-  const {
-    isDeleting,
-    requestDeleteMeeting,
-    confirmDeleteMeeting,
-    cancelDeleteMeeting,
-  } = useMeetingDelete(() => navigate(paths.meetings));
+  const { isDeleting, request, confirm, cancel } = useMeetingDelete(() =>
+    navigate(paths.meetings),
+  );
   const { runExport } = useRecordingExport(props);
 
   const options = () =>
@@ -30,7 +27,7 @@ export const useMoreActions = (props: MoreActionsDeps) => {
 
   const selectAction = (action: MoreAction) => {
     if (action === 'favorite') void toggleFavorite();
-    else if (action === 'delete') requestDeleteMeeting(props.meetingId);
+    else if (action === 'delete') request(props.meetingId);
     else runExport(action);
   };
 
@@ -38,7 +35,7 @@ export const useMoreActions = (props: MoreActionsDeps) => {
     options,
     selectAction,
     isDeleting,
-    confirmDelete: confirmDeleteMeeting,
-    cancelDelete: cancelDeleteMeeting,
+    confirmDelete: confirm,
+    cancelDelete: cancel,
   };
 };

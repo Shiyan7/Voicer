@@ -1,4 +1,5 @@
 import { useMeetingDelete } from '@/entities/meeting';
+import { useListStatus } from '@/shared/hooks/useListStatus';
 import { useQueryPagination } from '@/shared/hooks/useQueryPagination';
 import { i18n } from '@/shared/i18n';
 import { toDateRangeInput } from '@/shared/lib/date-range';
@@ -16,6 +17,7 @@ import { useStatsBanner } from './useStatsBanner';
 export const useMeetingsPage = () => {
   const filters = useMeetingsFilters();
   const pagination = useQueryPagination(() => meetingsPage()?.meta);
+  const { isDeleting, request, confirm, cancel } = useMeetingDelete();
 
   const [meetingsResult] = meetingsPageQuery(
     () => ({
@@ -44,9 +46,11 @@ export const useMeetingsPage = () => {
 
   const items = () => mapMeetingCards(meetingsPage()?.items);
 
-  const isLoading = () => meetingsResult.fetching && !items().length;
-
-  const isEmpty = () => !meetingsResult.fetching && items().length === 0;
+  const { isLoading, isEmpty, totalCount } = useListStatus({
+    isFetching: () => meetingsResult.fetching,
+    itemCount: () => items().length,
+    total: () => meetingsPage()?.meta.total,
+  });
 
   const emptyLabel = () => {
     if (filters.hasSourceFilter() || filters.hasDateFilter()) {
@@ -65,11 +69,8 @@ export const useMeetingsPage = () => {
 
   const showSourceFilter = () => sourceOptions().length > 1;
 
-  const totalCount = () => String(meetingsPage()?.meta.total ?? 0);
-
   return {
     ...useMeetingCapture(),
-    ...useMeetingDelete(),
     banner: useStatsBanner(stats, isStatsLoading),
     isAuthorized,
     filters,
@@ -83,5 +84,9 @@ export const useMeetingsPage = () => {
     totalCount,
     sortOptions: getSortOptions,
     pagination,
+    isDeleting,
+    requestDelete: request,
+    confirmDelete: confirm,
+    cancelDelete: cancel,
   };
 };

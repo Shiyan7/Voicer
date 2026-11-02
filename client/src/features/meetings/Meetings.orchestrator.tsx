@@ -77,15 +77,15 @@ export function MeetingsOrchestrator() {
             emptyLabel={vm.emptyLabel()}
             canResetFilters={vm.filters.hasActiveFilters()}
             pagination={vm.pagination}
-            onDelete={vm.requestDeleteMeeting}
+            onDelete={vm.requestDelete}
             onResetFilters={vm.filters.resetFilters}
           />
         </section>
       </div>
       <DeleteMeetingModal
         isDeleting={vm.isDeleting()}
-        onConfirm={vm.confirmDeleteMeeting}
-        onCancel={vm.cancelDeleteMeeting}
+        onConfirm={vm.confirmDelete}
+        onCancel={vm.cancelDelete}
       />
     </PageFade>
   );

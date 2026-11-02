@@ -1,3 +1,4 @@
+import { describeError } from '../common/describe-error';
 import {
   Inject,
   Injectable,
@@ -228,9 +229,6 @@ export class MeetingProcessingService implements OnApplicationBootstrap {
   }
 
   private logFailure(message: string, error: unknown): void {
-    this.logger.error(
-      message,
-      error instanceof Error ? error.stack : String(error),
-    );
+    this.logger.error(message, describeError(error));
   }
 }

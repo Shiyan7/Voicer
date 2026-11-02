@@ -1,6 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { DeepgramClient, listen } from '@deepgram/sdk';
 import { RawData, WebSocket } from 'ws';
+import { describeError } from '../../common/describe-error';
 import { InterviewAnswersService } from '../interview-answers.service';
 import { hasMeaningfulSpeech } from './has-meaningful-speech';
 import {
@@ -236,9 +237,7 @@ export class LiveAudioSession {
       }
       this.send({ type: 'answerStarted', utteranceId, answerId });
     } catch (error) {
-      this.logger.warn(
-        `Answer failed: ${error instanceof Error ? error.message : String(error)}`,
-      );
+      this.logger.warn(`Answer failed: ${describeError(error)}`);
     }
   }
 

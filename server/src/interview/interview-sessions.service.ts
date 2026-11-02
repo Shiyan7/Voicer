@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, IsNull, Not, Repository } from 'typeorm';
 import { buildDateRangeCondition } from '../common/listing/build-date-range-condition';
 import { findPage } from '../common/listing/find-page';
+import { requireText } from '../common/require-text';
 import { MeetingsService } from '../meetings/meetings.service';
 import { FileUpload } from '../file/file-upload';
 import { ClaudeService } from '../claude/claude.service';
@@ -55,7 +56,11 @@ export class InterviewSessionsService {
     vacancy: string,
     language: InterviewLanguage,
   ): Promise<InterviewSessionOutput> {
-    const vacancyText = this.validateVacancy(vacancy);
+    const vacancyText = requireText(
+      vacancy,
+      MAX_VACANCY_LENGTH,
+      'Некорректный текст вакансии',
+    );
     const resumeText = await extractPdfText(await this.readPdf(resume));
     const preparation = await this.prepare(resumeText, vacancyText, language);
     const session = await this.sessionsRepository.save(
@@ -185,13 +190,5 @@ export class InterviewSessionsService {
       throw new BadRequestException('Резюме должно быть в PDF');
     }
     return readUpload(upload, MAX_RESUME_BYTES);
-  }
-
-  private validateVacancy(vacancy: string): string {
-    const text = vacancy.trim();
-    if (!text || text.length > MAX_VACANCY_LENGTH) {
-      throw new BadRequestException('Некорректный текст вакансии');
-    }
-    return text;
   }
 }

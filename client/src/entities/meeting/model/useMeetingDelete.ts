@@ -21,10 +21,5 @@ export const useMeetingDelete = (onDeleted?: () => void) => {
 
   const isDeleting = () => deleteResult.fetching;
 
-  return {
-    isDeleting,
-    requestDeleteMeeting: request,
-    cancelDeleteMeeting: cancel,
-    confirmDeleteMeeting: confirm,
-  };
+  return { isDeleting, request, confirm, cancel };
 };

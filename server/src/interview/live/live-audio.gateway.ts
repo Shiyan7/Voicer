@@ -9,6 +9,7 @@ import {
 import { HttpAdapterHost } from '@nestjs/core';
 import { DeepgramClient } from '@deepgram/sdk';
 import { WebSocket, WebSocketServer } from 'ws';
+import { describeError } from '../../common/describe-error';
 import { AuthService } from '../../auth/auth.service';
 import { InterviewAnswersService } from '../interview-answers.service';
 import { InterviewLanguage } from '../interview-language.enum';
@@ -125,7 +126,7 @@ export class LiveAudioGateway
       .catch((error: unknown) => {
         this.logger.error(
           `Deepgram live connection failed for ${identity.sessionId}`,
-          error instanceof Error ? error.stack : String(error),
+          describeError(error),
         );
         session.fail('Deepgram unavailable');
       });

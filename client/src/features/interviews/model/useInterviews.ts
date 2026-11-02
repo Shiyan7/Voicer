@@ -1,4 +1,5 @@
 import { useInterviewDelete } from '@/entities/interview-session';
+import { useListStatus } from '@/shared/hooks/useListStatus';
 import { useQueryPagination } from '@/shared/hooks/useQueryPagination';
 import { i18n } from '@/shared/i18n';
 import { toDateRangeInput } from '@/shared/lib/date-range';
@@ -28,14 +29,14 @@ export function useInterviews() {
 
   const rows = () => mapInterviewRows(sessionsPage()?.items ?? []);
 
-  const isLoading = () => sessionsState.fetching && !rows().length;
-
-  const isEmpty = () => !sessionsState.fetching && rows().length === 0;
+  const { isLoading, isEmpty, totalCount } = useListStatus({
+    isFetching: () => sessionsState.fetching,
+    itemCount: () => rows().length,
+    total: () => sessionsPage()?.meta.total,
+  });
 
   const emptyLabel = () =>
     filters.hasActiveFilters() ? i18n.t('filters.empty') : i18n.t('live.empty');
-
-  const totalCount = () => String(sessionsPage()?.meta.total ?? 0);
 
   return {
     filters,
