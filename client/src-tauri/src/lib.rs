@@ -4,6 +4,8 @@ mod commands;
 #[cfg(target_os = "macos")]
 mod detect;
 #[cfg(target_os = "macos")]
+mod mouse_navigation;
+#[cfg(target_os = "macos")]
 mod screen;
 #[cfg(desktop)]
 mod tray;
@@ -50,6 +52,9 @@ pub fn run() {
 
             #[cfg(target_os = "macos")]
             detect::mic_activity::spawn(app.handle().clone());
+
+            #[cfg(target_os = "macos")]
+            mouse_navigation::install(app.handle().clone());
 
             let _ = app;
             Ok(())
