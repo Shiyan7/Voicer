@@ -10,7 +10,6 @@ use super::{SampleQueue, LIVE_FEED_ACTIVE, LIVE_SYSTEM_QUEUE};
 const CHUNK_INTERVAL: Duration = Duration::from_millis(100);
 const RETRY_INTERVAL: Duration = Duration::from_secs(2);
 
-/// Returns false once the receiver is gone, which stops the capture.
 pub type ChunkSink = Box<dyn Fn(Vec<u8>) -> bool + Send>;
 
 struct Feed {
@@ -34,7 +33,6 @@ impl Feed {
         }
     }
 
-    /// Uses the recorder's system feed while it delivers, otherwise runs its own source.
     fn reconcile(&mut self) -> Result<(), String> {
         if LIVE_FEED_ACTIVE.load(Ordering::Relaxed) {
             self.own = None;
