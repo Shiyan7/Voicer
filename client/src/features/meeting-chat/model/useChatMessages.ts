@@ -10,24 +10,24 @@ import { meetingChatMessagesQuery } from '../api/meetingChatMessagesQuery';
 import { meetingChatMessageSubscription } from '../api/meetingChatMessageSubscription';
 import { meetingChatSuggestionsQuery } from '../api/meetingChatSuggestionsQuery';
 import { toChatMessageView } from '../lib/toChatMessageView';
-import { ChatMessagesParams } from '../types/ChatMessagesParams';
+import { ChatMessagesDeps } from '../types/ChatMessagesDeps';
 
 const byCreatedAt = (a: ChatMessageOutput, b: ChatMessageOutput) =>
   a.createdAt.localeCompare(b.createdAt);
 
-export const useChatMessages = (params: ChatMessagesParams) => {
+export const useChatMessages = (deps: ChatMessagesDeps) => {
   const [messages, setMessages] = createSignal<ChatMessageOutput[]>([]);
   const [isAwaiting, setIsAwaiting] = createSignal(false);
   const [draft, setDraft] = createSignal('');
   const toasts = useToasts();
 
   const [messagesResult] = meetingChatMessagesQuery(
-    () => ({ meetingId: params.meetingId() }),
-    { pause: () => !params.isActive() },
+    () => ({ meetingId: deps.meetingId() }),
+    { pause: () => !deps.isActive() },
   );
   const [suggestionsResult] = meetingChatSuggestionsQuery(
-    () => ({ meetingId: params.meetingId() }),
-    { pause: () => !params.isActive() },
+    () => ({ meetingId: deps.meetingId() }),
+    { pause: () => !deps.isActive() },
   );
   const [, askMutation] = meetingChatAskMutation();
   const [, clearMutation] = meetingChatClearMutation();
@@ -44,9 +44,9 @@ export const useChatMessages = (params: ChatMessagesParams) => {
   };
 
   meetingChatMessageSubscription(
-    () => ({ meetingId: params.meetingId() }),
+    () => ({ meetingId: deps.meetingId() }),
     upsert,
-    { pause: () => !params.isActive() },
+    { pause: () => !deps.isActive() },
   );
 
   createEffect(
@@ -58,7 +58,7 @@ export const useChatMessages = (params: ChatMessagesParams) => {
 
   createEffect(
     on(
-      () => params.meetingId(),
+      () => deps.meetingId(),
       () => {
         setMessages([]);
         setIsAwaiting(false);
@@ -77,7 +77,7 @@ export const useChatMessages = (params: ChatMessagesParams) => {
     setDraft('');
     setIsAwaiting(true);
     const response = await askMutation({
-      meetingId: params.meetingId(),
+      meetingId: deps.meetingId(),
       question: text,
     });
     if (response.data) {
@@ -91,7 +91,7 @@ export const useChatMessages = (params: ChatMessagesParams) => {
 
   const clear = async () => {
     if (isAnswering()) return;
-    const response = await clearMutation({ meetingId: params.meetingId() });
+    const response = await clearMutation({ meetingId: deps.meetingId() });
     if (response.error) {
       toasts.show('error', i18n.t('meetings.chat.clear_error'));
       return;

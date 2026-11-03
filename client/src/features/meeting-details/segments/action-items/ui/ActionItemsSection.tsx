@@ -4,13 +4,13 @@ import { ActionItem } from '@/entities/action-item';
 import { i18n } from '@/shared/i18n';
 
 import { useActionItems } from '../model/useActionItems';
-import { ActionItemsParams } from '../types/ActionItemsParams';
+import { ActionItemsDeps } from '../types/ActionItemsDeps';
 import { actionItemsSectionStyles } from './ActionItemsSection.styles';
 
 const styles = actionItemsSectionStyles();
 
-export function ActionItemsSection(props: ActionItemsParams) {
-  const vm = useActionItems(props);
+export function ActionItemsSection(deps: ActionItemsDeps) {
+  const vm = useActionItems(deps);
 
   return (
     <Show when={!vm.isEmpty()}>

@@ -10,9 +10,7 @@ import { meetingsStatsQuery } from '../api/meetingsStatsQuery';
 import { getSortOptions } from '../lib/getSortOptions';
 import { getSourceOptions } from '../lib/getSourceOptions';
 import { mapMeetingCards } from '../lib/mapMeetingCards';
-import { useMeetingCapture } from './useMeetingCapture';
 import { useMeetingsFilters } from './useMeetingsFilters';
-import { useStatsBanner } from './useStatsBanner';
 
 export const useMeetingsPage = () => {
   const filters = useMeetingsFilters();
@@ -70,8 +68,8 @@ export const useMeetingsPage = () => {
   const showSourceFilter = () => sourceOptions().length > 1;
 
   return {
-    ...useMeetingCapture(),
-    banner: useStatsBanner(stats, isStatsLoading),
+    stats,
+    isStatsLoading,
     isAuthorized,
     filters,
     items,

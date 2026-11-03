@@ -10,7 +10,7 @@ import { formatDurationLabel, formatShortDateTime } from '@/shared/lib/time';
 
 import { DetailsHeaderDeps } from '../types/DetailsHeaderDeps';
 
-export const useDetailsHeader = (props: DetailsHeaderDeps) => {
+export const useDetailsHeader = (deps: DetailsHeaderDeps) => {
   const toasts = useToasts();
   const [, renameMeeting] = renameMeetingMutation();
   const [suggestResult, suggestTitle] = suggestMeetingTitleMutation();
@@ -18,9 +18,9 @@ export const useDetailsHeader = (props: DetailsHeaderDeps) => {
   const [draft, setDraft] = createSignal('');
   const [inputRef, setInputRef] = createSignal<HTMLInputElement>();
 
-  const title = () => props.meeting.title;
+  const title = () => deps.meeting.title;
 
-  const customTitle = () => props.meeting.customTitle ?? '';
+  const customTitle = () => deps.meeting.customTitle ?? '';
 
   const [isTitleRevealing, setIsTitleRevealing] = createSignal(false);
 
@@ -35,21 +35,21 @@ export const useDetailsHeader = (props: DetailsHeaderDeps) => {
 
   const isSuggesting = () => suggestResult.fetching;
 
-  const sourceLabel = () => props.meeting.sourceLabel;
+  const sourceLabel = () => deps.meeting.sourceLabel;
 
-  const dateLabel = () => formatShortDateTime(props.meeting.startedAt);
+  const dateLabel = () => formatShortDateTime(deps.meeting.startedAt);
 
   const durationLabel = () => {
-    const duration = props.meeting.durationSec;
+    const duration = deps.meeting.durationSec;
     return duration ? formatDurationLabel(duration) : null;
   };
 
   const speakersLabel = () =>
     i18n.t('meetings.speakers_count', {
-      count: props.speakerTones.length.toString(),
+      count: deps.speakerTones.length.toString(),
     });
 
-  const hasSpeakers = () => props.speakerTones.length > 0;
+  const hasSpeakers = () => deps.speakerTones.length > 0;
 
   const focusInput = () =>
     requestAnimationFrame(() => {
@@ -73,14 +73,14 @@ export const useDetailsHeader = (props: DetailsHeaderDeps) => {
     if (next === customTitle()) return;
 
     const result = await renameMeeting({
-      id: props.meeting.id,
+      id: deps.meeting.id,
       title: next || null,
     });
     if (result.error) toasts.show('error', i18n.t('meetings.rename_error'));
   };
 
   const suggestWithAi = async () => {
-    const result = await suggestTitle({ id: props.meeting.id });
+    const result = await suggestTitle({ id: deps.meeting.id });
     const suggestion = result.data?.meetingSuggestTitle;
 
     if (!suggestion) {

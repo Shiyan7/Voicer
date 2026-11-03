@@ -11,23 +11,23 @@ import { getMoreActionOptions } from '../lib/getMoreActionOptions';
 import { MoreAction } from '../types/MoreAction';
 import { MoreActionsDeps } from '../types/MoreActionsDeps';
 
-export const useMoreActions = (props: MoreActionsDeps) => {
+export const useMoreActions = (deps: MoreActionsDeps) => {
   const navigate = useNavigate();
   const [, setFavorite] = setMeetingFavoriteMutation();
   const { isDeleting, request, confirm, cancel } = useMeetingDelete(() =>
     navigate(paths.meetings),
   );
-  const { runExport } = useRecordingExport(props);
+  const { runExport } = useRecordingExport(deps);
 
   const options = () =>
-    getMoreActionOptions(props.isFavorite, Boolean(props.audioUrl));
+    getMoreActionOptions(deps.isFavorite, Boolean(deps.audioUrl));
 
   const toggleFavorite = () =>
-    setFavorite({ id: props.meetingId, isFavorite: !props.isFavorite });
+    setFavorite({ id: deps.meetingId, isFavorite: !deps.isFavorite });
 
   const selectAction = (action: MoreAction) => {
     if (action === 'favorite') void toggleFavorite();
-    else if (action === 'delete') request(props.meetingId);
+    else if (action === 'delete') request(deps.meetingId);
     else runExport(action);
   };
 

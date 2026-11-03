@@ -2,10 +2,10 @@ import { DeleteInterviewModal } from '@/entities/interview-session';
 import { MoreActionsMenu } from '@/shared/ui/more-actions-menu';
 
 import { useReviewActions } from '../model/useReviewActions';
-import { ReviewActionsProps } from '../types/ReviewActionsProps';
+import { ReviewActionsDeps } from '../types/ReviewActionsDeps';
 
-export function ReviewActions(props: ReviewActionsProps) {
-  const vm = useReviewActions(props);
+export function ReviewActions(deps: ReviewActionsDeps) {
+  const vm = useReviewActions(deps);
 
   return (
     <>

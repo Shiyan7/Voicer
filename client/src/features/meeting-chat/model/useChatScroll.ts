@@ -1,24 +1,24 @@
 import { createEffect, createSignal, on } from 'solid-js';
 
-import { ChatScrollParams } from '../types/ChatScrollParams';
+import { ChatScrollDeps } from '../types/ChatScrollDeps';
 
-export const useChatScroll = (params: ChatScrollParams) => {
+export const useChatScroll = (deps: ChatScrollDeps) => {
   const [body, setBody] = createSignal<HTMLElement>();
   const [input, setInput] = createSignal<HTMLTextAreaElement>();
 
   createEffect(
-    on(params.scrollTrigger, () => {
+    on(deps.scrollTrigger, () => {
       const element = body();
       element?.scrollTo({ top: element.scrollHeight, behavior: 'smooth' });
     }),
   );
 
   createEffect(() => {
-    if (params.isOpen()) input()?.focus();
+    if (deps.isOpen()) input()?.focus();
   });
 
   createEffect(
-    on(params.draft, () => {
+    on(deps.draft, () => {
       const element = input();
       if (!element) return;
       element.style.height = 'auto';
@@ -29,7 +29,7 @@ export const useChatScroll = (params: ChatScrollParams) => {
   const onInputKeyDown = (event: KeyboardEvent) => {
     if (event.key !== 'Enter' || event.shiftKey || event.isComposing) return;
     event.preventDefault();
-    params.onSubmit();
+    deps.onSubmit();
   };
 
   return { setBody, setInput, onInputKeyDown };

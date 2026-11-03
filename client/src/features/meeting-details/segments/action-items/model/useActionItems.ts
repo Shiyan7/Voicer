@@ -1,9 +1,9 @@
 import { mapActionItem } from '../../../lib/mapActionItem';
-import { ActionItemsParams } from '../types/ActionItemsParams';
+import { ActionItemsDeps } from '../types/ActionItemsDeps';
 
-export const useActionItems = (props: ActionItemsParams) => {
+export const useActionItems = (deps: ActionItemsDeps) => {
   const items = () =>
-    props.items.map((item) => mapActionItem(item, props.focusId));
+    deps.items.map((item) => mapActionItem(item, deps.focusId));
 
   const isEmpty = () => items().length === 0;
 

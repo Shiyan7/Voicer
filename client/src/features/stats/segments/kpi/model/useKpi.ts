@@ -2,12 +2,12 @@ import { i18n } from '@/shared/i18n';
 import { formatDuration } from '@/shared/lib/time';
 
 import { pluralize } from '../../../lib/pluralize';
-import { KpiProps } from '../types/KpiProps';
+import { KpiDeps } from '../types/KpiDeps';
 import { KpiTile } from '../types/KpiTile';
 
-export const useKpi = (props: KpiProps) => {
+export const useKpi = (deps: KpiDeps) => {
   const tiles = (): KpiTile[] => {
-    const summary = props.summary;
+    const summary = deps.summary;
     if (!summary) return [];
 
     const avgDay = summary.activeDays
@@ -32,7 +32,7 @@ export const useKpi = (props: KpiProps) => {
     ];
   };
 
-  const isLoading = () => !props.summary;
+  const isLoading = () => !deps.summary;
 
   return { tiles, isLoading };
 };

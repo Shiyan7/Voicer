@@ -7,12 +7,12 @@ import { getWeekdayLabels } from '../lib/getWeekdayLabels';
 import { sortRange } from '../lib/sortRange';
 import { CalendarDay, DateRange } from '../types';
 
-interface DateRangePickerParams {
+interface DateRangePickerDeps {
   value: () => DateRange | null;
   onChange: (range: DateRange | null) => void;
 }
 
-export const useDateRangePicker = (params: DateRangePickerParams) => {
+export const useDateRangePicker = (deps: DateRangePickerDeps) => {
   const dropdown = useDropdown();
   const [month, setMonth] = createSignal(getMonthStart());
   const [anchor, setAnchor] = createSignal<string | null>(null);
@@ -28,7 +28,7 @@ export const useDateRangePicker = (params: DateRangePickerParams) => {
 
   const visibleRange = (): DateRange | null => {
     const start = anchor();
-    if (!start) return params.value();
+    if (!start) return deps.value();
     return sortRange(start, hovered() ?? start);
   };
 
@@ -49,13 +49,13 @@ export const useDateRangePicker = (params: DateRangePickerParams) => {
 
   const toggle = () => {
     resetDraft();
-    setMonth(getMonthStart(params.value()?.to));
+    setMonth(getMonthStart(deps.value()?.to));
     dropdown.toggle();
   };
 
   const apply = (range: DateRange | null) => {
     resetDraft();
-    params.onChange(range);
+    deps.onChange(range);
     dropdown.close();
   };
 

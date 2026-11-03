@@ -11,7 +11,7 @@ import { buildTranscriptText } from '../lib/buildTranscriptText';
 import { RecordingExportAction } from '../types/RecordingExportAction';
 import { RecordingExportDeps } from '../types/RecordingExportDeps';
 
-export const useRecordingExport = (props: RecordingExportDeps) => {
+export const useRecordingExport = (deps: RecordingExportDeps) => {
   const client = useClient();
   const [isBusy, setIsBusy] = createSignal(false);
 
@@ -27,21 +27,21 @@ export const useRecordingExport = (props: RecordingExportDeps) => {
   };
 
   const showInFinder = (audioUrl: string) =>
-    runExclusive(() => revealAudioInDownloads(audioUrl, props.fileName));
+    runExclusive(() => revealAudioInDownloads(audioUrl, deps.fileName));
 
   const exportText = () =>
     runExclusive(async () => {
-      const segments = await fetchMeetingTranscript(client, props.meetingId);
+      const segments = await fetchMeetingTranscript(client, deps.meetingId);
       await revealTextInDownloads(
-        buildTranscriptText(props.fileName, segments),
-        props.fileName,
+        buildTranscriptText(deps.fileName, segments),
+        deps.fileName,
       );
     });
 
   const runExport = (action: RecordingExportAction) => {
     if (action === 'export-text') void exportText();
-    if (action === 'show-in-finder' && props.audioUrl) {
-      void showInFinder(props.audioUrl);
+    if (action === 'show-in-finder' && deps.audioUrl) {
+      void showInFinder(deps.audioUrl);
     }
   };
 

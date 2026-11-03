@@ -10,8 +10,8 @@ import { recordingStyles } from './Recording.styles';
 
 const styles = recordingStyles();
 
-export function Recording(props: RecordingDeps) {
-  const vm = useRecording(props);
+export function Recording(deps: RecordingDeps) {
+  const vm = useRecording(deps);
 
   return (
     <div class={styles.root()}>
@@ -29,7 +29,7 @@ export function Recording(props: RecordingDeps) {
                   <button
                     class={styles.head()}
                     type="button"
-                    onClick={() => props.onSeek(group.startMs)}
+                    onClick={() => deps.onSeek(group.startMs)}
                   >
                     <SpeakerAvatar size="md" tone={group.tone} />
                     <span class={styles.speaker()}>{group.speakerLabel}</span>
@@ -47,7 +47,7 @@ export function Recording(props: RecordingDeps) {
                           })}
                           ref={revealWhen(paragraph.isFocused)}
                           type="button"
-                          onClick={() => props.onSeek(paragraph.startMs)}
+                          onClick={() => deps.onSeek(paragraph.startMs)}
                         >
                           {paragraph.text}
                         </button>

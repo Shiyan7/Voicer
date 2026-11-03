@@ -1,1 +1,1 @@
-export { createUserMe, useUserMe } from './model/useUserMe';
+export { UserMeProvider, useUserMe } from './model/UserMeContext';

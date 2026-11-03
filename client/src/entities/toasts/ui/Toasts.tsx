@@ -1,10 +1,10 @@
 import { For } from 'solid-js';
 import { Portal } from 'solid-js/web';
 
-import { useToasts } from '@/entities/toasts';
 import { Icon } from '@/shared/ui/icon';
 
 import { TOAST_ICONS } from '../config/toastIcons';
+import { useToasts } from '../model/ToastsContext';
 import { toastsStyles } from './Toasts.styles';
 
 const styles = toastsStyles();

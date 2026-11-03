@@ -4,8 +4,6 @@ import { useNavigate, useParams } from '@solidjs/router';
 import { i18n } from '@/shared/i18n';
 import { paths } from '@/shared/router';
 
-import { useBriefingSections } from './useBriefingSections';
-import { useBriefingVacancy } from './useBriefingVacancy';
 import { useInterviewPreparation } from './useInterviewPreparation';
 import { useTitleDots } from './useTitleDots';
 
@@ -17,8 +15,6 @@ export function useInterviewBriefing() {
   const isPreparing = () => status() === InterviewPrepStatus.Preparing;
   const { dots } = useTitleDots(isPreparing);
   const recommendations = () => session()?.recommendations;
-  const sections = useBriefingSections(recommendations);
-  const vacancy = useBriefingVacancy();
 
   const vacancyText = () => session()?.vacancyText ?? '';
 
@@ -39,8 +35,7 @@ export function useInterviewBriefing() {
     retry,
     hasBriefing,
     vacancyText,
-    ...sections,
-    ...vacancy,
+    recommendations,
     start,
     goBack,
   };

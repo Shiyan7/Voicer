@@ -9,13 +9,13 @@ import { actionItemStyles } from './ActionItem.styles';
 
 const styles = actionItemStyles();
 
-export function ActionItem(props: ActionItemDeps) {
-  const vm = useActionItem(props);
+export function ActionItem(deps: ActionItemDeps) {
+  const vm = useActionItem(deps);
 
   return (
     <div
-      class={styles.row({ focused: props.item.isFocused })}
-      ref={revealWhen(props.item.isFocused)}
+      class={styles.row({ focused: deps.item.isFocused })}
+      ref={revealWhen(deps.item.isFocused)}
     >
       <button
         class={styles.checkbox({ done: vm.isDone() })}
@@ -28,15 +28,15 @@ export function ActionItem(props: ActionItemDeps) {
         </Show>
       </button>
       <p class={styles.text({ done: vm.isDone() })}>
-        <Show when={props.item.speakerLabel}>
+        <Show when={deps.item.speakerLabel}>
           {(label) => (
-            <span class={styles.mention({ tone: props.item.speakerTone })}>
+            <span class={styles.mention({ tone: deps.item.speakerTone })}>
               @{label()}
             </span>
           )}
         </Show>
-        {props.item.text}
-        <Show when={props.item.timeLabel}>
+        {deps.item.text}
+        <Show when={deps.item.timeLabel}>
           {(time) => <span class={styles.time()}>{time()}</span>}
         </Show>
       </p>

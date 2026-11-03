@@ -3,13 +3,13 @@ import { createMemo } from 'solid-js';
 import { mapTranscriptSegments } from '../lib/mapTranscriptSegments';
 import { RecordingDeps } from '../types/RecordingDeps';
 
-export const useRecording = (props: RecordingDeps) => {
+export const useRecording = (deps: RecordingDeps) => {
   const segments = createMemo(() =>
-    mapTranscriptSegments(props.transcript, props.focusId),
+    mapTranscriptSegments(deps.transcript, deps.focusId),
   );
 
   const activeParagraphId = createMemo(() => {
-    const time = props.currentTimeMs;
+    const time = deps.currentTimeMs;
 
     for (const group of segments()) {
       const paragraph = group.paragraphs.find(
@@ -23,7 +23,7 @@ export const useRecording = (props: RecordingDeps) => {
 
   const isParagraphActive = (id: string) => activeParagraphId() === id;
 
-  const isEmpty = () => !props.isLoading && segments().length === 0;
+  const isEmpty = () => !deps.isLoading && segments().length === 0;
 
   return { segments, isParagraphActive, isEmpty };
 };

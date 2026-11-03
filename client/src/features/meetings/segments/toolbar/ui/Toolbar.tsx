@@ -4,12 +4,14 @@ import { Show } from 'solid-js';
 import { i18n } from '@/shared/i18n';
 import { Icon } from '@/shared/ui/icon';
 
-import { ToolbarProps } from '../types/ToolbarProps';
+import { useToolbar } from '../model/useToolbar';
 import { toolbarStyles } from './Toolbar.styles';
 
 const styles = toolbarStyles();
 
-export function Toolbar(props: ToolbarProps) {
+export function Toolbar() {
+  const vm = useToolbar();
+
   return (
     <div class={styles.root()}>
       <Show when={isTauri()}>
@@ -18,26 +20,26 @@ export function Toolbar(props: ToolbarProps) {
           type="button"
           title={i18n.t('meetings.record_now')}
           aria-label={i18n.t('meetings.record_now')}
-          onClick={props.onStartRecording}
+          onClick={vm.startRecording}
         >
           <Icon size={20} name="common:microphone" />
         </button>
       </Show>
       <label
-        class={styles.action({ busy: props.isUploading })}
+        class={styles.action({ busy: vm.isUploading() })}
         title={i18n.t('meetings.upload_audio')}
         aria-label={i18n.t('meetings.upload_audio')}
       >
         <Icon size={20} name="common:upload" />
-        <Show when={props.isUploading}>
+        <Show when={vm.isUploading()}>
           <span>{i18n.t('meetings.uploading_file')}</span>
         </Show>
         <input
           class={styles.uploadInput()}
           accept="audio/*"
-          disabled={props.isUploading}
+          disabled={vm.isUploading()}
           type="file"
-          onChange={props.onFileSelected}
+          onChange={vm.onFileSelected}
         />
       </label>
     </div>

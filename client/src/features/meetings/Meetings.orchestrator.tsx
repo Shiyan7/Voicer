@@ -14,7 +14,7 @@ import { meetingsStyles } from './Meetings.styles';
 import { useMeetingsPage } from './model/useMeetingsPage';
 import { MeetingsList } from './segments/meetings-list';
 import { StatsBanner } from './segments/stats-banner';
-import { Toolbar } from './segments/toolbar/ui/Toolbar';
+import { Toolbar } from './segments/toolbar';
 
 const styles = meetingsStyles();
 
@@ -26,18 +26,10 @@ export function MeetingsOrchestrator() {
       <div class={styles.root()}>
         <header class={styles.header()}>
           <h1 class={styles.title()}>{i18n.t('meetings.title')}</h1>
-          <Toolbar
-            isUploading={vm.isUploading()}
-            onStartRecording={vm.startRecording}
-            onFileSelected={vm.onFileSelected}
-          />
+          <Toolbar />
         </header>
         <Show when={vm.isAuthorized()}>
-          <StatsBanner
-            greeting={vm.banner.greeting()}
-            tiles={vm.banner.tiles()}
-            isLoading={vm.banner.isLoading()}
-          />
+          <StatsBanner stats={vm.stats()} isLoading={vm.isStatsLoading()} />
         </Show>
         <section class={styles.section()}>
           <ListFiltersBar count={vm.totalCount()}>

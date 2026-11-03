@@ -11,7 +11,6 @@ import { InterviewPrepForm } from '../config/createInterviewPrepSchema';
 import { LANGUAGE_OPTIONS } from '../config/interviewPrepConfig';
 import { validateInterviewPrep } from '../lib/validateInterviewPrep';
 import { ResumeSelection } from '../types/ResumeSelection';
-import { useResumePicker } from './useResumePicker';
 
 export function useInterviewPrep() {
   const navigate = useNavigate();
@@ -45,8 +44,6 @@ export function useInterviewPrep() {
     );
   };
 
-  const resumePicker = useResumePicker(resume, setResume);
-
   const goBack = () => navigate(paths.live);
 
   const prepare = async (values: InterviewPrepForm) => {
@@ -68,7 +65,8 @@ export function useInterviewPrep() {
 
   return {
     form,
-    ...resumePicker,
+    resume,
+    setResume,
     language,
     languageLabel,
     setLanguage,

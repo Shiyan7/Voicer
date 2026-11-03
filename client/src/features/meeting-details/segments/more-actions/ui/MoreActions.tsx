@@ -4,8 +4,8 @@ import { MoreActionsMenu } from '@/shared/ui/more-actions-menu';
 import { useMoreActions } from '../model/useMoreActions';
 import { MoreActionsDeps } from '../types/MoreActionsDeps';
 
-export function MoreActions(props: MoreActionsDeps) {
-  const vm = useMoreActions(props);
+export function MoreActions(deps: MoreActionsDeps) {
+  const vm = useMoreActions(deps);
 
   return (
     <>

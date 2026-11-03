@@ -12,53 +12,53 @@ import { SpeakerTracks } from './SpeakerTracks';
 
 const styles = meetingPlayerStyles();
 
-export function MeetingPlayer(props: MeetingPlayerDeps) {
-  const vm = useMeetingPlayer(props);
+export function MeetingPlayer(deps: MeetingPlayerDeps) {
+  const vm = useMeetingPlayer(deps);
 
   return (
-    <section class={styles.root()} ref={props.rootRef}>
+    <section class={styles.root()} ref={deps.rootRef}>
       <audio
-        ref={props.playback.setAudioRef}
+        ref={deps.playback.setAudioRef}
         crossorigin="anonymous"
         preload="metadata"
-        src={props.audioUrl}
-        onDurationChange={props.playback.onDurationChange}
-        onEnded={props.playback.onPause}
-        onError={props.playback.onError}
-        onLoadedMetadata={props.playback.onDurationChange}
-        onPause={props.playback.onPause}
-        onPlay={props.playback.onPlay}
-        onTimeUpdate={props.playback.onTimeUpdate}
+        src={deps.audioUrl}
+        onDurationChange={deps.playback.onDurationChange}
+        onEnded={deps.playback.onPause}
+        onError={deps.playback.onError}
+        onLoadedMetadata={deps.playback.onDurationChange}
+        onPause={deps.playback.onPause}
+        onPlay={deps.playback.onPlay}
+        onTimeUpdate={deps.playback.onTimeUpdate}
       />
       <PlayerControls
-        isPlaying={props.playback.isPlaying()}
-        isDisabled={props.playback.hasError()}
+        isPlaying={deps.playback.isPlaying()}
+        isDisabled={deps.playback.hasError()}
         isSpeakersOpen={vm.isSpeakersOpen()}
         hasTracks={vm.hasTracks()}
         playLabel={vm.playLabel()}
         rateLabel={vm.rateLabel()}
         audioSettings={
           <AudioSettings
-            volume={props.playback.volume()}
-            preset={props.playback.audioPreset()}
-            isLeveling={props.playback.isLeveling()}
-            isChanged={props.playback.isAudioChanged()}
-            isDisabled={props.playback.hasError()}
-            onVolumeChange={props.playback.setVolume}
-            onPresetChange={props.playback.setAudioPreset}
-            onToggleLeveling={props.playback.toggleLeveling}
-            onReset={props.playback.resetAudio}
+            volume={deps.playback.volume()}
+            preset={deps.playback.audioPreset()}
+            isLeveling={deps.playback.isLeveling()}
+            isChanged={deps.playback.isAudioChanged()}
+            isDisabled={deps.playback.hasError()}
+            onVolumeChange={deps.playback.setVolume}
+            onPresetChange={deps.playback.setAudioPreset}
+            onToggleLeveling={deps.playback.toggleLeveling}
+            onReset={deps.playback.resetAudio}
           />
         }
         tracks={vm.tracks()}
-        onTogglePlay={props.playback.togglePlay}
+        onTogglePlay={deps.playback.togglePlay}
         onSkipBack={vm.skipBack}
         onSkipForward={vm.skipForward}
-        onCycleRate={props.playback.cycleRate}
+        onCycleRate={deps.playback.cycleRate}
         onToggleSpeakers={vm.toggleSpeakers}
       />
       <Show
-        when={!props.playback.hasError()}
+        when={!deps.playback.hasError()}
         fallback={
           <p class={styles.message()}>{i18n.t('meetings.player_error')}</p>
         }

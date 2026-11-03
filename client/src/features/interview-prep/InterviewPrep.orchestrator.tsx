@@ -12,18 +12,7 @@ export function InterviewPrepOrchestrator() {
       <PrepForm
         form={vm.form}
         resumePicker={
-          <ResumePicker
-            label={vm.resumeLabel()}
-            isFilled={vm.hasResume()}
-            options={vm.resumeOptions()}
-            selectedId={vm.selectedResumeId()}
-            isDeleting={vm.isDeletingResume()}
-            onSelectFile={vm.selectResumeFile}
-            onSelectSaved={vm.selectSavedResume}
-            onRequestDelete={vm.requestResumeDelete}
-            onConfirmDelete={vm.confirmResumeDelete}
-            onCancelDelete={vm.cancelResumeDelete}
-          />
+          <ResumePicker selection={vm.resume()} onChange={vm.setResume} />
         }
         language={vm.language()}
         languageLabel={vm.languageLabel()}

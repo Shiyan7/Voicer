@@ -3,7 +3,7 @@ import { createEffect, createSignal, onCleanup, onMount } from 'solid-js';
 import { DRAG_THRESHOLD } from '../config/meetingChatConfig';
 import { clampToBounds } from '../lib/clampToBounds';
 import { getFabBounds } from '../lib/getFabBounds';
-import { DraggableFabParams } from '../types/DraggableFabParams';
+import { DraggableFabDeps } from '../types/DraggableFabDeps';
 import { FabBounds } from '../types/FabBounds';
 import { Point } from '../types/Point';
 
@@ -13,7 +13,7 @@ interface DragSession {
   moved: boolean;
 }
 
-export const useDraggableFab = (params: DraggableFabParams) => {
+export const useDraggableFab = (deps: DraggableFabDeps) => {
   const [position, setPosition] = createSignal<Point | null>(null);
   const [bounds, setBounds] = createSignal<FabBounds | null>(null);
   const [isDragging, setIsDragging] = createSignal(false);
@@ -21,8 +21,8 @@ export const useDraggableFab = (params: DraggableFabParams) => {
   let wasDragged = false;
 
   const measure = () => {
-    const boundary = params.boundary();
-    if (boundary) setBounds(getFabBounds(boundary, params.obstacle()));
+    const boundary = deps.boundary();
+    if (boundary) setBounds(getFabBounds(boundary, deps.obstacle()));
   };
 
   onMount(() => {
@@ -31,7 +31,7 @@ export const useDraggableFab = (params: DraggableFabParams) => {
   });
 
   createEffect(() => {
-    const observed = [params.boundary(), params.obstacle()].filter(
+    const observed = [deps.boundary(), deps.obstacle()].filter(
       (element): element is HTMLElement => Boolean(element),
     );
     if (!observed.length) return;
@@ -88,7 +88,7 @@ export const useDraggableFab = (params: DraggableFabParams) => {
       wasDragged = false;
       return;
     }
-    params.onTap();
+    deps.onTap();
   };
 
   return {

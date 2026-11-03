@@ -7,13 +7,13 @@ import { SKIP_SECONDS } from '../config/playerConfig';
 import { buildSpeakerTracks } from '../lib/buildSpeakerTracks';
 import { MeetingPlayerDeps } from '../types/MeetingPlayerDeps';
 
-export const useMeetingPlayer = (props: MeetingPlayerDeps) => {
+export const useMeetingPlayer = (deps: MeetingPlayerDeps) => {
   let trackEl: HTMLDivElement | undefined;
 
   const [isDragging, setIsDragging] = createSignal(false);
   const [isSpeakersOpen, setIsSpeakersOpen] = createSignal(true);
 
-  const playback = () => props.playback;
+  const playback = () => deps.playback;
 
   const progress = () => {
     const duration = playback().duration();
@@ -32,7 +32,7 @@ export const useMeetingPlayer = (props: MeetingPlayerDeps) => {
     playback().isPlaying() ? i18n.t('player.pause') : i18n.t('player.play');
 
   const tracks = () =>
-    buildSpeakerTracks(props.transcript, playback().duration() * 1000);
+    buildSpeakerTracks(deps.transcript, playback().duration() * 1000);
 
   const hasTracks = () => tracks().length > 0;
 

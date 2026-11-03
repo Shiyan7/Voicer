@@ -1,6 +1,6 @@
 import { IconName } from '@/shared/ui/icon';
 
-import { ToastType } from '../model/useToasts';
+import { ToastType } from '../model/createToasts';
 
 export const TOAST_ICONS: Record<ToastType, IconName> = {
   success: 'common:check',

@@ -1,8 +1,8 @@
 import { mapKeyPoints } from '../lib/mapKeyPoints';
-import { KeyPointsParams } from '../types/KeyPointsParams';
+import { KeyPointsDeps } from '../types/KeyPointsDeps';
 
-export const useKeyPoints = (props: KeyPointsParams) => {
-  const points = () => mapKeyPoints(props.points, props.focusId);
+export const useKeyPoints = (deps: KeyPointsDeps) => {
+  const points = () => mapKeyPoints(deps.points, deps.focusId);
 
   const isEmpty = () => points().length === 0;
 

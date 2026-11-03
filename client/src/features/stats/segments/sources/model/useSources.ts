@@ -5,12 +5,12 @@ import { formatDuration } from '@/shared/lib/time';
 import { pluralize } from '../../../lib/pluralize';
 import { MAX_SOURCES } from '../config/MAX_SOURCES';
 import { SourceRow } from '../types/SourceRow';
-import { SourcesProps } from '../types/SourcesProps';
+import { SourcesDeps } from '../types/SourcesDeps';
 
-export const useSources = (props: SourcesProps) => {
+export const useSources = (deps: SourcesDeps) => {
   const groups = () => {
-    const top = props.sources.slice(0, MAX_SOURCES);
-    const rest = props.sources.slice(MAX_SOURCES);
+    const top = deps.sources.slice(0, MAX_SOURCES);
+    const rest = deps.sources.slice(MAX_SOURCES);
     if (!rest.length) return top;
 
     return [
@@ -34,7 +34,7 @@ export const useSources = (props: SourcesProps) => {
     }));
   };
 
-  const isEmpty = () => !props.sources.length;
+  const isEmpty = () => !deps.sources.length;
 
   return { rows, isEmpty };
 };

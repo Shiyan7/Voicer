@@ -9,27 +9,32 @@ import { searchQuery } from '../../../api/searchQuery';
 import { getSearchSortOptions } from '../../../lib/getSearchSortOptions';
 import { mapSearchResult } from '../../../lib/mapSearchResult';
 import { PAGE_SIZE } from '../config/searchResultsConfig';
-import { SearchResultsProps } from '../types/SearchResultsProps';
+import { SearchResultsDeps } from '../types/SearchResultsDeps';
 
 const STEP_BY_KEY: Record<string, number> = { ArrowDown: 1, ArrowUp: -1 };
 
-export const useSearchResults = (props: SearchResultsProps) => {
+export const useSearchResults = (deps: SearchResultsDeps) => {
   const [sort, setSort] = createSignal(SearchSort.Relevance);
   const [offset, setOffset] = createSignal(0);
   const [items, setItems] = createSignal<SearchResultOutput[]>([]);
   const [total, setTotal] = createSignal(0);
   const [activeIndex, setActiveIndex] = createSignal(0);
 
-  const isIdle = () => props.words.length === 0;
+  const isIdle = () => deps.words.length === 0;
 
   const [result] = searchQuery(
     () => ({
-      input: { query: props.query, sort: sort(), limit: PAGE_SIZE, offset: offset() },
+      input: {
+        query: deps.query,
+        sort: sort(),
+        limit: PAGE_SIZE,
+        offset: offset(),
+      },
     }),
     { pause: () => !authRoot.isAuth || isIdle() },
   );
 
-  const results = mapArray(items, (item) => mapSearchResult(item, props.words));
+  const results = mapArray(items, (item) => mapSearchResult(item, deps.words));
 
   const isLoading = () => result.fetching && !items().length;
 
@@ -48,7 +53,7 @@ export const useSearchResults = (props: SearchResultsProps) => {
   const appendPage = () => {
     const input = result.operation?.variables?.input;
     const page = result.data?.search;
-    if (!page || input?.query !== props.query) return;
+    if (!page || input?.query !== deps.query) return;
     const pageItems = structuredClone(unwrap(page.items));
     setItems((prev) => [...prev.slice(0, input.offset ?? 0), ...pageItems]);
     setTotal(page.total);
@@ -69,10 +74,10 @@ export const useSearchResults = (props: SearchResultsProps) => {
 
   const submitActive = () => {
     const active = results()[activeIndex()];
-    if (active) props.onSelect(active.href);
+    if (active) deps.onSelect(active.href);
   };
 
-  createEffect(on([() => props.query, sort], reset));
+  createEffect(on([() => deps.query, sort], reset));
 
   createEffect(on(() => result.operation, appendPage));
 

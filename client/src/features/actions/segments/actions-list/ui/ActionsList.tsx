@@ -8,11 +8,11 @@ import { actionsListStyles } from './ActionsList.styles';
 
 const styles = actionsListStyles();
 
-export function ActionsList(props: ActionsListDeps) {
+export function ActionsList(deps: ActionsListDeps) {
   return (
-    <Show when={!props.isLoading} fallback={<div class={styles.skeleton()} />}>
+    <Show when={!deps.isLoading} fallback={<div class={styles.skeleton()} />}>
       <Show
-        when={!props.isEmpty}
+        when={!deps.isEmpty}
         fallback={
           <div class={styles.empty()}>
             <span class={styles.emptyTitle()}>{i18n.t('actions.empty')}</span>
@@ -20,7 +20,7 @@ export function ActionsList(props: ActionsListDeps) {
         }
       >
         <div class={styles.groups()}>
-          <For each={props.groups}>
+          <For each={deps.groups}>
             {(group) => <ActionItemsGroup group={group} />}
           </For>
         </div>

@@ -3,13 +3,13 @@ import { For, Show } from 'solid-js';
 import { i18n } from '@/shared/i18n';
 
 import { useSources } from '../model/useSources';
-import { SourcesProps } from '../types/SourcesProps';
+import { SourcesDeps } from '../types/SourcesDeps';
 import { sourcesStyles } from './Sources.styles';
 
 const styles = sourcesStyles();
 
-export function Sources(props: SourcesProps) {
-  const vm = useSources(props);
+export function Sources(deps: SourcesDeps) {
+  const vm = useSources(deps);
 
   return (
     <section class={styles.root()}>

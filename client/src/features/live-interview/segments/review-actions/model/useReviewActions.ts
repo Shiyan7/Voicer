@@ -6,19 +6,19 @@ import { paths } from '@/shared/router';
 
 import { getReviewActionOptions } from '../lib/getReviewActionOptions';
 import { ReviewAction } from '../types/ReviewAction';
-import { ReviewActionsProps } from '../types/ReviewActionsProps';
+import { ReviewActionsDeps } from '../types/ReviewActionsDeps';
 
-export const useReviewActions = (props: ReviewActionsProps) => {
+export const useReviewActions = (deps: ReviewActionsDeps) => {
   const navigate = useNavigate();
-  const { runExport } = useRecordingExport(props);
+  const { runExport } = useRecordingExport(deps);
   const { isDeleting, request, confirm, cancel } = useInterviewDelete(() =>
     navigate(paths.live),
   );
 
-  const options = () => getReviewActionOptions(Boolean(props.meetingId));
+  const options = () => getReviewActionOptions(Boolean(deps.meetingId));
 
   const selectAction = (action: ReviewAction) => {
-    if (action === 'delete') request(props.sessionId);
+    if (action === 'delete') request(deps.sessionId);
     else runExport(action);
   };
 

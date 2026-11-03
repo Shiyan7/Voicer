@@ -5,13 +5,13 @@ import { revealWhen } from '@/shared/lib/dom';
 import { Timecode } from '@/shared/ui/timecode';
 
 import { useKeyPoints } from '../model/useKeyPoints';
-import { KeyPointsParams } from '../types/KeyPointsParams';
+import { KeyPointsDeps } from '../types/KeyPointsDeps';
 import { keyPointsStyles } from './KeyPoints.styles';
 
 const styles = keyPointsStyles();
 
-export function KeyPoints(props: KeyPointsParams) {
-  const vm = useKeyPoints(props);
+export function KeyPoints(deps: KeyPointsDeps) {
+  const vm = useKeyPoints(deps);
 
   return (
     <Show when={!vm.isEmpty()}>
@@ -28,7 +28,7 @@ export function KeyPoints(props: KeyPointsParams) {
                 <p class={styles.text()}>
                   {point.text}
                   <Show when={point.atMs !== null}>
-                    <Timecode ms={point.atMs ?? 0} onSeek={props.onSeek} />
+                    <Timecode ms={point.atMs ?? 0} onSeek={deps.onSeek} />
                   </Show>
                 </p>
               </div>

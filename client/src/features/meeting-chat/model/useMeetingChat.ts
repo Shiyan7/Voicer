@@ -3,12 +3,12 @@ import { createSignal } from 'solid-js';
 import { useKeydown } from '@/shared/lib/dom';
 
 import { getPanelPlacement } from '../lib/getPanelPlacement';
-import { MeetingChatProps } from '../types/MeetingChatProps';
+import { MeetingChatDeps } from '../types/MeetingChatDeps';
 import { useChatMessages } from './useChatMessages';
 import { useChatScroll } from './useChatScroll';
 import { useDraggableFab } from './useDraggableFab';
 
-export const useMeetingChat = (props: MeetingChatProps) => {
+export const useMeetingChat = (deps: MeetingChatDeps) => {
   const [isOpen, setIsOpen] = createSignal(false);
   const [hasOpened, setHasOpened] = createSignal(false);
   const [boundary, setBoundary] = createSignal<HTMLElement>();
@@ -23,13 +23,13 @@ export const useMeetingChat = (props: MeetingChatProps) => {
   const toggle = () => (isOpen() ? close() : open());
 
   const chat = useChatMessages({
-    meetingId: () => props.meetingId,
+    meetingId: () => deps.meetingId,
     isActive: hasOpened,
   });
 
   const fab = useDraggableFab({
     boundary,
-    obstacle: () => props.obstacle,
+    obstacle: () => deps.obstacle,
     onTap: toggle,
   });
 
@@ -82,7 +82,7 @@ export const useMeetingChat = (props: MeetingChatProps) => {
     ask: chat.ask,
     submit,
     clear: chat.clear,
-    seek: props.onSeek,
+    seek: deps.onSeek,
     setBody: scroll.setBody,
     setInput: scroll.setInput,
     onInputKeyDown: scroll.onInputKeyDown,

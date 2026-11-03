@@ -12,14 +12,14 @@ import { buildMonthLabels } from '../lib/buildMonthLabels';
 import { getCellText } from '../lib/getCellText';
 import { getHeatThresholds } from '../lib/getHeatThresholds';
 import { HeatCell } from '../types/HeatCell';
-import { HeatmapProps } from '../types/HeatmapProps';
+import { HeatmapDeps } from '../types/HeatmapDeps';
 import { HeatTooltip } from '../types/HeatTooltip';
 
-export const useHeatmap = (props: HeatmapProps) => {
+export const useHeatmap = (deps: HeatmapDeps) => {
   const [tooltip, setTooltip] = createSignal<HeatTooltip | null>(null);
 
   const weeks = createMemo(() =>
-    buildHeatmapWeeks(props.year, props.days, getHeatThresholds(props.days)),
+    buildHeatmapWeeks(deps.year, deps.days, getHeatThresholds(deps.days)),
   );
 
   const monthLabels = () => buildMonthLabels(weeks());
@@ -35,18 +35,18 @@ export const useHeatmap = (props: HeatmapProps) => {
     return i18n.t('stats.year_total', {
       count: pluralize(
         'stats.calls',
-        sumBy(props.days, (day) => day.count),
+        sumBy(deps.days, (day) => day.count),
       ),
-      duration: formatDuration(sumBy(props.days, (day) => day.durationSec)),
-      year: String(props.year),
+      duration: formatDuration(sumBy(deps.days, (day) => day.durationSec)),
+      year: String(deps.year),
     });
   };
 
   const yearTabs = () =>
-    props.years.map((year) => ({ label: String(year), value: year }));
+    deps.years.map((year) => ({ label: String(year), value: year }));
 
   const isDimmed = (cell: HeatCell) =>
-    Boolean(props.selectedDate) && cell.date !== props.selectedDate;
+    Boolean(deps.selectedDate) && cell.date !== deps.selectedDate;
 
   const showTooltip = (cell: HeatCell, element: HTMLElement) =>
     setTooltip({
@@ -58,7 +58,7 @@ export const useHeatmap = (props: HeatmapProps) => {
   const hideTooltip = () => setTooltip(null);
 
   const select = (cell: HeatCell) => {
-    if (!cell.isOutside && !cell.isFuture) props.onSelect(cell.date);
+    if (!cell.isOutside && !cell.isFuture) deps.onSelect(cell.date);
   };
 
   return {

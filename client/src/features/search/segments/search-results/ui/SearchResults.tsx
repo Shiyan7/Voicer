@@ -7,14 +7,14 @@ import { Icon } from '@/shared/ui/icon';
 
 import { SKELETON_ROWS } from '../config/searchResultsConfig';
 import { useSearchResults } from '../model/useSearchResults';
-import { SearchResultsProps } from '../types/SearchResultsProps';
+import { SearchResultsDeps } from '../types/SearchResultsDeps';
 import { SearchResultItem } from './SearchResultItem';
 import { searchResultsStyles } from './SearchResults.styles';
 
 const styles = searchResultsStyles();
 
-export function SearchResults(props: SearchResultsProps) {
-  const vm = useSearchResults(props);
+export function SearchResults(deps: SearchResultsDeps) {
+  const vm = useSearchResults(deps);
 
   return (
     <div class={styles.root()}>
@@ -29,7 +29,7 @@ export function SearchResults(props: SearchResultsProps) {
         </Match>
         <Match when={vm.isEmpty()}>
           <div class={styles.state()}>
-            {i18n.t('search.empty', { query: props.query.trim() })}
+            {i18n.t('search.empty', { query: deps.query.trim() })}
           </div>
         </Match>
         <Match when={true}>
@@ -72,12 +72,15 @@ export function SearchResults(props: SearchResultsProps) {
                     <SearchResultItem
                       result={result}
                       isActive={index() === vm.activeIndex()}
-                      onSelect={props.onSelect}
+                      onSelect={deps.onSelect}
                       onHover={() => vm.setActiveIndex(index())}
                     />
                   )}
                 </For>
-                <div ref={onVisible(() => vm.loadMore())} class={styles.sentinel()} />
+                <div
+                  class={styles.sentinel()}
+                  ref={onVisible(() => vm.loadMore())}
+                />
               </Match>
             </Switch>
           </div>

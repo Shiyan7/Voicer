@@ -4,13 +4,13 @@ import { For, Match, Show, Switch } from 'solid-js';
 import { i18n } from '@/shared/i18n';
 
 import { useDayPanel } from '../model/useDayPanel';
-import { DayPanelProps } from '../types/DayPanelProps';
+import { DayPanelDeps } from '../types/DayPanelDeps';
 import { dayPanelStyles } from './DayPanel.styles';
 
 const styles = dayPanelStyles();
 
-export function DayPanel(props: DayPanelProps) {
-  const vm = useDayPanel(props);
+export function DayPanel(deps: DayPanelDeps) {
+  const vm = useDayPanel(deps);
 
   return (
     <section class={styles.root()}>

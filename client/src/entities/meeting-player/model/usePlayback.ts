@@ -67,7 +67,15 @@ export const usePlayback = (): PlaybackController => {
   };
 
   return {
-    ...audio,
+    volume: audio.volume,
+    audioPreset: audio.audioPreset,
+    isLeveling: audio.isLeveling,
+    isAudioChanged: audio.isAudioChanged,
+    setVolume: audio.setVolume,
+    setAudioPreset: audio.setAudioPreset,
+    toggleLeveling: audio.toggleLeveling,
+    resetAudio: audio.resetAudio,
+    resumeAudio: audio.resumeAudio,
     isPlaying,
     currentTime,
     duration,

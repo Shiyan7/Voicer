@@ -11,7 +11,7 @@ import {
   SETTLED_LEVEL,
   STROKE_WIDTH,
 } from '../config/voiceBlobConfig';
-import { VoiceBlobProps } from '../types/VoiceBlobProps';
+import { VoiceBlobDeps } from '../types/VoiceBlobDeps';
 
 const reducedMotion = window.matchMedia(
   '(prefers-reduced-motion: reduce)',
@@ -56,12 +56,12 @@ const traceBlob = (
   ctx.closePath();
 };
 
-export const useVoiceBlob = (props: VoiceBlobProps) => {
+export const useVoiceBlob = (deps: VoiceBlobDeps) => {
   const [canvas, setCanvas] = createSignal<HTMLCanvasElement>();
 
   const canvasStyle = () => ({
-    width: `${props.size}px`,
-    height: `${props.size}px`,
+    width: `${deps.size}px`,
+    height: `${deps.size}px`,
   });
 
   createEffect(() => {
@@ -69,7 +69,7 @@ export const useVoiceBlob = (props: VoiceBlobProps) => {
     const ctx = node?.getContext('2d');
     if (!node || !ctx) return;
 
-    const size = props.size;
+    const size = deps.size;
     const dpr = Math.min(MAX_DPR, window.devicePixelRatio || 1);
     node.width = Math.round(size * dpr);
     node.height = Math.round(size * dpr);
@@ -90,9 +90,9 @@ export const useVoiceBlob = (props: VoiceBlobProps) => {
     const draw = (now: number) => {
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
-      level = follow(level, props.paused ? 0 : props.level, dt);
-      presence = follow(presence, props.paused ? 0 : 1, dt);
-      if (!props.paused && !reducedMotion) time += dt * (0.6 + level * 1.4);
+      level = follow(level, deps.paused ? 0 : deps.level, dt);
+      presence = follow(presence, deps.paused ? 0 : 1, dt);
+      if (!deps.paused && !reducedMotion) time += dt * (0.6 + level * 1.4);
 
       ctx.clearRect(0, 0, size, size);
       for (const layer of BLOB_LAYERS) {
@@ -106,12 +106,12 @@ export const useVoiceBlob = (props: VoiceBlobProps) => {
         ctx.globalAlpha = layer.stroke * presence;
         ctx.stroke();
       }
-      const settled = props.paused && presence < SETTLED_LEVEL;
+      const settled = deps.paused && presence < SETTLED_LEVEL;
       frame = settled ? 0 : requestAnimationFrame(draw);
     };
 
     createEffect(() => {
-      if (props.paused || frame) return;
+      if (deps.paused || frame) return;
       last = performance.now();
       frame = requestAnimationFrame(draw);
     });

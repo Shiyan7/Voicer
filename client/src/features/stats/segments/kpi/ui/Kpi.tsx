@@ -2,13 +2,13 @@ import { For, Show } from 'solid-js';
 
 import { SKELETON_TILES } from '../config/SKELETON_TILES';
 import { useKpi } from '../model/useKpi';
-import { KpiProps } from '../types/KpiProps';
+import { KpiDeps } from '../types/KpiDeps';
 import { kpiStyles } from './Kpi.styles';
 
 const styles = kpiStyles();
 
-export function Kpi(props: KpiProps) {
-  const vm = useKpi(props);
+export function Kpi(deps: KpiDeps) {
+  const vm = useKpi(deps);
 
   return (
     <div class={styles.root()}>

@@ -11,13 +11,13 @@ import { detailsHeaderStyles } from './DetailsHeader.styles';
 
 const styles = detailsHeaderStyles();
 
-export function DetailsHeader(props: DetailsHeaderDeps) {
-  const vm = useDetailsHeader(props);
+export function DetailsHeader(deps: DetailsHeaderDeps) {
+  const vm = useDetailsHeader(deps);
 
   return (
     <header class={styles.header()}>
       <div class={styles.titleRow()}>
-        <BackButton onClick={props.onBack} />
+        <BackButton onClick={deps.onBack} />
         <Show
           when={vm.isEditing()}
           fallback={
@@ -95,7 +95,7 @@ export function DetailsHeader(props: DetailsHeaderDeps) {
         <Show when={vm.hasSpeakers()}>
           <span class={styles.chip()}>
             <span class={styles.avatars()}>
-              <For each={props.speakerTones}>
+              <For each={deps.speakerTones}>
                 {(tone) => <SpeakerAvatar tone={tone} />}
               </For>
             </span>

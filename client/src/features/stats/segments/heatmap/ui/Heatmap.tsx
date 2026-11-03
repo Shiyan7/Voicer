@@ -5,14 +5,14 @@ import { Tabs } from '@/shared/ui/tabs';
 
 import { HEAT_LEVELS } from '../config/heatmapConfig';
 import { useHeatmap } from '../model/useHeatmap';
-import { HeatmapProps } from '../types/HeatmapProps';
+import { HeatmapDeps } from '../types/HeatmapDeps';
 import { heatLevelStyles } from './HeatLevel.styles';
 import { heatmapStyles } from './Heatmap.styles';
 
 const styles = heatmapStyles();
 
-export function Heatmap(props: HeatmapProps) {
-  const vm = useHeatmap(props);
+export function Heatmap(deps: HeatmapDeps) {
+  const vm = useHeatmap(deps);
 
   return (
     <section class={styles.root()}>
@@ -21,8 +21,8 @@ export function Heatmap(props: HeatmapProps) {
         <Tabs
           size="sm"
           tabs={vm.yearTabs()}
-          activeTab={props.year}
-          onSelect={props.onYearChange}
+          activeTab={deps.year}
+          onSelect={deps.onYearChange}
         />
       </header>
       <div class={styles.body()}>
@@ -46,7 +46,7 @@ export function Heatmap(props: HeatmapProps) {
               )}
             </For>
           </div>
-          <div class={styles.weeks({ loading: props.isLoading })}>
+          <div class={styles.weeks({ loading: deps.isLoading })}>
             <For each={vm.weeks()}>
               {(week) => (
                 <div class={styles.week()}>

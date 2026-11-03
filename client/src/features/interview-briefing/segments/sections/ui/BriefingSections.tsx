@@ -2,21 +2,24 @@ import { For } from 'solid-js';
 
 import { Tabs } from '@/shared/ui/tabs';
 
-import { BriefingSectionsProps } from '../types/BriefingSectionsProps';
+import { useBriefingSections } from '../model/useBriefingSections';
+import { BriefingSectionsDeps } from '../types/BriefingSectionsDeps';
 import { briefingSectionsStyles } from './BriefingSections.styles';
 
 const styles = briefingSectionsStyles();
 
-export function BriefingSections(props: BriefingSectionsProps) {
+export function BriefingSections(deps: BriefingSectionsDeps) {
+  const vm = useBriefingSections(deps);
+
   return (
     <section class={styles.root()}>
       <Tabs
-        tabs={props.tabs}
-        activeTab={props.activeSection}
-        onSelect={props.onSelectSection}
+        tabs={vm.tabs()}
+        activeTab={vm.activeSection()}
+        onSelect={vm.setActiveSection}
       />
       <ol class={styles.items()}>
-        <For each={props.items}>
+        <For each={vm.items()}>
           {(item) => <li class={styles.item()}>{item}</li>}
         </For>
       </ol>

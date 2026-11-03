@@ -1,13 +1,13 @@
 import { useVoiceBlob } from './model/useVoiceBlob';
-import { VoiceBlobProps } from './types/VoiceBlobProps';
+import { VoiceBlobDeps } from './types/VoiceBlobDeps';
 import { voiceBlobStyles } from './VoiceBlob.styles';
 
-export function VoiceBlob(props: VoiceBlobProps) {
-  const vm = useVoiceBlob(props);
+export function VoiceBlob(deps: VoiceBlobDeps) {
+  const vm = useVoiceBlob(deps);
 
   return (
     <canvas
-      class={voiceBlobStyles({ class: props.class })}
+      class={voiceBlobStyles({ class: deps.class })}
       ref={vm.setCanvas}
       style={vm.canvasStyle()}
       aria-hidden="true"

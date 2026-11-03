@@ -1,22 +1,22 @@
 import { onCleanup, onMount } from 'solid-js';
 
 import { FOCUS_DELAY_MS } from '../config/FOCUS_DELAY_MS';
-import { SearchInputProps } from '../types/SearchInputProps';
+import { SearchInputDeps } from '../types/SearchInputDeps';
 
-export const useSearchInput = (props: SearchInputProps) => {
+export const useSearchInput = (deps: SearchInputDeps) => {
   let input: HTMLInputElement | undefined;
 
   const setInputRef = (element: HTMLInputElement) => {
     input = element;
   };
 
-  const hasQuery = () => props.query.length > 0;
+  const hasQuery = () => deps.query.length > 0;
 
   const onInput = (event: InputEvent & { currentTarget: HTMLInputElement }) =>
-    props.onQueryChange(event.currentTarget.value);
+    deps.onQueryChange(event.currentTarget.value);
 
   const clear = () => {
-    props.onClear();
+    deps.onClear();
     input?.focus();
   };
 

@@ -4,20 +4,20 @@ import { statsDayMeetingsQuery } from '../../../api/statsDayMeetingsQuery';
 import { getTimeZone } from '../../../lib/getTimeZone';
 import { pluralize } from '../../../lib/pluralize';
 import { mapDayMeeting } from '../lib/mapDayMeeting';
-import { DayPanelProps } from '../types/DayPanelProps';
+import { DayPanelDeps } from '../types/DayPanelDeps';
 
-export const useDayPanel = (props: DayPanelProps) => {
+export const useDayPanel = (deps: DayPanelDeps) => {
   const timeZone = getTimeZone();
 
   const [result] = statsDayMeetingsQuery(() => ({
-    input: { date: props.date, timeZone },
+    input: { date: deps.date, timeZone },
   }));
 
   const meetings = () => result.data?.statsDayMeetings ?? [];
 
   const items = () => meetings().map(mapDayMeeting);
 
-  const title = () => formatDayDate(props.date, true);
+  const title = () => formatDayDate(deps.date, true);
 
   const summary = () => {
     const duration = meetings().reduce(

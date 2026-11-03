@@ -9,12 +9,12 @@ import { ChatFab } from './segments/chat-fab';
 import { ChatMessage, ChatThinking } from './segments/chat-message';
 import { ChatPanel } from './segments/chat-panel';
 import { QuestionChips } from './segments/question-chips';
-import { MeetingChatProps } from './types/MeetingChatProps';
+import { MeetingChatDeps } from './types/MeetingChatDeps';
 
 const styles = meetingChatStyles;
 
-export function MeetingChatOrchestrator(props: MeetingChatProps) {
-  const vm = useMeetingChat(props);
+export function MeetingChatOrchestrator(deps: MeetingChatDeps) {
+  const vm = useMeetingChat(deps);
 
   return (
     <>

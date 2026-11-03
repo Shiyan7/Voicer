@@ -3,17 +3,17 @@ import { createSignal } from 'solid-js';
 
 import { meetingSummarizeMutation } from '../../../api/meetingSummarizeMutation';
 import { getSummaryStyles } from '../config/summaryStyles';
-import { SummarizeParams } from '../types/SummarizeParams';
+import { SummarizeDeps } from '../types/SummarizeDeps';
 
-export const useSummarize = (props: SummarizeParams) => {
+export const useSummarize = (deps: SummarizeDeps) => {
   const [, summarize] = meetingSummarizeMutation();
   const [selectedStyle, setSelectedStyle] = createSignal(
-    props.summaryStyle ?? SummaryStyle.Auto,
+    deps.summaryStyle ?? SummaryStyle.Auto,
   );
 
   const runSummarize = async () => {
-    props.onStarted();
-    await summarize({ id: props.meetingId, style: selectedStyle() });
+    deps.onStarted();
+    await summarize({ id: deps.meetingId, style: selectedStyle() });
   };
 
   const summarizeWith = (style: SummaryStyle) => {

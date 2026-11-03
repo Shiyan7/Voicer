@@ -1,10 +1,10 @@
 import { type ParentProps, Show, Suspense } from 'solid-js';
 
-import { Toasts } from '@/entities/toasts';
+import { Toasts, ToastsProvider } from '@/entities/toasts';
+import { UserMeProvider } from '@/entities/user-me';
 import { AuthModal } from '@/features/auth';
 import { CallRecorderHost } from '@/features/call-recorder';
 import { SearchOrchestrator } from '@/features/search';
-import { SingletonProvider } from '@/shared/singleton';
 import { Navigation } from '@/widgets/navigation';
 
 import { appLayoutStyles } from './AppLayout.styles';
@@ -16,25 +16,27 @@ export function AppLayout(props: ParentProps) {
   const vm = useAppLayout();
 
   return (
-    <SingletonProvider>
-      <Suspense>
-        <Show when={vm.ready()}>
-          <div class={styles.root()}>
-            <Navigation />
-            <main class={styles.main()}>
-              <Suspense>
-                {props.children}
-                <Toasts />
-              </Suspense>
-            </main>
-          </div>
-          <AuthModal />
-          <SearchOrchestrator />
-          <Show when={vm.isDesktop()}>
-            <CallRecorderHost />
+    <UserMeProvider>
+      <ToastsProvider>
+        <Suspense>
+          <Show when={vm.ready()}>
+            <div class={styles.root()}>
+              <Navigation />
+              <main class={styles.main()}>
+                <Suspense>
+                  {props.children}
+                  <Toasts />
+                </Suspense>
+              </main>
+            </div>
+            <AuthModal />
+            <SearchOrchestrator />
+            <Show when={vm.isDesktop()}>
+              <CallRecorderHost />
+            </Show>
           </Show>
-        </Show>
-      </Suspense>
-    </SingletonProvider>
+        </Suspense>
+      </ToastsProvider>
+    </UserMeProvider>
   );
 }

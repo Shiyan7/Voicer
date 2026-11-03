@@ -10,32 +10,32 @@ import { accountCardStyles } from './AccountCard.styles';
 
 const styles = accountCardStyles();
 
-export function AccountCard(props: AccountCardDeps) {
-  const vm = useAccountCard(props);
+export function AccountCard(deps: AccountCardDeps) {
+  const vm = useAccountCard(deps);
 
   return (
     <Show
       when={vm.isAuthorized()}
       fallback={
         <Button
-          class={styles.authBtn({ collapsed: props.isCollapsed })}
+          class={styles.authBtn({ collapsed: deps.isCollapsed })}
           size="lg"
           aria-label={vm.authLabel()}
           onClick={vm.openAuth}
         >
           <Icon size={18} name="common:login" />
-          <Show when={!props.isCollapsed}>{vm.authLabel()}</Show>
+          <Show when={!deps.isCollapsed}>{vm.authLabel()}</Show>
         </Button>
       }
     >
       <A
-        class={styles.card({ collapsed: props.isCollapsed })}
+        class={styles.card({ collapsed: deps.isCollapsed })}
         href={vm.accountHref}
       >
-        <span class={styles.avatar({ collapsed: props.isCollapsed })}>
+        <span class={styles.avatar({ collapsed: deps.isCollapsed })}>
           {vm.firstLetterName()}
         </span>
-        <Show when={!props.isCollapsed}>
+        <Show when={!deps.isCollapsed}>
           <span class={styles.info()}>
             <span class={styles.name()}>{vm.name()}</span>
             <span class={styles.email()}>{vm.email()}</span>
