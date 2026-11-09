@@ -4,29 +4,31 @@ import { useScrollToBottom } from '@/shared/hooks/useScrollToBottom';
 import { i18n } from '@/shared/i18n';
 import { Icon } from '@/shared/ui/icon';
 
-import { LiveSessionProps } from '../types/LiveSessionProps';
+import { useLiveSession } from '../model/useLiveSession';
+import { LiveSessionDeps } from '../types/LiveSessionDeps';
 import { liveSessionStyles } from './LiveSession.styles';
 import { LiveTurnCard } from './LiveTurnCard';
 
 const styles = liveSessionStyles();
 
-export function LiveSession(props: LiveSessionProps) {
+export function LiveSession(deps: LiveSessionDeps) {
+  const vm = useLiveSession(deps);
   const scroll = useScrollToBottom();
 
   return (
     <div class={styles.root()}>
       <div class={styles.column()}>
-        {props.header}
+        {deps.header}
         <Show
-          when={!props.isEmpty}
-          fallback={<p class={styles.empty()}>{props.emptyLabel}</p>}
+          when={!vm.isEmpty()}
+          fallback={<p class={styles.empty()}>{deps.emptyLabel}</p>}
         >
           <div class={styles.list()}>
-            <For each={props.turns}>
+            <For each={vm.turnViews()}>
               {(turn) => (
                 <LiveTurnCard
                   turn={turn()}
-                  onToggleDetails={props.onToggleDetails}
+                  onToggleDetails={vm.toggleDetails}
                 />
               )}
             </For>
@@ -47,7 +49,7 @@ export function LiveSession(props: LiveSessionProps) {
           </Show>
         </Show>
       </div>
-      {props.player}
+      {deps.player}
     </div>
   );
 }

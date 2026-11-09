@@ -8,9 +8,9 @@ import {
 import { askInterviewScreenshot } from '../api/askInterviewScreenshot';
 import { openLiveAudioSocket } from '../api/openLiveAudioSocket';
 import { subscribeInterviewAnswer } from '../api/subscribeInterviewAnswer';
-import { createAnswerTracker } from '../lib/createAnswerTracker';
 import { LiveConnectionHandlers } from '../types/LiveConnectionHandlers';
 import { LiveServerMessage } from '../types/LiveServerMessage';
+import { createAnswerTracker } from './createAnswerTracker';
 
 const utteranceTurnId = (utteranceId: number) => `utterance-${utteranceId}`;
 

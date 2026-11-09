@@ -11,14 +11,14 @@ import { ChatPanel } from './segments/chat-panel';
 import { QuestionChips } from './segments/question-chips';
 import { MeetingChatDeps } from './types/MeetingChatDeps';
 
-const styles = meetingChatStyles;
+const styles = meetingChatStyles();
 
 export function MeetingChatOrchestrator(deps: MeetingChatDeps) {
   const vm = useMeetingChat(deps);
 
   return (
     <>
-      <div class={styles()} ref={vm.setBoundary} aria-hidden />
+      <div class={styles.root()} ref={vm.setBoundary} aria-hidden />
       <Portal>
         <Show when={vm.panelPlacement()}>
           {(placement) => (

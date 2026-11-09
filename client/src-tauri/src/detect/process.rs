@@ -69,10 +69,19 @@ pub fn processes_running_input() -> Result<Vec<AudioProcess>, String> {
                 continue;
             }
             let bundle_id = get_string_property(id, PROP_PROCESS_BUNDLE_ID).unwrap_or_default();
+            if is_ignored_bundle(&bundle_id) {
+                continue;
+            }
             result.push(AudioProcess { bundle_id, pid });
         }
         Ok(result)
     }
+}
+
+fn is_ignored_bundle(bundle_id: &str) -> bool {
+    let lower = bundle_id.to_ascii_lowercase();
+    lower.starts_with("com.apple.")
+        && (lower.contains("settings") || lower.contains("systempreferences"))
 }
 
 fn capitalize(value: &str) -> String {
