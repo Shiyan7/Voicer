@@ -1,6 +1,7 @@
 import { Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
+import { Checkbox } from '@/shared/ui/checkbox';
 import { Icon } from '@/shared/ui/icon';
 import { Input } from '@/shared/ui/input';
 
@@ -86,24 +87,16 @@ export function TranscriptSearchPanel(deps: TranscriptSearchPanelDeps) {
           </div>
         </div>
         <div class={styles.options()}>
-          <label class={styles.option()}>
-            <input
-              class={styles.checkbox()}
-              type="checkbox"
-              checked={deps.search.matchCase()}
-              onChange={deps.search.toggleMatchCase}
-            />
-            {i18n.t('meetings.find.match_case')}
-          </label>
-          <label class={styles.option()}>
-            <input
-              class={styles.checkbox()}
-              type="checkbox"
-              checked={deps.search.wholeWord()}
-              onChange={deps.search.toggleWholeWord}
-            />
-            {i18n.t('meetings.find.whole_word')}
-          </label>
+          <Checkbox
+            checked={deps.search.matchCase()}
+            label={i18n.t('meetings.find.match_case')}
+            onChange={deps.search.toggleMatchCase}
+          />
+          <Checkbox
+            checked={deps.search.wholeWord()}
+            label={i18n.t('meetings.find.whole_word')}
+            onChange={deps.search.toggleWholeWord}
+          />
         </div>
         <div class={styles.actions()}>
           <button

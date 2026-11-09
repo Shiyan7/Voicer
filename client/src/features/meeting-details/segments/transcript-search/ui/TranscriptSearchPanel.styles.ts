@@ -34,11 +34,6 @@ export const transcriptSearchPanelStyles = tv({
     chevronUp: 'rotate-90',
     chevronDown: '-rotate-90',
     options: 'flex flex-col gap-2.5 pt-1',
-    option: `
-      flex cursor-pointer items-center gap-3 text-sm font-medium
-      text-gray-800
-    `,
-    checkbox: 'size-[18px] rounded accent-gray-900',
     actions: 'flex justify-end gap-1 pt-1',
     action: `
       rounded-lg px-2.5 py-1.5 text-sm font-medium text-gray-900

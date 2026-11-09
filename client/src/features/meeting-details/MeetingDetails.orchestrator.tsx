@@ -41,8 +41,10 @@ export function MeetingDetailsOrchestrator() {
         <div class={styles.root()}>
           <Switch>
             <Match when={vm.isLoading()}>
-              <div class={styles.skeleton({ size: 'header' })} />
-              <div class={styles.skeleton({ size: 'content' })} />
+              <div class={styles.loading()}>
+                <div class={styles.skeleton({ size: 'header' })} />
+                <div class={styles.skeleton({ size: 'content' })} />
+              </div>
             </Match>
             <Match when={vm.isEmpty()}>
               <div class={styles.notFound()}>
@@ -81,69 +83,71 @@ export function MeetingDetailsOrchestrator() {
                       />
                     </div>
                   </div>
-                  <Show when={vm.isTranscribing()}>
-                    <NotesLoading
-                      title={i18n.t('meetings.transcript_loading.title')}
-                      description={i18n.t(
-                        'meetings.transcript_loading.description',
-                      )}
-                    />
-                  </Show>
-                  <Show when={vm.isFailed()}>
-                    <div class={styles.processing()}>
-                      <span class={styles.processingLabel()}>
-                        {i18n.t('meetings.processing_failed')}
-                      </span>
-                    </div>
-                  </Show>
-                  <Show when={vm.hasContent()}>
-                    <Tabs
-                      tabs={vm.tabs()}
-                      activeTab={vm.activeTab()}
-                      onSelect={vm.setActiveTab}
-                    />
-                    <Switch>
-                      <Match when={vm.activeTab() === 'recording'}>
-                        <Recording
-                          transcript={vm.transcript()}
-                          isLoading={vm.isTranscriptLoading()}
-                          currentTimeMs={vm.currentTimeMs()}
-                          focusId={vm.focusId()}
-                          currentMatchIndex={vm.currentMatchIndex()}
-                          partsFor={vm.search.partsFor}
-                          isMatchCurrent={vm.search.isMatchCurrent}
-                          onSeek={vm.seekToMs}
-                        />
-                      </Match>
-                      <Match when={vm.notesState() === 'loading'}>
-                        <NotesLoading
-                          title={i18n.t('meetings.notes_loading.title')}
-                          description={i18n.t(
-                            'meetings.notes_loading.description',
-                          )}
-                        />
-                      </Match>
-                      <Match when={vm.notesState() === 'empty'}>
-                        <NotesEmpty />
-                      </Match>
-                      <Match when={vm.notesState() === 'content'}>
-                        <div class={styles.tabPanel()}>
-                          <Show when={meeting().summaryStyle}>
-                            {(style) => <SummaryStyleBadge style={style()} />}
-                          </Show>
-                          <ActionItemsSection
-                            items={vm.actionItems()}
+                  <div class={styles.content()}>
+                    <Show when={vm.isTranscribing()}>
+                      <NotesLoading
+                        title={i18n.t('meetings.transcript_loading.title')}
+                        description={i18n.t(
+                          'meetings.transcript_loading.description',
+                        )}
+                      />
+                    </Show>
+                    <Show when={vm.isFailed()}>
+                      <div class={styles.processing()}>
+                        <span class={styles.processingLabel()}>
+                          {i18n.t('meetings.processing_failed')}
+                        </span>
+                      </div>
+                    </Show>
+                    <Show when={vm.hasContent()}>
+                      <Tabs
+                        tabs={vm.tabs()}
+                        activeTab={vm.activeTab()}
+                        onSelect={vm.setActiveTab}
+                      />
+                      <Switch>
+                        <Match when={vm.activeTab() === 'recording'}>
+                          <Recording
+                            transcript={vm.transcript()}
+                            isLoading={vm.isTranscriptLoading()}
+                            currentTimeMs={vm.currentTimeMs()}
                             focusId={vm.focusId()}
+                            currentMatchIndex={vm.currentMatchIndex()}
+                            partsFor={vm.search.partsFor}
+                            isMatchCurrent={vm.search.isMatchCurrent}
+                            onSeek={vm.seekToMs}
                           />
-                          <KeyPoints
-                            points={vm.keyPoints()}
-                            focusId={vm.focusId()}
-                            onSeek={vm.jumpToMoment}
+                        </Match>
+                        <Match when={vm.notesState() === 'loading'}>
+                          <NotesLoading
+                            title={i18n.t('meetings.notes_loading.title')}
+                            description={i18n.t(
+                              'meetings.notes_loading.description',
+                            )}
                           />
-                        </div>
-                      </Match>
-                    </Switch>
-                  </Show>
+                        </Match>
+                        <Match when={vm.notesState() === 'empty'}>
+                          <NotesEmpty />
+                        </Match>
+                        <Match when={vm.notesState() === 'content'}>
+                          <div class={styles.tabPanel()}>
+                            <Show when={meeting().summaryStyle}>
+                              {(style) => <SummaryStyleBadge style={style()} />}
+                            </Show>
+                            <ActionItemsSection
+                              items={vm.actionItems()}
+                              focusId={vm.focusId()}
+                            />
+                            <KeyPoints
+                              points={vm.keyPoints()}
+                              focusId={vm.focusId()}
+                              onSeek={vm.jumpToMoment}
+                            />
+                          </div>
+                        </Match>
+                      </Switch>
+                    </Show>
+                  </div>
                 </>
               )}
             </Match>
