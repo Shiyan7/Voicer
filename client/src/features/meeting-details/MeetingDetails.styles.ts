@@ -5,8 +5,8 @@ export const meetingDetailsStyles = tv({
     page: 'relative isolate flex min-h-[calc(100vh-1rem)] flex-col',
     root: 'mx-auto flex w-full max-w-5xl flex-1 flex-col gap-5 pt-6 pb-10',
     headerRow: `
-      sticky top-0 z-10 -my-3 flex items-center justify-between gap-4
-      bg-gray-50 py-3
+      sticky top-0 z-10 -mt-6 -mb-5 flex items-center justify-between gap-4
+      bg-gray-50 pt-6 pb-5
     `,
     headerActions: 'flex shrink-0 items-center gap-2',
     tabPanel: 'flex flex-col gap-10 px-1 pt-2',
