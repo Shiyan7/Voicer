@@ -17,6 +17,7 @@
     "opener:allow-reveal-item-in-dir",
     "fs:allow-read-file",
     "fs:allow-write-file",
+    "fs:allow-write-text-file",
     "fs:allow-exists",
     {
       "identifier": "fs:scope",

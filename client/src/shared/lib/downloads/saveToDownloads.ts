@@ -1,7 +1,9 @@
+import { isTauri } from '@tauri-apps/api/core';
 import { downloadDir, join } from '@tauri-apps/api/path';
 import { exists, writeFile, writeTextFile } from '@tauri-apps/plugin-fs';
 import { revealItemInDir } from '@tauri-apps/plugin-opener';
 
+import { downloadInBrowser } from './downloadInBrowser';
 import { toFileName } from './toFileName';
 
 const downloadPath = async (fileName: string, extension: string) =>
@@ -11,10 +13,18 @@ export async function revealAudioInDownloads(
   audioUrl: string,
   fileName: string,
 ): Promise<void> {
-  const path = await downloadPath(
-    fileName,
-    new URL(audioUrl).pathname.split('.').pop() ?? 'mp3',
-  );
+  const extension = new URL(audioUrl).pathname.split('.').pop() ?? 'mp3';
+
+  if (!isTauri()) {
+    const response = await fetch(audioUrl);
+    downloadInBrowser(
+      await response.blob(),
+      `${toFileName(fileName)}.${extension}`,
+    );
+    return;
+  }
+
+  const path = await downloadPath(fileName, extension);
 
   if (!(await exists(path))) {
     const response = await fetch(audioUrl);
@@ -28,6 +38,14 @@ export async function revealTextInDownloads(
   text: string,
   fileName: string,
 ): Promise<void> {
+  if (!isTauri()) {
+    downloadInBrowser(
+      new Blob([text], { type: 'text/plain;charset=utf-8' }),
+      `${toFileName(fileName)}.txt`,
+    );
+    return;
+  }
+
   const path = await downloadPath(fileName, 'txt');
 
   await writeTextFile(path, text);
