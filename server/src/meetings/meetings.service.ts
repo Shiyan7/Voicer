@@ -19,6 +19,7 @@ import { FileStorageService } from '../file/file-storage.service';
 import { FileUpload } from '../file/file-upload';
 import { TranscriptSegmentEntity } from './transcript-segment.entity';
 import { TranscriptSegmentOutput } from './transcript-segment.output';
+import { TranscriptSegmentTextInput } from './transcript-segment-text.input';
 import { SummaryStyle } from '../summarization/summary-style.enum';
 import { InterviewAccessService } from '../interview/access/interview-access.service';
 import { MeetingContentService } from './meeting-content.service';
@@ -164,6 +165,34 @@ export class MeetingsService {
     });
 
     return segments.map(toSegmentOutput);
+  }
+
+  async updateMeetingTranscript(
+    userId: string,
+    meetingId: string,
+    segments: TranscriptSegmentTextInput[],
+  ): Promise<TranscriptSegmentOutput[]> {
+    await this.content.findOwned(userId, meetingId);
+
+    await this.transcriptSegmentsRepository.manager.transaction(
+      async (manager) => {
+        for (const segment of segments) {
+          await manager.update(
+            TranscriptSegmentEntity,
+            { id: segment.id, meetingId },
+            { text: segment.text },
+          );
+        }
+      },
+    );
+
+    const ids = segments.map((segment) => segment.id);
+    const updated = await this.transcriptSegmentsRepository.find({
+      where: { meetingId, id: In(ids) },
+      order: { startMs: 'ASC' },
+    });
+
+    return updated.map(toSegmentOutput);
   }
 
   async getMeetingKeyPoints(

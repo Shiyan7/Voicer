@@ -202,6 +202,7 @@ type Mutation {
   meetingSetFavorite(id: ID!, isFavorite: Boolean!): MeetingOutput!
   meetingSuggestTitle(id: ID!): String!
   meetingSummarize(id: ID!, style: SummaryStyle! = AUTO): MeetingOutput!
+  meetingTranscriptUpdate(meetingId: ID!, segments: [TranscriptSegmentTextInput!]!): [TranscriptSegmentOutput!]!
   meetingUploadAudio(file: Upload!, interviewSessionId: String, source: String, startedAt: DateTime): MeetingOutput!
   retryInterviewPreparation(id: ID!): InterviewSessionOutput!
   signIn(input: SignInInput!): AuthPayload!
@@ -354,6 +355,11 @@ type TranscriptSegmentOutput {
   meetingId: ID!
   speakerIndex: Int!
   startMs: Int!
+  text: String!
+}
+
+input TranscriptSegmentTextInput {
+  id: ID!
   text: String!
 }
 

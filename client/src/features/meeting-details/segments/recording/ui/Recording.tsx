@@ -22,7 +22,7 @@ export function Recording(deps: RecordingDeps) {
             <p class={styles.hint()}>{i18n.t('meetings.transcript_empty')}</p>
           }
         >
-          <div class={styles.list()}>
+          <div class={styles.list()} ref={vm.setListRef}>
             <For each={vm.segments()}>
               {(group) => (
                 <div class={styles.group()}>
@@ -45,11 +45,37 @@ export function Recording(deps: RecordingDeps) {
                             active: vm.isParagraphActive(paragraph.id),
                             focused: paragraph.isFocused,
                           })}
+                          data-active-paragraph={
+                            vm.isParagraphActive(paragraph.id) || undefined
+                          }
                           ref={revealWhen(paragraph.isFocused)}
                           type="button"
                           onClick={() => deps.onSeek(paragraph.startMs)}
                         >
-                          {paragraph.text}
+                          <For
+                            each={deps.partsFor(paragraph.id, paragraph.text)}
+                          >
+                            {(part) => (
+                              <Show
+                                when={part.matchIndex !== null}
+                                fallback={part.text}
+                              >
+                                <mark
+                                  class={styles.match({
+                                    current: deps.isMatchCurrent(
+                                      part.matchIndex,
+                                    ),
+                                  })}
+                                  data-current-match={
+                                    deps.isMatchCurrent(part.matchIndex) ||
+                                    undefined
+                                  }
+                                >
+                                  {part.text}
+                                </mark>
+                              </Show>
+                            )}
+                          </For>
                         </button>
                       )}
                     </For>

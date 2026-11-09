@@ -6,6 +6,7 @@ export const recordingStyles = tv({
     card: 'rounded-2xl border border-gray-200 bg-white px-6 py-5',
     hint: 'max-w-sm text-sm text-gray-500',
     list: 'flex flex-col gap-6',
+    match: 'scroll-mt-40 rounded-sm bg-yellow-200 text-inherit',
     group: 'flex flex-col gap-2',
     head: `
       flex w-fit items-center gap-2.5 rounded-full pr-2 outline-none
@@ -31,6 +32,11 @@ export const recordingStyles = tv({
     active: {
       true: {
         paragraph: 'bg-gray-100 text-gray-900',
+      },
+    },
+    current: {
+      true: {
+        match: 'bg-orange-400 text-white',
       },
     },
     focused: {

@@ -26,7 +26,8 @@ export const useMoreActions = (deps: MoreActionsDeps) => {
     setFavorite({ id: deps.meetingId, isFavorite: !deps.isFavorite });
 
   const selectAction = (action: MoreAction) => {
-    if (action === 'favorite') void toggleFavorite();
+    if (action === 'find') deps.onFind();
+    else if (action === 'favorite') void toggleFavorite();
     else if (action === 'delete') request(deps.meetingId);
     else runExport(action);
   };

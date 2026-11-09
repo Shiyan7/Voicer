@@ -3,4 +3,5 @@ export interface MoreActionsDeps {
   audioUrl: string | null;
   fileName: string;
   isFavorite: boolean;
+  onFind: () => void;
 }

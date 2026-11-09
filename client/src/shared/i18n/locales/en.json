@@ -155,6 +155,20 @@
       "failed": "Couldn't answer. Please try again",
       "error": "Couldn't send the question",
       "clear_error": "Couldn't clear the chat"
+    },
+    "find": {
+      "title": "Find and replace",
+      "find": "Find",
+      "replace_with": "Replace with",
+      "results": "{{current}} of {{total}}",
+      "no_results": "No results",
+      "prev": "Previous match",
+      "next": "Next match",
+      "match_case": "Match case",
+      "whole_word": "Whole word",
+      "replace": "Replace",
+      "replace_all": "Replace all",
+      "close": "Close"
     }
   },
   "recorder": {

@@ -16,6 +16,7 @@ import { MeetingOutput } from './meeting.output';
 import { MeetingsPageInput } from './meetings-page.input';
 import { MeetingsPageOutput } from './meetings-page.output';
 import { TranscriptSegmentOutput } from './transcript-segment.output';
+import { TranscriptSegmentTextInput } from './transcript-segment-text.input';
 import { KeyPointOutput } from './key-point.output';
 import { MeetingsService } from './meetings.service';
 import { SummaryStyle } from '../summarization/summary-style.enum';
@@ -94,6 +95,20 @@ export class MeetingsResolver {
     @Args('id', { type: () => ID }) id: string,
   ): Promise<string> {
     return this.meetingsService.suggestMeetingTitle(user.id, id);
+  }
+
+  @Mutation(() => [TranscriptSegmentOutput])
+  meetingTranscriptUpdate(
+    @CurrentUser() user: UserEntity,
+    @Args('meetingId', { type: () => ID }) meetingId: string,
+    @Args('segments', { type: () => [TranscriptSegmentTextInput] })
+    segments: TranscriptSegmentTextInput[],
+  ): Promise<TranscriptSegmentOutput[]> {
+    return this.meetingsService.updateMeetingTranscript(
+      user.id,
+      meetingId,
+      segments,
+    );
   }
 
   @Mutation(() => MeetingOutput)

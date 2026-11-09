@@ -1,3 +1,3 @@
 import type { RecordingExportAction } from '@/entities/meeting';
 
-export type MoreAction = RecordingExportAction | 'favorite' | 'delete';
+export type MoreAction = RecordingExportAction | 'find' | 'favorite' | 'delete';

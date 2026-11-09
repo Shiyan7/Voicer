@@ -6,6 +6,7 @@ import { mapMeeting, meetingTranscriptQuery } from '@/entities/meeting';
 import { usePlayback } from '@/entities/meeting-player';
 import { useToasts } from '@/entities/toasts';
 import { i18n } from '@/shared/i18n';
+import { isModShortcut, useKeydown } from '@/shared/lib/dom';
 import { canGoBack, paths } from '@/shared/router';
 import { getSpeakerTone } from '@/shared/ui/speaker-avatar';
 
@@ -17,6 +18,7 @@ import { toMeetingTab } from '../lib/toMeetingTab';
 import { MeetingDetailsSearchParams } from '../types/MeetingDetailsSearchParams';
 import { MeetingTab } from '../types/MeetingTab';
 import { NotesState } from '../types/NotesState';
+import { useTranscriptSearch } from './useTranscriptSearch';
 
 export const useMeetingDetailsPage = () => {
   const params = useParams<{ id: string }>();
@@ -75,6 +77,10 @@ export const useMeetingDetailsPage = () => {
 
   const transcript = () => transcriptResult.data?.meetingTranscript ?? [];
 
+  const search = useTranscriptSearch({ transcript });
+
+  const currentMatchIndex = () => search.currentMatch()?.index ?? null;
+
   const speakerTones = () =>
     [...new Set(transcript().map((segment) => segment.speakerIndex))]
       .sort((a, b) => a - b)
@@ -124,6 +130,17 @@ export const useMeetingDetailsPage = () => {
     seekToMs(ms);
   };
 
+  const openFind = () => {
+    setActiveTab('recording');
+    search.open();
+  };
+
+  useKeydown((event) => {
+    if (!isModShortcut(event, 'KeyF') || !hasContent()) return;
+    event.preventDefault();
+    openFind();
+  });
+
   const navigate = useNavigate();
 
   const goBack = () => {
@@ -150,6 +167,9 @@ export const useMeetingDetailsPage = () => {
     goBack,
     tabs: getMeetingTabs,
     transcript,
+    search,
+    openFind,
+    currentMatchIndex,
     speakerTones,
     actionItems,
     keyPoints,

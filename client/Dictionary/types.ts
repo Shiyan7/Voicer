@@ -230,6 +230,7 @@ export type Mutation = {
   meetingSetFavorite: MeetingOutput;
   meetingSuggestTitle: Scalars['String']['output'];
   meetingSummarize: MeetingOutput;
+  meetingTranscriptUpdate: Array<TranscriptSegmentOutput>;
   meetingUploadAudio: MeetingOutput;
   retryInterviewPreparation: InterviewSessionOutput;
   signIn: AuthPayload;
@@ -299,6 +300,11 @@ export type MutationMeetingSuggestTitleArgs = {
 export type MutationMeetingSummarizeArgs = {
   id: Scalars['ID']['input'];
   style?: SummaryStyle;
+};
+
+export type MutationMeetingTranscriptUpdateArgs = {
+  meetingId: Scalars['ID']['input'];
+  segments: Array<TranscriptSegmentTextInput>;
 };
 
 export type MutationMeetingUploadAudioArgs = {
@@ -545,6 +551,11 @@ export type TranscriptSegmentOutput = {
   speakerIndex: Scalars['Int']['output'];
   startMs: Scalars['Int']['output'];
   text: Scalars['String']['output'];
+};
+
+export type TranscriptSegmentTextInput = {
+  id: Scalars['ID']['input'];
+  text: Scalars['String']['input'];
 };
 
 export type UserMeOutput = {

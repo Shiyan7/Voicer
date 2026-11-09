@@ -19,6 +19,7 @@ import { NotesEmpty } from './segments/notes-empty';
 import { NotesLoading } from './segments/notes-loading';
 import { Recording } from './segments/recording';
 import { SummarizeAction, SummaryStyleBadge } from './segments/summarize';
+import { TranscriptSearchPanel } from './segments/transcript-search';
 
 const styles = meetingDetailsStyles();
 
@@ -28,6 +29,15 @@ export function MeetingDetailsOrchestrator() {
   return (
     <PageFade>
       <div class={styles.page()}>
+        <Show when={vm.search.isOpen() && vm.meeting()?.id}>
+          {(meetingId) => (
+            <TranscriptSearchPanel
+              meetingId={meetingId()}
+              transcript={vm.transcript()}
+              search={vm.search}
+            />
+          )}
+        </Show>
         <div class={styles.root()}>
           <Switch>
             <Match when={vm.isLoading()}>
@@ -67,6 +77,7 @@ export function MeetingDetailsOrchestrator() {
                         audioUrl={meeting().audioUrl}
                         fileName={meeting().title}
                         isFavorite={meeting().isFavorite}
+                        onFind={vm.openFind}
                       />
                     </div>
                   </div>
@@ -98,6 +109,9 @@ export function MeetingDetailsOrchestrator() {
                           isLoading={vm.isTranscriptLoading()}
                           currentTimeMs={vm.currentTimeMs()}
                           focusId={vm.focusId()}
+                          currentMatchIndex={vm.currentMatchIndex()}
+                          partsFor={vm.search.partsFor}
+                          isMatchCurrent={vm.search.isMatchCurrent}
                           onSeek={vm.seekToMs}
                         />
                       </Match>
