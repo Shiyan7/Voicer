@@ -10,6 +10,7 @@ import { openLiveAudioSocket } from '../api/openLiveAudioSocket';
 import { subscribeInterviewAnswer } from '../api/subscribeInterviewAnswer';
 import { LiveConnectionHandlers } from '../types/LiveConnectionHandlers';
 import { LiveServerMessage } from '../types/LiveServerMessage';
+import { LiveStatus } from '../types/LiveStatus';
 import { createAnswerTracker } from './createAnswerTracker';
 
 const utteranceTurnId = (utteranceId: number) => `utterance-${utteranceId}`;
@@ -18,14 +19,21 @@ export const createLiveConnection = (
   sessionId: string,
   { onTurn, onStatus }: LiveConnectionHandlers,
 ) => {
-  const tracker = createAnswerTracker({
-    onAnswer: (id, answer) => onTurn({ id, answer }),
-    onBusyChange: (isBusy) => onStatus(isBusy ? 'answering' : 'listening'),
-  });
   let socket: ReturnType<typeof openLiveAudioSocket> | undefined;
   let unsubscribeAnswers: (() => void) | undefined;
   let screenshotCount = 0;
   let isActive = false;
+  const imageUrls: string[] = [];
+
+  const setActiveStatus = (status: LiveStatus) => {
+    if (isActive) onStatus(status);
+  };
+
+  const tracker = createAnswerTracker({
+    onAnswer: (id, answer) => onTurn({ id, answer }),
+    onBusyChange: (isBusy) =>
+      setActiveStatus(isBusy ? 'answering' : 'listening'),
+  });
 
   const onServerMessage = (message: LiveServerMessage) => {
     const id = utteranceTurnId(message.utteranceId);
@@ -34,23 +42,8 @@ export const createLiveConnection = (
     if (message.type === 'answerStarted') tracker.link(message.answerId, id);
   };
 
-  const start = () => {
-    isActive = true;
-    socket = openLiveAudioSocket(sessionId, {
-      onMessage: onServerMessage,
-      onClose: () => {
-        if (isActive) onStatus('idle');
-      },
-    });
-    unsubscribeAnswers = subscribeInterviewAnswer(
-      { sessionId },
-      tracker.receive,
-    );
-    onStatus('listening');
-    void startLiveCapture((pcm) => socket?.sendAudio(pcm));
-  };
-
   const stop = () => {
+    if (!isActive) return;
     isActive = false;
     void stopLiveCapture();
     socket?.close();
@@ -60,9 +53,55 @@ export const createLiveConnection = (
     onStatus('idle');
   };
 
+  const beginAudioCapture = async () => {
+    try {
+      await startLiveCapture((pcm) => socket?.sendAudio(pcm));
+      if (!isActive) await stopLiveCapture();
+    } catch (error) {
+      console.error('[live-interview] failed to start audio capture:', error);
+      stop();
+    }
+  };
+
+  const start = () => {
+    if (isActive) return;
+    isActive = true;
+    socket = openLiveAudioSocket(sessionId, {
+      onMessage: onServerMessage,
+      onClose: stop,
+    });
+    unsubscribeAnswers = subscribeInterviewAnswer(
+      { sessionId },
+      tracker.receive,
+    );
+    onStatus('listening');
+    void beginAudioCapture();
+  };
+
+  const dispose = () => {
+    stop();
+    imageUrls.forEach((url) => URL.revokeObjectURL(url));
+    imageUrls.length = 0;
+  };
+
   const requestAnswer = () => socket?.requestAnswer();
 
+  const showScreenshot = (turnId: string, image: Blob) => {
+    const imageUrl = URL.createObjectURL(image);
+    imageUrls.push(imageUrl);
+    onTurn({ id: turnId, imageUrl });
+  };
+
+  const askAboutScreenshot = async (turnId: string) => {
+    const image = await captureScreenshot();
+    showScreenshot(turnId, image);
+    const answerId = await askInterviewScreenshot({ sessionId, image });
+    if (!answerId) throw new Error('screenshot answer was not started');
+    tracker.link(answerId, turnId);
+  };
+
   const captureCode = async () => {
+    if (!isActive) return;
     screenshotCount += 1;
     const turnId = `screenshot-${screenshotCount}`;
     onTurn({
@@ -72,13 +111,14 @@ export const createLiveConnection = (
     });
     tracker.beginRequest();
     try {
-      const image = await captureScreenshot();
-      const answerId = await askInterviewScreenshot({ sessionId, image });
-      if (answerId) tracker.link(answerId, turnId);
+      await askAboutScreenshot(turnId);
+    } catch (error) {
+      console.error('[live-interview] failed to ask about screenshot:', error);
+      onTurn({ id: turnId, answer: i18n.t('live.session.screenshot_error') });
     } finally {
       tracker.endRequest();
     }
   };
 
-  return { start, stop, requestAnswer, captureCode };
+  return { start, stop, dispose, requestAnswer, captureCode };
 };

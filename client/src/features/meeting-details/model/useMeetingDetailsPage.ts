@@ -12,6 +12,7 @@ import { getSpeakerTone } from '@/shared/ui/speaker-avatar';
 
 import { meetingActionItemsQuery } from '../api/meetingActionItemsQuery';
 import { meetingKeyPointsQuery } from '../api/meetingKeyPointsQuery';
+import { meetingScreenshotsQuery } from '../api/meetingScreenshotsQuery';
 import { meetingUpdatedSubscription } from '../api/meetingUpdatedSubscription';
 import { getMeetingTabs } from '../config/getMeetingTabs';
 import { toMeetingTab } from '../lib/toMeetingTab';
@@ -100,6 +101,13 @@ export const useMeetingDetailsPage = () => {
 
   const keyPoints = () => keyPointsResult.data?.meetingKeyPoints ?? [];
 
+  const [screenshotsResult] = meetingScreenshotsQuery(
+    () => ({ meetingId: params.id }),
+    { pause: () => !hasContent() },
+  );
+
+  const screenshots = () => screenshotsResult.data?.meetingScreenshots ?? [];
+
   const isNotesLoading = () =>
     actionItemsResult.fetching || keyPointsResult.fetching;
 
@@ -166,6 +174,7 @@ export const useMeetingDetailsPage = () => {
     goToNotesTab,
     goBack,
     tabs: getMeetingTabs,
+    screenshots,
     transcript,
     search,
     openFind,

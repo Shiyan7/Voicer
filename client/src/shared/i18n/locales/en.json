@@ -32,7 +32,10 @@
     "or": "or",
     "copy": "Copy",
     "copied": "Copied",
-    "back": "Back"
+    "back": "Back",
+    "close": "Close",
+    "previous": "Previous",
+    "next": "Next"
   },
   "validation": {
     "common": {
@@ -169,6 +172,14 @@
       "replace": "Replace",
       "replace_all": "Replace all",
       "close": "Close"
+    },
+    "screenshots": "Screenshots",
+    "screenshot_alt": "Screenshot at {{time}}",
+    "screenshots_empty": {
+      "title": "No screenshots yet",
+      "description": "Voicer takes screenshots while recording. They will appear here with timestamps — click a time to jump to that moment.",
+      "hint_on": "A screenshot is taken every {{seconds}} seconds",
+      "hint_off": "Turn on in Settings → Recording"
     }
   },
   "recorder": {
@@ -213,7 +224,11 @@
     "recording": {
       "title": "Recording",
       "auto": "Record calls automatically",
-      "auto_hint": "Start recording without asking when a call is detected"
+      "auto_hint": "Start recording without asking when a call is detected",
+      "screenshots": "Screen snapshots",
+      "screenshots_hint": "Periodically capture the screen while recording a call",
+      "screenshots_off": "Off",
+      "screenshots_every": "{{seconds}}s"
     },
     "mcp": {
       "title": "Agents (MCP)",
@@ -343,6 +358,7 @@
       "show_details": "Show details",
       "hide_details": "Hide details",
       "screenshot_question": "Coding task from screenshot",
+      "screenshot_error": "Couldn't process the screenshot. Please try again.",
       "scroll_down": "Scroll down"
     },
     "status_filter": {

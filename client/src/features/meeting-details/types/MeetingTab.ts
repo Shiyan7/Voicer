@@ -1,1 +1,1 @@
-export type MeetingTab = 'notes' | 'recording';
+export type MeetingTab = 'notes' | 'recording' | 'screenshots';

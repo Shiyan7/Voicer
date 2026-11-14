@@ -145,6 +145,7 @@ export type InterviewTurnOutput = {
   answer: Scalars['String']['output'];
   createdAt: Scalars['DateTime']['output'];
   id: Scalars['ID']['output'];
+  imageUrl?: Maybe<Scalars['String']['output']>;
   question: Scalars['String']['output'];
 };
 
@@ -173,6 +174,14 @@ export type MeetingOutput = {
   summaryStyle?: Maybe<SummaryStyle>;
   title?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['DateTime']['output'];
+};
+
+export type MeetingScreenshotOutput = {
+  __typename?: 'MeetingScreenshotOutput';
+  id: Scalars['ID']['output'];
+  offsetMs: Scalars['Int']['output'];
+  thumbUrl: Scalars['String']['output'];
+  url: Scalars['String']['output'];
 };
 
 export enum MeetingStatus {
@@ -223,6 +232,7 @@ export type Mutation = {
   deleteInterviewSession: InterviewSessionOutput;
   finishInterviewSession: InterviewSessionOutput;
   interviewAskScreenshot: Scalars['ID']['output'];
+  meetingAddScreenshot: MeetingScreenshotOutput;
   meetingChatAsk: ChatMessageOutput;
   meetingChatClear: Scalars['Boolean']['output'];
   meetingDelete: MeetingOutput;
@@ -268,6 +278,12 @@ export type MutationFinishInterviewSessionArgs = {
 export type MutationInterviewAskScreenshotArgs = {
   image: Scalars['Upload']['input'];
   sessionId: Scalars['ID']['input'];
+};
+
+export type MutationMeetingAddScreenshotArgs = {
+  image: Scalars['Upload']['input'];
+  meetingId: Scalars['ID']['input'];
+  offsetMs: Scalars['Int']['input'];
 };
 
 export type MutationMeetingChatAskArgs = {
@@ -350,6 +366,7 @@ export type Query = {
   meetingChatMessages: Array<ChatMessageOutput>;
   meetingChatSuggestions: Array<Scalars['String']['output']>;
   meetingKeyPoints: Array<KeyPointOutput>;
+  meetingScreenshots: Array<MeetingScreenshotOutput>;
   meetingTranscript: Array<TranscriptSegmentOutput>;
   meetingsPage: MeetingsPageOutput;
   meetingsStats: MeetingsStatsOutput;
@@ -385,6 +402,10 @@ export type QueryMeetingChatSuggestionsArgs = {
 };
 
 export type QueryMeetingKeyPointsArgs = {
+  meetingId: Scalars['ID']['input'];
+};
+
+export type QueryMeetingScreenshotsArgs = {
   meetingId: Scalars['ID']['input'];
 };
 

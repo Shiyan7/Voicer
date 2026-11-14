@@ -46,6 +46,11 @@ export function useLiveRun(deps: LiveRunDeps) {
     timer.stop();
   };
 
+  const dispose = () => {
+    connection.dispose();
+    timer.stop();
+  };
+
   const saveRecording = async () => {
     try {
       const { path, startedAt, source } = await stopRecording();
@@ -83,7 +88,7 @@ export function useLiveRun(deps: LiveRunDeps) {
 
   connection.start();
   void startRecording();
-  onCleanup(stop);
+  onCleanup(dispose);
 
   return {
     turns,

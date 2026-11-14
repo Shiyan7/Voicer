@@ -4,11 +4,13 @@ import {
   Injectable,
   Logger,
 } from '@nestjs/common';
+import { ThinkingLevel } from '@google/genai';
 import { randomUUID } from 'crypto';
 import { PubSub } from 'graphql-subscriptions';
 import { ClaudeService } from '../claude/claude.service';
 import { requireText } from '../common/require-text';
 import { FileUpload } from '../file/file-upload';
+import { FileStorageService } from '../file/file-storage.service';
 import { readUpload } from '../file/read-upload';
 import { GeminiService } from '../gemini/gemini.service';
 import { PUB_SUB } from '../pubsub/pubsub.module';
@@ -27,6 +29,7 @@ import {
 const MAX_QUESTION_LENGTH = 4000;
 const MAX_SCREENSHOT_BYTES = 15 * 1024 * 1024;
 const MAX_HISTORY = 10;
+const SCREENSHOT_EXTENSION = '.jpg';
 
 const interviewAnswerTopic = (sessionId: string): string =>
   topic('interviewAnswer', sessionId);
@@ -44,6 +47,8 @@ type AnswerGenerator = (
 interface AnswerRequest {
   question: string;
   generate: AnswerGenerator;
+  imageUrl?: string;
+  userId?: string;
 }
 
 interface AnswerGate {
@@ -63,6 +68,7 @@ export class InterviewAnswersService {
     private readonly sessions: InterviewSessionsService,
     private readonly claude: ClaudeService,
     private readonly gemini: GeminiService,
+    private readonly fileStorage: FileStorageService,
     @Inject(PUB_SUB) private readonly pubSub: PubSub,
   ) {}
 
@@ -110,8 +116,15 @@ export class InterviewAnswersService {
   ): Promise<string> {
     const session = await this.sessions.findOwned(userId, sessionId);
     const image = await this.readScreenshot(upload);
+    const imageUrl = await this.fileStorage.saveBuffer(
+      userId,
+      image,
+      SCREENSHOT_EXTENSION,
+    );
     return this.start(session, {
       question: SCREENSHOT_QUESTION_LABEL,
+      imageUrl,
+      userId,
       generate: (instruction, onText, signal) =>
         this.gemini.streamText(
           instruction,
@@ -126,6 +139,7 @@ export class InterviewAnswersService {
           ],
           onText,
           signal,
+          ThinkingLevel.LOW,
         ),
     });
   }
@@ -233,18 +247,33 @@ export class InterviewAnswersService {
       gate.settle(null);
       return;
     }
-    await this.finish(session.id, { ...answer, text, done: true }, controller);
+    await this.finish(
+      session.id,
+      { ...answer, text, done: true },
+      request,
+      controller,
+    );
   }
 
   private async finish(
     sessionId: string,
     answer: InterviewAnswerOutput,
+    request: AnswerRequest,
     controller: AbortController,
   ): Promise<void> {
     this.runs.complete(sessionId, controller);
     await this.publish(sessionId, answer);
     if (!controller.signal.aborted && answer.text.trim()) {
-      await this.sessions.addTurn(sessionId, answer.question, answer.text);
+      await this.sessions.addTurn(
+        sessionId,
+        answer.question,
+        answer.text,
+        request.imageUrl ?? null,
+      );
+      return;
+    }
+    if (request.imageUrl && request.userId) {
+      await this.fileStorage.remove(request.userId, request.imageUrl);
     }
   }
 

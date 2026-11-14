@@ -122,6 +122,7 @@ type InterviewTurnOutput {
   answer: String!
   createdAt: DateTime!
   id: ID!
+  imageUrl: String
   question: String!
 }
 
@@ -148,6 +149,13 @@ type MeetingOutput {
   summaryStyle: SummaryStyle
   title: String
   updatedAt: DateTime!
+}
+
+type MeetingScreenshotOutput {
+  id: ID!
+  offsetMs: Int!
+  thumbUrl: String!
+  url: String!
 }
 
 enum MeetingStatus {
@@ -195,6 +203,7 @@ type Mutation {
   deleteInterviewSession(id: ID!): InterviewSessionOutput!
   finishInterviewSession(id: ID!): InterviewSessionOutput!
   interviewAskScreenshot(image: Upload!, sessionId: ID!): ID!
+  meetingAddScreenshot(image: Upload!, meetingId: ID!, offsetMs: Int!): MeetingScreenshotOutput!
   meetingChatAsk(meetingId: ID!, question: String!): ChatMessageOutput!
   meetingChatClear(meetingId: ID!): Boolean!
   meetingDelete(id: ID!): MeetingOutput!
@@ -228,6 +237,7 @@ type Query {
   meetingChatMessages(meetingId: ID!): [ChatMessageOutput!]!
   meetingChatSuggestions(meetingId: ID!): [String!]!
   meetingKeyPoints(meetingId: ID!): [KeyPointOutput!]!
+  meetingScreenshots(meetingId: ID!): [MeetingScreenshotOutput!]!
   meetingTranscript(meetingId: ID!): [TranscriptSegmentOutput!]!
   meetingsPage(input: MeetingsPageInput!): MeetingsPageOutput!
   meetingsStats: MeetingsStatsOutput!

@@ -13,7 +13,7 @@ export const tabsStyles = tv({
   variants: {
     size: {
       sm: {
-        root: 'w-auto gap-0.5 rounded-lg p-0.5',
+        root: 'w-auto shrink-0 gap-0.5 rounded-lg p-0.5',
         item: 'flex-none',
         indicator: 'rounded-md',
         btn: 'h-7 rounded-md px-3 text-[13px] tabular-nums',

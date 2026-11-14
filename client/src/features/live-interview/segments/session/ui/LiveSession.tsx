@@ -29,6 +29,7 @@ export function LiveSession(deps: LiveSessionDeps) {
                 <LiveTurnCard
                   turn={turn()}
                   onToggleDetails={vm.toggleDetails}
+                  onOpenImage={vm.openImage}
                 />
               )}
             </For>

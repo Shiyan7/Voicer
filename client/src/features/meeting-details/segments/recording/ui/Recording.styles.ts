@@ -16,7 +16,7 @@ export const recordingStyles = tv({
     time: 'text-sm font-medium tabular-nums',
     body: 'ml-4 flex flex-col gap-2 border-l-2 pl-5',
     paragraph: `
-      -mx-2 rounded-lg px-2 py-0.5 text-left text-[15px] leading-7
+      -mx-2 rounded-lg px-2 py-0.5 text-left text-[15px] leading-7 wrap-anywhere
       text-gray-800 transition-colors duration-150 hover:bg-gray-100
     `,
   },

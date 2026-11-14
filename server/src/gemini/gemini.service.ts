@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ApiError, Content, GoogleGenAI } from '@google/genai';
+import { ApiError, Content, GoogleGenAI, ThinkingLevel } from '@google/genai';
 import { LlmTurn } from '../llm/llm-turn';
 
 const FREE_TIER_MODELS = [
@@ -45,6 +45,7 @@ export class GeminiService {
     turns: LlmTurn[],
     onText: (text: string) => Promise<void>,
     signal?: AbortSignal,
+    thinkingLevel?: ThinkingLevel,
   ): Promise<string> {
     const contents = turns.map(this.toContent);
 
@@ -55,6 +56,7 @@ export class GeminiService {
         contents,
         onText,
         signal,
+        thinkingLevel,
       );
       if (text) {
         this.logger.log(`Streamed with ${model}`);
@@ -98,6 +100,7 @@ export class GeminiService {
     contents: Content[],
     onText: (text: string) => Promise<void>,
     signal?: AbortSignal,
+    thinkingLevel?: ThinkingLevel,
   ): Promise<string | null> {
     let text = '';
 
@@ -105,7 +108,11 @@ export class GeminiService {
       const stream = await this.ai.models.generateContentStream({
         model,
         contents,
-        config: { systemInstruction, abortSignal: signal },
+        config: {
+          systemInstruction,
+          abortSignal: signal,
+          ...(thinkingLevel && { thinkingConfig: { thinkingLevel } }),
+        },
       });
       for await (const chunk of stream) {
         if (!chunk.text) continue;

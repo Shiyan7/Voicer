@@ -6,4 +6,5 @@ import { MeetingTab } from '../types/MeetingTab';
 export const getMeetingTabs = (): Tab<MeetingTab>[] => [
   { label: i18n.t('meetings.recording_transcript'), value: 'recording' },
   { label: i18n.t('meetings.notes'), value: 'notes' },
+  { label: i18n.t('meetings.screenshots'), value: 'screenshots' },
 ];

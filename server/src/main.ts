@@ -41,7 +41,7 @@ async function bootstrap(): Promise<void> {
   app.useGlobalPipes(new ValidationPipe());
   app.enableShutdownHooks();
 
-  await app.listen(config.get<number>('PORT'));
+  await app.listen(config.get<number>('PORT'), '127.0.0.1');
 }
 
 void bootstrap();

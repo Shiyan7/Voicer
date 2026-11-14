@@ -1,0 +1,1 @@
+export const DEFAULT_SCREENSHOT_INTERVAL_SEC = 30;

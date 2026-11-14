@@ -28,6 +28,9 @@ export class InterviewTurnEntity {
   @Column({ type: 'text' })
   answer: string;
 
+  @Column({ type: 'varchar', nullable: true })
+  imageUrl: string | null;
+
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 }

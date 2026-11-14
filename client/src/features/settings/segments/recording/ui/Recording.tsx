@@ -1,5 +1,6 @@
 import { i18n } from '@/shared/i18n';
 import { SettingsRow, SettingsSection } from '@/shared/ui/settings-section';
+import { Tabs } from '@/shared/ui/tabs';
 
 import { useRecording } from '../model/useRecording';
 import { recordingStyles } from './Recording.styles';
@@ -24,6 +25,17 @@ export function Recording() {
         >
           <span class={styles.toggleThumb({ checked: vm.autoRecord() })} />
         </button>
+      </SettingsRow>
+      <SettingsRow
+        label={i18n.t('settings.recording.screenshots')}
+        hint={i18n.t('settings.recording.screenshots_hint')}
+      >
+        <Tabs
+          size="sm"
+          tabs={vm.screenshotIntervalTabs()}
+          activeTab={vm.screenshotInterval()}
+          onSelect={vm.selectScreenshotInterval}
+        />
       </SettingsRow>
     </SettingsSection>
   );

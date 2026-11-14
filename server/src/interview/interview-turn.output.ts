@@ -11,6 +11,9 @@ export class InterviewTurnOutput {
   @Field()
   answer: string;
 
+  @Field(() => String, { nullable: true })
+  imageUrl: string | null;
+
   @Field()
   createdAt: Date;
 }

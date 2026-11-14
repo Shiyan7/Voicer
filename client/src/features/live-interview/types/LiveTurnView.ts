@@ -3,6 +3,7 @@ import type { MarkdownBlock } from '@/shared/lib/markdown';
 export interface LiveTurnView {
   id: string;
   question: string;
+  imageUrl: string | null;
   isQuestionLive: boolean;
   short?: MarkdownBlock[];
   details?: MarkdownBlock[];
