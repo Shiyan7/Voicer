@@ -10,5 +10,4 @@ export interface EmptyStateProps {
   title: string;
   description: string;
   hint?: string;
-  hintIcon?: IconName;
 }

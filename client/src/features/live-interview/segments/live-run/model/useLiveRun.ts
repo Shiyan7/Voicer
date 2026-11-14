@@ -7,9 +7,9 @@ import { i18n } from '@/shared/i18n';
 import { readRecordingFile, stopRecording } from '@/shared/lib/recorder';
 import { formatClock } from '@/shared/lib/time';
 
+import { createLiveConnection } from '../../../api/createLiveConnection';
 import { finishInterviewSession } from '../../../api/finishInterviewSession';
 import { EMPTY_TURN } from '../../../config/liveInterviewConfig';
-import { createLiveConnection } from '../../../lib/createLiveConnection';
 import { ensureRecording } from '../../../lib/ensureRecording';
 import { LiveConnectionHandlers } from '../../../types/LiveConnectionHandlers';
 import { LiveStatus } from '../../../types/LiveStatus';

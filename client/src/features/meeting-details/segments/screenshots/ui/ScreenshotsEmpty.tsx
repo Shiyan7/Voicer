@@ -12,7 +12,6 @@ export function ScreenshotsEmpty(props: ScreenshotsEmptyProps) {
       title={i18n.t('meetings.screenshots_empty.title')}
       description={i18n.t('meetings.screenshots_empty.description')}
       hint={props.hint}
-      hintIcon="common:clock"
     />
   );
 }

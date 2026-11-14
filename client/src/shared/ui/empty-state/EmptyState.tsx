@@ -26,9 +26,7 @@ export function EmptyState(props: EmptyStateProps) {
       <p class={styles.description()}>{props.description}</p>
       <Show when={props.hint}>
         <span class={styles.hint()}>
-          <Show when={props.hintIcon}>
-            {(hintIcon) => <Icon size={14} name={hintIcon()} />}
-          </Show>
+          <Icon size={14} name={props.icon} />
           {props.hint}
         </span>
       </Show>

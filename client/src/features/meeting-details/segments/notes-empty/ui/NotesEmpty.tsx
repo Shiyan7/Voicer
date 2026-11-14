@@ -10,7 +10,6 @@ export function NotesEmpty() {
       title={i18n.t('meetings.notes_empty.title')}
       description={i18n.t('meetings.notes_empty.description')}
       hint={i18n.t('meetings.notes_empty.hint')}
-      hintIcon="common:sparkles"
     />
   );
 }

@@ -1,7 +1,7 @@
 use std::sync::mpsc;
 use std::time::Duration;
 
-use cidre::{blocks, cf, cg, ns, sc};
+use cidre::{arc, blocks, cf, cg, ns, sc};
 
 const TIMEOUT: Duration = Duration::from_secs(5);
 const MAX_WIDTH: usize = 1920;
@@ -29,16 +29,9 @@ pub fn capture_main_display_jpeg() -> Result<Vec<u8>, String> {
                 return;
             };
 
-            let own_pid = std::process::id() as i32;
-            let all_apps = content.apps();
-            let own_apps: Vec<_> = (0..all_apps.len())
-                .filter_map(|i| all_apps.get(i).ok())
-                .filter(|app| app.process_id() == own_pid)
-                .map(|app| app.retained())
-                .collect();
             let filter = sc::ContentFilter::with_display_excluding_apps_excepting_windows(
                 &display,
-                &ns::Array::from_slice_retained(&own_apps),
+                &ns::Array::from_slice_retained(&own_apps(&content)),
                 &ns::Array::new(),
             );
             let mut cfg = sc::StreamCfg::new();
@@ -62,6 +55,16 @@ pub fn capture_main_display_jpeg() -> Result<Vec<u8>, String> {
         .map_err(|_| "screenshot timed out".to_string())?
 }
 
+fn own_apps(content: &sc::ShareableContent) -> Vec<arc::R<sc::RunningApp>> {
+    let own_pid = std::process::id() as i32;
+    content
+        .apps()
+        .iter()
+        .filter(|app| app.process_id() == own_pid)
+        .map(|app| app.retained())
+        .collect()
+}
+
 fn fit_width(width: isize, height: isize) -> (usize, usize) {
     let width = width.max(1) as usize;
     let height = height.max(1) as usize;
@@ -77,14 +80,18 @@ fn encode_jpeg(image: &cg::Image) -> Result<Vec<u8>, String> {
     let mut dst =
         cg::ImageDst::with_data(&mut data, &ty, 1).ok_or("jpeg destination unavailable")?;
     let quality = cf::Number::from_f64(JPEG_QUALITY);
-    let key: &cg::image::destination::AddOptKey =
-        unsafe { std::mem::transmute(cg::image::destination::OptKey::lossy_compression_quality()) };
-    let options = cf::DictionaryOf::with_keys_values(&[key], &[quality.as_type_ref()]);
+    let options =
+        cf::DictionaryOf::with_keys_values(&[lossy_quality_key()], &[quality.as_type_ref()]);
     dst.add_image(image, Some(&options));
     if !dst.finalize() {
         return Err("jpeg encode failed".into());
     }
     Ok(data.as_slice().to_vec())
+}
+
+fn lossy_quality_key() -> &'static cg::image::destination::AddOptKey {
+    let key = cg::image::destination::OptKey::lossy_compression_quality();
+    unsafe { std::mem::transmute(key) }
 }
 
 fn ns_error_msg(what: &str, error: Option<&ns::Error>) -> String {

@@ -192,7 +192,7 @@ export class InterviewSessionsService implements OnModuleInit {
       order: { createdAt: 'ASC' },
     });
     return turns.map((turn) =>
-      toInterviewTurnOutput(turn, (url) => this.fileStorage.signUrl(url)),
+      toInterviewTurnOutput(turn, this.fileStorage.signUrl(turn.imageUrl)),
     );
   }
 

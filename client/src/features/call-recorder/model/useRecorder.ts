@@ -4,6 +4,7 @@ import { createSignal, onMount } from 'solid-js';
 import { uploadMeetingAudioMutation } from '@/entities/meeting';
 import { useElapsedTimer } from '@/shared/hooks/useElapsedTimer';
 import { i18n } from '@/shared/i18n';
+import type { StopRecordingResult } from '@/shared/lib/recorder';
 import {
   getRecorderState,
   onCallDetected,
@@ -51,9 +52,7 @@ export const useRecorder = () => {
   const formattedSeconds = () => formatClock(timer.elapsedSeconds());
 
   const openRecordedMeeting = async (
-    path: string,
-    startedAt: number,
-    source: string,
+    { path, startedAt, source }: StopRecordingResult,
     pendingScreenshots: PendingScreenshot[],
   ) => {
     try {
@@ -135,12 +134,7 @@ export const useRecorder = () => {
       if (!isCallRecording(payload)) return;
       timer.stop();
       setLevel(0);
-      void openRecordedMeeting(
-        payload.path,
-        payload.startedAt,
-        payload.source,
-        screenshots.takePending(),
-      );
+      void openRecordedMeeting(payload, screenshots.takePending());
     });
 
     await onCallDetected(() => void autoStart());

@@ -5,13 +5,13 @@ import {
   stopLiveCapture,
 } from '@/shared/lib/recorder';
 
-import { askInterviewScreenshot } from '../api/askInterviewScreenshot';
-import { openLiveAudioSocket } from '../api/openLiveAudioSocket';
-import { subscribeInterviewAnswer } from '../api/subscribeInterviewAnswer';
+import { createAnswerTracker } from '../lib/createAnswerTracker';
 import { LiveConnectionHandlers } from '../types/LiveConnectionHandlers';
 import { LiveServerMessage } from '../types/LiveServerMessage';
 import { LiveStatus } from '../types/LiveStatus';
-import { createAnswerTracker } from './createAnswerTracker';
+import { askInterviewScreenshot } from './askInterviewScreenshot';
+import { openLiveAudioSocket } from './openLiveAudioSocket';
+import { subscribeInterviewAnswer } from './subscribeInterviewAnswer';
 
 const utteranceTurnId = (utteranceId: number) => `utterance-${utteranceId}`;
 
@@ -37,9 +37,14 @@ export const createLiveConnection = (
 
   const onServerMessage = (message: LiveServerMessage) => {
     const id = utteranceTurnId(message.utteranceId);
-    if (message.type === 'transcript') onTurn({ id, question: message.text });
-    if (message.type === 'utteranceEnd') onTurn({ id, isQuestionFinal: true });
-    if (message.type === 'answerStarted') tracker.link(message.answerId, id);
+    switch (message.type) {
+      case 'transcript':
+        return onTurn({ id, question: message.text });
+      case 'utteranceEnd':
+        return onTurn({ id, isQuestionFinal: true });
+      case 'answerStarted':
+        return tracker.link(message.answerId, id);
+    }
   };
 
   const stop = () => {

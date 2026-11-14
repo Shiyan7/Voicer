@@ -11,7 +11,7 @@ interface StartRecordingResult {
   kind: RecordingKind;
 }
 
-interface StopRecordingResult {
+export interface StopRecordingResult {
   localId: string;
   startedAt: number;
   path: string;
