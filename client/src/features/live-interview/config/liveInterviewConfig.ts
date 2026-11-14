@@ -8,4 +8,5 @@ export const EMPTY_TURN: Omit<LiveTurn, 'id'> = {
   question: '',
   isQuestionFinal: false,
   answer: '',
+  imageUrl: null,
 };

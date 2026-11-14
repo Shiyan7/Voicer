@@ -22,6 +22,7 @@ import { formatClock } from '@/shared/lib/time';
 import { settingsRoot } from '@/shared/roots/settingsRoot';
 import { paths } from '@/shared/router';
 
+import { uploadMeetingScreenshots } from '../api/uploadMeetingScreenshots';
 import { isCallRecording } from '../lib/isCallRecording';
 import { toVoiceLevel } from '../lib/toVoiceLevel';
 import { PendingScreenshot } from '../types/PendingScreenshot';
@@ -65,7 +66,7 @@ export const useRecorder = () => {
       const meeting = result.data?.meetingUploadAudio;
       if (!meeting) return;
 
-      await screenshots.upload(meeting.id, pendingScreenshots);
+      await uploadMeetingScreenshots(meeting.id, pendingScreenshots);
       navigate(paths.meeting(meeting.id));
     } catch (error) {
       console.error('[recorder] failed to upload recording:', error);
@@ -117,7 +118,7 @@ export const useRecorder = () => {
 
     await onRecordingStarted((payload) => {
       if (!isCallRecording(payload)) return;
-      screenshots.takePending();
+      screenshots.reset();
       timer.start(payload.startedAt);
     });
 

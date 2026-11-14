@@ -8,6 +8,6 @@ export const toCompletedTurn = (
   id: turn.id,
   question: turn.question,
   answer: turn.answer,
-  imageUrl: turn.imageUrl,
+  imageUrl: turn.imageUrl ?? null,
   isQuestionFinal: true,
 });

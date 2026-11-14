@@ -3,7 +3,6 @@ import { createEffect, on, onCleanup } from 'solid-js';
 import { captureScreenshot } from '@/shared/lib/recorder';
 import { settingsRoot } from '@/shared/roots/settingsRoot';
 
-import { addMeetingScreenshot } from '../api/addMeetingScreenshot';
 import { createFrameFingerprint } from '../lib/createFrameFingerprint';
 import { isSameFrame } from '../lib/isSameFrame';
 import { PendingScreenshot } from '../types/PendingScreenshot';
@@ -38,25 +37,16 @@ export const useScreenshotCapture = (deps: ScreenshotCaptureDeps) => {
     }),
   );
 
-  const takePending = () => {
-    const screenshots = pending;
+  const reset = () => {
     pending = [];
     lastFingerprint = null;
+  };
+
+  const takePending = () => {
+    const screenshots = pending;
+    reset();
     return screenshots;
   };
 
-  const upload = async (
-    meetingId: string,
-    screenshots: PendingScreenshot[],
-  ) => {
-    for (const { image, offsetMs } of screenshots) {
-      try {
-        await addMeetingScreenshot({ meetingId, image, offsetMs });
-      } catch (error) {
-        console.error('[recorder] failed to upload screenshot:', error);
-      }
-    }
-  };
-
-  return { takePending, upload };
+  return { reset, takePending };
 };

@@ -1,15 +1,13 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FileUpload } from '../file/file-upload';
 import { FileStorageService } from '../file/file-storage.service';
-import { readUpload } from '../file/read-upload';
+import { readScreenshot, SCREENSHOT_EXTENSION } from '../file/read-screenshot';
 import { MeetingContentService } from './meeting-content.service';
 import { MeetingScreenshotEntity } from './meeting-screenshot.entity';
 import { MeetingScreenshotOutput } from './meeting-screenshot.output';
 
-const MAX_SCREENSHOT_BYTES = 15 * 1024 * 1024;
-const SCREENSHOT_EXTENSION = '.jpg';
 const THUMBNAIL_WIDTH = 480;
 
 @Injectable()
@@ -40,13 +38,10 @@ export class MeetingScreenshotsService {
     offsetMs: number,
   ): Promise<MeetingScreenshotOutput> {
     await this.content.findOwned(userId, meetingId);
-    if (!upload.mimetype.startsWith('image/')) {
-      throw new BadRequestException('Скриншот должен быть изображением');
-    }
-    const data = await readUpload(upload, MAX_SCREENSHOT_BYTES);
+    const image = await readScreenshot(upload);
     const url = await this.fileStorage.saveBuffer(
       userId,
-      data,
+      image,
       SCREENSHOT_EXTENSION,
     );
     const thumbUrl = await this.fileStorage.saveThumbnail(
@@ -68,11 +63,10 @@ export class MeetingScreenshotsService {
   async removeFiles(userId: string, meetingId: string): Promise<void> {
     const screenshots = await this.screenshotsRepository.findBy({ meetingId });
     await Promise.all(
-      screenshots.flatMap(({ url, thumbUrl }) =>
-        [url, thumbUrl]
-          .filter((fileUrl): fileUrl is string => !!fileUrl)
-          .map((fileUrl) => this.fileStorage.remove(userId, fileUrl)),
-      ),
+      screenshots.flatMap(({ url, thumbUrl }) => [
+        this.fileStorage.remove(userId, url),
+        this.fileStorage.remove(userId, thumbUrl),
+      ]),
     );
   }
 
@@ -83,7 +77,7 @@ export class MeetingScreenshotsService {
       id: screenshot.id,
       offsetMs: screenshot.offsetMs,
       url: this.fileStorage.signUrl(screenshot.url),
-      thumbUrl: this.fileStorage.signUrl(screenshot.thumbUrl ?? screenshot.url),
+      thumbUrl: this.fileStorage.signUrl(screenshot.thumbUrl),
     };
   }
 }

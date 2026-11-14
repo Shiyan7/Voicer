@@ -39,7 +39,7 @@ export class FileStorageService {
     );
 
     const playbackName = await this.ensurePlayable(userDir, sourceName);
-    return `${this.publicBaseUrl}/storage/${userId}/${playbackName}`;
+    return this.toPublicUrl(userId, playbackName);
   }
 
   async saveBuffer(
@@ -52,7 +52,7 @@ export class FileStorageService {
 
     const fileName = `${randomUUID()}${extension}`;
     await writeFile(join(userDir, fileName), data);
-    return `${this.publicBaseUrl}/storage/${userId}/${fileName}`;
+    return this.toPublicUrl(userId, fileName);
   }
 
   async saveThumbnail(
@@ -66,6 +66,10 @@ export class FileStorageService {
       join(this.storageDir, userId, fileName),
       width,
     );
+    return this.toPublicUrl(userId, fileName);
+  }
+
+  private toPublicUrl(userId: string, fileName: string): string {
     return `${this.publicBaseUrl}/storage/${userId}/${fileName}`;
   }
 

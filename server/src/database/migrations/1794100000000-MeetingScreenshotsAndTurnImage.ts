@@ -5,7 +5,7 @@ export class MeetingScreenshotsAndTurnImage1794100000000 implements MigrationInt
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE "meeting_screenshots" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "meetingId" uuid NOT NULL, "offsetMs" integer NOT NULL, "url" character varying NOT NULL, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), CONSTRAINT "PK_meeting_screenshots_id" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "meeting_screenshots" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "meetingId" uuid NOT NULL, "offsetMs" integer NOT NULL, "url" character varying NOT NULL, "thumbUrl" character varying NOT NULL, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), CONSTRAINT "PK_meeting_screenshots_id" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_meeting_screenshots_meeting_offset" ON "meeting_screenshots" ("meetingId", "offsetMs")`,

@@ -28,8 +28,8 @@ export class MeetingScreenshotEntity {
   @Column({ type: 'varchar' })
   url: string;
 
-  @Column({ type: 'varchar', nullable: true })
-  thumbUrl: string | null;
+  @Column({ type: 'varchar' })
+  thumbUrl: string;
 
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
