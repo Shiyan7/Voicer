@@ -12,12 +12,29 @@ const styles = liveTurnCardStyles();
 export function LiveTurnCard(props: LiveTurnCardProps) {
   return (
     <article class={styles.root()}>
-      <p class={styles.question({ live: props.turn.isQuestionLive })}>
-        {props.turn.question}
-        <Show when={props.turn.isQuestionLive}>
-          <span class={styles.cursor()} />
+      <div class={styles.question({ live: props.turn.isQuestionLive })}>
+        <Show when={props.turn.imageUrl}>
+          {(imageUrl) => (
+            <button
+              class={styles.thumb()}
+              type="button"
+              onClick={() => props.onOpenImage(props.turn.id)}
+            >
+              <img
+                class={styles.thumbImage()}
+                src={imageUrl()}
+                alt={props.turn.question}
+              />
+            </button>
+          )}
         </Show>
-      </p>
+        <p>
+          {props.turn.question}
+          <Show when={props.turn.isQuestionLive}>
+            <span class={styles.cursor()} />
+          </Show>
+        </p>
+      </div>
       <Show when={props.turn.short}>
         {(short) => (
           <div class={styles.answer()}>

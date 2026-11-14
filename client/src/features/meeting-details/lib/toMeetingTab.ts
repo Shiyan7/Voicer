@@ -1,6 +1,8 @@
+import { MEETING_TAB_LABELS } from '../config/MEETING_TAB_LABELS';
 import { MeetingTab } from '../types/MeetingTab';
 
-const MEETING_TABS: MeetingTab[] = ['recording', 'notes'];
+const isMeetingTab = (value?: string): value is MeetingTab =>
+  !!value && value in MEETING_TAB_LABELS;
 
 export const toMeetingTab = (value?: string): MeetingTab =>
-  MEETING_TABS.find((tab) => tab === value) ?? 'recording';
+  isMeetingTab(value) ? value : 'recording';

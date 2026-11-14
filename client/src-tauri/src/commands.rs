@@ -318,10 +318,10 @@ pub fn stop_live_capture(app: AppHandle) -> Result<(), String> {
 pub async fn capture_screenshot() -> Result<tauri::ipc::Response, String> {
     #[cfg(target_os = "macos")]
     {
-        let png = tauri::async_runtime::spawn_blocking(crate::screen::capture_main_display_png)
+        let jpeg = tauri::async_runtime::spawn_blocking(crate::screen::capture_main_display_jpeg)
             .await
             .map_err(|e| format!("screenshot task failed: {e}"))??;
-        Ok(tauri::ipc::Response::new(png))
+        Ok(tauri::ipc::Response::new(jpeg))
     }
     #[cfg(not(target_os = "macos"))]
     {

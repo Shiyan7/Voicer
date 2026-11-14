@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from '../auth/auth.module';
 import { GeminiModule } from '../gemini/gemini.module';
 import { ClaudeModule } from '../claude/claude.module';
+import { FileModule } from '../file/file.module';
 import { InterviewAnswersService } from './interview-answers.service';
 import { InterviewSessionEntity } from './interview-session.entity';
 import { InterviewTurnEntity } from './interview-turn.entity';
@@ -19,6 +20,7 @@ import { TranscriptionModule } from '../transcription/transcription.module';
     AuthModule,
     GeminiModule,
     ClaudeModule,
+    FileModule,
     TranscriptionModule,
   ],
   providers: [

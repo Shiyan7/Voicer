@@ -12,6 +12,7 @@ import { findPage } from '../common/listing/find-page';
 import { requireText } from '../common/require-text';
 import { MeetingsService } from '../meetings/meetings.service';
 import { FileUpload } from '../file/file-upload';
+import { FileStorageService } from '../file/file-storage.service';
 import { ClaudeService } from '../claude/claude.service';
 import { InterviewLanguage } from './interview-language.enum';
 import { InterviewPrepStatus } from './interview-prep-status.enum';
@@ -56,6 +57,7 @@ export class InterviewSessionsService implements OnModuleInit {
     private readonly turnsRepository: Repository<InterviewTurnEntity>,
     private readonly meetings: MeetingsService,
     private readonly claude: ClaudeService,
+    private readonly fileStorage: FileStorageService,
   ) {}
 
   async onModuleInit(): Promise<void> {
@@ -175,6 +177,7 @@ export class InterviewSessionsService implements OnModuleInit {
     const session = await this.findOwned(userId, id);
     const deleted = toInterviewSessionOutput(session);
     await this.meetings.deleteInterviewRecordings(userId, id);
+    await this.removeTurnImages(userId, id);
     await this.sessionsRepository.remove(session);
     return deleted;
   }
@@ -188,15 +191,36 @@ export class InterviewSessionsService implements OnModuleInit {
       where: { sessionId },
       order: { createdAt: 'ASC' },
     });
-    return turns.map(toInterviewTurnOutput);
+    return turns.map((turn) =>
+      toInterviewTurnOutput(turn, this.fileStorage.signUrl(turn.imageUrl)),
+    );
   }
 
   async addTurn(
     sessionId: string,
     question: string,
     answer: string,
+    imageUrl: string | null = null,
   ): Promise<void> {
-    await this.turnsRepository.insert({ sessionId, question, answer });
+    await this.turnsRepository.insert({
+      sessionId,
+      question,
+      answer,
+      imageUrl,
+    });
+  }
+
+  private async removeTurnImages(
+    userId: string,
+    sessionId: string,
+  ): Promise<void> {
+    const turns = await this.turnsRepository.findBy({
+      sessionId,
+      imageUrl: Not(IsNull()),
+    });
+    await Promise.all(
+      turns.map(({ imageUrl }) => this.fileStorage.remove(userId, imageUrl)),
+    );
   }
 
   async recentTurns(

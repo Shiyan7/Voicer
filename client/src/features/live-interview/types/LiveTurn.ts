@@ -3,4 +3,5 @@ export interface LiveTurn {
   question: string;
   isQuestionFinal: boolean;
   answer: string;
+  imageUrl: string | null;
 }

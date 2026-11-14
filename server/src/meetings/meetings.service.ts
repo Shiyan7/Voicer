@@ -26,6 +26,7 @@ import { MeetingContentService } from './meeting-content.service';
 import { MeetingRecording } from './meeting-recording';
 import { KeyPointEntity } from './key-point.entity';
 import { KeyPointOutput } from './key-point.output';
+import { MeetingScreenshotsService } from './meeting-screenshots.service';
 import {
   meetingUpdatedTopic,
   MeetingProcessingService,
@@ -51,6 +52,7 @@ export class MeetingsService {
     private readonly content: MeetingContentService,
     private readonly fileStorageService: FileStorageService,
     private readonly processing: MeetingProcessingService,
+    private readonly screenshots: MeetingScreenshotsService,
     @Inject(PUB_SUB) private readonly pubSub: PubSub,
   ) {}
 
@@ -213,6 +215,7 @@ export class MeetingsService {
     const meeting = await this.content.findOwned(userId, id);
     const deleted = toMeetingOutput(meeting);
 
+    await this.screenshots.removeFiles(userId, id);
     await this.meetingsRepository.remove(meeting);
 
     if (deleted.audioUrl) {

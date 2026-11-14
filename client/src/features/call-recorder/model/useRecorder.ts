@@ -4,6 +4,7 @@ import { createSignal, onMount } from 'solid-js';
 import { uploadMeetingAudioMutation } from '@/entities/meeting';
 import { useElapsedTimer } from '@/shared/hooks/useElapsedTimer';
 import { i18n } from '@/shared/i18n';
+import type { StopRecordingResult } from '@/shared/lib/recorder';
 import {
   getRecorderState,
   onCallDetected,
@@ -22,8 +23,11 @@ import { formatClock } from '@/shared/lib/time';
 import { settingsRoot } from '@/shared/roots/settingsRoot';
 import { paths } from '@/shared/router';
 
+import { uploadMeetingScreenshots } from '../api/uploadMeetingScreenshots';
 import { isCallRecording } from '../lib/isCallRecording';
 import { toVoiceLevel } from '../lib/toVoiceLevel';
+import { PendingScreenshot } from '../types/PendingScreenshot';
+import { useScreenshotCapture } from './useScreenshotCapture';
 
 export const useRecorder = () => {
   const timer = useElapsedTimer();
@@ -31,6 +35,12 @@ export const useRecorder = () => {
   const [, uploadAudio] = uploadMeetingAudioMutation();
 
   const [level, setLevel] = createSignal(0);
+
+  const isCapturing = () => timer.isRunning() && !timer.isPaused();
+
+  const elapsedMs = () => timer.elapsedSeconds() * 1000;
+
+  const screenshots = useScreenshotCapture({ isCapturing, elapsedMs });
 
   const isBarVisible = () => timer.isRunning();
 
@@ -42,9 +52,8 @@ export const useRecorder = () => {
   const formattedSeconds = () => formatClock(timer.elapsedSeconds());
 
   const openRecordedMeeting = async (
-    path: string,
-    startedAt: number,
-    source: string,
+    { path, startedAt, source }: StopRecordingResult,
+    pendingScreenshots: PendingScreenshot[],
   ) => {
     try {
       const file = await readRecordingFile(path);
@@ -54,8 +63,10 @@ export const useRecorder = () => {
         startedAt: new Date(startedAt).toISOString(),
       });
       const meeting = result.data?.meetingUploadAudio;
+      if (!meeting) return;
 
-      if (meeting) navigate(paths.meeting(meeting.id));
+      await uploadMeetingScreenshots(meeting.id, pendingScreenshots);
+      navigate(paths.meeting(meeting.id));
     } catch (error) {
       console.error('[recorder] failed to upload recording:', error);
     }
@@ -105,7 +116,9 @@ export const useRecorder = () => {
     }
 
     await onRecordingStarted((payload) => {
-      if (isCallRecording(payload)) timer.start(payload.startedAt);
+      if (!isCallRecording(payload)) return;
+      screenshots.reset();
+      timer.start(payload.startedAt);
     });
 
     await onRecordingPauseChanged((payload) => {
@@ -121,7 +134,7 @@ export const useRecorder = () => {
       if (!isCallRecording(payload)) return;
       timer.stop();
       setLevel(0);
-      void openRecordedMeeting(payload.path, payload.startedAt, payload.source);
+      void openRecordedMeeting(payload, screenshots.takePending());
     });
 
     await onCallDetected(() => void autoStart());

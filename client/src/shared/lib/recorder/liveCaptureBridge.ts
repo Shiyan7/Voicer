@@ -15,5 +15,5 @@ export const stopLiveCapture = () => invoke<void>('stop_live_capture');
 
 export const captureScreenshot = async () => {
   const data = await invoke<ArrayBuffer>('capture_screenshot');
-  return new File([data], 'screenshot.png', { type: 'image/png' });
+  return new File([data], 'screenshot.jpg', { type: 'image/jpeg' });
 };

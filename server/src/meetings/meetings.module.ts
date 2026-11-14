@@ -3,6 +3,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MeetingEntity } from './meeting.entity';
 import { TranscriptSegmentEntity } from './transcript-segment.entity';
 import { KeyPointEntity } from './key-point.entity';
+import { MeetingScreenshotEntity } from './meeting-screenshot.entity';
+import { MeetingScreenshotsService } from './meeting-screenshots.service';
+import { MeetingScreenshotsResolver } from './meeting-screenshots.resolver';
 import { ActionItemEntity } from '../actions/action-item.entity';
 import { FileModule } from '../file/file.module';
 import { InterviewAccessModule } from '../interview/access/interview-access.module';
@@ -19,6 +22,7 @@ import { MeetingProcessingService } from './meeting-processing.service';
       MeetingEntity,
       TranscriptSegmentEntity,
       KeyPointEntity,
+      MeetingScreenshotEntity,
       ActionItemEntity,
     ]),
     FileModule,
@@ -31,6 +35,8 @@ import { MeetingProcessingService } from './meeting-processing.service';
     MeetingContentService,
     MeetingProcessingService,
     MeetingsResolver,
+    MeetingScreenshotsService,
+    MeetingScreenshotsResolver,
   ],
   exports: [MeetingsService, MeetingContentService],
 })

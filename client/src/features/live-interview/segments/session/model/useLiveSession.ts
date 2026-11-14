@@ -1,6 +1,9 @@
 import { createMemo, createSignal, mapArray } from 'solid-js';
 
+import { GallerySlide, openGallery } from '@/shared/lib/gallery';
+
 import { toLiveTurnView } from '../../../lib/toLiveTurnView';
+import { hasTurnImage } from '../lib/hasTurnImage';
 import { LiveSessionDeps } from '../types/LiveSessionDeps';
 
 export function useLiveSession(deps: LiveSessionDeps) {
@@ -21,5 +24,24 @@ export function useLiveSession(deps: LiveSessionDeps) {
       return next;
     });
 
-  return { turnViews, isEmpty, toggleDetails };
+  const imageTurns = () => deps.turns.filter(hasTurnImage);
+
+  const openImage = (id: string) => {
+    const turns = imageTurns();
+    const slides: GallerySlide[] = turns.map((turn) => ({
+      src: turn.imageUrl,
+      caption: turn.question,
+    }));
+    openGallery(
+      slides,
+      turns.findIndex((turn) => turn.id === id),
+    );
+  };
+
+  return {
+    turnViews,
+    isEmpty,
+    toggleDetails,
+    openImage,
+  };
 }

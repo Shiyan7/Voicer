@@ -6,6 +6,7 @@ export const INTERVIEW_TURNS_QUERY = gql`
       id
       question
       answer
+      imageUrl
     }
   }
 `;

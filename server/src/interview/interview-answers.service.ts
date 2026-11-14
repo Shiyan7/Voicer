@@ -1,15 +1,12 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { ThinkingLevel } from '@google/genai';
 import { randomUUID } from 'crypto';
 import { PubSub } from 'graphql-subscriptions';
 import { ClaudeService } from '../claude/claude.service';
 import { requireText } from '../common/require-text';
 import { FileUpload } from '../file/file-upload';
-import { readUpload } from '../file/read-upload';
+import { FileStorageService } from '../file/file-storage.service';
+import { readScreenshot, SCREENSHOT_EXTENSION } from '../file/read-screenshot';
 import { GeminiService } from '../gemini/gemini.service';
 import { PUB_SUB } from '../pubsub/pubsub.module';
 import { topic } from '../pubsub/topic';
@@ -25,7 +22,6 @@ import {
 } from './prompts/interview-answer.prompt';
 
 const MAX_QUESTION_LENGTH = 4000;
-const MAX_SCREENSHOT_BYTES = 15 * 1024 * 1024;
 const MAX_HISTORY = 10;
 
 const interviewAnswerTopic = (sessionId: string): string =>
@@ -44,6 +40,7 @@ type AnswerGenerator = (
 interface AnswerRequest {
   question: string;
   generate: AnswerGenerator;
+  imageUrl?: string;
 }
 
 interface AnswerGate {
@@ -63,6 +60,7 @@ export class InterviewAnswersService {
     private readonly sessions: InterviewSessionsService,
     private readonly claude: ClaudeService,
     private readonly gemini: GeminiService,
+    private readonly fileStorage: FileStorageService,
     @Inject(PUB_SUB) private readonly pubSub: PubSub,
   ) {}
 
@@ -109,9 +107,15 @@ export class InterviewAnswersService {
     upload: FileUpload,
   ): Promise<string> {
     const session = await this.sessions.findOwned(userId, sessionId);
-    const image = await this.readScreenshot(upload);
+    const image = await readScreenshot(upload);
+    const imageUrl = await this.fileStorage.saveBuffer(
+      userId,
+      image,
+      SCREENSHOT_EXTENSION,
+    );
     return this.start(session, {
       question: SCREENSHOT_QUESTION_LABEL,
+      imageUrl,
       generate: (instruction, onText, signal) =>
         this.gemini.streamText(
           instruction,
@@ -125,7 +129,7 @@ export class InterviewAnswersService {
             },
           ],
           onText,
-          signal,
+          { signal, thinkingLevel: ThinkingLevel.LOW },
         ),
     });
   }
@@ -233,19 +237,45 @@ export class InterviewAnswersService {
       gate.settle(null);
       return;
     }
-    await this.finish(session.id, { ...answer, text, done: true }, controller);
+    await this.finish(
+      session,
+      { ...answer, text, done: true },
+      request,
+      controller,
+    );
   }
 
   private async finish(
-    sessionId: string,
+    session: InterviewSessionEntity,
     answer: InterviewAnswerOutput,
+    request: AnswerRequest,
     controller: AbortController,
   ): Promise<void> {
-    this.runs.complete(sessionId, controller);
-    await this.publish(sessionId, answer);
-    if (!controller.signal.aborted && answer.text.trim()) {
-      await this.sessions.addTurn(sessionId, answer.question, answer.text);
-    }
+    this.runs.complete(session.id, controller);
+    await this.publish(session.id, answer);
+    const isAnswered = !controller.signal.aborted && !!answer.text.trim();
+    if (isAnswered) await this.saveTurn(session.id, answer, request.imageUrl);
+    else await this.discardImage(session.userId, request.imageUrl);
+  }
+
+  private async saveTurn(
+    sessionId: string,
+    answer: InterviewAnswerOutput,
+    imageUrl: string | undefined,
+  ): Promise<void> {
+    await this.sessions.addTurn(
+      sessionId,
+      answer.question,
+      answer.text,
+      imageUrl ?? null,
+    );
+  }
+
+  private async discardImage(
+    userId: string,
+    imageUrl: string | undefined,
+  ): Promise<void> {
+    if (imageUrl) await this.fileStorage.remove(userId, imageUrl);
   }
 
   private async buildInstruction(
@@ -268,12 +298,5 @@ export class InterviewAnswersService {
     await this.pubSub.publish(interviewAnswerTopic(sessionId), {
       interviewAnswer: answer,
     });
-  }
-
-  private readScreenshot(upload: FileUpload): Promise<Buffer> {
-    if (!upload.mimetype.startsWith('image/')) {
-      throw new BadRequestException('Скриншот должен быть изображением');
-    }
-    return readUpload(upload, MAX_SCREENSHOT_BYTES);
   }
 }

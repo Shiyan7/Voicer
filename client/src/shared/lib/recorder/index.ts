@@ -4,7 +4,7 @@ export {
   stopLiveCapture,
 } from './liveCaptureBridge';
 export { readRecordingFile } from './readRecordingFile';
-export type { RecordingKind } from './recorderBridge';
+export type { RecordingKind, StopRecordingResult } from './recorderBridge';
 export {
   getRecorderState,
   onCallDetected,

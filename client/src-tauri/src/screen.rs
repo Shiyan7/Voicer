@@ -1,11 +1,13 @@
 use std::sync::mpsc;
 use std::time::Duration;
 
-use cidre::{blocks, cf, cg, ns, sc};
+use cidre::{arc, blocks, cf, cg, ns, sc};
 
 const TIMEOUT: Duration = Duration::from_secs(5);
+const MAX_WIDTH: usize = 1920;
+const JPEG_QUALITY: f64 = 0.6;
 
-pub fn capture_main_display_png() -> Result<Vec<u8>, String> {
+pub fn capture_main_display_jpeg() -> Result<Vec<u8>, String> {
     let (tx, rx) = mpsc::channel::<Result<Vec<u8>, String>>();
 
     let mut content_block =
@@ -27,16 +29,20 @@ pub fn capture_main_display_png() -> Result<Vec<u8>, String> {
                 return;
             };
 
-            let filter =
-                sc::ContentFilter::with_display_excluding_windows(&display, &ns::Array::new());
+            let filter = sc::ContentFilter::with_display_excluding_apps_excepting_windows(
+                &display,
+                &ns::Array::from_slice_retained(&own_apps(&content)),
+                &ns::Array::new(),
+            );
             let mut cfg = sc::StreamCfg::new();
-            cfg.set_width(display.width().max(1) as usize);
-            cfg.set_height(display.height().max(1) as usize);
+            let (width, height) = fit_width(display.width(), display.height());
+            cfg.set_width(width);
+            cfg.set_height(height);
             cfg.set_shows_cursor(false);
 
             let mut image_block = blocks::ResultCh::<cg::Image>::new2(move |image, error| {
                 let res = match image {
-                    Some(image) => encode_png(image),
+                    Some(image) => encode_jpeg(image),
                     None => Err(ns_error_msg("capture image", error)),
                 };
                 let _ = tx.send(res);
@@ -49,16 +55,43 @@ pub fn capture_main_display_png() -> Result<Vec<u8>, String> {
         .map_err(|_| "screenshot timed out".to_string())?
 }
 
-fn encode_png(image: &cg::Image) -> Result<Vec<u8>, String> {
+fn own_apps(content: &sc::ShareableContent) -> Vec<arc::R<sc::RunningApp>> {
+    let own_pid = std::process::id() as i32;
+    content
+        .apps()
+        .iter()
+        .filter(|app| app.process_id() == own_pid)
+        .map(|app| app.retained())
+        .collect()
+}
+
+fn fit_width(width: isize, height: isize) -> (usize, usize) {
+    let width = width.max(1) as usize;
+    let height = height.max(1) as usize;
+    if width <= MAX_WIDTH {
+        return (width, height);
+    }
+    (MAX_WIDTH, (height * MAX_WIDTH / width).max(1))
+}
+
+fn encode_jpeg(image: &cg::Image) -> Result<Vec<u8>, String> {
     let mut data = cf::DataMut::with_capacity(0);
-    let ty = cf::String::from_str("public.png");
+    let ty = cf::String::from_str("public.jpeg");
     let mut dst =
-        cg::ImageDst::with_data(&mut data, &ty, 1).ok_or("png destination unavailable")?;
-    dst.add_image(image, None);
+        cg::ImageDst::with_data(&mut data, &ty, 1).ok_or("jpeg destination unavailable")?;
+    let quality = cf::Number::from_f64(JPEG_QUALITY);
+    let options =
+        cf::DictionaryOf::with_keys_values(&[lossy_quality_key()], &[quality.as_type_ref()]);
+    dst.add_image(image, Some(&options));
     if !dst.finalize() {
-        return Err("png encode failed".into());
+        return Err("jpeg encode failed".into());
     }
     Ok(data.as_slice().to_vec())
+}
+
+fn lossy_quality_key() -> &'static cg::image::destination::AddOptKey {
+    let key = cg::image::destination::OptKey::lossy_compression_quality();
+    unsafe { std::mem::transmute(key) }
 }
 
 fn ns_error_msg(what: &str, error: Option<&ns::Error>) -> String {

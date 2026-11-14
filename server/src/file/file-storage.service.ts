@@ -1,11 +1,12 @@
 import { randomUUID } from 'crypto';
 import { createWriteStream } from 'fs';
-import { mkdir, rm } from 'fs/promises';
+import { mkdir, rm, writeFile } from 'fs/promises';
 import { basename, extname, join, resolve } from 'path';
 import { pipeline } from 'stream/promises';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FileUpload } from './file-upload';
+import { makeThumbnail } from './make-thumbnail';
 import { isFileSignatureValid, signFileUrl } from './signed-url';
 import { transcodeToMp3 } from './transcode-to-mp3';
 
@@ -38,7 +39,38 @@ export class FileStorageService {
     );
 
     const playbackName = await this.ensurePlayable(userDir, sourceName);
-    return `${this.publicBaseUrl}/storage/${userId}/${playbackName}`;
+    return this.toPublicUrl(userId, playbackName);
+  }
+
+  async saveBuffer(
+    userId: string,
+    data: Buffer,
+    extension: string,
+  ): Promise<string> {
+    const userDir = join(this.storageDir, userId);
+    await mkdir(userDir, { recursive: true });
+
+    const fileName = `${randomUUID()}${extension}`;
+    await writeFile(join(userDir, fileName), data);
+    return this.toPublicUrl(userId, fileName);
+  }
+
+  async saveThumbnail(
+    userId: string,
+    sourceUrl: string,
+    width: number,
+  ): Promise<string> {
+    const fileName = `${randomUUID()}.jpg`;
+    await makeThumbnail(
+      this.resolveLocalPath(userId, sourceUrl),
+      join(this.storageDir, userId, fileName),
+      width,
+    );
+    return this.toPublicUrl(userId, fileName);
+  }
+
+  private toPublicUrl(userId: string, fileName: string): string {
+    return `${this.publicBaseUrl}/storage/${userId}/${fileName}`;
   }
 
   private async ensurePlayable(

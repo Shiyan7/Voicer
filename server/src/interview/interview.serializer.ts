@@ -24,11 +24,13 @@ export function toInterviewSessionOutput(
 
 export function toInterviewTurnOutput(
   turn: InterviewTurnEntity,
+  imageUrl: string | null,
 ): InterviewTurnOutput {
   return {
     id: turn.id,
     question: turn.question,
     answer: turn.answer,
+    imageUrl,
     createdAt: turn.createdAt,
   };
 }

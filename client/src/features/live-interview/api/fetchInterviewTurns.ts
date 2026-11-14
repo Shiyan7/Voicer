@@ -5,7 +5,10 @@ import { urqlClient } from '@/shared/urql-client';
 import { INTERVIEW_TURNS_QUERY } from './gql/INTERVIEW_TURNS_QUERY';
 
 interface InterviewTurnsQuery {
-  interviewTurns: Pick<InterviewTurnOutput, 'id' | 'question' | 'answer'>[];
+  interviewTurns: Pick<
+    InterviewTurnOutput,
+    'id' | 'question' | 'answer' | 'imageUrl'
+  >[];
 }
 
 export const fetchInterviewTurns = async (sessionId: string) => {

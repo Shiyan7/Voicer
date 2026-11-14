@@ -18,8 +18,8 @@ export function transcodeToMp3(
       '-vn',
       '-acodec',
       'libmp3lame',
-      '-q:a',
-      '4',
+      '-b:a',
+      '64k',
       targetPath,
     ]);
 

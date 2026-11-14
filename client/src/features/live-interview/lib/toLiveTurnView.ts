@@ -15,6 +15,7 @@ export const toLiveTurnView = (
   return {
     id: turn.id,
     question: turn.question,
+    imageUrl: turn.imageUrl,
     isQuestionLive: !turn.isQuestionFinal,
     short: toBlocks(short),
     details: toBlocks(details),

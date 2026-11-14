@@ -18,6 +18,7 @@ import { MoreActions } from './segments/more-actions';
 import { NotesEmpty } from './segments/notes-empty';
 import { NotesLoading } from './segments/notes-loading';
 import { Recording } from './segments/recording';
+import { Screenshots } from './segments/screenshots';
 import { SummarizeAction, SummaryStyleBadge } from './segments/summarize';
 import { TranscriptSearchPanel } from './segments/transcript-search';
 
@@ -115,6 +116,12 @@ export function MeetingDetailsOrchestrator() {
                             currentMatchIndex={vm.currentMatchIndex()}
                             partsFor={vm.search.partsFor}
                             isMatchCurrent={vm.search.isMatchCurrent}
+                            onSeek={vm.seekToMs}
+                          />
+                        </Match>
+                        <Match when={vm.activeTab() === 'screenshots'}>
+                          <Screenshots
+                            screenshots={vm.screenshots()}
                             onSeek={vm.seekToMs}
                           />
                         </Match>
