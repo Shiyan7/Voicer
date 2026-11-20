@@ -215,10 +215,15 @@ export enum MeetingsSort {
   DurationDesc = 'DURATION_DESC',
 }
 
+export type MeetingsStatsInput = {
+  timeZone: Scalars['String']['input'];
+};
+
 export type MeetingsStatsOutput = {
   __typename?: 'MeetingsStatsOutput';
   openActionItems: Scalars['Int']['output'];
   sources: Array<Scalars['String']['output']>;
+  todayDurationSec: Scalars['Int']['output'];
   weekCount: Scalars['Int']['output'];
   weekDurationSec: Scalars['Int']['output'];
 };
@@ -415,6 +420,10 @@ export type QueryMeetingTranscriptArgs = {
 
 export type QueryMeetingsPageArgs = {
   input: MeetingsPageInput;
+};
+
+export type QueryMeetingsStatsArgs = {
+  input: MeetingsStatsInput;
 };
 
 export type QuerySearchArgs = {

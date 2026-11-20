@@ -13,6 +13,9 @@ abstract class StatsTimeZoneInput {
 export class StatsSummaryInput extends StatsTimeZoneInput {}
 
 @InputType()
+export class MeetingsStatsInput extends StatsTimeZoneInput {}
+
+@InputType()
 export class StatsYearInput extends StatsTimeZoneInput {
   @Field(() => Int)
   @Min(1970)

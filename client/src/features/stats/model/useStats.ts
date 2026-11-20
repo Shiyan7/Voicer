@@ -1,8 +1,9 @@
 import { createSignal } from 'solid-js';
 
+import { getTimeZone } from '@/shared/lib/time';
+
 import { statsSummaryQuery } from '../api/statsSummaryQuery';
 import { statsYearQuery } from '../api/statsYearQuery';
-import { getTimeZone } from '../lib/getTimeZone';
 
 export const useStats = () => {
   const timeZone = getTimeZone();

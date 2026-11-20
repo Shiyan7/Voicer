@@ -3,6 +3,7 @@ import { useListStatus } from '@/shared/hooks/useListStatus';
 import { useQueryPagination } from '@/shared/hooks/useQueryPagination';
 import { i18n } from '@/shared/i18n';
 import { toDateRangeInput } from '@/shared/lib/date-range';
+import { getTimeZone } from '@/shared/lib/time';
 import { authRoot } from '@/shared/roots/authRoot';
 
 import { meetingsPageQuery } from '../api/meetingsPageQuery';
@@ -31,9 +32,10 @@ export const useMeetingsPage = () => {
     { pause: () => !authRoot.isAuth },
   );
 
-  const [statsResult] = meetingsStatsQuery({
-    pause: () => !authRoot.isAuth,
-  });
+  const [statsResult] = meetingsStatsQuery(
+    () => ({ input: { timeZone: getTimeZone() } }),
+    { pause: () => !authRoot.isAuth },
+  );
   const stats = () => statsResult.data?.meetingsStats;
 
   const isStatsLoading = () => statsResult.fetching && !stats();

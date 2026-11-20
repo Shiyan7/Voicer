@@ -1,1 +1,1 @@
-export const SKELETON_TILES = [0, 1, 2];
+export const SKELETON_TILES = [0, 1, 2, 3];

@@ -16,9 +16,13 @@ export class MeetingsStatsService {
     private readonly actionItemsRepository: Repository<ActionItemEntity>,
   ) {}
 
-  async getUserStats(userId: string): Promise<MeetingsStatsOutput> {
-    const [week, openActionItems, sources] = await Promise.all([
+  async getUserStats(
+    userId: string,
+    timeZone: string,
+  ): Promise<MeetingsStatsOutput> {
+    const [week, today, openActionItems, sources] = await Promise.all([
       this.getWeekTotals(userId),
+      this.getTodayTotals(userId, timeZone),
       this.actionItemsRepository.count({
         where: {
           userId,
@@ -32,6 +36,7 @@ export class MeetingsStatsService {
     return {
       weekCount: week?.count ?? 0,
       weekDurationSec: week?.duration ?? 0,
+      todayDurationSec: today?.duration ?? 0,
       openActionItems,
       sources,
     };
@@ -48,6 +53,19 @@ export class MeetingsStatsService {
       .andWhere('m.interviewSessionId IS NULL')
       .andWhere('m.startedAt >= :weekAgo', { weekAgo })
       .getRawOne<{ count: number; duration: number }>();
+  }
+
+  private getTodayTotals(userId: string, timeZone: string) {
+    return this.meetingsRepository
+      .createQueryBuilder('m')
+      .select('COALESCE(SUM(m.durationSec), 0)::int', 'duration')
+      .where('m.userId = :userId', { userId })
+      .andWhere('m.interviewSessionId IS NULL')
+      .andWhere(
+        "m.startedAt >= date_trunc('day', now() AT TIME ZONE :timeZone) AT TIME ZONE :timeZone",
+        { timeZone },
+      )
+      .getRawOne<{ duration: number }>();
   }
 
   private async getSources(userId: string): Promise<string[]> {

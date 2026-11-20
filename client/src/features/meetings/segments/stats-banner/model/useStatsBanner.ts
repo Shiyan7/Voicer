@@ -32,6 +32,10 @@ export const useStatsBanner = (deps: StatsBannerDeps) => {
         label: i18n.t('meetings.banner.week_duration'),
       },
       {
+        value: formatDuration(value.todayDurationSec),
+        label: i18n.t('meetings.banner.today_duration'),
+      },
+      {
         value: String(value.openActionItems),
         label: i18n.t('meetings.banner.open_actions'),
       },

@@ -133,6 +133,7 @@
       "subtitle": "Your meetings over the last 7 days",
       "week_count": "meetings this week",
       "week_duration": "recorded",
+      "today_duration": "recorded today",
       "open_actions": "open action items"
     },
     "rename": "Rename",

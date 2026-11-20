@@ -9,6 +9,9 @@ export class MeetingsStatsOutput {
   weekDurationSec: number;
 
   @Field(() => Int)
+  todayDurationSec: number;
+
+  @Field(() => Int)
   openActionItems: number;
 
   @Field(() => [String])
