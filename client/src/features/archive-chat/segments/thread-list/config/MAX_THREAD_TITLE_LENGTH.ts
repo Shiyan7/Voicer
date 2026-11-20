@@ -1,0 +1,1 @@
+export const MAX_THREAD_TITLE_LENGTH = 120;

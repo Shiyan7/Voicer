@@ -3,10 +3,21 @@ import { ConfigService } from '@nestjs/config';
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
 import { tmpdir } from 'os';
 import { createInterface } from 'readline';
+import { ClaudeAgentRequest } from './claude-agent-request';
 import { ClaudeJsonResult, ClaudeStreamLine } from './claude.types';
 
 const DEFAULT_CLAUDE_BIN = 'claude';
 const DEFAULT_CLAUDE_MODEL = 'haiku';
+const DEFAULT_CLAUDE_CHAT_MODEL = 'sonnet';
+const AGENT_MAX_TURNS = '30';
+const STREAM_JSON_ARGS = [
+  '--output-format',
+  'stream-json',
+  '--verbose',
+  '--include-partial-messages',
+];
+const TEXT_EFFORT = 'low';
+const AGENT_EFFORT = 'medium';
 const JSON_SYSTEM_PROMPT = 'Return only data matching the given JSON schema.';
 const CLAUDE_TIMEOUT_MS = 180_000;
 
@@ -19,11 +30,15 @@ interface ClaudeRun {
 export class ClaudeService {
   private readonly bin: string;
   private readonly model: string;
+  private readonly chatModel: string;
 
   constructor(configService: ConfigService) {
     this.bin = configService.get<string>('CLAUDE_BIN') ?? DEFAULT_CLAUDE_BIN;
     this.model =
       configService.get<string>('CLAUDE_MODEL') ?? DEFAULT_CLAUDE_MODEL;
+    this.chatModel =
+      configService.get<string>('CLAUDE_CHAT_MODEL') ??
+      DEFAULT_CLAUDE_CHAT_MODEL;
   }
 
   async streamText(
@@ -34,12 +49,10 @@ export class ClaudeService {
   ): Promise<string> {
     const { child, finished } = this.run(
       [
-        ...this.buildArgs(systemInstruction),
-        '--output-format',
-        'stream-json',
-        '--verbose',
-        '--include-partial-messages',
+        ...this.buildArgs(systemInstruction, this.model, TEXT_EFFORT),
+        ...STREAM_JSON_ARGS,
       ],
+      CLAUDE_TIMEOUT_MS,
       signal,
     );
     child.stdin.end(prompt);
@@ -51,28 +64,72 @@ export class ClaudeService {
     return text;
   }
 
-  async generateJson<T>(prompt: string, schema: object): Promise<T> {
-    const { child, finished } = this.run([
-      ...this.buildArgs(JSON_SYSTEM_PROMPT),
-      '--output-format',
-      'json',
-      '--json-schema',
-      JSON.stringify(schema),
-    ]);
-    child.stdin.end(prompt);
+  async runAgent(
+    request: ClaudeAgentRequest,
+    signal?: AbortSignal,
+  ): Promise<string> {
+    const result = await this.runJson(
+      [
+        ...this.buildArgs(
+          request.systemInstruction,
+          this.chatModel,
+          AGENT_EFFORT,
+        ),
+        '--mcp-config',
+        JSON.stringify(request.mcpConfig),
+        '--allowedTools',
+        ...request.allowedTools,
+        '--max-turns',
+        AGENT_MAX_TURNS,
+      ],
+      request,
+      signal,
+    );
+    if (result.is_error || !result.result) {
+      throw new Error(`Claude agent failed: ${result.result}`);
+    }
+    return result.result;
+  }
 
-    const [chunks] = await Promise.all([child.stdout.toArray(), finished]);
-    const result = JSON.parse(
-      Buffer.concat(chunks as Buffer[]).toString('utf8'),
-    ) as ClaudeJsonResult;
+  async generateJson<T>(prompt: string, schema: object): Promise<T> {
+    const result = await this.runJson(
+      [
+        ...this.buildArgs(JSON_SYSTEM_PROMPT, this.model, TEXT_EFFORT),
+        '--json-schema',
+        JSON.stringify(schema),
+      ],
+      { prompt, timeoutMs: CLAUDE_TIMEOUT_MS },
+    );
     if (result.is_error || !result.structured_output) {
       throw new Error(`Claude failed: ${result.result}`);
     }
     return result.structured_output as T;
   }
 
-  private run(args: string[], signal?: AbortSignal): ClaudeRun {
-    const timeout = AbortSignal.timeout(CLAUDE_TIMEOUT_MS);
+  private async runJson(
+    args: string[],
+    input: Pick<ClaudeAgentRequest, 'prompt' | 'timeoutMs'>,
+    signal?: AbortSignal,
+  ): Promise<ClaudeJsonResult> {
+    const { child, finished } = this.run(
+      [...args, '--output-format', 'json'],
+      input.timeoutMs,
+      signal,
+    );
+    child.stdin.end(input.prompt);
+
+    const [chunks] = await Promise.all([child.stdout.toArray(), finished]);
+    return JSON.parse(
+      Buffer.concat(chunks as Buffer[]).toString('utf8'),
+    ) as ClaudeJsonResult;
+  }
+
+  private run(
+    args: string[],
+    timeoutMs: number,
+    signal?: AbortSignal,
+  ): ClaudeRun {
+    const timeout = AbortSignal.timeout(timeoutMs);
     const child = spawn(this.bin, args, {
       cwd: tmpdir(),
       signal: signal ? AbortSignal.any([signal, timeout]) : timeout,
@@ -94,11 +151,15 @@ export class ClaudeService {
     return { child, finished };
   }
 
-  private buildArgs(systemInstruction: string): string[] {
+  private buildArgs(
+    systemInstruction: string,
+    model: string,
+    effort: string,
+  ): string[] {
     return [
       '-p',
       '--model',
-      this.model,
+      model,
       '--system-prompt',
       systemInstruction,
       '--tools',
@@ -108,7 +169,7 @@ export class ClaudeService {
       '',
       '--strict-mcp-config',
       '--effort',
-      'low',
+      effort,
     ];
   }
 

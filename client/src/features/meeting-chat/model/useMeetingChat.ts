@@ -1,11 +1,12 @@
 import { createSignal } from 'solid-js';
 
+import { useChatMessages, useChatScroll } from '@/entities/chat';
 import { useKeydown } from '@/shared/lib/dom';
 
+import { meetingChatSuggestionsQuery } from '../api/meetingChatSuggestionsQuery';
+import { meetingChatThreadQuery } from '../api/meetingChatThreadQuery';
 import { getPanelPlacement } from '../lib/getPanelPlacement';
 import { MeetingChatDeps } from '../types/MeetingChatDeps';
-import { useChatMessages } from './useChatMessages';
-import { useChatScroll } from './useChatScroll';
 import { useDraggableFab } from './useDraggableFab';
 
 export const useMeetingChat = (deps: MeetingChatDeps) => {
@@ -22,10 +23,18 @@ export const useMeetingChat = (deps: MeetingChatDeps) => {
 
   const toggle = () => (isOpen() ? close() : open());
 
-  const chat = useChatMessages({
-    meetingId: () => deps.meetingId,
-    isActive: hasOpened,
+  const meetingVariables = () => ({ meetingId: deps.meetingId });
+
+  const [threadResult] = meetingChatThreadQuery(meetingVariables, {
+    pause: () => !hasOpened(),
   });
+  const [suggestionsResult] = meetingChatSuggestionsQuery(meetingVariables, {
+    pause: () => !hasOpened(),
+  });
+
+  const threadId = () => threadResult.data?.meetingChatThread.id;
+
+  const chat = useChatMessages({ threadId });
 
   const fab = useDraggableFab({
     boundary,
@@ -33,13 +42,11 @@ export const useMeetingChat = (deps: MeetingChatDeps) => {
     onTap: toggle,
   });
 
-  const submit = () => void chat.ask(chat.draft());
-
   const scroll = useChatScroll({
-    isOpen,
+    shouldFocus: isOpen,
     draft: chat.draft,
     scrollTrigger: chat.questionCount,
-    onSubmit: submit,
+    onSubmit: chat.submit,
   });
 
   useKeydown((event) => {
@@ -57,7 +64,11 @@ export const useMeetingChat = (deps: MeetingChatDeps) => {
 
   const showAnsweringBadge = () => chat.isAnswering() && !isOpen();
 
-  const canSend = () => Boolean(chat.draft().trim()) && !chat.isAnswering();
+  const suggestedQuestions = () =>
+    suggestionsResult.data?.meetingChatSuggestions ?? [];
+
+  const isSuggestionsLoading = () =>
+    suggestionsResult.fetching && !suggestionsResult.data;
 
   return {
     setBoundary,
@@ -69,8 +80,8 @@ export const useMeetingChat = (deps: MeetingChatDeps) => {
     panelPlacement,
     messages: chat.messages,
     hasMessages: chat.hasMessages,
-    suggestedQuestions: chat.suggestedQuestions,
-    isSuggestionsLoading: chat.isSuggestionsLoading,
+    suggestedQuestions,
+    isSuggestionsLoading,
     showSuggestions,
     followUps: chat.followUps,
     isThinking: chat.isThinking,
@@ -78,9 +89,11 @@ export const useMeetingChat = (deps: MeetingChatDeps) => {
     showAnsweringBadge,
     draft: chat.draft,
     setDraft: chat.setDraft,
-    canSend,
+    canSend: chat.canSend,
+    copyMessage: chat.copyMessage,
+    isCopied: chat.isCopied,
     ask: chat.ask,
-    submit,
+    submit: chat.submit,
     clear: chat.clear,
     seek: deps.onSeek,
     setBody: scroll.setBody,

@@ -24,7 +24,8 @@ import { useTranscriptSearch } from './useTranscriptSearch';
 export const useMeetingDetailsPage = () => {
   const params = useParams<{ id: string }>();
   const [meetingResult] = meetingUpdatedSubscription(() => ({ id: params.id }));
-  const [searchParams] = useSearchParams<MeetingDetailsSearchParams>();
+  const [searchParams, setSearchParams] =
+    useSearchParams<MeetingDetailsSearchParams>();
   const [activeTab, setActiveTab] = createSignal<MeetingTab>(
     toMeetingTab(searchParams.tab),
   );
@@ -137,6 +138,18 @@ export const useMeetingDetailsPage = () => {
     setActiveTab('recording');
     seekToMs(ms);
   };
+
+  const momentMs = () => {
+    const at = Number(searchParams.at);
+    return searchParams.at && Number.isFinite(at) ? at : null;
+  };
+
+  createEffect(() => {
+    const ms = momentMs();
+    if (ms === null || playback.duration() <= 0) return;
+    jumpToMoment(ms);
+    setSearchParams({ at: undefined }, { replace: true });
+  });
 
   const openFind = () => {
     setActiveTab('recording');

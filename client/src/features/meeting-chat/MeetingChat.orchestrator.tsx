@@ -1,14 +1,19 @@
-import { For, Show } from 'solid-js';
+import { Index, Show } from 'solid-js';
 import { Portal } from 'solid-js/web';
 
+import {
+  ChatComposer,
+  ChatMessage,
+  ChatThinking,
+  QuestionChips,
+} from '@/entities/chat';
 import { i18n } from '@/shared/i18n';
+import { Timecode } from '@/shared/ui/timecode';
 
 import { meetingChatStyles } from './MeetingChat.styles';
 import { useMeetingChat } from './model/useMeetingChat';
 import { ChatFab } from './segments/chat-fab';
-import { ChatMessage, ChatThinking } from './segments/chat-message';
 import { ChatPanel } from './segments/chat-panel';
-import { QuestionChips } from './segments/question-chips';
 import { MeetingChatDeps } from './types/MeetingChatDeps';
 
 const styles = meetingChatStyles();
@@ -26,15 +31,20 @@ export function MeetingChatOrchestrator(deps: MeetingChatDeps) {
               placement={placement()}
               showHint={vm.showSuggestions()}
               canClear={vm.hasMessages() && !vm.isAnswering()}
-              canSend={vm.canSend()}
-              draft={vm.draft()}
               bodyRef={vm.setBody}
-              inputRef={vm.setInput}
-              onDraft={vm.setDraft}
-              onInputKeyDown={vm.onInputKeyDown}
-              onSubmit={vm.submit}
               onClear={vm.clear}
               onClose={vm.close}
+              composer={
+                <ChatComposer
+                  draft={vm.draft()}
+                  canSend={vm.canSend()}
+                  placeholder={i18n.t('chat.placeholder')}
+                  inputRef={vm.setInput}
+                  onDraft={vm.setDraft}
+                  onInputKeyDown={vm.onInputKeyDown}
+                  onSubmit={vm.submit}
+                />
+              }
             >
               <Show when={vm.showSuggestions()}>
                 <QuestionChips
@@ -44,13 +54,20 @@ export function MeetingChatOrchestrator(deps: MeetingChatDeps) {
                   onAsk={vm.ask}
                 />
               </Show>
-              <For each={vm.messages()}>
+              <Index each={vm.messages()}>
                 {(message) => (
-                  <ChatMessage message={message} onSeek={vm.seek} />
+                  <ChatMessage
+                    message={message()}
+                    isCopied={vm.isCopied(message().id)}
+                    renderTime={(time) => (
+                      <Timecode ms={time.ms} onSeek={vm.seek} />
+                    )}
+                    onCopy={vm.copyMessage}
+                  />
                 )}
-              </For>
+              </Index>
               <Show when={vm.isThinking()}>
-                <ChatThinking label={i18n.t('meetings.chat.thinking')} />
+                <ChatThinking label={i18n.t('chat.thinking')} />
               </Show>
               <QuestionChips
                 questions={vm.followUps()}

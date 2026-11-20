@@ -1,15 +1,23 @@
 import { MarkdownBlock, MarkdownInline } from './types/MarkdownBlock';
 
-const INLINE_PATTERN = /(\*\*[^*]+\*\*|`[^`]+`|\[\[\d+]])/g;
+const INLINE_PATTERN = /(\*\*[^*]+\*\*|`[^`]+`|\[\[[\w\s,:[\]-]+?]])/g;
+const CITATION =
+  /(?:([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}):)?(\d+)/gi;
 const BULLET_PREFIX = /^\s*[-*•]\s+/;
 
-const toTime = (token: string): MarkdownInline => ({
-  kind: 'time',
-  ms: Number(token.slice(2, -2)),
-});
+const toTimes = (token: string): MarkdownInline[] => {
+  const times = [...token.matchAll(CITATION)].map(
+    ([, meetingId, ms]): MarkdownInline => ({
+      kind: 'time',
+      ms: Number(ms),
+      meetingId: meetingId?.toLowerCase(),
+    }),
+  );
+  return times.length ? times : [{ kind: 'text', text: token }];
+};
 
 const toInlines = (token: string): MarkdownInline[] => {
-  if (token.startsWith('[[')) return [toTime(token)];
+  if (token.startsWith('[[')) return toTimes(token);
   if (token.startsWith('**')) {
     return [{ kind: 'bold', text: token.slice(2, -2) }];
   }

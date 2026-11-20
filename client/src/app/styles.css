@@ -96,6 +96,7 @@
   --animate-toast-in: toast-in 220ms ease-out;
   --animate-chat-panel-in: chat-panel-in 220ms cubic-bezier(0.22, 1, 0.36, 1);
   --animate-spinner-dash: spinner-dash 1.4s ease-in-out infinite;
+  --animate-tooltip-in: tooltip-in 150ms ease-out both;
 
   --radius-lg: 0.625rem;
   --radius-xl: 0.875rem;
@@ -109,6 +110,12 @@
     }
     to {
       opacity: 1;
+    }
+  }
+
+  @keyframes tooltip-in {
+    from {
+      opacity: 0;
     }
   }
 

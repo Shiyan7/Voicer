@@ -51,6 +51,7 @@
   },
   "nav": {
     "meetings": "Meetings",
+    "chat": "Chat",
     "actions": "Actions",
     "collapse": "Collapse sidebar",
     "expand": "Expand sidebar",
@@ -150,15 +151,7 @@
       "title": "Ask about this meeting",
       "greeting": "Want to dig into this meeting? I've read the whole transcript and I'm happy to help.",
       "hint": "Not sure what to ask? Here are a few ideas:",
-      "placeholder": "Ask a question",
-      "disclaimer": "AI can make mistakes. Check answers against the timestamps.",
-      "clear": "Clear chat",
-      "close": "Close",
-      "send": "Send",
-      "thinking": "Thinking…",
-      "failed": "Couldn't answer. Please try again",
-      "error": "Couldn't send the question",
-      "clear_error": "Couldn't clear the chat"
+      "close": "Close"
     },
     "find": {
       "title": "Find and replace",
@@ -182,6 +175,38 @@
       "hint_on": "A screenshot is taken every {{seconds}} seconds",
       "hint_off": "Turn on in Settings → Recording"
     }
+  },
+  "chat": {
+    "placeholder": "Ask a question",
+    "disclaimer": "AI can make mistakes. Check answers against the timestamps.",
+    "clear": "Clear chat",
+    "send": "Send",
+    "thinking": "Thinking…",
+    "failed": "Couldn't answer. Please try again",
+    "error": "Couldn't send the question",
+    "clear_error": "Couldn't clear the chat",
+    "new": "New chat",
+    "untitled": "New chat",
+    "delete": "Delete chat",
+    "delete_error": "Couldn't delete the chat",
+    "create_error": "Couldn't create a chat",
+    "empty_threads": "Your chats will appear here",
+    "greeting": "Ask about any of your meetings",
+    "archive_placeholder": "Ask about any meeting",
+    "archive_hint": "I'll find the right meetings, read the transcripts and answer with links to the exact moments.",
+    "example_week": "What did I promise to do this week?",
+    "example_decisions": "What decisions did we make last month?",
+    "example_interviews": "How did my recent interviews go?",
+    "delete_title": "Delete this chat?",
+    "delete_description": "The whole conversation will be deleted and cannot be restored.",
+    "searching": "Searching your meetings…",
+    "recent": "Recent",
+    "rename": "Rename",
+    "rename_error": "Couldn't rename the chat",
+    "actions": "Chat actions",
+    "rename_title": "Rename chat",
+    "rename_save": "Rename",
+    "rename_cancel": "Cancel"
   },
   "recorder": {
     "recording": "Recording",

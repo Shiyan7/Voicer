@@ -2,11 +2,23 @@ import { tv } from 'tailwind-variants';
 
 export const moreActionsMenuStyles = tv({
   slots: {
+    panel: '',
     trigger: `
       flex size-11 items-center justify-center rounded-full border
       border-gray-200 bg-white text-gray-900 outline-none transition
       hover:bg-gray-100 active:scale-[0.96] active:bg-gray-200
       focus-visible:ring-2 focus-visible:ring-gray-300
     `,
+  },
+  variants: {
+    variant: {
+      ghost: {
+        panel: 'min-w-44',
+        trigger: `
+          size-7 border-transparent bg-transparent text-gray-500
+          hover:bg-gray-200 hover:text-gray-900 active:bg-gray-300
+        `,
+      },
+    },
   },
 });

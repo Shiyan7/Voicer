@@ -38,13 +38,20 @@ type ChatMessageOutput {
   id: ID!
   isFailed: Boolean!
   isStreaming: Boolean!
-  meetingId: ID!
   role: ChatRole!
+  threadId: ID!
 }
 
 enum ChatRole {
   ASSISTANT
   USER
+}
+
+type ChatThreadOutput {
+  id: ID!
+  meetingId: ID
+  title: String
+  updatedAt: DateTime!
 }
 
 """
@@ -203,14 +210,16 @@ type MeetingsStatsOutput {
 type Mutation {
   apiTokenCreate(name: String!): ApiTokenCreatedOutput!
   apiTokenRevoke(id: ID!): Boolean!
+  chatAsk(question: String!, threadId: ID!): ChatMessageOutput!
+  chatClear(threadId: ID!): Boolean!
+  createChatThread: ChatThreadOutput!
   createInterviewSession(language: InterviewLanguage! = RU, resume: Upload, resumeSessionId: ID, vacancy: String!): InterviewSessionOutput!
+  deleteChatThread(threadId: ID!): Boolean!
   deleteInterviewResume(sessionId: ID!): Boolean!
   deleteInterviewSession(id: ID!): InterviewSessionOutput!
   finishInterviewSession(id: ID!): InterviewSessionOutput!
   interviewAskScreenshot(image: Upload!, sessionId: ID!): ID!
   meetingAddScreenshot(image: Upload!, meetingId: ID!, offsetMs: Int!): MeetingScreenshotOutput!
-  meetingChatAsk(meetingId: ID!, question: String!): ChatMessageOutput!
-  meetingChatClear(meetingId: ID!): Boolean!
   meetingDelete(id: ID!): MeetingOutput!
   meetingRename(id: ID!, title: String): MeetingOutput!
   meetingSetFavorite(id: ID!, isFavorite: Boolean!): MeetingOutput!
@@ -218,6 +227,7 @@ type Mutation {
   meetingSummarize(id: ID!, style: SummaryStyle! = AUTO): MeetingOutput!
   meetingTranscriptUpdate(meetingId: ID!, segments: [TranscriptSegmentTextInput!]!): [TranscriptSegmentOutput!]!
   meetingUploadAudio(file: Upload!, interviewSessionId: String, source: String, startedAt: DateTime): MeetingOutput!
+  renameChatThread(threadId: ID!, title: String!): ChatThreadOutput!
   retryInterviewPreparation(id: ID!): InterviewSessionOutput!
   signIn(input: SignInInput!): AuthPayload!
   signUp(input: SignUpInput!): AuthPayload!
@@ -234,13 +244,15 @@ type PagePaginationMetaOutput {
 type Query {
   actionItems: [ActionItemOutput!]!
   apiTokens: [ApiTokenOutput!]!
+  chatMessages(threadId: ID!): [ChatMessageOutput!]!
+  chatThreads: [ChatThreadOutput!]!
   interviewResumes: [InterviewResumeOutput!]!
   interviewSession(id: ID!): InterviewSessionOutput!
   interviewSessionsPage(input: InterviewSessionsPageInput!): InterviewSessionsPageOutput!
   interviewTurns(sessionId: ID!): [InterviewTurnOutput!]!
   meetingActionItems(meetingId: ID!): [ActionItemOutput!]!
-  meetingChatMessages(meetingId: ID!): [ChatMessageOutput!]!
   meetingChatSuggestions(meetingId: ID!): [String!]!
+  meetingChatThread(meetingId: ID!): ChatThreadOutput!
   meetingKeyPoints(meetingId: ID!): [KeyPointOutput!]!
   meetingScreenshots(meetingId: ID!): [MeetingScreenshotOutput!]!
   meetingTranscript(meetingId: ID!): [TranscriptSegmentOutput!]!
@@ -348,8 +360,8 @@ type StatsYearOutput {
 }
 
 type Subscription {
+  chatMessage(threadId: ID!): ChatMessageOutput!
   interviewAnswer(sessionId: ID!): InterviewAnswerOutput!
-  meetingChatMessage(meetingId: ID!): ChatMessageOutput!
   meetingUpdated(id: ID!): MeetingOutput!
 }
 

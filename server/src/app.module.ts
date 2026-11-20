@@ -10,7 +10,7 @@ import { MeetingsModule } from './meetings/meetings.module';
 import { StatsModule } from './stats/stats.module';
 import { SearchModule } from './search/search.module';
 import { ActionsModule } from './actions/actions.module';
-import { MeetingChatModule } from './meeting-chat/meeting-chat.module';
+import { ChatModule } from './chat/chat.module';
 import { PubSubModule } from './pubsub/pubsub.module';
 import { ApiTokensModule } from './api-tokens/api-tokens.module';
 import { McpModule } from './mcp/mcp.module';
@@ -29,7 +29,7 @@ import { validateEnv } from './config/validate-env';
     StatsModule,
     SearchModule,
     ActionsModule,
-    MeetingChatModule,
+    ChatModule,
     ApiTokensModule,
     McpModule,
     InterviewModule,

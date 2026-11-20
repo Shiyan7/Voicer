@@ -11,7 +11,7 @@ export function Markdown(props: MarkdownProps) {
   const renderInline = (inline: MarkdownInline) => (
     <Switch>
       <Match when={inline.kind === 'time' && inline}>
-        {(time) => props.renderTime?.(time().ms)}
+        {(time) => props.renderTime?.(time())}
       </Match>
       <Match when={inline.kind === 'bold' && inline}>
         {(bold) => <strong class={styles.bold()}>{bold().text}</strong>}
