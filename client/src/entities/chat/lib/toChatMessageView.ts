@@ -12,6 +12,7 @@ const toVisibleContent = (message: ChatMessageOutput) =>
 
 export const toChatMessageView = (
   message: ChatMessageOutput,
+  isLive: boolean,
 ): ChatMessageView => {
   const isUser = message.role === ChatRole.User;
   const blocks = isUser ? [] : parseMarkdown(toVisibleContent(message));
@@ -23,5 +24,6 @@ export const toChatMessageView = (
     blocks,
     isStreaming: message.isStreaming,
     isFailed: message.isFailed,
+    isLive,
   };
 };

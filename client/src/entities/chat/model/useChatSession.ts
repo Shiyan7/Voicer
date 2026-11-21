@@ -8,6 +8,8 @@ export const useChatSession = (deps: ChatSessionDeps) => {
   const copy = useMessageCopy();
 
   const scroll = useChatScroll({
+    threadId: deps.threadId,
+    hasMessages: chat.hasMessages,
     shouldFocus: deps.shouldFocus,
     draft: chat.draft,
     scrollTrigger: deps.followAnswer ? chat.messages : chat.questionCount,

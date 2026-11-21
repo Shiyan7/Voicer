@@ -7,6 +7,7 @@ import { Icon } from '@/shared/ui/icon';
 import { MoreActionsMenu } from '@/shared/ui/more-actions-menu';
 import { Tooltip } from '@/shared/ui/tooltip';
 
+import { SKELETON_THREAD_WIDTHS } from '../config/SKELETON_THREAD_WIDTHS';
 import { useThreadList } from '../model/useThreadList';
 import { ThreadListDeps } from '../types/ThreadListDeps';
 import { RenameThreadModal } from './RenameThreadModal';
@@ -37,7 +38,15 @@ export function ThreadList(deps: ThreadListDeps) {
         <nav class={styles.list()}>
           <Show
             when={!deps.isLoading}
-            fallback={<div class={styles.skeleton()} />}
+            fallback={
+              <For each={SKELETON_THREAD_WIDTHS}>
+                {(width) => (
+                  <div class={styles.skeletonItem()}>
+                    <div class={styles.skeleton({ class: width })} />
+                  </div>
+                )}
+              </For>
+            }
           >
             <For
               each={deps.threads}

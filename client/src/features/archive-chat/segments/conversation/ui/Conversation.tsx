@@ -8,6 +8,7 @@ import { TimecodeLink } from '@/shared/ui/timecode';
 import { useConversation } from '../model/useConversation';
 import { ConversationDeps } from '../types/ConversationDeps';
 import { conversationStyles } from './Conversation.styles';
+import { ConversationSkeleton } from './ConversationSkeleton';
 
 const styles = conversationStyles();
 
@@ -28,17 +29,19 @@ export function Conversation(deps: ConversationDeps) {
           fallback={<h1 class={styles.title()}>{i18n.t('chat.greeting')}</h1>}
         >
           <div class={styles.feed()}>
-            <ChatFeed
-              messages={vm.messages()}
-              followUps={vm.followUps()}
-              isThinking={vm.isThinking()}
-              isAnswering={vm.isAnswering()}
-              thinkingLabel={i18n.t('chat.searching')}
-              isCopied={vm.isCopied}
-              renderTime={renderTime}
-              onCopy={vm.copyMessage}
-              onAsk={vm.ask}
-            />
+            <Show when={!vm.isLoading()} fallback={<ConversationSkeleton />}>
+              <ChatFeed
+                messages={vm.messages()}
+                followUps={vm.followUps()}
+                isThinking={vm.isThinking()}
+                isAnswering={vm.isAnswering()}
+                thinkingLabel={i18n.t('chat.searching')}
+                isCopied={vm.isCopied}
+                renderTime={renderTime}
+                onCopy={vm.copyMessage}
+                onAsk={vm.ask}
+              />
+            </Show>
           </div>
         </Show>
       </div>
@@ -53,7 +56,12 @@ export function Conversation(deps: ConversationDeps) {
           onSubmit={vm.submit}
         />
       </footer>
-      <div class={styles.spacer({ empty: vm.isEmpty() })} />
+      <div
+        class={styles.spacer({
+          empty: vm.isEmpty(),
+          animated: vm.isAnswering(),
+        })}
+      />
     </section>
   );
 }

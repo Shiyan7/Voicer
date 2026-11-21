@@ -22,6 +22,7 @@ export const useConversation = (deps: ConversationDeps) => {
     setDraft: chat.setDraft,
     ask: chat.ask,
     isEmpty,
+    isLoading: chat.isLoading,
     canSend: chat.canSend,
     submit: chat.submit,
     copyMessage: chat.copyMessage,

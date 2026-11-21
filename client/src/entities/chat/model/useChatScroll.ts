@@ -5,13 +5,18 @@ import { ChatScrollDeps } from '../types/ChatScrollDeps';
 export const useChatScroll = (deps: ChatScrollDeps) => {
   const [body, setBody] = createSignal<HTMLElement>();
   const [input, setInput] = createSignal<HTMLTextAreaElement>();
+  let settledThreadId: string | undefined;
 
-  createEffect(
-    on(deps.scrollTrigger, () => {
-      const element = body();
-      element?.scrollTo({ top: element.scrollHeight, behavior: 'smooth' });
-    }),
-  );
+  const scrollToBottom = () => {
+    const element = body();
+    if (!element) return;
+    const threadId = deps.threadId();
+    const behavior = settledThreadId === threadId ? 'smooth' : 'instant';
+    element.scrollTo({ top: element.scrollHeight, behavior });
+    if (deps.hasMessages()) settledThreadId = threadId;
+  };
+
+  createEffect(on([deps.scrollTrigger, body], scrollToBottom));
 
   createEffect(() => {
     if (deps.shouldFocus?.() ?? true) input()?.focus();

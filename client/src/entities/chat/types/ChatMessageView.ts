@@ -7,4 +7,5 @@ export interface ChatMessageView {
   blocks: MarkdownBlock[];
   isStreaming: boolean;
   isFailed: boolean;
+  isLive: boolean;
 }

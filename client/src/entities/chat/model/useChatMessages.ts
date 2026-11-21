@@ -15,6 +15,7 @@ import { chatAskMutation } from '../api/chatAskMutation';
 import { chatClearMutation } from '../api/chatClearMutation';
 import { chatMessagesQuery } from '../api/chatMessagesQuery';
 import { chatMessageSubscription } from '../api/chatMessageSubscription';
+import { PENDING_MESSAGE_ID } from '../config/chatConfig';
 import { mergeMessages } from '../lib/mergeMessages';
 import { snapshotMessages } from '../lib/snapshotMessages';
 import { toChatMessageView } from '../lib/toChatMessageView';
@@ -30,6 +31,7 @@ export const useChatMessages = (deps: ChatMessagesDeps) => {
     null,
   );
   const toasts = useToasts();
+  const liveIds = new Set<string>([PENDING_MESSAGE_ID]);
   const typewriter = useTypewriter(messages);
 
   const threadVariables = () => ({ threadId: deps.threadId() ?? '' });
@@ -51,6 +53,7 @@ export const useChatMessages = (deps: ChatMessagesDeps) => {
     );
 
   const upsert = (message: ChatMessageOutput) => {
+    liveIds.add(message.id);
     addMessages([message]);
     if (message.role !== ChatRole.Assistant) return;
     typewriter.type(message.id);
@@ -94,7 +97,11 @@ export const useChatMessages = (deps: ChatMessagesDeps) => {
       : visibleMessages();
   });
 
-  const chatMessages = createMemo(mapArray(feedMessages, toChatMessageView));
+  const chatMessages = createMemo(
+    mapArray(feedMessages, (message) =>
+      toChatMessageView(message, liveIds.has(message.id)),
+    ),
+  );
 
   const isAnswering = () =>
     isAwaiting() || shownMessages().some((message) => message.isStreaming);
@@ -167,7 +174,16 @@ export const useChatMessages = (deps: ChatMessagesDeps) => {
 
   const hasMessages = () => messages().length > 0;
 
-  const isLoading = () => messagesResult.fetching && !hasMessages();
+  const isThreadLoaded = () => {
+    const threadId = deps.threadId();
+    return (
+      !threadId ||
+      (!messagesResult.fetching &&
+        messagesResult.operation?.variables.threadId === threadId)
+    );
+  };
+
+  const isLoading = () => !isThreadLoaded() && !hasMessages() && !isAnswering();
 
   return {
     draft,

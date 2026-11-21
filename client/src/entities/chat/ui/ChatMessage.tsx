@@ -13,9 +13,13 @@ export function ChatMessage(props: ChatMessageProps) {
   return (
     <Show
       when={!props.message.isUser}
-      fallback={<p class={styles.user()}>{props.message.plainText}</p>}
+      fallback={
+        <p class={styles.user({ live: props.message.isLive })}>
+          {props.message.plainText}
+        </p>
+      }
     >
-      <div class={styles.assistant()}>
+      <div class={styles.assistant({ live: props.message.isLive })}>
         <Markdown blocks={props.message.blocks} renderTime={props.renderTime} />
         <Show when={props.message.isFailed}>
           <p class={styles.failed()}>{i18n.t('chat.failed')}</p>
