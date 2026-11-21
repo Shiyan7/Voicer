@@ -10,10 +10,7 @@ export const recordingBarStyles = tv({
       absolute inset-x-0 bottom-0 grid h-recording-bar-height
       grid-cols-[1fr_auto_1fr] items-center px-3 text-ai-foreground
     `,
-    wave: `
-      absolute inset-x-0 top-0
-      h-[calc(100%+var(--spacing-recording-wave-depth))]
-    `,
+    wave: 'absolute inset-x-0 top-0 h-[calc(100%+1.75rem)]',
     time: `
       relative text-[15px] font-semibold tabular-nums
       transition-opacity duration-200

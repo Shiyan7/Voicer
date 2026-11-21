@@ -2,7 +2,7 @@ import { FLOW_PERIOD_RATIO } from '../config/voiceWaveConfig';
 
 export const createFlowGradient = (
   ctx: CanvasRenderingContext2D,
-  colors: string[],
+  colors: readonly string[],
   width: number,
   offset: number,
 ) => {

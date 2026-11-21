@@ -39,13 +39,13 @@ export const createLineBlob = (layer: WaveLayer) => {
     to = Float32Array.from({ length: from.length }, (_, i) => randomPeak(i));
   };
 
-  const advance = (dt: number, morphRate: number, driftRate: number) => {
-    progress += dt * layer.morphSpeed * morphRate;
+  const advance = (dt: number) => {
+    progress += dt * layer.morphSpeed;
     while (progress >= 1) {
       progress -= 1;
       retarget();
     }
-    drift += dt * layer.driftPx * driftRate;
+    drift += dt * layer.driftPx;
     const eased = smoothstep(progress);
     for (let i = 0; i < current.length; i++) {
       current[i] = from[i] + (to[i] - from[i]) * eased;

@@ -21,7 +21,6 @@
   --z-recording-bar: 700;
 
   --spacing-recording-bar-height: 2.4375rem;
-  --spacing-recording-wave-depth: 1.75rem;
 
   --font-sans:
     -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
@@ -42,10 +41,6 @@
   --color-critical: #ff6666;
 
   --color-ai-foreground: #ffffff;
-
-  --color-voice-blue: #2f8bff;
-  --color-voice-violet: #8b5cff;
-  --color-voice-pink: #ff3fa4;
 
   --color-banner-from: #c7f0de;
   --color-banner-via: #cfe6fb;
