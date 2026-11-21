@@ -27,6 +27,7 @@ export function ArchiveChatOrchestrator() {
         isLoading={vm.isThreadsLoading()}
         onNew={vm.startNewChat}
         onRename={vm.renameThread}
+        onPin={vm.pinThread}
         onDelete={vm.requestDelete}
       />
       <Conversation

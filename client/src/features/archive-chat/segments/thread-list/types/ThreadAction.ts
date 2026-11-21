@@ -1,1 +1,1 @@
-export type ThreadAction = 'rename' | 'delete';
+export type ThreadAction = 'pin' | 'unpin' | 'rename' | 'delete';

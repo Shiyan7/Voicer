@@ -21,6 +21,12 @@ export const threadListStyles = tv({
       has-[[aria-expanded=true]]:bg-gray-200/70
     `,
     link: 'min-w-0 flex-1 truncate py-1.5 pl-3 text-[14px] text-gray-800',
+    actions: 'relative flex shrink-0 items-center justify-center',
+    pin: `
+      pointer-events-none absolute text-gray-500 transition-opacity
+      group-hover:opacity-0 group-focus-within:opacity-0
+      group-has-[[aria-expanded=true]]:opacity-0
+    `,
     menu: `
       opacity-0 transition-opacity group-hover:opacity-100
       focus-within:opacity-100 has-[[aria-expanded=true]]:opacity-100

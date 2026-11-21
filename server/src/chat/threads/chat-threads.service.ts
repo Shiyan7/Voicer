@@ -43,7 +43,10 @@ export class ChatThreadsService {
   getArchiveThreads(userId: string): Promise<ChatThreadEntity[]> {
     return this.threadsRepository.find({
       where: { userId, meetingId: IsNull() },
-      order: { updatedAt: 'DESC' },
+      order: {
+        pinnedAt: { direction: 'DESC', nulls: 'LAST' },
+        updatedAt: 'DESC',
+      },
       take: MAX_THREADS,
     });
   }
@@ -72,6 +75,19 @@ export class ChatThreadsService {
       requireText(title, MAX_TITLE_LENGTH, 'Некорректное название'),
     );
     await this.threadsRepository.update(thread.id, { title: thread.title });
+    return thread;
+  }
+
+  async setPinned(
+    userId: string,
+    id: string,
+    isPinned: boolean,
+  ): Promise<ChatThreadEntity> {
+    const thread = await this.findOwned(userId, id);
+    thread.pinnedAt = isPinned ? new Date() : null;
+    await this.threadsRepository.update(thread.id, {
+      pinnedAt: thread.pinnedAt,
+    });
     return thread;
   }
 

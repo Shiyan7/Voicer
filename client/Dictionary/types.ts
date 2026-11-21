@@ -72,6 +72,7 @@ export enum ChatRole {
 export type ChatThreadOutput = {
   __typename?: 'ChatThreadOutput';
   id: Scalars['ID']['output'];
+  isPinned: Scalars['Boolean']['output'];
   meetingId?: Maybe<Scalars['ID']['output']>;
   title?: Maybe<Scalars['String']['output']>;
 };
@@ -258,6 +259,7 @@ export type Mutation = {
   meetingUploadAudio: MeetingOutput;
   renameChatThread: ChatThreadOutput;
   retryInterviewPreparation: InterviewSessionOutput;
+  setChatThreadPinned: ChatThreadOutput;
   signIn: AuthPayload;
   signUp: AuthPayload;
   toggleActionItem: Scalars['Boolean']['output'];
@@ -356,6 +358,11 @@ export type MutationRenameChatThreadArgs = {
 
 export type MutationRetryInterviewPreparationArgs = {
   id: Scalars['ID']['input'];
+};
+
+export type MutationSetChatThreadPinnedArgs = {
+  isPinned: Scalars['Boolean']['input'];
+  threadId: Scalars['ID']['input'];
 };
 
 export type MutationSignInArgs = {

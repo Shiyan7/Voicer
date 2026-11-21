@@ -5,7 +5,7 @@ import { ChatThreadSummary } from '../types/ChatThreadSummary';
 import { RENAME_CHAT_THREAD_MUTATION } from './gql/RENAME_CHAT_THREAD_MUTATION';
 
 interface RenameChatThreadMutation {
-  renameChatThread: ChatThreadSummary;
+  renameChatThread: Pick<ChatThreadSummary, 'id' | 'title'>;
 }
 
 export const renameChatThreadMutation = () =>

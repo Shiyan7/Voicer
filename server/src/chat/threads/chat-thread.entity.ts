@@ -42,4 +42,7 @@ export class ChatThreadEntity {
 
   @Column({ type: 'timestamptz', default: () => 'now()' })
   updatedAt: Date;
+
+  @Column({ type: 'timestamptz', nullable: true })
+  pinnedAt: Date | null;
 }

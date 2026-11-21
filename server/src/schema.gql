@@ -49,6 +49,7 @@ enum ChatRole {
 
 type ChatThreadOutput {
   id: ID!
+  isPinned: Boolean!
   meetingId: ID
   title: String
 }
@@ -228,6 +229,7 @@ type Mutation {
   meetingUploadAudio(file: Upload!, interviewSessionId: String, source: String, startedAt: DateTime): MeetingOutput!
   renameChatThread(threadId: ID!, title: String!): ChatThreadOutput!
   retryInterviewPreparation(id: ID!): InterviewSessionOutput!
+  setChatThreadPinned(isPinned: Boolean!, threadId: ID!): ChatThreadOutput!
   signIn(input: SignInInput!): AuthPayload!
   signUp(input: SignUpInput!): AuthPayload!
   toggleActionItem(id: ID!): Boolean!

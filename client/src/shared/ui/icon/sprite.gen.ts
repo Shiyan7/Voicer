@@ -304,6 +304,8 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['pause'], [24]),
         defineSpriteSymbol(['pencil-square'], [24]),
         defineSpriteSymbol(['pencil'], [24]),
+        defineSpriteSymbol(['pin-off'], [24]),
+        defineSpriteSymbol(['pin'], [24]),
         defineSpriteSymbol(['play'], [24]),
         defineSpriteSymbol(['search'], [24]),
         defineSpriteSymbol(['skip-back'], [24]),
@@ -316,7 +318,7 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['trash'], [24]),
         defineSpriteSymbol(['upload'], [24]),
       ],
-      defineExternalAssetMeta('common.62299665.svg'),
+      defineExternalAssetMeta('common.c4203f7e.svg'),
     ),
   ]),
   defineSprite('navigation', [
@@ -384,6 +386,8 @@ export type SpritesMeta = {
     | 'pause'
     | 'pencil-square'
     | 'pencil'
+    | 'pin-off'
+    | 'pin'
     | 'play'
     | 'search'
     | 'skip-back'

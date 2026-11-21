@@ -58,12 +58,17 @@ export function ThreadList(deps: ThreadListDeps) {
                   >
                     {thread.title}
                   </A>
-                  <MoreActionsMenu
-                    class={styles.menu()}
-                    variant="ghost"
-                    options={vm.actions()}
-                    onSelect={(action) => vm.selectAction(thread.id, action)}
-                  />
+                  <div class={styles.actions()}>
+                    <Show when={thread.isPinned}>
+                      <Icon class={styles.pin()} size={15} name="common:pin" />
+                    </Show>
+                    <MoreActionsMenu
+                      class={styles.menu()}
+                      variant="ghost"
+                      options={vm.actions(thread.isPinned)}
+                      onSelect={(action) => vm.selectAction(thread.id, action)}
+                    />
+                  </div>
                 </Tooltip>
               )}
             </For>

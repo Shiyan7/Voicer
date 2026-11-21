@@ -5,4 +5,10 @@ export const toChatThreadOutput = ({
   id,
   meetingId,
   title,
-}: ChatThreadEntity): ChatThreadOutput => ({ id, meetingId, title });
+  pinnedAt,
+}: ChatThreadEntity): ChatThreadOutput => ({
+  id,
+  meetingId,
+  title,
+  isPinned: Boolean(pinnedAt),
+});

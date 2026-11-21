@@ -40,8 +40,17 @@ export const useThreadList = (deps: ThreadListDeps) => {
   };
 
   const selectAction = (id: string, action: ThreadAction) => {
-    if (action === 'rename') startRename(id);
-    else deps.onDelete(id);
+    switch (action) {
+      case 'pin':
+      case 'unpin':
+        deps.onPin(id, action === 'pin');
+        return;
+      case 'rename':
+        startRename(id);
+        return;
+      case 'delete':
+        deps.onDelete(id);
+    }
   };
 
   const selectInput = (element: HTMLInputElement) =>

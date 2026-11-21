@@ -5,5 +5,6 @@ export interface ThreadListDeps {
   isLoading: boolean;
   onNew: () => void;
   onRename: (id: string, title: string) => void;
+  onPin: (id: string, isPinned: boolean) => void;
   onDelete: (id: string) => void;
 }

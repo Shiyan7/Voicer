@@ -10,6 +10,7 @@ import { chatThreadsQuery } from '../api/chatThreadsQuery';
 import { createChatThreadMutation } from '../api/createChatThreadMutation';
 import { deleteChatThreadMutation } from '../api/deleteChatThreadMutation';
 import { renameChatThreadMutation } from '../api/renameChatThreadMutation';
+import { setChatThreadPinnedMutation } from '../api/setChatThreadPinnedMutation';
 import { toChatThreadView } from '../lib/toChatThreadView';
 
 export const useArchiveChat = () => {
@@ -20,6 +21,7 @@ export const useArchiveChat = () => {
   const [, createThreadMutation] = createChatThreadMutation();
   const [deleteState, deleteThreadMutation] = deleteChatThreadMutation();
   const [, renameThreadMutation] = renameChatThreadMutation();
+  const [, pinThreadMutation] = setChatThreadPinnedMutation();
 
   const threadId = () => params.id;
 
@@ -52,6 +54,15 @@ export const useArchiveChat = () => {
     if (response.error) toasts.show('error', i18n.t('chat.rename_error'));
   };
 
+  const pinThread = async (id: string, isPinned: boolean) => {
+    const response = await pinThreadMutation({ threadId: id, isPinned });
+    if (response.error) {
+      toasts.show('error', i18n.t('chat.pin_error'));
+      return;
+    }
+    refreshThreads();
+  };
+
   const removeThread = async (id: string) => {
     const response = await deleteThreadMutation({ threadId: id });
     if (!response.error && id === threadId()) {
@@ -76,6 +87,7 @@ export const useArchiveChat = () => {
     createThread,
     startNewChat,
     renameThread,
+    pinThread,
     refreshThreads,
     requestDelete: deletion.request,
     confirmDelete: deletion.confirm,

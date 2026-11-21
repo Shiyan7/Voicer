@@ -10,4 +10,5 @@ export const toChatThreadView = (
   id: thread.id,
   title: thread.title ?? i18n.t('chat.untitled'),
   isActive: thread.id === activeId,
+  isPinned: thread.isPinned,
 });

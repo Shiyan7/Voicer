@@ -10,4 +10,7 @@ export class ChatThreadOutput {
 
   @Field(() => String, { nullable: true })
   title: string | null;
+
+  @Field()
+  isPinned: boolean;
 }

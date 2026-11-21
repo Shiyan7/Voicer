@@ -5,6 +5,7 @@ export const CHAT_THREADS_QUERY = gql`
     chatThreads {
       id
       title
+      isPinned
     }
   }
 `;

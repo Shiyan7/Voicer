@@ -46,4 +46,15 @@ export class ChatThreadsResolver {
       await this.chatThreadsService.rename(user.id, threadId, title),
     );
   }
+
+  @Mutation(() => ChatThreadOutput)
+  async setChatThreadPinned(
+    @CurrentUser() user: UserEntity,
+    @Args('threadId', { type: () => ID }) threadId: string,
+    @Args('isPinned') isPinned: boolean,
+  ): Promise<ChatThreadOutput> {
+    return toChatThreadOutput(
+      await this.chatThreadsService.setPinned(user.id, threadId, isPinned),
+    );
+  }
 }
