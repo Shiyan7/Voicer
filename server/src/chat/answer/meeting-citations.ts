@@ -1,6 +1,6 @@
 import { TranscribedSegment } from '../../transcription/transcription.types';
 
-const CITATION = /\[\[([\d\s,[\]]+)\]\]/g;
+const CITATION = /\[\[([\d\s,[\]]+)]]/g;
 
 const nearestStartMs = (ms: number, segments: TranscribedSegment[]): number =>
   segments.reduce(

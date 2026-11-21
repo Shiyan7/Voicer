@@ -32,3 +32,12 @@ export const BLOB_LAYERS = [
     stroke: 0.35,
   },
 ] as const;
+
+export const BLOB_COLORS = [
+  '#ff3fa4',
+  '#8b5cff',
+  '#2f8bff',
+  '#26d9c3',
+] as const;
+
+export const GRADIENT_SPIN_SPEED = 0.6;
