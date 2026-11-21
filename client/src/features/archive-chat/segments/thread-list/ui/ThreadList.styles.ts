@@ -3,11 +3,10 @@ import { tv } from 'tailwind-variants';
 export const threadListStyles = tv({
   slots: {
     root: `
-      flex w-64 shrink-0 flex-col gap-4 border-r border-gray-200
-      bg-gray-50 px-3 pb-3 pt-5
+      my-3 ml-3 flex w-64 shrink-0 flex-col gap-4 rounded-2xl bg-gray-50 p-3
     `,
     newButton: `
-      flex h-9 items-center gap-2.5 rounded-full px-3 text-[14px] font-medium
+      flex h-9 items-center gap-2.5 rounded-full px-3 text-[15px] font-medium
       text-gray-900 transition-colors hover:bg-gray-200/70
     `,
     section: 'flex min-h-0 flex-1 flex-col gap-1',
@@ -21,7 +20,10 @@ export const threadListStyles = tv({
       transition-colors hover:bg-gray-200/70
       has-[[aria-expanded=true]]:bg-gray-200/70
     `,
-    link: 'min-w-0 flex-1 truncate py-1.5 pl-3 text-[14px] text-gray-800',
+    link: `
+      min-w-0 flex-1 truncate py-1.5 pl-3 text-[15px] font-medium
+      text-gray-900
+    `,
     actions: 'relative flex shrink-0 items-center justify-center',
     pin: `
       pointer-events-none absolute text-gray-500 transition-opacity
@@ -37,7 +39,6 @@ export const threadListStyles = tv({
     active: {
       true: {
         item: 'bg-gray-200/70',
-        link: 'font-medium text-gray-900',
       },
     },
   },
