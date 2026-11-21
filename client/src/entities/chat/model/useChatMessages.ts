@@ -1,5 +1,12 @@
 import { ChatMessageOutput, ChatRole } from '@schema';
-import { createEffect, createMemo, createSignal, mapArray, on } from 'solid-js';
+import {
+  batch,
+  createEffect,
+  createMemo,
+  createSignal,
+  mapArray,
+  on,
+} from 'solid-js';
 
 import { useToasts } from '@/entities/toasts';
 import { i18n } from '@/shared/i18n';
@@ -11,6 +18,7 @@ import { chatMessageSubscription } from '../api/chatMessageSubscription';
 import { mergeMessages } from '../lib/mergeMessages';
 import { snapshotMessages } from '../lib/snapshotMessages';
 import { toChatMessageView } from '../lib/toChatMessageView';
+import { toPendingMessage } from '../lib/toPendingMessage';
 import { ChatMessagesDeps } from '../types/ChatMessagesDeps';
 import { useTypewriter } from './useTypewriter';
 
@@ -18,6 +26,9 @@ export const useChatMessages = (deps: ChatMessagesDeps) => {
   const [messages, setMessages] = createSignal<ChatMessageOutput[]>([]);
   const [isAwaiting, setIsAwaiting] = createSignal(false);
   const [draft, setDraft] = createSignal('');
+  const [pendingQuestion, setPendingQuestion] = createSignal<string | null>(
+    null,
+  );
   const toasts = useToasts();
   const typewriter = useTypewriter(messages);
 
@@ -31,17 +42,20 @@ export const useChatMessages = (deps: ChatMessagesDeps) => {
   const [, askMutation] = chatAskMutation();
   const [, clearMutation] = chatClearMutation();
 
+  const addMessages = (incoming: ChatMessageOutput[]) =>
+    setMessages((current) =>
+      mergeMessages(
+        current,
+        incoming.filter(({ threadId }) => threadId === deps.threadId()),
+      ),
+    );
+
   const upsert = (message: ChatMessageOutput) => {
-    setMessages((current) => mergeMessages(current, [message]));
+    addMessages([message]);
     if (message.role !== ChatRole.Assistant) return;
     typewriter.type(message.id);
     if (!message.isStreaming) setIsAwaiting(false);
   };
-
-  const keepThreadMessages = (threadId: string | undefined) =>
-    setMessages((current) =>
-      current.filter((message) => message.threadId === threadId),
-    );
 
   chatMessageSubscription(threadVariables, upsert, { pause: isPaused });
 
@@ -50,38 +64,37 @@ export const useChatMessages = (deps: ChatMessagesDeps) => {
     return storeMessages && snapshotMessages(storeMessages);
   };
 
-  createEffect(
-    on(
-      loadedMessages,
-      (loaded) =>
-        loaded && setMessages((current) => mergeMessages(current, loaded)),
-    ),
-  );
+  createEffect(on(loadedMessages, (loaded) => loaded && addMessages(loaded)));
 
-  createEffect(
-    on(
-      deps.threadId,
-      (threadId, previous) => {
-        keepThreadMessages(threadId);
-        if (previous) setIsAwaiting(false);
-      },
-      { defer: true },
-    ),
-  );
+  const resetThread = (_: string | undefined, previous?: string) => {
+    setMessages([]);
+    addMessages(loadedMessages() ?? []);
+    if (!previous) return;
+    setIsAwaiting(false);
+    setPendingQuestion(null);
+  };
 
-  const threadMessages = createMemo(() =>
-    messages().filter(({ threadId }) => threadId === deps.threadId()),
-  );
+  createEffect(on(deps.threadId, resetThread, { defer: true }));
 
-  const shownMessages = createMemo(() =>
-    threadMessages().map(typewriter.reveal),
-  );
+  const shownMessages = createMemo(() => messages().map(typewriter.reveal));
 
   const visibleMessages = createMemo(() =>
     shownMessages().filter((message) => message.content || message.isFailed),
   );
 
-  const chatMessages = createMemo(mapArray(visibleMessages, toChatMessageView));
+  const isPendingSaved = (question: string) =>
+    visibleMessages().some(
+      ({ role, content }) => role === ChatRole.User && content === question,
+    );
+
+  const feedMessages = createMemo(() => {
+    const pending = pendingQuestion();
+    return pending && !isPendingSaved(pending)
+      ? [...visibleMessages(), toPendingMessage(pending)]
+      : visibleMessages();
+  });
+
+  const chatMessages = createMemo(mapArray(feedMessages, toChatMessageView));
 
   const isAnswering = () =>
     isAwaiting() || shownMessages().some((message) => message.isStreaming);
@@ -104,12 +117,17 @@ export const useChatMessages = (deps: ChatMessagesDeps) => {
 
     setDraft('');
     setIsAwaiting(true);
+    setPendingQuestion(text);
     const userMessage = await sendQuestion(text);
     if (userMessage) {
-      upsert(userMessage);
+      batch(() => {
+        upsert(userMessage);
+        setPendingQuestion(null);
+      });
       deps.onAsked?.();
       return;
     }
+    setPendingQuestion(null);
     setIsAwaiting(false);
     setDraft(text);
     toasts.show('error', i18n.t('chat.error'));
@@ -145,9 +163,9 @@ export const useChatMessages = (deps: ChatMessagesDeps) => {
   };
 
   const questionCount = () =>
-    threadMessages().filter((message) => message.role === ChatRole.User).length;
+    messages().filter((message) => message.role === ChatRole.User).length;
 
-  const hasMessages = () => threadMessages().length > 0;
+  const hasMessages = () => messages().length > 0;
 
   const isLoading = () => messagesResult.fetching && !hasMessages();
 

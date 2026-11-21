@@ -1,7 +1,4 @@
-export { useChatMessages } from './model/useChatMessages';
-export { useChatScroll } from './model/useChatScroll';
-export { useMessageCopy } from './model/useMessageCopy';
+export { useChatSession } from './model/useChatSession';
 export { ChatComposer } from './ui/ChatComposer';
-export { ChatMessage } from './ui/ChatMessage';
-export { ChatThinking } from './ui/ChatThinking';
+export { ChatFeed } from './ui/ChatFeed';
 export { QuestionChips } from './ui/QuestionChips';

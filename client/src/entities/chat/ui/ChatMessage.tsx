@@ -13,7 +13,7 @@ export function ChatMessage(props: ChatMessageProps) {
   return (
     <Show
       when={!props.message.isUser}
-      fallback={<p class={styles.user()}>{props.message.text}</p>}
+      fallback={<p class={styles.user()}>{props.message.plainText}</p>}
     >
       <div class={styles.assistant()}>
         <Markdown blocks={props.message.blocks} renderTime={props.renderTime} />

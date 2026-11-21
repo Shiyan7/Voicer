@@ -8,7 +8,7 @@ const styles = questionChipsStyles();
 
 export function QuestionChips(props: QuestionChipsProps) {
   return (
-    <div class={styles.root({ class: props.class })}>
+    <div class={styles.root()}>
       <Show
         when={!props.isLoading}
         fallback={

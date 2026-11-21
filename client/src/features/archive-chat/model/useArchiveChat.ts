@@ -39,11 +39,10 @@ export const useArchiveChat = () => {
     const response = await createThreadMutation({});
     const id = response.data?.createChatThread.id;
     if (!id) {
-      toasts.show('error', i18n.t('chat.create_error'));
+      console.error('[archive-chat] failed to create thread:', response.error);
       return undefined;
     }
     navigate(paths.chatThread(id));
-    refreshThreads();
     return id;
   };
 
@@ -51,13 +50,15 @@ export const useArchiveChat = () => {
 
   const renameThread = async (id: string, title: string) => {
     const response = await renameThreadMutation({ threadId: id, title });
-    if (response.error) toasts.show('error', i18n.t('chat.rename_error'));
+    if (response.error) {
+      console.error('[archive-chat] failed to rename thread:', response.error);
+    }
   };
 
   const pinThread = async (id: string, isPinned: boolean) => {
     const response = await pinThreadMutation({ threadId: id, isPinned });
     if (response.error) {
-      toasts.show('error', i18n.t('chat.pin_error'));
+      console.error('[archive-chat] failed to pin thread:', response.error);
       return;
     }
     refreshThreads();

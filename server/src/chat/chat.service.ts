@@ -13,9 +13,7 @@ import { requireText } from '../common/require-text';
 import { LlmTurn } from '../llm/llm-turn';
 import { PUB_SUB } from '../pubsub/pubsub.module';
 import { topic } from '../pubsub/topic';
-import { ChatAnswerRequest } from './answer/chat-answer-request';
-import { ChatReply } from './answer/chat-reply';
-import { PartialReplyHandler } from './answer/stream-reply';
+import { ChatResponder } from './answer/chat-responder';
 import { ArchiveChatResponder } from './archive/archive-chat.responder';
 import { ChatMessageEntity } from './chat-message.entity';
 import { ChatMessageOutput } from './chat-message.output';
@@ -136,14 +134,17 @@ export class ChatService implements OnApplicationBootstrap {
     message: ChatMessageEntity,
     signal: AbortSignal,
   ): Promise<void> {
-    const reply = await this.respond(
-      thread,
-      { userId: thread.userId, turns, signal },
-      (content) => this.publishPartial(message, content, signal),
-    ).catch((error: unknown) => {
-      if (!signal.aborted) this.logFailure(thread.id, error);
-      return null;
-    });
+    const reply = await this.responderFor(thread)
+      .reply({
+        thread,
+        turns,
+        signal,
+        onPartial: (content) => this.publishPartial(message, content, signal),
+      })
+      .catch((error: unknown) => {
+        if (!signal.aborted) this.logFailure(thread.id, error);
+        return null;
+      });
     if (signal.aborted) return;
 
     this.answering.delete(thread.id);
@@ -153,14 +154,8 @@ export class ChatService implements OnApplicationBootstrap {
     await this.publish(message, false);
   }
 
-  private respond(
-    thread: ChatThreadEntity,
-    request: ChatAnswerRequest,
-    onPartial: PartialReplyHandler,
-  ): Promise<ChatReply> {
-    return thread.meetingId
-      ? this.meetingResponder.reply(thread.meetingId, request, onPartial)
-      : this.archiveResponder.reply(request);
+  private responderFor(thread: ChatThreadEntity): ChatResponder {
+    return thread.meetingId ? this.meetingResponder : this.archiveResponder;
   }
 
   private logFailure(threadId: string, error: unknown): void {

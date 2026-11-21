@@ -12,7 +12,7 @@ export const routes = [
     component: lazy(() => import('@/pages/meeting-details/MeetingDetailsPage')),
   },
   {
-    path: [paths.chat, paths.chatThread(':id')],
+    path: paths.chatThread(':id?'),
     component: lazy(() => import('@/pages/chat/ChatPage')),
   },
   {

@@ -1,14 +1,8 @@
-import { Index, Show } from 'solid-js';
+import { Show } from 'solid-js';
 
-import {
-  ChatComposer,
-  ChatMessage,
-  ChatThinking,
-  QuestionChips,
-} from '@/entities/chat';
+import { ChatComposer, ChatFeed } from '@/entities/chat';
 import { i18n } from '@/shared/i18n';
 import type { MarkdownTime } from '@/shared/lib/markdown';
-import { Icon } from '@/shared/ui/icon';
 import { TimecodeLink } from '@/shared/ui/timecode';
 
 import { useConversation } from '../model/useConversation';
@@ -29,43 +23,24 @@ export function Conversation(deps: ConversationDeps) {
   return (
     <section class={styles.root()}>
       <div class={styles.body()} ref={vm.setBody}>
-        <div class={styles.feed()}>
-          <Show when={vm.showIntro()}>
-            <div class={styles.intro()}>
-              <span class={styles.introIcon()}>
-                <Icon size={20} name="common:sparkles" />
-              </span>
-              <h1 class={styles.introTitle()}>{i18n.t('chat.greeting')}</h1>
-              <p class={styles.introHint()}>{i18n.t('chat.archive_hint')}</p>
-              <QuestionChips
-                class={styles.examples()}
-                questions={vm.examples()}
-                isLoading={false}
-                disabled={vm.isAnswering()}
-                onAsk={vm.ask}
-              />
-            </div>
-          </Show>
-          <Index each={vm.messages()}>
-            {(message) => (
-              <ChatMessage
-                message={message()}
-                isCopied={vm.isCopied(message().id)}
-                renderTime={renderTime}
-                onCopy={vm.copyMessage}
-              />
-            )}
-          </Index>
-          <Show when={vm.isThinking()}>
-            <ChatThinking label={i18n.t('chat.searching')} />
-          </Show>
-          <QuestionChips
-            questions={vm.followUps()}
-            isLoading={false}
-            disabled={vm.isAnswering()}
-            onAsk={vm.ask}
-          />
-        </div>
+        <Show
+          when={!vm.isEmpty()}
+          fallback={<h1 class={styles.title()}>{i18n.t('chat.greeting')}</h1>}
+        >
+          <div class={styles.feed()}>
+            <ChatFeed
+              messages={vm.messages()}
+              followUps={vm.followUps()}
+              isThinking={vm.isThinking()}
+              isAnswering={vm.isAnswering()}
+              thinkingLabel={i18n.t('chat.searching')}
+              isCopied={vm.isCopied}
+              renderTime={renderTime}
+              onCopy={vm.copyMessage}
+              onAsk={vm.ask}
+            />
+          </div>
+        </Show>
       </div>
       <footer class={styles.footer()}>
         <ChatComposer
@@ -78,6 +53,7 @@ export function Conversation(deps: ConversationDeps) {
           onSubmit={vm.submit}
         />
       </footer>
+      <div class={styles.spacer({ empty: vm.isEmpty() })} />
     </section>
   );
 }

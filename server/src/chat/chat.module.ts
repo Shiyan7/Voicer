@@ -9,6 +9,7 @@ import { ChatMessageEntity } from './chat-message.entity';
 import { ChatResolver } from './chat.resolver';
 import { ChatService } from './chat.service';
 import { MeetingChatResponder } from './meeting/meeting-chat.responder';
+import { MeetingQuestionsResolver } from './meeting/meeting-questions.resolver';
 import { MeetingQuestionsService } from './meeting/meeting-questions.service';
 import { ChatThreadEntity } from './threads/chat-thread.entity';
 import { ChatThreadsResolver } from './threads/chat-threads.resolver';
@@ -30,6 +31,7 @@ import { ChatThreadsService } from './threads/chat-threads.service';
     MeetingQuestionsService,
     ChatResolver,
     ChatThreadsResolver,
+    MeetingQuestionsResolver,
   ],
 })
 export class ChatModule {}

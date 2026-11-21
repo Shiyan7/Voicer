@@ -3,38 +3,40 @@ import { GeminiService } from '../../gemini/gemini.service';
 import { MeetingContentService } from '../../meetings/meeting-content.service';
 import { ChatAnswerRequest } from '../answer/chat-answer-request';
 import { ChatReply } from '../answer/chat-reply';
+import { ChatResponder } from '../answer/chat-responder';
 import { snapMeetingCitations } from '../answer/meeting-citations';
-import { PartialReplyHandler, streamReply } from '../answer/stream-reply';
+import { parseAnswer } from '../answer/parse-answer';
 import {
   buildMeetingChatInstruction,
   MeetingChatContext,
 } from '../prompts/meeting-chat.prompt';
 
 @Injectable()
-export class MeetingChatResponder {
+export class MeetingChatResponder implements ChatResponder {
   constructor(
     private readonly content: MeetingContentService,
     private readonly gemini: GeminiService,
   ) {}
 
-  async reply(
-    meetingId: string,
-    request: ChatAnswerRequest,
-    onPartial: PartialReplyHandler,
-  ): Promise<ChatReply> {
-    const context = await this.buildContext(request.userId, meetingId);
+  async reply({
+    thread,
+    turns,
+    signal,
+    onPartial,
+  }: ChatAnswerRequest): Promise<ChatReply> {
+    if (!thread.meetingId) {
+      throw new Error(`Chat ${thread.id} is not bound to a meeting`);
+    }
+    const context = await this.buildContext(thread.userId, thread.meetingId);
+    const formatCitations = snapMeetingCitations(context.segments);
 
-    return streamReply(
-      (onText) =>
-        this.gemini.streamText(
-          buildMeetingChatInstruction(context),
-          request.turns,
-          onText,
-          { signal: request.signal },
-        ),
-      snapMeetingCitations(context.segments),
-      onPartial,
+    const text = await this.gemini.streamText(
+      buildMeetingChatInstruction(context),
+      turns,
+      (partial) => onPartial(parseAnswer(partial, formatCitations).content),
+      { signal },
     );
+    return parseAnswer(text, formatCitations);
   }
 
   private async buildContext(

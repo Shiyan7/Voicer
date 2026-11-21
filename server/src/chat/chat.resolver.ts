@@ -10,14 +10,10 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { UserEntity } from '../users/user.entity';
 import { ChatMessageOutput } from './chat-message.output';
 import { ChatService } from './chat.service';
-import { MeetingQuestionsService } from './meeting/meeting-questions.service';
 
 @Resolver(() => ChatMessageOutput)
 export class ChatResolver {
-  constructor(
-    private readonly chatService: ChatService,
-    private readonly meetingQuestionsService: MeetingQuestionsService,
-  ) {}
+  constructor(private readonly chatService: ChatService) {}
 
   @Query(() => [ChatMessageOutput])
   chatMessages(
@@ -25,14 +21,6 @@ export class ChatResolver {
     @Args('threadId', { type: () => ID }) threadId: string,
   ): Promise<ChatMessageOutput[]> {
     return this.chatService.getMessages(user.id, threadId);
-  }
-
-  @Query(() => [String])
-  meetingChatSuggestions(
-    @CurrentUser() user: UserEntity,
-    @Args('meetingId', { type: () => ID }) meetingId: string,
-  ): Promise<string[]> {
-    return this.meetingQuestionsService.getSuggestions(user.id, meetingId);
   }
 
   @Mutation(() => ChatMessageOutput)
@@ -50,14 +38,6 @@ export class ChatResolver {
     @Args('threadId', { type: () => ID }) threadId: string,
   ): Promise<boolean> {
     return this.chatService.clear(user.id, threadId);
-  }
-
-  @Mutation(() => Boolean)
-  deleteChatThread(
-    @CurrentUser() user: UserEntity,
-    @Args('threadId', { type: () => ID }) threadId: string,
-  ): Promise<boolean> {
-    return this.chatService.deleteThread(user.id, threadId);
   }
 
   @Subscription(() => ChatMessageOutput, { name: 'chatMessage' })

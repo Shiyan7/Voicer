@@ -1,4 +1,4 @@
-import { FOLLOW_UPS_MARKER, MAX_FOLLOW_UPS } from '../answer/follow-ups-format';
+import { FOLLOW_UPS_MARKER, MAX_FOLLOW_UPS } from '../answer/parse-answer';
 
 export const ANSWER_STYLE_RULES = [
   '- Actually answer the question. If they ask for an opinion, estimate, assessment or advice («какие у меня шансы», «как я прошёл», «что я сделал не так»), give your own reasoned judgement based on what happened in the meetings: tone, reactions, how answers went, what was said. A direct estimate (e.g. a rough percentage or «скорее да/нет») with reasons is better than refusing.',

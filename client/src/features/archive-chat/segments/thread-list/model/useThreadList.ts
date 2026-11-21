@@ -2,8 +2,8 @@ import { createSignal } from 'solid-js';
 
 import { closeModal, MODALS, showModal } from '@/shared/lib/modal';
 
-import { getThreadActions } from '../config/getThreadActions';
 import { MAX_THREAD_TITLE_LENGTH } from '../config/MAX_THREAD_TITLE_LENGTH';
+import { getThreadActions } from '../lib/getThreadActions';
 import { ThreadAction } from '../types/ThreadAction';
 import { ThreadListDeps } from '../types/ThreadListDeps';
 

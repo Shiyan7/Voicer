@@ -31,6 +31,7 @@ export class McpAgentSessionsService {
         },
       },
       allowedTools: [`mcp__${MCP_SERVER_NAME}`],
+      ttlMs,
       close: revoke,
     };
   }

@@ -1,11 +1,7 @@
 import { ChatMessageOutput } from '@schema';
 import { Accessor, createEffect, createSignal, onCleanup } from 'solid-js';
 
-import {
-  REVEAL_CATCH_UP_FRAMES,
-  REVEAL_FRAME_MS,
-  REVEAL_MIN_STEP,
-} from '../config/chatConfig';
+import { REVEAL_CATCH_UP_FRAMES, REVEAL_MIN_STEP } from '../config/chatConfig';
 
 const toStep = (backlog: number) =>
   Math.max(REVEAL_MIN_STEP, Math.ceil(backlog / REVEAL_CATCH_UP_FRAMES));
@@ -24,11 +20,10 @@ export const useTypewriter = (messages: Accessor<ChatMessageOutput[]>) => {
       setRevealed(target());
       return;
     }
-    const tick = setTimeout(
-      () => setRevealed((count) => count + toStep(backlog)),
-      REVEAL_FRAME_MS,
+    const frame = requestAnimationFrame(() =>
+      setRevealed((count) => count + toStep(backlog)),
     );
-    onCleanup(() => clearTimeout(tick));
+    onCleanup(() => cancelAnimationFrame(frame));
   });
 
   const type = (id: string) => {

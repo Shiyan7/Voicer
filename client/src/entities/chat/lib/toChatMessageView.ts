@@ -19,7 +19,6 @@ export const toChatMessageView = (
   return {
     id: message.id,
     isUser,
-    text: message.content,
     plainText: isUser ? message.content : toPlainText(blocks),
     blocks,
     isStreaming: message.isStreaming,

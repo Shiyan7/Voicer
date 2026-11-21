@@ -1,10 +1,6 @@
 import { createSignal } from 'solid-js';
 
-import {
-  useChatMessages,
-  useChatScroll,
-  useMessageCopy,
-} from '@/entities/chat';
+import { useChatSession } from '@/entities/chat';
 import { useKeydown } from '@/shared/lib/dom';
 
 import { meetingChatSuggestionsQuery } from '../api/meetingChatSuggestionsQuery';
@@ -38,20 +34,12 @@ export const useMeetingChat = (deps: MeetingChatDeps) => {
 
   const threadId = () => threadResult.data?.meetingChatThread.id;
 
-  const chat = useChatMessages({ threadId });
-  const copy = useMessageCopy();
+  const chat = useChatSession({ threadId, shouldFocus: isOpen });
 
   const fab = useDraggableFab({
     boundary,
     obstacle: () => deps.obstacle,
     onTap: toggle,
-  });
-
-  const scroll = useChatScroll({
-    shouldFocus: isOpen,
-    draft: chat.draft,
-    scrollTrigger: chat.questionCount,
-    onSubmit: chat.submit,
   });
 
   useKeydown((event) => {
@@ -95,14 +83,14 @@ export const useMeetingChat = (deps: MeetingChatDeps) => {
     draft: chat.draft,
     setDraft: chat.setDraft,
     canSend: chat.canSend,
-    copyMessage: copy.copyMessage,
-    isCopied: copy.isCopied,
+    copyMessage: chat.copyMessage,
+    isCopied: chat.isCopied,
     ask: chat.ask,
     submit: chat.submit,
     clear: chat.clear,
     seek: deps.onSeek,
-    setBody: scroll.setBody,
-    setInput: scroll.setInput,
-    onInputKeyDown: scroll.onInputKeyDown,
+    setBody: chat.setBody,
+    setInput: chat.setInput,
+    onInputKeyDown: chat.onInputKeyDown,
   };
 };

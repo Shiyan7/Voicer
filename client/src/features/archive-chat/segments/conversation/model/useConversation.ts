@@ -1,26 +1,17 @@
-import {
-  useChatMessages,
-  useChatScroll,
-  useMessageCopy,
-} from '@/entities/chat';
-import { i18n } from '@/shared/i18n';
+import { useChatSession } from '@/entities/chat';
 
-import { EXAMPLE_QUESTION_KEYS } from '../config/conversationConfig';
 import { ConversationDeps } from '../types/ConversationDeps';
 
 export const useConversation = (deps: ConversationDeps) => {
-  const chat = useChatMessages(deps);
-  const copy = useMessageCopy();
-
-  const scroll = useChatScroll({
-    draft: chat.draft,
-    scrollTrigger: chat.messages,
-    onSubmit: chat.submit,
+  const chat = useChatSession({
+    threadId: deps.threadId,
+    createThread: deps.createThread,
+    onAsked: deps.onAsked,
+    followAnswer: true,
   });
 
-  const showIntro = () => !chat.hasMessages() && !chat.isLoading();
-
-  const examples = () => EXAMPLE_QUESTION_KEYS.map((key) => i18n.t(key));
+  const isEmpty = () =>
+    !chat.hasMessages() && !chat.isLoading() && !chat.isAnswering();
 
   return {
     messages: chat.messages,
@@ -30,14 +21,13 @@ export const useConversation = (deps: ConversationDeps) => {
     draft: chat.draft,
     setDraft: chat.setDraft,
     ask: chat.ask,
-    showIntro,
-    examples,
+    isEmpty,
     canSend: chat.canSend,
     submit: chat.submit,
-    copyMessage: copy.copyMessage,
-    isCopied: copy.isCopied,
-    setBody: scroll.setBody,
-    setInput: scroll.setInput,
-    onInputKeyDown: scroll.onInputKeyDown,
+    copyMessage: chat.copyMessage,
+    isCopied: chat.isCopied,
+    setBody: chat.setBody,
+    setInput: chat.setInput,
+    onInputKeyDown: chat.onInputKeyDown,
   };
 };

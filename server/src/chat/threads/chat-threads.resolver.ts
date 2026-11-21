@@ -1,13 +1,17 @@
 import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { UserEntity } from '../../users/user.entity';
+import { ChatService } from '../chat.service';
 import { ChatThreadOutput } from './chat-thread.output';
 import { toChatThreadOutput } from './chat-thread.serializer';
 import { ChatThreadsService } from './chat-threads.service';
 
 @Resolver(() => ChatThreadOutput)
 export class ChatThreadsResolver {
-  constructor(private readonly chatThreadsService: ChatThreadsService) {}
+  constructor(
+    private readonly chatThreadsService: ChatThreadsService,
+    private readonly chatService: ChatService,
+  ) {}
 
   @Query(() => [ChatThreadOutput])
   async chatThreads(
@@ -56,5 +60,13 @@ export class ChatThreadsResolver {
     return toChatThreadOutput(
       await this.chatThreadsService.setPinned(user.id, threadId, isPinned),
     );
+  }
+
+  @Mutation(() => Boolean)
+  deleteChatThread(
+    @CurrentUser() user: UserEntity,
+    @Args('threadId', { type: () => ID }) threadId: string,
+  ): Promise<boolean> {
+    return this.chatService.deleteThread(user.id, threadId);
   }
 }

@@ -1,12 +1,7 @@
-import { Index, Show } from 'solid-js';
+import { Show } from 'solid-js';
 import { Portal } from 'solid-js/web';
 
-import {
-  ChatComposer,
-  ChatMessage,
-  ChatThinking,
-  QuestionChips,
-} from '@/entities/chat';
+import { ChatComposer, ChatFeed, QuestionChips } from '@/entities/chat';
 import { i18n } from '@/shared/i18n';
 import { Timecode } from '@/shared/ui/timecode';
 
@@ -54,25 +49,17 @@ export function MeetingChatOrchestrator(deps: MeetingChatDeps) {
                   onAsk={vm.ask}
                 />
               </Show>
-              <Index each={vm.messages()}>
-                {(message) => (
-                  <ChatMessage
-                    message={message()}
-                    isCopied={vm.isCopied(message().id)}
-                    renderTime={(time) => (
-                      <Timecode ms={time.ms} onSeek={vm.seek} />
-                    )}
-                    onCopy={vm.copyMessage}
-                  />
+              <ChatFeed
+                messages={vm.messages()}
+                followUps={vm.followUps()}
+                isThinking={vm.isThinking()}
+                isAnswering={vm.isAnswering()}
+                thinkingLabel={i18n.t('chat.thinking')}
+                isCopied={vm.isCopied}
+                renderTime={(time) => (
+                  <Timecode ms={time.ms} onSeek={vm.seek} />
                 )}
-              </Index>
-              <Show when={vm.isThinking()}>
-                <ChatThinking label={i18n.t('chat.thinking')} />
-              </Show>
-              <QuestionChips
-                questions={vm.followUps()}
-                isLoading={false}
-                disabled={vm.isAnswering()}
+                onCopy={vm.copyMessage}
                 onAsk={vm.ask}
               />
             </ChatPanel>
