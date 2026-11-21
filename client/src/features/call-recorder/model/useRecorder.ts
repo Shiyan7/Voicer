@@ -1,5 +1,11 @@
 import { useNavigate } from '@solidjs/router';
-import { createSignal, onMount } from 'solid-js';
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  onCleanup,
+  onMount,
+} from 'solid-js';
 
 import { uploadMeetingAudioMutation } from '@/entities/meeting';
 import { useElapsedTimer } from '@/shared/hooks/useElapsedTimer';
@@ -24,6 +30,7 @@ import { settingsRoot } from '@/shared/roots/settingsRoot';
 import { paths } from '@/shared/router';
 
 import { uploadMeetingScreenshots } from '../api/uploadMeetingScreenshots';
+import { RECORDING_BAR_ATTRIBUTE } from '../config/callRecorderConfig';
 import { isCallRecording } from '../lib/isCallRecording';
 import { toVoiceLevel } from '../lib/toVoiceLevel';
 import { PendingScreenshot } from '../types/PendingScreenshot';
@@ -49,7 +56,22 @@ export const useRecorder = () => {
   const pauseLabel = () =>
     isPaused() ? i18n.t('recorder.resume') : i18n.t('recorder.pause');
 
-  const formattedSeconds = () => formatClock(timer.elapsedSeconds());
+  const formattedSeconds = createMemo<string>(
+    (previous) =>
+      timer.isRunning() ? formatClock(timer.elapsedSeconds()) : previous,
+    formatClock(0),
+  );
+
+  createEffect(() => {
+    document.documentElement.toggleAttribute(
+      RECORDING_BAR_ATTRIBUTE,
+      isBarVisible(),
+    );
+  });
+
+  onCleanup(() =>
+    document.documentElement.removeAttribute(RECORDING_BAR_ATTRIBUTE),
+  );
 
   const openRecordedMeeting = async (
     { path, startedAt, source }: StopRecordingResult,

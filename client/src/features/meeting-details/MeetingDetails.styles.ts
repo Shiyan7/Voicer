@@ -2,10 +2,10 @@ import { tv } from 'tailwind-variants';
 
 export const meetingDetailsStyles = tv({
   slots: {
-    page: 'relative isolate flex min-h-[calc(100vh-1rem)] flex-col',
+    page: 'relative isolate flex min-h-[calc(var(--spacing-app-screen)-1rem)] flex-col',
     root: 'mx-auto flex w-full max-w-5xl flex-1 flex-col pb-10',
     headerRow: `
-      sticky top-0 z-10 flex items-center justify-between gap-4
+      sticky top-recording-bar z-10 flex items-center justify-between gap-4
       bg-gray-50 pt-6 pb-5
     `,
     content: 'flex flex-col gap-5',

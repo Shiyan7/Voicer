@@ -1,0 +1,1 @@
+export { VoiceWave } from './VoiceWave';

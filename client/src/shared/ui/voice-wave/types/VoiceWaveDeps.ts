@@ -1,6 +1,5 @@
-export interface VoiceBlobDeps {
+export interface VoiceWaveDeps {
   level: number;
   paused: boolean;
-  size: number;
   class?: string;
 }

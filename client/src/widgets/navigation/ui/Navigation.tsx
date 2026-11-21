@@ -8,7 +8,6 @@ import { Logo } from '@/shared/ui/logo';
 import { useNavigation } from '../model/useNavigation';
 import { navigationStyles } from './Navigation.styles';
 import { NavList } from './NavList';
-import { ProButton } from './ProButton';
 
 const styles = navigationStyles();
 
@@ -49,9 +48,6 @@ export function Navigation() {
         <NavList items={vm.navItems()} isCollapsed={vm.isCollapsed()} />
         <div class={styles.account({ collapsed: vm.isCollapsed() })}>
           <AccountCard isCollapsed={vm.isCollapsed()} />
-          <Show when={vm.isAuthorized()}>
-            <ProButton isCollapsed={vm.isCollapsed()} />
-          </Show>
         </div>
       </div>
     </div>

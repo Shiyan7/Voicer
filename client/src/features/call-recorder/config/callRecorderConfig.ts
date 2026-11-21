@@ -7,3 +7,5 @@ export const FRAME_FINGERPRINT_WIDTH = 32;
 export const FRAME_FINGERPRINT_HEIGHT = 18;
 
 export const SAME_FRAME_MAX_DIFF = 4;
+
+export const RECORDING_BAR_ATTRIBUTE = 'data-recording-bar';

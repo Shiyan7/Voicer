@@ -2,7 +2,7 @@ import { tv } from 'tailwind-variants';
 
 export const transcriptSearchPanelStyles = tv({
   slots: {
-    anchor: 'sticky top-0 z-30 h-0',
+    anchor: 'sticky top-recording-bar z-30 h-0',
     panel: `
       absolute top-4 left-4 flex w-[300px] flex-col gap-3 rounded-2xl
       border border-gray-200 bg-white px-4 pt-3 pb-3 shadow-xl
