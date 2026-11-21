@@ -1,9 +1,8 @@
 import { Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
-import { GlassIconButton } from '@/shared/ui/glass-icon-button';
 import { Icon } from '@/shared/ui/icon';
-import { VoiceBlob } from '@/shared/ui/voice-blob';
+import { VoiceWave } from '@/shared/ui/voice-wave';
 
 import { RecordingBarProps } from '../types/RecordingBarProps';
 import { recordingBarStyles } from './RecordingBar.styles';
@@ -12,29 +11,23 @@ const styles = recordingBarStyles();
 
 export function RecordingBar(props: RecordingBarProps) {
   return (
-    <div class={styles.root()}>
-      <div
-        class={styles.indicator()}
-        role="img"
-        aria-label={i18n.t('recorder.recording')}
-      >
-        <VoiceBlob
-          class={styles.blob()}
+    <div
+      class={styles.root({ visible: props.isVisible })}
+      inert={!props.isVisible}
+      role="status"
+      aria-label={i18n.t('recorder.recording')}
+    >
+      <div class={styles.bar()}>
+        <VoiceWave
+          class={styles.wave()}
           level={props.level}
-          paused={props.isPaused}
-          size={112}
+          paused={props.isPaused || !props.isVisible}
         />
-        <span class={styles.mic()}>
-          <Icon size={24} name="common:microphone" />
-        </span>
-      </div>
-      <span class={styles.time({ paused: props.isPaused })}>
-        {props.formattedSeconds}
-      </span>
-      <div class={styles.actions()}>
-        <GlassIconButton
-          size="md"
-          label={props.pauseLabel}
+        <button
+          class={styles.action()}
+          type="button"
+          aria-label={props.pauseLabel}
+          title={props.pauseLabel}
           onClick={props.onTogglePause}
         >
           <Show
@@ -43,14 +36,19 @@ export function RecordingBar(props: RecordingBarProps) {
           >
             <Icon size={16} name="common:play" />
           </Show>
-        </GlassIconButton>
-        <GlassIconButton
-          size="md"
-          label={i18n.t('recorder.stop')}
+        </button>
+        <span class={styles.time({ paused: props.isPaused })}>
+          {props.formattedSeconds}
+        </span>
+        <button
+          class={styles.action({ class: 'justify-self-end' })}
+          type="button"
+          aria-label={i18n.t('recorder.stop')}
+          title={i18n.t('recorder.stop')}
           onClick={props.onStop}
         >
           <Icon size={16} name="common:stop" />
-        </GlassIconButton>
+        </button>
       </div>
     </div>
   );

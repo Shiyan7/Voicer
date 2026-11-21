@@ -23,6 +23,9 @@ export function AppLayout(props: ParentProps) {
             <div class={styles.root()}>
               <Navigation />
               <main class={styles.main()}>
+                <Show when={vm.isDesktop()}>
+                  <CallRecorderHost />
+                </Show>
                 <Suspense>
                   {props.children}
                   <Toasts />
@@ -31,9 +34,6 @@ export function AppLayout(props: ParentProps) {
             </div>
             <AuthModal />
             <SearchOrchestrator />
-            <Show when={vm.isDesktop()}>
-              <CallRecorderHost />
-            </Show>
           </Show>
         </Suspense>
       </ToastsProvider>

@@ -3,25 +3,30 @@ import { tv } from 'tailwind-variants';
 export const recordingBarStyles = tv({
   slots: {
     root: `
-      fixed right-6 top-1/2 z-(--z-toast) -translate-y-1/2
-      flex w-16 flex-col items-center gap-3 rounded-full bg-white p-2
-      shadow-[inset_0_0_0_1px_rgb(0_0_0/0.06),0_8px_24px_rgb(0_0_0/0.08)]
+      sticky top-0 z-(--z-recording-bar) h-recording-bar opacity-0
+      transition-opacity duration-320
     `,
-    indicator: 'relative flex size-12 shrink-0 items-center justify-center',
-    blob: 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
-    mic: `
-      relative flex size-12 items-center justify-center rounded-full
-      bg-gray-950 text-[#fff]
+    bar: `
+      absolute inset-x-0 bottom-0 grid h-recording-bar-height
+      grid-cols-[1fr_auto_1fr] items-center px-3 text-ai-foreground
     `,
+    wave: 'absolute inset-x-0 top-0 h-[calc(100%+1.75rem)]',
     time: `
-      text-[14px] font-medium tabular-nums text-gray-600
+      relative text-[15px] font-semibold tabular-nums
       transition-opacity duration-200
     `,
-    actions: 'flex flex-col items-center gap-2',
+    action: `
+      relative flex size-8 items-center justify-center justify-self-start
+      rounded-full transition-[background-color,transform] duration-200
+      hover:bg-ai-foreground/20 active:scale-95
+    `,
   },
   variants: {
+    visible: {
+      true: { root: 'opacity-100' },
+    },
     paused: {
-      true: { time: 'opacity-50' },
+      true: { time: 'opacity-70' },
     },
   },
 });

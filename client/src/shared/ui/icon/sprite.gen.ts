@@ -292,7 +292,6 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['clock'], [24]),
         defineSpriteSymbol(['copy'], [24]),
         defineSpriteSymbol(['cross'], [24]),
-        defineSpriteSymbol(['crown'], [24]),
         defineSpriteSymbol(['document-text'], [24]),
         defineSpriteSymbol(['dots'], [24]),
         defineSpriteSymbol(['exclamation'], [24]),
@@ -318,7 +317,7 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['trash'], [24]),
         defineSpriteSymbol(['upload'], [24]),
       ],
-      defineExternalAssetMeta('common.c4203f7e.svg'),
+      defineExternalAssetMeta('common.44452f11.svg'),
     ),
   ]),
   defineSprite('navigation', [
@@ -374,7 +373,6 @@ export type SpritesMeta = {
     | 'clock'
     | 'copy'
     | 'cross'
-    | 'crown'
     | 'document-text'
     | 'dots'
     | 'exclamation'

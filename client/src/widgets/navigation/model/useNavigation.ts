@@ -1,7 +1,6 @@
 import { useLocation } from '@solidjs/router';
 import { createSignal } from 'solid-js';
 
-import { useUserMe } from '@/entities/user-me';
 import { i18n } from '@/shared/i18n';
 import { MODALS, showModal } from '@/shared/lib/modal';
 
@@ -10,7 +9,6 @@ import { isNavItemActive } from '../lib/isNavItemActive';
 
 export const useNavigation = () => {
   const location = useLocation();
-  const { isAuthorized } = useUserMe();
 
   const [isCollapsed, setIsCollapsed] = createSignal(false);
   const [isToggleVisible, setIsToggleVisible] = createSignal(false);
@@ -37,7 +35,6 @@ export const useNavigation = () => {
 
   return {
     isCollapsed,
-    isAuthorized,
     isToggleVisible,
     navItems,
     toggleSidebar,

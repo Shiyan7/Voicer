@@ -2,7 +2,7 @@ import { tv } from 'tailwind-variants';
 
 export const liveSessionStyles = tv({
   slots: {
-    root: 'flex min-h-[calc(100dvh-1rem)] flex-col',
+    root: 'flex min-h-[calc(var(--spacing-app-screen)-1rem)] flex-col',
     column: `
       mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6
       pt-6
