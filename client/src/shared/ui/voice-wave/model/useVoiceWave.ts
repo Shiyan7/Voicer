@@ -1,27 +1,22 @@
 import { createEffect, createSignal, onCleanup, untrack } from 'solid-js';
 
 import {
-  EDGE_WIDTH_PX,
-  FLOW_COLORS,
-  FLOW_PX,
-  IDLE_AMPLITUDE,
-  MAX_DPR,
-  MAX_FRAME_SEC,
-  MIN_SHAPE,
-  PRESENCE_SEC,
-  SAMPLE_STEP_PX,
-  SETTLED_LEVEL,
-  TEMPO_GAIN,
-  VOICE_GAIN,
+  FLOW_SPEED_PX,
+  IDLE_HEIGHT,
+  VOICE_HEIGHT,
+  WAVE_COLORS,
   WAVE_LAYERS,
 } from '../config/voiceWaveConfig';
 import { createFlowGradient } from '../lib/createFlowGradient';
 import { createLineBlob } from '../lib/createLineBlob';
 import { createSpring } from '../lib/createSpring';
-import { createVoiceDynamics } from '../lib/createVoiceDynamics';
 import { follow } from '../lib/follow';
 import { traceWave } from '../lib/traceWave';
 import { VoiceWaveDeps } from '../types/VoiceWaveDeps';
+
+const STEP_PX = 4;
+
+const QUIET_LOUDEST = 0.3;
 
 const reducedMotion = window.matchMedia(
   '(prefers-reduced-motion: reduce)',
@@ -35,61 +30,57 @@ export const useVoiceWave = (deps: VoiceWaveDeps) => {
     const ctx = node?.getContext('2d');
     if (!node || !ctx) return;
 
-    const dynamics = createVoiceDynamics();
     const blobs = WAVE_LAYERS.map(createLineBlob);
-    const springs = WAVE_LAYERS.map((layer) =>
-      createSpring(layer.stiffness, layer.damping),
-    );
+    const swell = createSpring({ stiffness: 44, damping: 9 });
     let depths = new Float32Array(0);
     let width = 0;
     let height = 0;
     let band = 0;
+    let loudest = QUIET_LOUDEST;
     let presence = untrack(() => (deps.paused ? 0 : 1));
     let flow = 0;
     let last = performance.now();
     let frame = 0;
 
     const resize = () => {
-      const dpr = Math.min(MAX_DPR, window.devicePixelRatio || 1);
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
       width = node.clientWidth;
       height = node.clientHeight;
-      band = Math.min(height, node.parentElement?.clientHeight ?? 0);
+      band = node.parentElement?.clientHeight ?? 0;
       node.width = Math.round(width * dpr);
       node.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      depths = new Float32Array(Math.ceil(width / SAMPLE_STEP_PX) + 1);
+      depths = new Float32Array(Math.ceil(width / STEP_PX) + 1);
       blobs.forEach((blob) => blob.resize(width));
     };
 
     const fillDepths = (index: number, amplitude: number) => {
       const reach = height - band;
       for (let i = 0; i < depths.length; i++) {
-        const shape =
-          MIN_SHAPE + (1 - MIN_SHAPE) * blobs[index].sample(i * SAMPLE_STEP_PX);
+        const shape = blobs[index].sample(i * STEP_PX);
         depths[i] = band + Math.min(reach, amplitude * reach * shape);
       }
     };
 
     const draw = (now: number) => {
-      const dt = Math.min(MAX_FRAME_SEC, Math.max(0, now - last) / 1000);
+      const dt = Math.min(0.05, Math.max(0, now - last) / 1000);
       last = now;
-      const voice = dynamics.update(deps.paused ? 0 : deps.level, dt);
-      presence = follow(presence, deps.paused ? 0 : 1, dt, PRESENCE_SEC);
-      const still = deps.paused || reducedMotion;
-      const tempo = still ? 0 : 1 + TEMPO_GAIN * voice.energy;
-      const target = IDLE_AMPLITUDE + VOICE_GAIN * voice.voice;
-      flow += dt * tempo * FLOW_PX;
+      const level = deps.paused ? 0 : deps.level;
+      loudest = Math.max(level, follow(loudest, QUIET_LOUDEST, dt, 3));
+      const target = IDLE_HEIGHT + VOICE_HEIGHT * (level / loudest);
+      const size = Math.max(0, swell.step(dt, target));
+      const tempo = deps.paused || reducedMotion ? 0 : size / IDLE_HEIGHT;
+      presence = follow(presence, deps.paused ? 0 : 1, dt, 0.3);
+      flow += dt * tempo * FLOW_SPEED_PX;
 
       ctx.clearRect(0, 0, width, height);
-      const gradient = createFlowGradient(ctx, FLOW_COLORS, width, flow);
+      const gradient = createFlowGradient(ctx, WAVE_COLORS, width, flow);
       ctx.fillStyle = gradient;
       ctx.strokeStyle = gradient;
-      ctx.lineWidth = EDGE_WIDTH_PX;
       WAVE_LAYERS.forEach((layer, index) => {
         blobs[index].advance(dt * tempo);
-        const spring = Math.max(0, springs[index].step(dt, target));
-        fillDepths(index, spring * layer.depth * presence);
-        traceWave(ctx, depths, SAMPLE_STEP_PX, band - 1);
+        fillDepths(index, size * layer.depth * presence);
+        traceWave(ctx, depths, STEP_PX, band - 1);
         ctx.globalAlpha = layer.alpha;
         ctx.fill();
         ctx.globalAlpha = layer.edgeAlpha * presence;
@@ -98,8 +89,8 @@ export const useVoiceWave = (deps: VoiceWaveDeps) => {
       ctx.globalAlpha = 1;
       ctx.fillRect(0, 0, width, band);
 
-      const settled = deps.paused && presence < SETTLED_LEVEL;
-      frame = settled ? 0 : requestAnimationFrame(draw);
+      const faded = deps.paused && presence < 0.001;
+      frame = faded ? 0 : requestAnimationFrame(draw);
     };
 
     resize();

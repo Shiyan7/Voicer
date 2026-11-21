@@ -1,4 +1,9 @@
-export const createSpring = (stiffness: number, damping: number) => {
+interface SpringOptions {
+  stiffness: number;
+  damping: number;
+}
+
+export const createSpring = ({ stiffness, damping }: SpringOptions) => {
   let value = 0;
   let velocity = 0;
 

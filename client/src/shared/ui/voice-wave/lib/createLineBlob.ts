@@ -16,7 +16,7 @@ const catmullRom = (
     (3 * p1 - p0 - 3 * p2 + p3) * t * t * t);
 
 const randomPeak = (index: number) =>
-  index % 2 ? 0.55 + 0.45 * Math.random() : 0.4 * Math.random();
+  index % 2 ? 0.6 + 0.4 * Math.random() : 0.12 + 0.35 * Math.random();
 
 export const createLineBlob = (layer: WaveLayer) => {
   let from = new Float32Array(0);
