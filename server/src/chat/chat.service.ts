@@ -15,6 +15,7 @@ import { PUB_SUB } from '../pubsub/pubsub.module';
 import { topic } from '../pubsub/topic';
 import { ChatAnswerRequest } from './answer/chat-answer-request';
 import { ChatReply } from './answer/chat-reply';
+import { PartialReplyHandler } from './answer/stream-reply';
 import { ArchiveChatResponder } from './archive/archive-chat.responder';
 import { ChatMessageEntity } from './chat-message.entity';
 import { ChatMessageOutput } from './chat-message.output';
@@ -30,8 +31,6 @@ const BUSY_MESSAGE = 'Дождитесь окончания ответа';
 
 const chatMessageTopic = (threadId: string): string =>
   topic('chatMessage', threadId);
-
-const FAILED_REPLY: ChatReply = { content: '', followUps: [] };
 
 interface ChatMessagePayload {
   chatMessage: ChatMessageOutput;
@@ -95,7 +94,7 @@ export class ChatService implements OnApplicationBootstrap {
       ChatRole.ASSISTANT,
       '',
     );
-    await this.threads.touch(thread, text);
+    await this.threads.markAsked(thread, text);
 
     const controller = new AbortController();
     this.answering.set(threadId, controller);
@@ -110,16 +109,13 @@ export class ChatService implements OnApplicationBootstrap {
   }
 
   async clear(userId: string, threadId: string): Promise<boolean> {
-    await this.threads.findOwned(userId, threadId);
-    this.cancel(threadId);
+    await this.stopAnswering(userId, threadId);
     await this.messagesRepository.delete({ threadId });
     return true;
   }
 
   async deleteThread(userId: string, threadId: string): Promise<boolean> {
-    const thread = await this.threads.findOwned(userId, threadId);
-    this.cancel(threadId);
-    await this.threads.delete(thread);
+    await this.threads.delete(await this.stopAnswering(userId, threadId));
     return true;
   }
 
@@ -140,16 +136,19 @@ export class ChatService implements OnApplicationBootstrap {
     message: ChatMessageEntity,
     signal: AbortSignal,
   ): Promise<void> {
-    const reply = await this.respond(thread, {
-      userId: thread.userId,
-      turns,
-      signal,
-      onPartial: (content) => this.publishPartial(message, content, signal),
-    }).catch((error: unknown) => this.toFailedReply(thread.id, error, signal));
+    const reply = await this.respond(
+      thread,
+      { userId: thread.userId, turns, signal },
+      (content) => this.publishPartial(message, content, signal),
+    ).catch((error: unknown) => {
+      if (!signal.aborted) this.logFailure(thread.id, error);
+      return null;
+    });
     if (signal.aborted) return;
 
     this.answering.delete(thread.id);
-    Object.assign(message, reply, { isFailed: !reply.content });
+    if (reply) Object.assign(message, reply);
+    message.isFailed = !message.content;
     await this.messagesRepository.save(message);
     await this.publish(message, false);
   }
@@ -157,19 +156,11 @@ export class ChatService implements OnApplicationBootstrap {
   private respond(
     thread: ChatThreadEntity,
     request: ChatAnswerRequest,
+    onPartial: PartialReplyHandler,
   ): Promise<ChatReply> {
     return thread.meetingId
-      ? this.meetingResponder.reply(thread.meetingId, request)
+      ? this.meetingResponder.reply(thread.meetingId, request, onPartial)
       : this.archiveResponder.reply(request);
-  }
-
-  private toFailedReply(
-    threadId: string,
-    error: unknown,
-    signal: AbortSignal,
-  ): ChatReply {
-    if (!signal.aborted) this.logFailure(threadId, error);
-    return FAILED_REPLY;
   }
 
   private logFailure(threadId: string, error: unknown): void {
@@ -179,9 +170,14 @@ export class ChatService implements OnApplicationBootstrap {
     );
   }
 
-  private cancel(threadId: string): void {
+  private async stopAnswering(
+    userId: string,
+    threadId: string,
+  ): Promise<ChatThreadEntity> {
+    const thread = await this.threads.findOwned(userId, threadId);
     this.answering.get(threadId)?.abort();
     this.answering.delete(threadId);
+    return thread;
   }
 
   private async getHistory(threadId: string): Promise<LlmTurn[]> {

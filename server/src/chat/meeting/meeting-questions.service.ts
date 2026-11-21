@@ -1,8 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { GeminiService } from '../../gemini/gemini.service';
 import { MeetingContentService } from '../../meetings/meeting-content.service';
-import { MeetingEntity } from '../../meetings/meeting.entity';
-import { TranscribedSegment } from '../../transcription/transcription.types';
 import {
   buildMeetingQuestionsPrompt,
   QUESTIONS_RESPONSE_SCHEMA,
@@ -20,36 +18,26 @@ export class MeetingQuestionsService {
 
   async getSuggestions(userId: string, meetingId: string): Promise<string[]> {
     const meeting = await this.content.findOwned(userId, meetingId);
-    return this.getQuestions(
-      meeting,
-      await this.content.getSegments(meetingId),
-    );
+    if (meeting.suggestedQuestions?.length) return meeting.suggestedQuestions;
+    return this.generateOnce(meeting.id);
   }
 
-  private getQuestions(
-    meeting: MeetingEntity,
-    segments: TranscribedSegment[],
-  ): Promise<string[]> {
-    if (meeting.suggestedQuestions?.length) {
-      return Promise.resolve(meeting.suggestedQuestions);
-    }
-    if (!segments.length) return Promise.resolve([]);
-
-    const running = this.pending.get(meeting.id);
+  private generateOnce(meetingId: string): Promise<string[]> {
+    const running = this.pending.get(meetingId);
     if (running) return running;
 
-    const generation = this.generateAndSave(meeting.id, segments).finally(() =>
-      this.pending.delete(meeting.id),
+    const generation = this.generateAndSave(meetingId).finally(() =>
+      this.pending.delete(meetingId),
     );
-    this.pending.set(meeting.id, generation);
+    this.pending.set(meetingId, generation);
     return generation;
   }
 
-  private async generateAndSave(
-    meetingId: string,
-    segments: TranscribedSegment[],
-  ): Promise<string[]> {
+  private async generateAndSave(meetingId: string): Promise<string[]> {
     try {
+      const segments = await this.content.getSegments(meetingId);
+      if (!segments.length) return [];
+
       const parsed = await this.gemini.generateJson<{ questions?: string[] }>(
         buildMeetingQuestionsPrompt(segments),
         QUESTIONS_RESPONSE_SCHEMA,

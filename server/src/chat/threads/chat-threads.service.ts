@@ -1,15 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { requireText } from '../../common/require-text';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
+import { requireText } from '../../common/require-text';
 import { MeetingContentService } from '../../meetings/meeting-content.service';
 import { ChatThreadEntity } from './chat-thread.entity';
 
 const MAX_THREADS = 100;
 const MAX_TITLE_LENGTH = 120;
 
-const toTitle = (question: string): string =>
-  question.replace(/\s+/g, ' ').trim().slice(0, MAX_TITLE_LENGTH);
+const collapseWhitespace = (text: string): string =>
+  text.replace(/\s+/g, ' ').trim();
 
 @Injectable()
 export class ChatThreadsService {
@@ -54,9 +54,11 @@ export class ChatThreadsService {
     );
   }
 
-  async touch(thread: ChatThreadEntity, question: string): Promise<void> {
+  async markAsked(thread: ChatThreadEntity, question: string): Promise<void> {
     await this.threadsRepository.update(thread.id, {
-      title: thread.title ?? toTitle(question),
+      title:
+        thread.title ?? collapseWhitespace(question).slice(0, MAX_TITLE_LENGTH),
+      updatedAt: new Date(),
     });
   }
 
@@ -66,13 +68,10 @@ export class ChatThreadsService {
     title: string,
   ): Promise<ChatThreadEntity> {
     const thread = await this.findOwned(userId, id);
-    thread.title = toTitle(
+    thread.title = collapseWhitespace(
       requireText(title, MAX_TITLE_LENGTH, 'Некорректное название'),
     );
-    await this.threadsRepository.update(thread.id, {
-      title: thread.title,
-      updatedAt: thread.updatedAt,
-    });
+    await this.threadsRepository.update(thread.id, { title: thread.title });
     return thread;
   }
 

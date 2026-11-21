@@ -1,10 +1,10 @@
-import type { ChatThreadOutput } from '@schema';
 import { createQuery } from '@urql/solid';
 
+import { ChatThreadSummary } from '../types/ChatThreadSummary';
 import { CHAT_THREADS_QUERY } from './gql/CHAT_THREADS_QUERY';
 
 interface ChatThreadsQueryResult {
-  chatThreads: Pick<ChatThreadOutput, 'id' | 'title'>[];
+  chatThreads: ChatThreadSummary[];
 }
 
 export const chatThreadsQuery = () =>

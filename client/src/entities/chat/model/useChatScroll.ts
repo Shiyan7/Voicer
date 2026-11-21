@@ -14,7 +14,7 @@ export const useChatScroll = (deps: ChatScrollDeps) => {
   );
 
   createEffect(() => {
-    if (deps.shouldFocus()) input()?.focus();
+    if (deps.shouldFocus?.() ?? true) input()?.focus();
   });
 
   createEffect(

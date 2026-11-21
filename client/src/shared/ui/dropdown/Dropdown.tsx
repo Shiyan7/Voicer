@@ -33,6 +33,7 @@ export function Dropdown<T>(props: DropdownProps<T>) {
         class={props.triggerClass}
         type="button"
         disabled={props.disabled}
+        aria-expanded={dropdown.opened()}
         onClick={dropdown.toggle}
       >
         {props.trigger(dropdown.opened())}

@@ -82,7 +82,8 @@ export class ClaudeService {
         '--max-turns',
         AGENT_MAX_TURNS,
       ],
-      request,
+      request.prompt,
+      request.timeoutMs,
       signal,
     );
     if (result.is_error || !result.result) {
@@ -98,7 +99,8 @@ export class ClaudeService {
         '--json-schema',
         JSON.stringify(schema),
       ],
-      { prompt, timeoutMs: CLAUDE_TIMEOUT_MS },
+      prompt,
+      CLAUDE_TIMEOUT_MS,
     );
     if (result.is_error || !result.structured_output) {
       throw new Error(`Claude failed: ${result.result}`);
@@ -108,15 +110,16 @@ export class ClaudeService {
 
   private async runJson(
     args: string[],
-    input: Pick<ClaudeAgentRequest, 'prompt' | 'timeoutMs'>,
+    prompt: string,
+    timeoutMs: number,
     signal?: AbortSignal,
   ): Promise<ClaudeJsonResult> {
     const { child, finished } = this.run(
       [...args, '--output-format', 'json'],
-      input.timeoutMs,
+      timeoutMs,
       signal,
     );
-    child.stdin.end(input.prompt);
+    child.stdin.end(prompt);
 
     const [chunks] = await Promise.all([child.stdout.toArray(), finished]);
     return JSON.parse(

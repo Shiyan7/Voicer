@@ -4,7 +4,7 @@ import { MeetingContentService } from '../../meetings/meeting-content.service';
 import { ChatAnswerRequest } from '../answer/chat-answer-request';
 import { ChatReply } from '../answer/chat-reply';
 import { snapMeetingCitations } from '../answer/meeting-citations';
-import { streamReply } from '../answer/stream-reply';
+import { PartialReplyHandler, streamReply } from '../answer/stream-reply';
 import {
   buildMeetingChatInstruction,
   MeetingChatContext,
@@ -20,6 +20,7 @@ export class MeetingChatResponder {
   async reply(
     meetingId: string,
     request: ChatAnswerRequest,
+    onPartial: PartialReplyHandler,
   ): Promise<ChatReply> {
     const context = await this.buildContext(request.userId, meetingId);
 
@@ -32,7 +33,7 @@ export class MeetingChatResponder {
           { signal: request.signal },
         ),
       snapMeetingCitations(context.segments),
-      request.onPartial,
+      onPartial,
     );
   }
 

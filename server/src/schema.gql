@@ -51,7 +51,6 @@ type ChatThreadOutput {
   id: ID!
   meetingId: ID
   title: String
-  updatedAt: DateTime!
 }
 
 """

@@ -14,11 +14,12 @@ import { Request, Response } from 'express';
 import { Public } from '../auth/decorators/public.decorator';
 import { UserEntity } from '../users/user.entity';
 import { McpAuthGuard } from './mcp-auth.guard';
+import { MCP_PATH } from './mcp-path';
 import { McpServerFactory } from './mcp-server.factory';
 
 @Public()
 @UseGuards(McpAuthGuard)
-@Controller('mcp')
+@Controller(MCP_PATH)
 export class McpController {
   constructor(private readonly mcpServerFactory: McpServerFactory) {}
 

@@ -1,24 +1,16 @@
 import { ChatReply } from './chat-reply';
-import { parseAnswer } from './parse-answer';
+import { CitationFormatter, toChatReply } from './to-chat-reply';
 
 export type ReplyGenerator = (
   onText: (text: string) => Promise<void>,
 ) => Promise<string>;
 
-type CitationFormatter = (content: string) => string;
-
-export const toChatReply = (
-  text: string,
-  formatCitations: CitationFormatter,
-): ChatReply => {
-  const { content, followUps } = parseAnswer(text);
-  return { content: formatCitations(content), followUps };
-};
+export type PartialReplyHandler = (content: string) => Promise<void>;
 
 export async function streamReply(
   generate: ReplyGenerator,
   formatCitations: CitationFormatter,
-  onPartial: (content: string) => Promise<void>,
+  onPartial: PartialReplyHandler,
 ): Promise<ChatReply> {
   const text = await generate((partial) =>
     onPartial(toChatReply(partial, formatCitations).content),

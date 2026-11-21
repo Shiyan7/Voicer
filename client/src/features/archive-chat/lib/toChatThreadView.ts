@@ -1,11 +1,10 @@
-import type { ChatThreadOutput } from '@schema';
-
 import { i18n } from '@/shared/i18n';
 
+import { ChatThreadSummary } from '../types/ChatThreadSummary';
 import { ChatThreadView } from '../types/ChatThreadView';
 
 export const toChatThreadView = (
-  thread: Pick<ChatThreadOutput, 'id' | 'title'>,
+  thread: ChatThreadSummary,
   activeId: string | undefined,
 ): ChatThreadView => ({
   id: thread.id,

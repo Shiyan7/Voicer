@@ -1,6 +1,10 @@
 import { createSignal } from 'solid-js';
 
-import { useChatMessages, useChatScroll } from '@/entities/chat';
+import {
+  useChatMessages,
+  useChatScroll,
+  useMessageCopy,
+} from '@/entities/chat';
 import { useKeydown } from '@/shared/lib/dom';
 
 import { meetingChatSuggestionsQuery } from '../api/meetingChatSuggestionsQuery';
@@ -35,6 +39,7 @@ export const useMeetingChat = (deps: MeetingChatDeps) => {
   const threadId = () => threadResult.data?.meetingChatThread.id;
 
   const chat = useChatMessages({ threadId });
+  const copy = useMessageCopy();
 
   const fab = useDraggableFab({
     boundary,
@@ -90,8 +95,8 @@ export const useMeetingChat = (deps: MeetingChatDeps) => {
     draft: chat.draft,
     setDraft: chat.setDraft,
     canSend: chat.canSend,
-    copyMessage: chat.copyMessage,
-    isCopied: chat.isCopied,
+    copyMessage: copy.copyMessage,
+    isCopied: copy.isCopied,
     ask: chat.ask,
     submit: chat.submit,
     clear: chat.clear,

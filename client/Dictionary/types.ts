@@ -74,7 +74,6 @@ export type ChatThreadOutput = {
   id: Scalars['ID']['output'];
   meetingId?: Maybe<Scalars['ID']['output']>;
   title?: Maybe<Scalars['String']['output']>;
-  updatedAt: Scalars['DateTime']['output'];
 };
 
 export type InterviewAnswerOutput = {

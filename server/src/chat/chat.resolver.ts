@@ -52,6 +52,14 @@ export class ChatResolver {
     return this.chatService.clear(user.id, threadId);
   }
 
+  @Mutation(() => Boolean)
+  deleteChatThread(
+    @CurrentUser() user: UserEntity,
+    @Args('threadId', { type: () => ID }) threadId: string,
+  ): Promise<boolean> {
+    return this.chatService.deleteThread(user.id, threadId);
+  }
+
   @Subscription(() => ChatMessageOutput, { name: 'chatMessage' })
   chatMessage(
     @CurrentUser() user: UserEntity,

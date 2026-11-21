@@ -44,7 +44,7 @@ export const useThreadList = (deps: ThreadListDeps) => {
     else deps.onDelete(id);
   };
 
-  const focusInput = (element: HTMLInputElement) =>
+  const selectInput = (element: HTMLInputElement) =>
     requestAnimationFrame(() => element.select());
 
   return {
@@ -56,6 +56,6 @@ export const useThreadList = (deps: ThreadListDeps) => {
     saveRename,
     cancelRename,
     selectAction,
-    focusInput,
+    selectInput,
   };
 };

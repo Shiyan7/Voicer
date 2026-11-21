@@ -203,7 +203,6 @@
     "recent": "Recent",
     "rename": "Rename",
     "rename_error": "Couldn't rename the chat",
-    "actions": "Chat actions",
     "rename_title": "Rename chat",
     "rename_save": "Rename",
     "rename_cancel": "Cancel"

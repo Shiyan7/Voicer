@@ -1,10 +1,9 @@
 import { ChatMessageOutput, ChatRole } from '@schema';
 
-import { parseMarkdown } from '@/shared/lib/markdown';
+import { parseMarkdown, toPlainText } from '@/shared/lib/markdown';
 
 import { PENDING_CITATION } from '../config/chatConfig';
 import { ChatMessageView } from '../types/ChatMessageView';
-import { toPlainText } from './toPlainText';
 
 const toVisibleContent = (message: ChatMessageOutput) =>
   message.isStreaming
@@ -15,13 +14,14 @@ export const toChatMessageView = (
   message: ChatMessageOutput,
 ): ChatMessageView => {
   const isUser = message.role === ChatRole.User;
+  const blocks = isUser ? [] : parseMarkdown(toVisibleContent(message));
 
   return {
     id: message.id,
     isUser,
     text: message.content,
-    plainText: toPlainText(message.content),
-    blocks: isUser ? [] : parseMarkdown(toVisibleContent(message)),
+    plainText: isUser ? message.content : toPlainText(blocks),
+    blocks,
     isStreaming: message.isStreaming,
     isFailed: message.isFailed,
   };

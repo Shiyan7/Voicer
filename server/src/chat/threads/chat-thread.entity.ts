@@ -6,7 +6,6 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { MeetingEntity } from '../../meetings/meeting.entity';
 import { UserEntity } from '../../users/user.entity';
@@ -41,6 +40,6 @@ export class ChatThreadEntity {
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamptz' })
+  @Column({ type: 'timestamptz', default: () => 'now()' })
   updatedAt: Date;
 }

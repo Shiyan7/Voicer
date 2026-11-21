@@ -1,8 +1,7 @@
 import { ChatMessageOutput, ChatRole } from '@schema';
-import { createEffect, createSignal, on } from 'solid-js';
+import { createEffect, createMemo, createSignal, mapArray, on } from 'solid-js';
 
 import { useToasts } from '@/entities/toasts';
-import { useCopyToClipboard } from '@/shared/hooks/useCopyToClipboard';
 import { i18n } from '@/shared/i18n';
 
 import { chatAskMutation } from '../api/chatAskMutation';
@@ -10,18 +9,16 @@ import { chatClearMutation } from '../api/chatClearMutation';
 import { chatMessagesQuery } from '../api/chatMessagesQuery';
 import { chatMessageSubscription } from '../api/chatMessageSubscription';
 import { mergeMessages } from '../lib/mergeMessages';
+import { snapshotMessages } from '../lib/snapshotMessages';
 import { toChatMessageView } from '../lib/toChatMessageView';
 import { ChatMessagesDeps } from '../types/ChatMessagesDeps';
-import { ChatMessageView } from '../types/ChatMessageView';
 import { useTypewriter } from './useTypewriter';
 
 export const useChatMessages = (deps: ChatMessagesDeps) => {
   const [messages, setMessages] = createSignal<ChatMessageOutput[]>([]);
   const [isAwaiting, setIsAwaiting] = createSignal(false);
   const [draft, setDraft] = createSignal('');
-  const [copiedId, setCopiedId] = createSignal<string | null>(null);
   const toasts = useToasts();
-  const clipboard = useCopyToClipboard();
   const typewriter = useTypewriter(messages);
 
   const threadVariables = () => ({ threadId: deps.threadId() ?? '' });
@@ -41,10 +38,17 @@ export const useChatMessages = (deps: ChatMessagesDeps) => {
     if (!message.isStreaming) setIsAwaiting(false);
   };
 
+  const keepThreadMessages = (threadId: string | undefined) =>
+    setMessages((current) =>
+      current.filter((message) => message.threadId === threadId),
+    );
+
   chatMessageSubscription(threadVariables, upsert, { pause: isPaused });
 
-  const loadedMessages = () =>
-    messagesResult.data?.chatMessages.map((message) => ({ ...message }));
+  const loadedMessages = () => {
+    const storeMessages = messagesResult.data?.chatMessages;
+    return storeMessages && snapshotMessages(storeMessages);
+  };
 
   createEffect(
     on(
@@ -55,15 +59,29 @@ export const useChatMessages = (deps: ChatMessagesDeps) => {
   );
 
   createEffect(
-    on(deps.threadId, (_, previous) => previous && setIsAwaiting(false), {
-      defer: true,
-    }),
+    on(
+      deps.threadId,
+      (threadId, previous) => {
+        keepThreadMessages(threadId);
+        if (previous) setIsAwaiting(false);
+      },
+      { defer: true },
+    ),
   );
 
-  const threadMessages = () =>
-    messages().filter(({ threadId }) => threadId === deps.threadId());
+  const threadMessages = createMemo(() =>
+    messages().filter(({ threadId }) => threadId === deps.threadId()),
+  );
 
-  const shownMessages = () => threadMessages().map(typewriter.reveal);
+  const shownMessages = createMemo(() =>
+    threadMessages().map(typewriter.reveal),
+  );
+
+  const visibleMessages = createMemo(() =>
+    shownMessages().filter((message) => message.content || message.isFailed),
+  );
+
+  const chatMessages = createMemo(mapArray(visibleMessages, toChatMessageView));
 
   const isAnswering = () =>
     isAwaiting() || shownMessages().some((message) => message.isStreaming);
@@ -107,17 +125,8 @@ export const useChatMessages = (deps: ChatMessagesDeps) => {
       toasts.show('error', i18n.t('chat.clear_error'));
       return;
     }
-    setMessages((current) =>
-      current.filter((message) => message.threadId !== threadId),
-    );
+    setMessages([]);
   };
-
-  const copyMessage = (message: ChatMessageView) => {
-    setCopiedId(message.id);
-    void clipboard.copy(message.plainText);
-  };
-
-  const isCopied = (id: string) => clipboard.isCopied() && copiedId() === id;
 
   const lastMessage = () => shownMessages().at(-1);
 
@@ -135,11 +144,6 @@ export const useChatMessages = (deps: ChatMessagesDeps) => {
     );
   };
 
-  const chatMessages = () =>
-    shownMessages()
-      .filter((message) => message.content || message.isFailed)
-      .map(toChatMessageView);
-
   const questionCount = () =>
     threadMessages().filter((message) => message.role === ChatRole.User).length;
 
@@ -154,8 +158,6 @@ export const useChatMessages = (deps: ChatMessagesDeps) => {
     submit,
     canSend,
     clear,
-    copyMessage,
-    isCopied,
     messages: chatMessages,
     questionCount,
     hasMessages,

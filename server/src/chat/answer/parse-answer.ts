@@ -1,10 +1,13 @@
 import { ChatReply } from './chat-reply';
+import { FOLLOW_UPS_MARKER, MAX_FOLLOW_UPS } from './follow-ups-format';
 
-export const MAX_FOLLOW_UPS = 3;
+const MARKER_LINE = new RegExp(
+  `(?:^|\\n)\\s*${FOLLOW_UPS_MARKER}-*\\s*(?:\\n|$)`,
+);
 
-const MARKER_LINE = /(?:^|\n)\s*-{3,}\s*(?:\n|$)/;
-
-const PARTIAL_MARKER_TAIL = /\n\s*-{1,2}\s*$/;
+const PARTIAL_MARKER_TAIL = new RegExp(
+  `\\n\\s*-{1,${FOLLOW_UPS_MARKER.length - 1}}\\s*$`,
+);
 
 const LIST_PREFIX = /^[-*\d.\s]+/;
 

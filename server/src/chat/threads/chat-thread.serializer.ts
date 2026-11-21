@@ -5,5 +5,4 @@ export const toChatThreadOutput = ({
   id,
   meetingId,
   title,
-  updatedAt,
-}: ChatThreadEntity): ChatThreadOutput => ({ id, meetingId, title, updatedAt });
+}: ChatThreadEntity): ChatThreadOutput => ({ id, meetingId, title });

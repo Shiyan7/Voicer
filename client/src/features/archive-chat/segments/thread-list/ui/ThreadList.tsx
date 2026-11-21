@@ -23,7 +23,7 @@ export function ThreadList(deps: ThreadListDeps) {
         draft={vm.draft()}
         counter={vm.counter()}
         canSave={vm.canSave()}
-        inputRef={vm.focusInput}
+        inputRef={vm.selectInput}
         onDraft={vm.setDraft}
         onSave={vm.saveRename}
         onCancel={vm.cancelRename}

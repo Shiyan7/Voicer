@@ -1,4 +1,8 @@
-import { useChatMessages, useChatScroll } from '@/entities/chat';
+import {
+  useChatMessages,
+  useChatScroll,
+  useMessageCopy,
+} from '@/entities/chat';
 import { i18n } from '@/shared/i18n';
 
 import { EXAMPLE_QUESTION_KEYS } from '../config/conversationConfig';
@@ -6,16 +10,11 @@ import { ConversationDeps } from '../types/ConversationDeps';
 
 export const useConversation = (deps: ConversationDeps) => {
   const chat = useChatMessages(deps);
-
-  const shouldFocus = () => true;
-
-  const scrollTrigger = () =>
-    `${deps.threadId()}:${chat.questionCount()}:${chat.messages().length}`;
+  const copy = useMessageCopy();
 
   const scroll = useChatScroll({
-    shouldFocus,
     draft: chat.draft,
-    scrollTrigger,
+    scrollTrigger: chat.messages,
     onSubmit: chat.submit,
   });
 
@@ -35,8 +34,8 @@ export const useConversation = (deps: ConversationDeps) => {
     examples,
     canSend: chat.canSend,
     submit: chat.submit,
-    copyMessage: chat.copyMessage,
-    isCopied: chat.isCopied,
+    copyMessage: copy.copyMessage,
+    isCopied: copy.isCopied,
     setBody: scroll.setBody,
     setInput: scroll.setInput,
     onInputKeyDown: scroll.onInputKeyDown,

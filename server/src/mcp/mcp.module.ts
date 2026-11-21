@@ -8,6 +8,7 @@ import { UserEntity } from '../users/user.entity';
 import { McpAuthGuard } from './mcp-auth.guard';
 import { McpController } from './mcp.controller';
 import { McpServerFactory } from './mcp-server.factory';
+import { McpAgentSessionsService } from './mcp-agent-sessions.service';
 import { McpSessionTokensService } from './mcp-session-tokens.service';
 import { GetMeetingTool } from './tools/get-meeting.tool';
 import { GetTranscriptTool } from './tools/get-transcript.tool';
@@ -28,12 +29,13 @@ import { SearchMeetingsTool } from './tools/search-meetings.tool';
     McpAuthGuard,
     McpServerFactory,
     McpSessionTokensService,
+    McpAgentSessionsService,
     SearchMeetingsTool,
     ListMeetingsTool,
     GetMeetingTool,
     GetTranscriptTool,
     ListActionItemsTool,
   ],
-  exports: [McpSessionTokensService],
+  exports: [McpAgentSessionsService],
 })
 export class McpModule {}
