@@ -1,2 +1,7 @@
 export { parseMarkdown } from './parseMarkdown';
-export type { MarkdownBlock, MarkdownInline } from './types/MarkdownBlock';
+export { toPlainText } from './toPlainText';
+export type {
+  MarkdownBlock,
+  MarkdownInline,
+  MarkdownTime,
+} from './types/MarkdownBlock';

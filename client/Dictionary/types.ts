@@ -60,14 +60,22 @@ export type ChatMessageOutput = {
   id: Scalars['ID']['output'];
   isFailed: Scalars['Boolean']['output'];
   isStreaming: Scalars['Boolean']['output'];
-  meetingId: Scalars['ID']['output'];
   role: ChatRole;
+  threadId: Scalars['ID']['output'];
 };
 
 export enum ChatRole {
   Assistant = 'ASSISTANT',
   User = 'USER',
 }
+
+export type ChatThreadOutput = {
+  __typename?: 'ChatThreadOutput';
+  id: Scalars['ID']['output'];
+  isPinned: Scalars['Boolean']['output'];
+  meetingId?: Maybe<Scalars['ID']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+};
 
 export type InterviewAnswerOutput = {
   __typename?: 'InterviewAnswerOutput';
@@ -232,14 +240,16 @@ export type Mutation = {
   __typename?: 'Mutation';
   apiTokenCreate: ApiTokenCreatedOutput;
   apiTokenRevoke: Scalars['Boolean']['output'];
+  chatAsk: ChatMessageOutput;
+  chatClear: Scalars['Boolean']['output'];
+  createChatThread: ChatThreadOutput;
   createInterviewSession: InterviewSessionOutput;
+  deleteChatThread: Scalars['Boolean']['output'];
   deleteInterviewResume: Scalars['Boolean']['output'];
   deleteInterviewSession: InterviewSessionOutput;
   finishInterviewSession: InterviewSessionOutput;
   interviewAskScreenshot: Scalars['ID']['output'];
   meetingAddScreenshot: MeetingScreenshotOutput;
-  meetingChatAsk: ChatMessageOutput;
-  meetingChatClear: Scalars['Boolean']['output'];
   meetingDelete: MeetingOutput;
   meetingRename: MeetingOutput;
   meetingSetFavorite: MeetingOutput;
@@ -247,7 +257,9 @@ export type Mutation = {
   meetingSummarize: MeetingOutput;
   meetingTranscriptUpdate: Array<TranscriptSegmentOutput>;
   meetingUploadAudio: MeetingOutput;
+  renameChatThread: ChatThreadOutput;
   retryInterviewPreparation: InterviewSessionOutput;
+  setChatThreadPinned: ChatThreadOutput;
   signIn: AuthPayload;
   signUp: AuthPayload;
   toggleActionItem: Scalars['Boolean']['output'];
@@ -261,11 +273,24 @@ export type MutationApiTokenRevokeArgs = {
   id: Scalars['ID']['input'];
 };
 
+export type MutationChatAskArgs = {
+  question: Scalars['String']['input'];
+  threadId: Scalars['ID']['input'];
+};
+
+export type MutationChatClearArgs = {
+  threadId: Scalars['ID']['input'];
+};
+
 export type MutationCreateInterviewSessionArgs = {
   language?: InterviewLanguage;
   resume?: InputMaybe<Scalars['Upload']['input']>;
   resumeSessionId?: InputMaybe<Scalars['ID']['input']>;
   vacancy: Scalars['String']['input'];
+};
+
+export type MutationDeleteChatThreadArgs = {
+  threadId: Scalars['ID']['input'];
 };
 
 export type MutationDeleteInterviewResumeArgs = {
@@ -289,15 +314,6 @@ export type MutationMeetingAddScreenshotArgs = {
   image: Scalars['Upload']['input'];
   meetingId: Scalars['ID']['input'];
   offsetMs: Scalars['Int']['input'];
-};
-
-export type MutationMeetingChatAskArgs = {
-  meetingId: Scalars['ID']['input'];
-  question: Scalars['String']['input'];
-};
-
-export type MutationMeetingChatClearArgs = {
-  meetingId: Scalars['ID']['input'];
 };
 
 export type MutationMeetingDeleteArgs = {
@@ -335,8 +351,18 @@ export type MutationMeetingUploadAudioArgs = {
   startedAt?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
+export type MutationRenameChatThreadArgs = {
+  threadId: Scalars['ID']['input'];
+  title: Scalars['String']['input'];
+};
+
 export type MutationRetryInterviewPreparationArgs = {
   id: Scalars['ID']['input'];
+};
+
+export type MutationSetChatThreadPinnedArgs = {
+  isPinned: Scalars['Boolean']['input'];
+  threadId: Scalars['ID']['input'];
 };
 
 export type MutationSignInArgs = {
@@ -363,13 +389,15 @@ export type Query = {
   __typename?: 'Query';
   actionItems: Array<ActionItemOutput>;
   apiTokens: Array<ApiTokenOutput>;
+  chatMessages: Array<ChatMessageOutput>;
+  chatThreads: Array<ChatThreadOutput>;
   interviewResumes: Array<InterviewResumeOutput>;
   interviewSession: InterviewSessionOutput;
   interviewSessionsPage: InterviewSessionsPageOutput;
   interviewTurns: Array<InterviewTurnOutput>;
   meetingActionItems: Array<ActionItemOutput>;
-  meetingChatMessages: Array<ChatMessageOutput>;
   meetingChatSuggestions: Array<Scalars['String']['output']>;
+  meetingChatThread: ChatThreadOutput;
   meetingKeyPoints: Array<KeyPointOutput>;
   meetingScreenshots: Array<MeetingScreenshotOutput>;
   meetingTranscript: Array<TranscriptSegmentOutput>;
@@ -380,6 +408,10 @@ export type Query = {
   statsSummary: StatsSummaryOutput;
   statsYear: StatsYearOutput;
   userMe: UserMeOutput;
+};
+
+export type QueryChatMessagesArgs = {
+  threadId: Scalars['ID']['input'];
 };
 
 export type QueryInterviewSessionArgs = {
@@ -398,11 +430,11 @@ export type QueryMeetingActionItemsArgs = {
   meetingId: Scalars['ID']['input'];
 };
 
-export type QueryMeetingChatMessagesArgs = {
+export type QueryMeetingChatSuggestionsArgs = {
   meetingId: Scalars['ID']['input'];
 };
 
-export type QueryMeetingChatSuggestionsArgs = {
+export type QueryMeetingChatThreadArgs = {
   meetingId: Scalars['ID']['input'];
 };
 
@@ -545,17 +577,17 @@ export type StatsYearOutput = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  chatMessage: ChatMessageOutput;
   interviewAnswer: InterviewAnswerOutput;
-  meetingChatMessage: ChatMessageOutput;
   meetingUpdated: MeetingOutput;
+};
+
+export type SubscriptionChatMessageArgs = {
+  threadId: Scalars['ID']['input'];
 };
 
 export type SubscriptionInterviewAnswerArgs = {
   sessionId: Scalars['ID']['input'];
-};
-
-export type SubscriptionMeetingChatMessageArgs = {
-  meetingId: Scalars['ID']['input'];
 };
 
 export type SubscriptionMeetingUpdatedArgs = {

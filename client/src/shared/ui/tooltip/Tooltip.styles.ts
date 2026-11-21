@@ -2,17 +2,24 @@ import { tv } from 'tailwind-variants';
 
 export const tooltipStyles = tv({
   slots: {
-    root: 'group relative inline-flex',
+    root: 'inline-flex',
     bubble: `
-      pointer-events-none absolute bottom-full left-1/2 z-10 mb-2
-      -translate-x-1/2 whitespace-nowrap rounded-lg bg-gray-900 px-2.5 py-1
-      text-[12px] font-medium text-white opacity-0 shadow-lg
-      transition-opacity duration-150 group-hover:opacity-100
+      pointer-events-none fixed z-[100] rounded-lg bg-gray-900 px-2.5 py-1
+      text-[12px] font-medium text-white shadow-lg animate-tooltip-in
     `,
   },
   variants: {
-    open: {
-      true: { bubble: 'opacity-100' },
+    position: {
+      top: {
+        bubble: '-translate-x-1/2 -translate-y-full whitespace-nowrap',
+      },
+      right: {
+        bubble: `
+          max-w-72 -translate-y-1/2 rounded-xl border border-gray-200
+          bg-white px-3.5 py-2 text-[14px] font-normal leading-snug
+          text-gray-900 shadow-none [animation-delay:400ms]
+        `,
+      },
     },
   },
 });

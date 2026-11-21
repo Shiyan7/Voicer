@@ -1,8 +1,14 @@
+export interface MarkdownTime {
+  kind: 'time';
+  ms: number;
+  meetingId?: string;
+}
+
 export type MarkdownInline =
   | { kind: 'text'; text: string }
   | { kind: 'bold'; text: string }
   | { kind: 'code'; text: string }
-  | { kind: 'time'; ms: number };
+  | MarkdownTime;
 
 export interface MarkdownBlock {
   isBullet: boolean;

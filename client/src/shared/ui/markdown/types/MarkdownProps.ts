@@ -1,9 +1,9 @@
 import { JSX } from 'solid-js';
 
-import type { MarkdownBlock } from '@/shared/lib/markdown';
+import type { MarkdownBlock, MarkdownTime } from '@/shared/lib/markdown';
 
 export interface MarkdownProps {
   blocks: MarkdownBlock[];
   class?: string;
-  renderTime?: (ms: number) => JSX.Element;
+  renderTime?: (time: MarkdownTime) => JSX.Element;
 }

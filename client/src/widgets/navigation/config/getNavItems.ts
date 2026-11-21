@@ -11,6 +11,12 @@ export const getNavItems = (): NavItem[] => [
     activeIcon: 'navigation:calendar-solid',
   },
   {
+    href: paths.chat,
+    label: i18n.t('nav.chat'),
+    icon: 'navigation:chat',
+    activeIcon: 'navigation:chat-solid',
+  },
+  {
     href: paths.shared,
     label: i18n.t('nav.shared'),
     icon: 'navigation:users',

@@ -9,3 +9,6 @@
 
 # Reference-only fork (patterns source, not part of this repo)
 /backend/
+# Claude Code skills and rules
+**/.claude/skills/
+**/.claude/rules/

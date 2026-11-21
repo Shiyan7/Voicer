@@ -302,7 +302,10 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['logout'], [24]),
         defineSpriteSymbol(['microphone'], [24]),
         defineSpriteSymbol(['pause'], [24]),
+        defineSpriteSymbol(['pencil-square'], [24]),
         defineSpriteSymbol(['pencil'], [24]),
+        defineSpriteSymbol(['pin-off'], [24]),
+        defineSpriteSymbol(['pin'], [24]),
         defineSpriteSymbol(['play'], [24]),
         defineSpriteSymbol(['search'], [24]),
         defineSpriteSymbol(['skip-back'], [24]),
@@ -315,7 +318,7 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['trash'], [24]),
         defineSpriteSymbol(['upload'], [24]),
       ],
-      defineExternalAssetMeta('common.a7fc97ef.svg'),
+      defineExternalAssetMeta('common.c4203f7e.svg'),
     ),
   ]),
   defineSprite('navigation', [
@@ -327,6 +330,8 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['calendar'], [24]),
         defineSpriteSymbol(['chart-solid'], [24]),
         defineSpriteSymbol(['chart'], [24]),
+        defineSpriteSymbol(['chat-solid'], [24]),
+        defineSpriteSymbol(['chat'], [24]),
         defineSpriteSymbol(['check-solid'], [24]),
         defineSpriteSymbol(['check'], [24]),
         defineSpriteSymbol(['microphone-solid'], [24]),
@@ -336,7 +341,7 @@ export const sprites = defineSpriteMap([
         defineSpriteSymbol(['users-solid'], [24]),
         defineSpriteSymbol(['users'], [24]),
       ],
-      defineExternalAssetMeta('navigation.40271c91.svg'),
+      defineExternalAssetMeta('navigation.d739de8a.svg'),
     ),
   ]),
   defineSprite('social', [
@@ -379,7 +384,10 @@ export type SpritesMeta = {
     | 'logout'
     | 'microphone'
     | 'pause'
+    | 'pencil-square'
     | 'pencil'
+    | 'pin-off'
+    | 'pin'
     | 'play'
     | 'search'
     | 'skip-back'
@@ -398,6 +406,8 @@ export type SpritesMeta = {
     | 'calendar'
     | 'chart-solid'
     | 'chart'
+    | 'chat-solid'
+    | 'chat'
     | 'check-solid'
     | 'check'
     | 'microphone-solid'

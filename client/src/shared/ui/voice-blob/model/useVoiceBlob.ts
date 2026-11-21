@@ -11,6 +11,7 @@ import {
   SETTLED_LEVEL,
   STROKE_WIDTH,
 } from '../config/voiceBlobConfig';
+import { createBlobGradient } from '../lib/createBlobGradient';
 import { VoiceBlobDeps } from '../types/VoiceBlobDeps';
 
 const reducedMotion = window.matchMedia(
@@ -74,9 +75,6 @@ export const useVoiceBlob = (deps: VoiceBlobDeps) => {
     node.width = Math.round(size * dpr);
     node.height = Math.round(size * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const color = getComputedStyle(node).color;
-    ctx.fillStyle = color;
-    ctx.strokeStyle = color;
     ctx.lineWidth = STROKE_WIDTH;
 
     const center = size / 2;
@@ -95,6 +93,9 @@ export const useVoiceBlob = (deps: VoiceBlobDeps) => {
       if (!deps.paused && !reducedMotion) time += dt * (0.6 + level * 1.4);
 
       ctx.clearRect(0, 0, size, size);
+      const gradient = createBlobGradient(ctx, size, time);
+      ctx.fillStyle = gradient;
+      ctx.strokeStyle = gradient;
       for (const layer of BLOB_LAYERS) {
         ctx.globalAlpha = layer.alpha * presence;
         const shrink = HIDDEN_SCALE + (1 - HIDDEN_SCALE) * presence;

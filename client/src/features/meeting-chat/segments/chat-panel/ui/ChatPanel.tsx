@@ -1,8 +1,6 @@
 import { Show } from 'solid-js';
 
 import { i18n } from '@/shared/i18n';
-import { BorderBeam } from '@/shared/ui/border-beam';
-import { GlassIconButton } from '@/shared/ui/glass-icon-button';
 import { Icon } from '@/shared/ui/icon';
 
 import { ChatPanelProps } from '../types/ChatPanelProps';
@@ -31,8 +29,8 @@ export function ChatPanel(props: ChatPanelProps) {
             <button
               class={styles.iconButton()}
               type="button"
-              aria-label={i18n.t('meetings.chat.clear')}
-              title={i18n.t('meetings.chat.clear')}
+              aria-label={i18n.t('chat.clear')}
+              title={i18n.t('chat.clear')}
               onClick={props.onClear}
             >
               <Icon size={16} name="common:trash" />
@@ -62,38 +60,7 @@ export function ChatPanel(props: ChatPanelProps) {
         {props.children}
       </div>
 
-      <footer class={styles.footer()}>
-        <form
-          class={styles.form()}
-          onSubmit={(event) => {
-            event.preventDefault();
-            props.onSubmit();
-          }}
-        >
-          <BorderBeam class={styles.inputBeam()} radius={26}>
-            <textarea
-              class={styles.input()}
-              ref={props.inputRef}
-              rows={1}
-              maxLength={2000}
-              value={props.draft}
-              placeholder={i18n.t('meetings.chat.placeholder')}
-              onInput={(event) => props.onDraft(event.currentTarget.value)}
-              onKeyDown={props.onInputKeyDown}
-            />
-            <GlassIconButton
-              class={styles.send()}
-              size="sm"
-              type="submit"
-              disabled={!props.canSend}
-              label={i18n.t('meetings.chat.send')}
-            >
-              <Icon size={18} name="common:arrow-up" />
-            </GlassIconButton>
-          </BorderBeam>
-        </form>
-        <p class={styles.disclaimer()}>{i18n.t('meetings.chat.disclaimer')}</p>
-      </footer>
+      <footer class={styles.footer()}>{props.composer}</footer>
     </section>
   );
 }
